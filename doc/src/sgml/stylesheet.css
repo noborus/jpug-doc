@@ -62,6 +62,12 @@ H6 {
 
 /* decoration for formal examples */
 
+ BODY > * {
+    margin: 0px auto;
+    width: 90%;
+    display: bock;
+    text-align: left;
+}
 DIV.EXAMPLE {
 	padding-left: 15px;
 	border-style: solid;
@@ -70,7 +76,21 @@ DIV.EXAMPLE {
 	border-color: black;
 	margin: 0.5ex;
 }
-
+BLOCKQUOTE.NOTE {
+        margen: 4ex auto;
+        border-color: #DBDBCC;
+        background-color: #EED;
+	padding: 14px;
+	width: 572px;
+        border-radius: 8px;
+}
+BLOCKQUOTE.TIP {
+        color: #000;
+	border-width: 1px;
+        border-style: solid;
+	overfileow: auto;
+	border-radius: 8px;
+}
 /* less dense spacing of TOC */
 
 .BOOK .TOC DL DT {
@@ -86,7 +106,21 @@ DIV.EXAMPLE {
 /* miscellaneous */
 
 PRE.LITERALLAYOUT, .SCREEN, .SYNOPSIS, .PROGRAMLISTING {
-	margin-left: 4ex;
+ 	margin-left: 4ex;
+}
+PRE.LITERALLAYOUT, .SCREEN, .SYNOPSIS, .PROGRAMLISTING {
+        border-color: #CFCFCF;
+        background-color: #F7F7F7;
+        color: #000;
+        border-width: 1px;
+        border-style: solid;
+        padding: 2ex;
+        margin: 2ex 0px 2ex 2ex;
+        overflow: auto;
+        border-radius: 8px;
+}
+PRE.PROGRAMLISTING, BLOCKQUOTE.NOTE, BLOCKQUOTE.TIP {
+	box-shadow: 3px 3px 5px #DFDFDF;
 }
 
 .COMMENT	{ color: red; }
