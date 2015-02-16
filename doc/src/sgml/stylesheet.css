@@ -9,8 +9,8 @@ BODY {
 }
 
 BODY > * {
-    margin: 0px auto;
     width: 90%;
+    margin: auto  !important;;
     display: bock;
     text-align: left;
 }
@@ -19,6 +19,22 @@ a:link                          { color:#0085B0; text-decoration: underline; }
 a:visited                       { color:#004E66; text-decoration: underline; }
 a:active                        { color:#0085B0; text-decoration: underline; }
 a:hover                         { color:#000000; text-decoration: underline; }
+
+p i {
+    margin: 0.2em;
+    font-style: normal;
+    font-weight: bold;
+}
+p span, p acronym {
+    margin: 0.2em;
+    font-style: normal;
+    color: #440000;
+}
+p tt {
+    margin: 0.2em;
+    font-style: monospace;
+    color: #440000;
+}
 
 H1 {
 	font-size: 1.4em;
