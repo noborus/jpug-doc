@@ -99,7 +99,7 @@ DIV.EXAMPLE {
 }
 
 BLOCKQUOTE.NOTE, BLOCKQUOTE.TIP, table.CAUTION, table.WARNING {
-        margen: 4ex auto;
+        margin: 4ex auto;
         color: black;
         border-color: #DBDBCC;
         background-color: #EED;
