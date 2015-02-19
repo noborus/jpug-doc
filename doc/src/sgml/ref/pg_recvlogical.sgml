@@ -318,7 +318,7 @@ PostgreSQL documentation
     The following command-line options control the database connection parameters.
 -->
 以下のコマンド行オプションはデータベース接続パラメータを制御します。
-
+ 
     <variablelist>
       <varlistentry>
        <term><option>-d <replaceable>database</replaceable></option></term>
