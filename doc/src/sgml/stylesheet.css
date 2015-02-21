@@ -101,6 +101,7 @@ DIV.EXAMPLE {
 BLOCKQUOTE.NOTE, BLOCKQUOTE.TIP, table.CAUTION, table.WARNING {
         margin: 4ex auto;
         color: black;
+        display: block;
         border-color: #DBDBCC;
         background-color: #EED;
 	padding: 14px;
