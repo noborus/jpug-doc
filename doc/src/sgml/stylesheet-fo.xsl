@@ -13,6 +13,10 @@
 <xsl:param name="use.extensions" select="1"></xsl:param>
 <xsl:param name="variablelist.as.blocks" select="1"></xsl:param>
 
+<xsl:param name="title.font.family">TakaoExGothic</xsl:param>
+<xsl:param name="body.font.family">TakaoExMincho</xsl:param>
+<xsl:param name="monospace.font.family">TakaoGothic</xsl:param>
+
 <xsl:attribute-set name="monospace.verbatim.properties"
                    use-attribute-sets="verbatim.properties monospace.properties">
   <xsl:attribute name="wrap-option">wrap</xsl:attribute>

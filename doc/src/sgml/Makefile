@@ -276,7 +276,7 @@ XMLLINT = xmllint
 .SECONDARY: postgres-A4.fo postgres-US.fo
 
 %-fop.pdf: %.fo
-	$(FOP) -fo $< -pdf $@
+	$(FOP) -c fop.xconf -fo $< -pdf $@
 
 epub: postgres.epub
 postgres.epub: postgres.xml
