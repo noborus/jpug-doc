@@ -1,8 +1,10 @@
 language: c
 env:
   global:
-    - secure: "VTPuqtIWizryN0ffVzCjnOjzxtzqOzhMo4OAUOZIymVNEKdrxmdDH875RuJm8PDuPMpBC3BSm0ZPgzrXdbFPGMVHx5FT6TouDxrfsRqv1OXEButrxgxovKCRg1Itgp+eBVDQ0IFxy1uKxHkuj4XlX00t8FndtWKQNjbn3kUQHg8="
+    - secure: "WUG3lmU/9SXc0nObh4Ad24OYbTrqQL7o0LeQgXqvbxW64ikylvLjxskOs3IS9ZhbaEzv1QyZouK+l27aDxr6a6A11s8vPQ93ttDkIb+Otpvb7RmcOZEBeeOmTHbNc8tvNhCB9egTqz/YYXnpQrZp3vopoAxSFpRQTTYC1JiCyhM="
+    - secure: "bSwQh5M/xjWXNON+c71hgEvNSnipG3gsNTyLCSrtRP44x/xWYI3AHEPpLxN1iXeyq5ngDL04xR0FggMA/ubTPI+ypgqgtz+clJPkXlF5WQahWtHx7ktqnCKmOIre1Z0u+FsizpKe1475YIzA4nqdNyKpk0TJPVX4v8PJNPd9rdQ="
 before_script:
+  - test "$GH_EMAIL" && echo $GH_EMAIL
   - test "$GH_TOKEN" || exit 1
 before_install:
   - sudo apt-get update
