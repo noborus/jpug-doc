@@ -1,6 +1,6 @@
 language: c
 before_script:
-  [ ! "$GH_TOKEN" ] && exit 1
+  - test ! "$GH_TOKEN" && exit 1
 before_install:
   - sudo apt-get update
   - sudo apt-get build-dep -y postgresql-9.1
