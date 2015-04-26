@@ -5,4 +5,4 @@ before_install:
   - sudo apt-get build-dep -y postgresql-9.1
 
 script:
-  - ./configure && make doc
+  - ./configure && make docs
