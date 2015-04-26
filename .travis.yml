@@ -1,9 +1,16 @@
 language: c
+
 before_install:
-- sudo apt-get update
-- sudo apt-get build-dep -y postgresql-9.1
+  - sudo apt-get update
+  - sudo apt-get build-dep -y postgresql-9.1
+
 script:
-- ./configure && make docs
+  - ./configure && make docs
+
+after_success:
+  - chmod +755 ./.push_github.sh
+  - ./.push_github.sh
+
 env:
   global:
     - GIT_COMMITTER_NAME='noborus@travis-ci'
@@ -11,6 +18,3 @@ env:
     - GIT_AUTHOR_NAME='noborus@travis-ci'
     - GIT_AUTHOR_EMAIL='noborus@netlab.jp'
     - secure: JzEqbxxY5TOretuxbTL1AuKRp9FKvGnpJaqMAbTUg4RAmKIUpWYrBDNAhgs0i4KL/sVfRHYJZw+7X54+Ji0qyyT011dR31rQ8f8l4oeafzvO3+DwFmKkrUZteHyFHcB+EAF2uaUK9sEWRAdeVh03dG0xvU5WXWOZkI73yahBmfw=
-  after_success:
-    - chmod +755 ./.push_github.sh
-    - ./.push_github.sh
