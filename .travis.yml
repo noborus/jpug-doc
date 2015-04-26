@@ -2,7 +2,7 @@ language: c
 env:
   global:
     - secure: "WUG3lmU/9SXc0nObh4Ad24OYbTrqQL7o0LeQgXqvbxW64ikylvLjxskOs3IS9ZhbaEzv1QyZouK+l27aDxr6a6A11s8vPQ93ttDkIb+Otpvb7RmcOZEBeeOmTHbNc8tvNhCB9egTqz/YYXnpQrZp3vopoAxSFpRQTTYC1JiCyhM="
-    - secure: "bSwQh5M/xjWXNON+c71hgEvNSnipG3gsNTyLCSrtRP44x/xWYI3AHEPpLxN1iXeyq5ngDL04xR0FggMA/ubTPI+ypgqgtz+clJPkXlF5WQahWtHx7ktqnCKmOIre1Z0u+FsizpKe1475YIzA4nqdNyKpk0TJPVX4v8PJNPd9rdQ="
+    - secure: "DfpjYTDeRRPAKi8SypnjdN57AxqZG44gGtoUd1X7Atya7yIS3bmYoD6f3z0IPif5rkitGpKpj71lj1+GEKm02mz+jehYMeFD+PbfDKvp10cZ/MeDDF739aQy2UaXzt9MSUTDBN8k5jtA1eFVZ7jv3iKohJXI8/YNkwUfnNgNryM="
 before_script:
   - test "$GH_EMAIL" && echo $GH_EMAIL
   - test "$GH_TOKEN" || exit 1
