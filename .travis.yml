@@ -1,16 +1,18 @@
 language: c
+before_script:
+  [ ! "$GH_TOKEN" ] && exit 1
 before_install:
-- sudo apt-get update
-- sudo apt-get build-dep -y postgresql-9.1
+  - sudo apt-get update
+  - sudo apt-get build-dep -y postgresql-9.1
 script:
-- ./configure && make docs
+  - ./configure && make docs
 after_success:
-- chmod 755 ./.push_github.sh
-- ./.push_github.sh
+  - chmod 755 ./.push_github.sh
+  - ./.push_github.sh
 env:
   global:
-  - GIT_COMMITTER_NAME='noborus@travis-ci'
-  - GIT_COMMITTER_NAME='noborus@netlab.jp'
-  - GIT_AUTHOR_NAME='noborus@travis-ci'
-  - GIT_AUTHOR_EMAIL='noborus@netlab.jp'
-  - secure: PPHnxFtKlRNXM66yRfuiyho715xOe8WiXY49voNxn6n/TPEkeZ5QvaIqTVtMgqWkBj59si6V4tamxNn6/xMAWMku0lBxhi+rILKCJ2p7A5R09TDx31j23tzvtbEvjB8j6oKeAYWos44dVmugVt22QCF/vLXEwroVZw+eJnK7/NA=
+    - GIT_COMMITTER_NAME='noborus@travis-ci'
+    - GIT_COMMITTER_NAME='noborus@netlab.jp'
+    - GIT_AUTHOR_NAME='noborus@travis-ci'
+    - GIT_AUTHOR_EMAIL='noborus@netlab.jp'
+    - secure: PPHnxFtKlRNXM66yRfuiyho715xOe8WiXY49voNxn6n/TPEkeZ5QvaIqTVtMgqWkBj59si6V4tamxNn6/xMAWMku0lBxhi+rILKCJ2p7A5R09TDx31j23tzvtbEvjB8j6oKeAYWos44dVmugVt22QCF/vLXEwroVZw+eJnK7/NA=
