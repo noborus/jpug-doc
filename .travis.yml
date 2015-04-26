@@ -8,7 +8,7 @@ script:
   - ./configure && make docs
 
 after_success:
-  - chmod +755 ./.push_github.sh
+  - chmod 755 ./.push_github.sh
   - ./.push_github.sh
 
 env:
