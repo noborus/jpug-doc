@@ -1,4 +1,7 @@
 language: c
+env:
+  global:
+    - secure: "VTPuqtIWizryN0ffVzCjnOjzxtzqOzhMo4OAUOZIymVNEKdrxmdDH875RuJm8PDuPMpBC3BSm0ZPgzrXdbFPGMVHx5FT6TouDxrfsRqv1OXEButrxgxovKCRg1Itgp+eBVDQ0IFxy1uKxHkuj4XlX00t8FndtWKQNjbn3kUQHg8="
 before_script:
   - test "$GH_TOKEN" || exit 1
 before_install:
@@ -9,6 +12,3 @@ script:
 after_success:
   - chmod 755 ./.push_github.sh
   - ./.push_github.sh
-env:
-  global:
-    - secure: "VTPuqtIWizryN0ffVzCjnOjzxtzqOzhMo4OAUOZIymVNEKdrxmdDH875RuJm8PDuPMpBC3BSm0ZPgzrXdbFPGMVHx5FT6TouDxrfsRqv1OXEButrxgxovKCRg1Itgp+eBVDQ0IFxy1uKxHkuj4XlX00t8FndtWKQNjbn3kUQHg8="
