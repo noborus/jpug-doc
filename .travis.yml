@@ -1,6 +1,6 @@
 language: c
 before_script:
-  - test ! "$GH_TOKEN" && exit 1
+  - test "$GH_TOKEN" || exit 1
 before_install:
   - sudo apt-get update
   - sudo apt-get build-dep -y postgresql-9.1
@@ -11,8 +11,4 @@ after_success:
   - ./.push_github.sh
 env:
   global:
-    - GIT_COMMITTER_NAME='noborus@travis-ci'
-    - GIT_COMMITTER_NAME='noborus@netlab.jp'
-    - GIT_AUTHOR_NAME='noborus@travis-ci'
-    - GIT_AUTHOR_EMAIL='noborus@netlab.jp'
     - secure: "VTPuqtIWizryN0ffVzCjnOjzxtzqOzhMo4OAUOZIymVNEKdrxmdDH875RuJm8PDuPMpBC3BSm0ZPgzrXdbFPGMVHx5FT6TouDxrfsRqv1OXEButrxgxovKCRg1Itgp+eBVDQ0IFxy1uKxHkuj4XlX00t8FndtWKQNjbn3kUQHg8="
