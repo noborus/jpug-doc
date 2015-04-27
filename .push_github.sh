@@ -11,7 +11,7 @@ git config user.email "noborus@netlab.jp"
 
 git remote add upstream "https://$GH_TOKEN@github.com/noborus/noborus.gihub.io.git"
 git fetch upstream
-mkdir pgsql-jp/jpug-doc/
+mkdir -p pgsql-jp/jpug-doc/
 
 cp -r ../doc/src/sgml/html pgsql-jp/jpug-doc/
 git add .
