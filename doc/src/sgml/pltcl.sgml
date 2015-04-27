@@ -255,6 +255,7 @@ $$ LANGUAGE pltcl;
 -->
 今のところ、複合型の戻り値を返す機能や集合を返す機能はサポートされていません。
     </para>
+
     <para>
 <!--
      <application>PL/Tcl</> does not currently have full support for
@@ -269,6 +270,7 @@ $$ LANGUAGE pltcl;
 これは、ドメインに関連する制約が強制されないことを意味しています。
 これは関数の引数では問題ありませんが、<application>PL/Tcl</>関数をドメイン型を返すように宣言した場合は危険です。
     </para>
+
    </sect1>
 
    <sect1 id="pltcl-data">

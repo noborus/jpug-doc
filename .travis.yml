@@ -1,0 +1,16 @@
+language: c
+env:
+  global:
+    - secure: "WUG3lmU/9SXc0nObh4Ad24OYbTrqQL7o0LeQgXqvbxW64ikylvLjxskOs3IS9ZhbaEzv1QyZouK+l27aDxr6a6A11s8vPQ93ttDkIb+Otpvb7RmcOZEBeeOmTHbNc8tvNhCB9egTqz/YYXnpQrZp3vopoAxSFpRQTTYC1JiCyhM="
+    - secure: "DfpjYTDeRRPAKi8SypnjdN57AxqZG44gGtoUd1X7Atya7yIS3bmYoD6f3z0IPif5rkitGpKpj71lj1+GEKm02mz+jehYMeFD+PbfDKvp10cZ/MeDDF739aQy2UaXzt9MSUTDBN8k5jtA1eFVZ7jv3iKohJXI8/YNkwUfnNgNryM="
+before_script:
+  - test "$GH_EMAIL" && echo $GH_EMAIL
+  - test "$GH_TOKEN" || exit 1
+before_install:
+  - sudo apt-get update
+  - sudo apt-get build-dep -y postgresql-9.1
+script:
+  - ./configure && make docs
+after_success:
+  - chmod 755 ./.push_github.sh
+  - ./.push_github.sh
