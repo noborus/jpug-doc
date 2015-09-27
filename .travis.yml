@@ -1,0 +1,8 @@
+language: c
+env:
+  global:
+before_install:
+  - sudo apt-get update
+  - sudo apt-get build-dep -y postgresql-9.4
+script:
+  - ./configure && make docs
