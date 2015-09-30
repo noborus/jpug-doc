@@ -24,9 +24,9 @@ addons:
       - python3.2
       - python3.2-dev
       - python3.2-minimal
-      - sgml-data
       - tcl8.5
       - tcl8.5-dev
       - xsltproc
 script:
   - ./configure && make docs
+  - cd doc/src/sgml && make xslthtml
