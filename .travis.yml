@@ -29,4 +29,5 @@ addons:
       - xsltproc
 script:
   - ./configure && make docs
-  - cd doc/src/sgml && make xslthtml
+  - cd doc/src/sgml && xmllint --noout --valid postgres.xml
+  - travis_wait 30 cd doc/src/sgml && make xslthtml
