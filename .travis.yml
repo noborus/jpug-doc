@@ -2,7 +2,7 @@ sudo: false
 language: c
 cache: apt
 env:
-  global: 
+  global:
 addons:
   apt:
     packages:
@@ -29,24 +29,24 @@ addons:
     - tcl8.5-dev
     - xsltproc
 script:
-- ./configure && make docs
-- cd doc/src/sgml
-- xmllint --noout --valid postgres.xml
+  - ./configure && make docs
+  - cd doc/src/sgml
+  - xmllint --noout --valid postgres.xml
 after_success:
-- cd ../../..
-- mkdir build
-- mv doc/src/sgml/html build
-- mv doc/src/sgml/man[1,3,7] build
-- cd build
-- zip -r doc-ja.zip *
-- cd ..
+  - cd ../../..
+  - mkdir build
+  - mv doc/src/sgml/html build
+  - mv doc/src/sgml/man[1,3,7] build
+  - cd build
+  - zip -r doc-ja.zip *
+  - cd ..
 deploy:
   provider: gcs
   access_key_id: GOOG7OE55GJJN7GHSYQQ
   secret_access_key:
     secure: JFDYGy1g3Tp+ouuIRsheuQL0ynNefvy2QMZMKTHpDX/g37WWLJL4TYThZtuVTTS8oWt7s+6n2XXpT9NJSMUj9Jr+UgR8q3Q4KoOAVeoj2MahxHsUbqAQTY+6LhaoE4t1BcH5+CWNCmDk6ku7IRuaziOcpaIDgu8MC5v93sHqOEc=
   bucket: jpug-doc-test
-  file: "build/doc-ja.zip"
+  local_dir: build
   skip_cleanup: true
   on:
     repo: noborus/jpug-doc
