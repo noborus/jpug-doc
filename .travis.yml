@@ -32,7 +32,7 @@ script:
   - cd doc/src/sgml
   - xmllint --noout --valid postgres.xml
   - mv html html4
-  - make xslthtml
+  - travis_wait 30 make xslthtml
   - mv html xhtml
   - zip -r doc-ja.zip html4 xhtml man1 man3 man7
   - cd ../../..
