@@ -1,6 +1,5 @@
 sudo: false
 language: c
-cache: apt
 env:
   global:
 addons:
@@ -32,14 +31,14 @@ script:
   - ./configure && make docs
   - cd doc/src/sgml
   - xmllint --noout --valid postgres.xml
-after_success:
+  - mv html html4
+  - make xslthtml
+  - mv html xhtml
+  - zip -r doc-ja.zip html4 xhtml man1 man3 man7
   - cd ../../..
+after_success:
   - mkdir build
-  - mv doc/src/sgml/html build
-  - mv doc/src/sgml/man[1,3,7] build
-  - cd build
-  - zip -r doc-ja.zip *
-  - cd ..
+  - mv doc/src/sgml/doc-ja.zip build
 deploy:
   provider: gcs
   access_key_id: GOOG7OE55GJJN7GHSYQQ
