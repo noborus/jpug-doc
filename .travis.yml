@@ -32,11 +32,11 @@ script:
   - cd doc/src/sgml
   - xmllint --noout --valid postgres.xml
   - mv html html4
-  - travis_wait 30 make xslthtml
-  - mv html xhtml
+#  - travis_wait 30 make xslthtml
+#  - mv html xhtml
+after_success:
   - zip -r doc-ja.zip html4 xhtml man1 man3 man7
   - cd ../../..
-after_success:
   - mkdir build
   - mv doc/src/sgml/doc-ja.zip build
 deploy:
