@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<fop version="1.0">
+  <renderers>
+    <renderer mime="application/pdf">
+      <fonts>
+        <auto-detect/>
+        <font metrics-url="TakaoExGothic.xml" kerning="yes" embed-url="/usr/share/fonts/truetype/takao-gothic/TakaoExGothic.ttf">
+	  <font-triplet name="TakaoExGothic" style="normal" weight="normal"/>
+	  <font-triplet name="TakaoExGothic" style="normal" weight="bold"/>
+	  <font-triplet name="TakaoExGothic" style="italic" weight="normal"/>
+	  <font-triplet name="TakaoExGothic" style="italic" weight="bold"/>
+        </font>
+        <font metrics-url="TakaoGothic.xml" kerning="yes" embed-url="/usr/share/fonts/truetype/takao-gothic/TakaoGothic.ttf">
+	  <font-triplet name="TakaoGothic" style="normal" weight="normal"/>
+	  <font-triplet name="TakaoGothic" style="normal" weight="bold"/>
+	  <font-triplet name="TakaoGothic" style="italic" weight="normal"/>
+	  <font-triplet name="TakaoGothic" style="italic" weight="bold"/>
+        </font>
+        <font metrics-url="TakaoExMincho.xml" kerning="yes" embed-url="/usr/share/fonts/truetype/takao-mincho/TakaoExMincho.ttf">
+	  <font-triplet name="TakaoExMincho" style="normal" weight="normal"/>
+	  <font-triplet name="TakaoExMincho" style="normal" weight="bold"/>
+	  <font-triplet name="TakaoExMincho" style="italic" weight="normal"/>
+	  <font-triplet name="TakaoExMincho" style="italic" weight="bold"/>
+        </font>
+      </fonts>
+    </renderer>
+  </renderers>
+</fop>

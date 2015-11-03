@@ -14,11 +14,12 @@
 <xsl:param name="make.valid.html" select="1"></xsl:param>
 <xsl:param name="generate.id.attributes" select="1"></xsl:param>
 <xsl:param name="generate.legalnotice.link" select="1"></xsl:param>
-<xsl:param name="link.mailto.url">pgsql-docs@postgresql.org</xsl:param>
+<xsl:param name="link.mailto.url">doc@postgresql.jp</xsl:param>
 <xsl:param name="chunk.first.sections" select="1"/>
 <!-- <xsl:param name="chunker.output.indent" select="'yes'"/> -->
 <xsl:param name="chunk.quietly" select="1"></xsl:param>
 <xsl:param name="toc.max.depth">2</xsl:param>
+<xsl:param name="admon.style"><xsl:text/></xsl:param>
 
 <xsl:param name="website.stylesheet" select="0"/>
 
@@ -26,7 +27,7 @@
 <xsl:param name="html.stylesheet">
   <xsl:choose>
     <xsl:when test="$website.stylesheet = 0">stylesheet.css</xsl:when>
-    <xsl:otherwise>http://www.postgresql.org/media/css/docs.css</xsl:otherwise>
+    <xsl:otherwise>docs.css</xsl:otherwise>
   </xsl:choose>
 </xsl:param>
 
