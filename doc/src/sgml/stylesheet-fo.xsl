@@ -14,12 +14,15 @@
 <xsl:param name="variablelist.as.blocks" select="1"></xsl:param>
 <xsl:param name="hyphenate">false</xsl:param>
 
+<!-- <xsl:param name="title.color">#EC5800</xsl:param> -->
+<xsl:param name="title.color">#000000</xsl:param>
+
 <!-- header settings -->
 <xsl:param name="header.column.widths">2 5 2</xsl:param>
 
 <xsl:attribute-set name="component.title.properties">
   <xsl:attribute name="line-height">30pt</xsl:attribute>
-<!--  <xsl:attribute name="color">#EC5800</xsl:attribute> -->
+  <xsl:attribute name="color"><xsl:value-of select="$title.color"/></xsl:attribute>
   <xsl:attribute name="space-after.minimum">0.5em</xsl:attribute>
   <xsl:attribute name="space-after.optimum">0.5em</xsl:attribute>
   <xsl:attribute name="space-after.maximum">0.5em</xsl:attribute>
@@ -27,7 +30,7 @@
 
 <xsl:attribute-set name="section.title.properties">
   <xsl:attribute name="line-height">30pt</xsl:attribute>
-<!--  <xsl:attribute name="color">#EC5800</xsl:attribute> -->
+  <xsl:attribute name="color"><xsl:value-of select="$title.color"/></xsl:attribute>
   <xsl:attribute name="space-before.minimum">0.5em</xsl:attribute>
   <xsl:attribute name="space-before.optimum">1.2em</xsl:attribute>
   <xsl:attribute name="space-before.maximum">1.4em</xsl:attribute>
@@ -44,7 +47,7 @@
 
 <xsl:attribute-set name="part.titlepage.recto.style">
   <xsl:attribute name="line-height">30pt</xsl:attribute>
-<!--  <xsl:attribute name="color">#EC5800</xsl:attribute> -->
+  <xsl:attribute name="color"><xsl:value-of select="$title.color"/></xsl:attribute>
   <xsl:attribute name="space-after.minimum">1.0em</xsl:attribute>
   <xsl:attribute name="space-after.optimum">1.0em</xsl:attribute>
   <xsl:attribute name="space-after.maximum">1.0em</xsl:attribute>
@@ -52,7 +55,7 @@
 
 <xsl:attribute-set name="reference.titlepage.recto.style">
   <xsl:attribute name="line-height">30pt</xsl:attribute>
-<!--  <xsl:attribute name="color">#EC5800</xsl:attribute> -->
+  <xsl:attribute name="color"><xsl:value-of select="$title.color"/></xsl:attribute>
   <xsl:attribute name="space-before.minimum">1.0em</xsl:attribute>
   <xsl:attribute name="space-before.optimum">1.0em</xsl:attribute>
   <xsl:attribute name="space-before.maximum">1.0em</xsl:attribute>
