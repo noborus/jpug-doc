@@ -15,7 +15,7 @@
 <xsl:param name="hyphenate">false</xsl:param>
 
 <!-- <xsl:param name="title.color">#EC5800</xsl:param> -->
-<xsl:param name="title.color">#000000</xsl:param>
+<xsl:param name="title.color">black</xsl:param>
 
 <!-- header settings -->
 <xsl:param name="header.column.widths">2 5 2</xsl:param>
@@ -74,6 +74,7 @@
 <xsl:attribute-set name="monospace.verbatim.properties"
                    use-attribute-sets="verbatim.properties monospace.properties">
   <xsl:attribute name="wrap-option">wrap</xsl:attribute>
+  <xsl:attribute name="font-size">90%</xsl:attribute>
 </xsl:attribute-set>
 
 <xsl:attribute-set name="lit.shading.style">
@@ -84,13 +85,14 @@
 <xsl:param name="body.start.indent">0</xsl:param>
 <xsl:param name="line-height">150%</xsl:param>
 
-<xsl:param name="title.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoExGothic'"/>
-<xsl:param name="body.font.family" select="'YuMincho,Meiryo,MS-PMincho,Hiragino Mincho ProN,TakaoExMincho'"/>
+<xsl:param name="title.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoPGothic'"/>
+<xsl:param name="body.font.family" select="'YuMincho,Meiryo,MS-PMincho,Hiragino Mincho ProN,TakaoPMincho'"/>
 <xsl:param name="monospace.font.family" select="'Osaka-mono,MS-Gothic,TakaoGothic'"/>
-<xsl:param name="symbol.font.family" select="'Osaka-mono,MS-Gothic,TakaoExGothic'"/>
-<xsl:param name="dingbat.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoExGothic'"/>
-<xsl:param name="sans.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoExMincho'"/>
-
+<xsl:param name="symbol.font.family" select="'Osaka-mono,MS-Gothic,TakaoPGothic'"/>
+<xsl:param name="dingbat.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoPGothic'"/>
+<!--
+<xsl:param name="sans.font.family" select="'YuGothic,Meiryo,MS-PGothic,Hiragino Kaku Gothic ProN,TakaoPMincho'"/>
+-->
 <xsl:attribute-set name="table.properties" use-attribute-sets="normal.para.spacing">
   <xsl:attribute name="font-size">80%</xsl:attribute>
   <xsl:attribute name="wrap-option">wrap</xsl:attribute>
@@ -129,12 +131,6 @@
 <xsl:template match="command">
   <xsl:call-template name="inline.monoseq"/>
 </xsl:template>
-
-<!--
-<xsl:template match="text()">
-  <xsl:value-of select="translate(., '&#x2014;', '&#x2015;')"/>
-</xsl:template>
--->
 
 <xsl:template match="text()">
 <xsl:choose>
