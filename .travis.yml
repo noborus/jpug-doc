@@ -27,5 +27,5 @@ addons:
     - xsltproc
 script:
   - ./configure
-  - make docs
-  - make -C src/bin/psql sql_help.h
+  - make -C doc/src/sgml ORIGINAL=1 html
+  - make -C doc/src/sgml postgres-A4.pdf
