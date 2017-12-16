@@ -25,8 +25,6 @@ addons:
     - tcl8.5
     - tcl8.5-dev
     - xsltproc
-    - fop
 script:
   - ./configure
   - make -C doc/src/sgml ORIGINAL=1 html
-  - make -C doc/src/sgml postgres-A4.pdf
