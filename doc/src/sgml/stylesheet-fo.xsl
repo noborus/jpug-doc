@@ -18,7 +18,6 @@
   <xsl:attribute name="text-align">start</xsl:attribute>
   <xsl:attribute name="wrap-option">wrap</xsl:attribute>
   <xsl:attribute name="font-size">90%</xsl:attribute>
-  <xsl:attribute name="line-height">110%</xsl:attribute>
   <xsl:attribute name="keep-together.within-column">always</xsl:attribute>
 </xsl:attribute-set>
 
