@@ -156,7 +156,7 @@
 </xsl:attribute-set>
 
 <xsl:attribute-set name="table.properties" use-attribute-sets="normal.para.spacing">
-  <xsl:attribute name="line-height">110%</xsl:attribute>
+  <xsl:attribute name="line-height">120%</xsl:attribute>
   <xsl:attribute name="font-size">80%</xsl:attribute>
 </xsl:attribute-set>
 <xsl:param name="table.cell.border.color">#999999</xsl:param>
@@ -185,7 +185,7 @@
   <xsl:attribute name="padding-bottom">5pt</xsl:attribute>
   <xsl:attribute name="background-color">#EFEFEF</xsl:attribute>
   <xsl:attribute name="font-size">90%</xsl:attribute>
-  <xsl:attribute name="line-height">110%</xsl:attribute>
+  <xsl:attribute name="line-height">120%</xsl:attribute>
 </xsl:attribute-set>
 
 <xsl:attribute-set name="xref.properties">
