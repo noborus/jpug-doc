@@ -502,6 +502,7 @@ GiST演算子クラスでサポートされる演算子を<xref linkend="seg-gis
   </para>
 
   <para>
+<!--
    In addition to the above operators, the usual comparison
    operators shown in <xref linkend="functions-comparison-op-table"/> are
    available for type <type>seg</type>.  These operators

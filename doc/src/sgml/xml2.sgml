@@ -74,6 +74,7 @@
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Parses the given document and returns true if the
         document is well-formed XML.  (Note: this is an alias for the standard
         PostgreSQL function <function>xml_is_well_formed()</function>.  The

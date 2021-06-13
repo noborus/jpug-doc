@@ -260,6 +260,7 @@ EXEC SQL CONNECT TO <replaceable>target</replaceable> <optional>AS <replaceable>
   </para>
 
   <para>
+<!--
    If the connection target includes any <replaceable>options</replaceable>,
    those consist of
    <literal><replaceable>keyword</replaceable>=<replaceable>value</replaceable></literal>
