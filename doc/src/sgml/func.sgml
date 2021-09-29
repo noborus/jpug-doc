@@ -25055,10 +25055,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>variance</primary>
          <secondary>sample</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>分散</primary>
          <secondary>標本</secondary>
         </indexterm>
@@ -25110,17 +25110,17 @@ SELECT count(*) FROM sometable;
   </para>
 
   <indexterm>
-<!--
    <primary>ordered-set aggregate</primary>
    <secondary>built-in</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>順序集合集約</primary>
    <secondary>組み込み</secondary>
   </indexterm>
   <indexterm>
-<!--
    <primary>inverse distribution</primary>
--->
+  </indexterm>
+  <indexterm>
    <primary>逆分散</primary>
   </indexterm>
 
@@ -25157,12 +25157,12 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>mode</primary>
          <secondary>statistical</secondary>
--->
-        <primary>最頻値(モード)</primary>
-        <secondary>統計</secondary>
+        </indexterm>
+        <indexterm>
+         <primary>最頻値(モード)</primary>
+         <secondary>統計</secondary>
         </indexterm>
         <function>mode</function> () <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <type>anyelement</type> )
         <returnvalue>anyelement</returnvalue>
@@ -25185,12 +25185,12 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>percentile</primary>
          <secondary>continuous</secondary>
--->
-        <primary>百分位数</primary>
-        <secondary>連続</secondary>
+        </indexterm>
+        <indexterm>
+         <primary>百分位数</primary>
+         <secondary>連続</secondary>
         </indexterm>
         <function>percentile_cont</function> ( <parameter>fraction</parameter> <type>double precision</type> ) <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <type>double precision</type> )
         <returnvalue>double precision</returnvalue>
@@ -25241,10 +25241,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>percentile</primary>
          <secondary>discrete</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>百分位数</primary>
          <secondary>離散</secondary>
         </indexterm>
@@ -25293,10 +25293,10 @@ SELECT count(*) FROM sometable;
    </table>
 
   <indexterm>
-<!--
    <primary>hypothetical-set aggregate</primary>
    <secondary>built-in</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>仮想集合集約</primary>
    <secondary>組み込み</secondary>
   </indexterm>
@@ -25359,9 +25359,10 @@ NULL値は<literal>ORDER BY</literal>節で指定されるルールに従って�
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>rank</primary>
-<!--
          <secondary>hypothetical</secondary>
--->
+        </indexterm>
+        <indexterm>
+         <primary>rank</primary>
          <secondary>仮想の</secondary>
         </indexterm>
         <function>rank</function> ( <replaceable>args</replaceable> ) <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <replaceable>sorted_args</replaceable> )
@@ -25383,9 +25384,10 @@ NULL値は<literal>ORDER BY</literal>節で指定されるルールに従って�
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>dense_rank</primary>
- <!--
          <secondary>hypothetical</secondary>
--->
+        </indexterm>
+        <indexterm>
+         <primary>dense_rank</primary> 
          <secondary>仮想の</secondary>
         </indexterm>
         <function>dense_rank</function> ( <replaceable>args</replaceable> ) <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <replaceable>sorted_args</replaceable> )
@@ -25407,9 +25409,10 @@ NULL値は<literal>ORDER BY</literal>節で指定されるルールに従って�
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>percent_rank</primary>
-<!--
          <secondary>hypothetical</secondary>
--->
+        </indexterm>
+        <indexterm>
+         <primary>percent_rank</primary>
          <secondary>仮想の</secondary>
         </indexterm>
         <function>percent_rank</function> ( <replaceable>args</replaceable> ) <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <replaceable>sorted_args</replaceable> )
@@ -25433,9 +25436,10 @@ NULL値は<literal>ORDER BY</literal>節で指定されるルールに従って�
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>cume_dist</primary>
-<!--
          <secondary>hypothetical</secondary>
--->
+        </indexterm>
+        <indexterm>
+         <primary>cume_dist</primary>
          <secondary>仮想の</secondary>
         </indexterm>
         <function>cume_dist</function> ( <replaceable>args</replaceable> ) <literal>WITHIN GROUP</literal> ( <literal>ORDER BY</literal> <replaceable>sorted_args</replaceable> )
@@ -25566,10 +25570,10 @@ NULL値は<literal>ORDER BY</literal>節で指定されるルールに従って�
   <title>ウィンドウ関数</title>
 
   <indexterm zone="functions-window">
-<!--
    <primary>window function</primary>
    <secondary>built-in</secondary>
--->
+  </indexterm>
+  <indexterm zone="functions-window">
    <primary>ウィンドウ関数</primary>
    <secondary>組み込み</secondary>
   </indexterm>
@@ -26399,13 +26403,11 @@ WHERE EXISTS (SELECT 1 FROM tab2 WHERE col2 = tab1.col2);
    <title>単独行に関する比較</title>
 
    <indexterm zone="functions-subquery">
-<!--
     <primary>comparison</primary>
--->
-    <primary>比較</primary>
-<!--
     <secondary>subquery result row</secondary>
--->
+   </indexterm>
+   <indexterm zone="functions-subquery">
+    <primary>比較</primary>
     <secondary>副問い合わせ結果行</secondary>
    </indexterm>
 
@@ -26467,35 +26469,35 @@ WHERE EXISTS (SELECT 1 FROM tab2 WHERE col2 = tab1.col2);
   </indexterm>
 
   <indexterm>
-<!--
    <primary>composite type</primary>
    <secondary>comparison</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>複合型</primary>
    <secondary>比較</secondary>
   </indexterm>
 
   <indexterm>
-<!--
    <primary>row-wise comparison</primary>
--->
+  </indexterm>
+  <indexterm>
    <primary>行に関する比較</primary>
   </indexterm>
 
   <indexterm>
-<!--
    <primary>comparison</primary>
    <secondary>composite type</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>比較</primary>
    <secondary>複合型</secondary>
   </indexterm>
 
   <indexterm>
-<!--
    <primary>comparison</primary>
    <secondary>row constructor</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>比較</primary>
    <secondary>行コンストラクタ</secondary>
   </indexterm>
@@ -26940,10 +26942,10 @@ SQL仕様では、結果が2つのNULL値、またはNULLと非NULLの比較に�
   <title>集合を返す関数</title>
 
   <indexterm zone="functions-srf">
-<!--
    <primary>set returning functions</primary>
    <secondary>functions</secondary>
--->
+  </indexterm>
+  <indexterm zone="functions-srf">
    <primary>集合を返す関数</primary>
    <secondary>関数</secondary>
   </indexterm>
@@ -27243,9 +27245,9 @@ SELECT * FROM unnest2(ARRAY[[1,2],[3,4]]);
   </para>
 
   <indexterm>
-<!--
    <primary>ordinality</primary>
--->
+  </indexterm>
+  <indexterm>
    <primary>順序性</primary>
   </indexterm>
 
@@ -27961,10 +27963,10 @@ Unix用語で言うと、セッションユーザは<quote>実ユーザ</quote>�
    </para>
 
   <indexterm>
-<!--
    <primary>privilege</primary>
    <secondary>querying</secondary>
--->
+  </indexterm>
+  <indexterm>
    <primary>権限</primary>
    <secondary>問い合わせ</secondary>
   </indexterm>
@@ -28652,10 +28654,10 @@ SELECT relname FROM pg_class WHERE pg_table_is_visible(oid);
   </para>
 
    <indexterm>
-<!--
     <primary>search path</primary>
     <secondary>object visibility</secondary>
--->
+   </indexterm>
+   <indexterm>
     <primary>検索パス</primary>
     <secondary>オブジェクトの可視性</secondary>
    </indexterm>
@@ -30156,10 +30158,10 @@ SELECT collation for ('foo' COLLATE "de_DE");
    </table>
 
    <indexterm>
-<!--
     <primary>comment</primary>
     <secondary sortas="database objects">about database objects</secondary>
--->
+   </indexterm>
+   <indexterm>
     <primary>コメント</primary>
     <secondary sortas="database objects">データベースオブジェクトについて</secondary>
    </indexterm>
@@ -31346,10 +31348,10 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
    <title>サーバシグナル送信関数</title>
 
    <indexterm>
-<!--
     <primary>signal</primary>
     <secondary sortas="backend">backend processes</secondary>
--->
+   </indexterm>
+   <indexterm>
     <primary>シグナル</primary>
     <secondary sortas="backend">バックエンドプロセス</secondary>
    </indexterm>
@@ -31514,9 +31516,9 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
    <title>バックアップ制御関数</title>
 
    <indexterm>
-<!--
     <primary>backup</primary>
--->
+   </indexterm>
+   <indexterm>
     <primary>バックアップ</primary>
    </indexterm>
 
@@ -35074,10 +35076,10 @@ CREATE EVENT TRIGGER test_table_rewrite_oid
    <title>統計情報関数</title>
 
    <indexterm zone="functions-statistics">
-<!--
     <primary>function</primary>
     <secondary>statistics</secondary>
--->
+   </indexterm>
+   <indexterm zone="functions-statistics">
     <primary>関数</primary>
     <secondary>統計</secondary>
    </indexterm>
