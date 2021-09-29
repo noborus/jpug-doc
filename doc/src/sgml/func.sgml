@@ -13343,15 +13343,15 @@ SELECT TIMESTAMP 'now';  -- but see tip below
     <primary>pg_sleep_until</primary>
    </indexterm>
    <indexterm>
-<!--
     <primary>sleep</primary>
--->
+   </indexterm>
+   <indexterm>
     <primary>休止</primary>
    </indexterm>
    <indexterm>
-<!--
     <primary>delay</primary>
--->
+   </indexterm>
+   <indexterm>
     <primary>遅延</primary>
    </indexterm>
 
@@ -15965,19 +15965,19 @@ MACアドレス型である<type>macaddr</type>と<type>macaddr8</type>は、<xr
   <title>テキスト検索関数と演算子</title>
 
    <indexterm zone="datatype-textsearch">
-<!--
     <primary>full text search</primary>
     <secondary>functions and operators</secondary>
--->
+   </indexterm>
+   <indexterm zone="datatype-textsearch">
     <primary>全文テキスト検索</primary>
     <secondary>関数と演算子</secondary>
    </indexterm>
 
    <indexterm zone="datatype-textsearch">
-<!--
     <primary>text search</primary>
     <secondary>functions and operators</secondary>
--->
+   </indexterm>
+   <indexterm zone="datatype-textsearch">
     <primary>テキスト検索</primary>
     <secondary>関数と演算子</secondary>
    </indexterm>
@@ -17258,9 +17258,10 @@ OIDで指定したパーサが認識できるトークンの型を記述する�
 
   <indexterm zone="datatype-uuid">
    <primary>UUID</primary>
-<!--
    <secondary>generating</secondary>
--->
+  </indexterm>
+  <indexterm zone="datatype-uuid">
+   <primary>UUID</primary>
    <secondary>生成</secondary>
   </indexterm>
 
@@ -18206,9 +18207,9 @@ SELECT xpath_exists('/my:a/text()', '<my:a xmlns:my="http://example.com">test</m
     </indexterm>
 
     <indexterm zone="functions-xml-processing-xmltable">
-<!--
      <primary>table function</primary>
--->
+    </indexterm>
+    <indexterm zone="functions-xml-processing-xmltable">
      <primary>テーブル関数</primary>
      <secondary>XMLTABLE</secondary>
     </indexterm>
@@ -18940,9 +18941,10 @@ table2-mapping
 
   <indexterm zone="functions-json">
    <primary>JSON</primary>
-<!--
    <secondary>functions and operators</secondary>
--->
+  </indexterm>
+  <indexterm zone="functions-json">
+   <primary>JSON</primary>
    <secondary>関数と演算子</secondary>
   </indexterm>
 
@@ -20762,9 +20764,9 @@ JSON値に対するJSONパスによって返される最初のJSON項目を返�
   <title>SQL/JSONパス言語</title>
 
   <indexterm zone="functions-sqljson-path">
-<!--
    <primary>SQL/JSON path language</primary>
--->
+  </indexterm>
+  <indexterm zone="functions-sqljson-path">
    <primary>SQL/JSONパス言語</primary>
   </indexterm>
 
@@ -21934,9 +21936,10 @@ JSON定数<literal>null</literal>（SQLとは違って<literal>null</literal>と
 
     <indexterm zone="jsonpath-regular-expressions">
      <primary><literal>LIKE_REGEX</literal></primary>
-<!--
      <secondary>in SQL/JSON</secondary>
--->
+    </indexterm>
+    <indexterm zone="jsonpath-regular-expressions">
+     <primary><literal>LIKE_REGEX</literal></primary>
      <secondary>SQL/JSONにおける</secondary>
     </indexterm>
 
@@ -22384,9 +22387,9 @@ nextval('foo'::text)      <lineannotation><literal>foo</literal>は実行時に�
   </indexterm>
 
   <indexterm>
-<!--
    <primary>conditional expression</primary>
--->
+  </indexterm>
+  <indexterm>
    <primary>条件式</primary>
   </indexterm>
 
@@ -23972,10 +23975,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
   <title>集約関数</title>
 
   <indexterm zone="functions-aggregate">
-<!--
    <primary>aggregate function</primary>
    <secondary>built-in</secondary>
--->
+  </indexterm>
+  <indexterm zone="functions-aggregate">
    <primary>順序集合集約</primary>
    <secondary>組み込み</secondary>
   </indexterm>
