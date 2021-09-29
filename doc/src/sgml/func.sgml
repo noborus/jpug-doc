@@ -24627,9 +24627,9 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>correlation</primary>
--->
+        </indexterm>
+        <indexterm>
          <primary>相関</primary>
         </indexterm>
         <indexterm>
@@ -24653,12 +24653,12 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>covariance</primary>
          <secondary>population</secondary>
--->
-        <primary>共分散</primary>
-        <secondary>母集団</secondary>
+        </indexterm>
+        <indexterm>
+         <primary>共分散</primary>
+         <secondary>母集団</secondary>
         </indexterm>
         <indexterm>
          <primary>covar_pop</primary>
@@ -24680,10 +24680,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>covariance</primary>
          <secondary>sample</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>共分散</primary>
          <secondary>標本</secondary>
         </indexterm>
@@ -24768,9 +24768,9 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>regression intercept</primary>
--->
+        </indexterm>
+        <indexterm>
          <primary>回帰切片</primary>
         </indexterm>
         <indexterm>
@@ -24814,9 +24814,9 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>regression slope</primary>
--->
+        </indexterm>
+        <indexterm>
          <primary>回帰勾配</primary>
         </indexterm>
         <indexterm>
@@ -24904,9 +24904,9 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>standard deviation</primary>
--->
+        </indexterm>
+        <indexterm>
          <primary>標準偏差</primary>
         </indexterm>
         <indexterm>
@@ -24934,10 +24934,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>standard deviation</primary>
          <secondary>population</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>標準偏差</primary>
          <secondary>母集団</secondary>
         </indexterm>
@@ -24966,10 +24966,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>standard deviation</primary>
          <secondary>sample</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>標準偏差</primary>
          <secondary>標本</secondary>
         </indexterm>
@@ -25022,10 +25022,10 @@ SELECT count(*) FROM sometable;
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
-<!--
          <primary>variance</primary>
          <secondary>population</secondary>
--->
+        </indexterm>
+        <indexterm>
          <primary>分散</primary>
          <secondary>母集団</secondary>
         </indexterm>
