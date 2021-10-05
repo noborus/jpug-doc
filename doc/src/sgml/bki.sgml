@@ -1110,7 +1110,6 @@ $ perl  rewrite_dat_with_prokind.pl  pg_proc.dat
    a new line, for clarity.)  Tokens can be certain key words, special
    characters (parentheses, commas, etc.), identifiers, numbers, or
    single-quoted strings.  Everything is case sensitive.
-   characters (parentheses, commas, etc.), numbers, or double-quoted
 -->
 <acronym>BKI</acronym>の入力は一連のコマンドで構成されます。
 コマンドはいくつものトークンから構成されていて、コマンドの構文に依存しています。

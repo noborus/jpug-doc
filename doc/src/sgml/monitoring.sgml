@@ -224,11 +224,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   </para>
 
   <para>
-   The parameter <xref linkend="guc-track-wal-io-timing"/> enables monitoring
-   of WAL write times.
-  </para>
-
-  <para>
 <!--
    <productname>PostgreSQL</productname> also supports reporting dynamic
    information about exactly what is going on in the system right now, such as

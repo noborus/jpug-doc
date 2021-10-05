@@ -6286,13 +6286,6 @@ CHECK ( outletID BETWEEN 200 AND 300 )
          Instead, ranges should be defined in this style:
 -->
 キー値200がどちらの子テーブルに属するか明らかではないため、これは誤っています。
-        </para>
-
-        <para>
-<!--
-         It would be better to instead create child tables as follows:
--->
-その代わりに以下のように子テーブルを作る方が良いでしょう。
 
 <programlisting>
 CREATE TABLE measurement_y2006m02 (
