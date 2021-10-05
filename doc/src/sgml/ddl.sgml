@@ -5554,6 +5554,7 @@ VALUES ('Albany', NULL, NULL, 'NY');
    </para>
 
    <para>
+<!--
     Partitions can also be foreign tables, although they have some limitations
     that normal tables do not; see <xref linkend="sql-createforeigntable"/> for
     more information.

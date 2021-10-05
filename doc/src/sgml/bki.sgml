@@ -32,10 +32,6 @@
   named after the catalog (e.g., <filename>pg_class.h</filename>
   for <structname>pg_class</structname>), which defines the set of columns
   the catalog has, as well as some other basic properties such as its OID.
-  Other critical files defining the catalog structure
-  include <filename>indexing.h</filename>, which defines the indexes present
-  on all the system catalogs, and <filename>toasting.h</filename>, which
-  defines TOAST tables for catalogs that need one.
 -->
 カタログの構造は、ソースツリーの<filename>src/include/catalog/</filename>ディレクトリの中の特殊な形式のCヘッダーファイルに宣言されています。
 とりわけ、個々のカタログに対応して、カタログと同じ名前のヘッダーファイルが存在し（たとえば、<structname>pg_class</structname>に対して<filename>pg_class.h</filename>というように）、カタログが持つ一連のカラムやOIDのような基本的な特性を定義しています。

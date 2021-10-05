@@ -555,7 +555,6 @@
     </para>
 
     <para>
-<!--
      Each position (either argument or return value) declared as
      <type>anyelement</type> is allowed to have any specific actual
      data type, but in any given call they must all be the
@@ -567,6 +566,7 @@
     </para>
 
     <para>
+<!--
      Furthermore, if there are
      positions declared <type>anyarray</type> and others declared
      <type>anyelement</type>, the actual array type in the
@@ -1425,14 +1425,6 @@ SET LOCAL search_path TO @extschema@, pg_temp;
 -->
 何らかの事前に必要な拡張が制御ファイル内の<varname>requires</varname>に列挙されていた場合、それらのターゲットスキーマは新しい機能拡張のターゲットスキーマに続いて<varname>search_path</varname>の初期設定に追加されます。
 これにより新しい拡張のスクリプトファイルからそれらのオブジェクトが可視になります。
-    </para>
-
-    <para>
-<!--
-     For security, <literal>pg_temp</literal> is automatically appended to
-     the end of <varname>search_path</varname> in all cases.
--->
-安全のため、全てのケースにおいて<literal>pg_temp</literal>は自動的に<varname>search_path</varname>の最後に追記されます。
     </para>
 
     <para>

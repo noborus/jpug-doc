@@ -1815,7 +1815,6 @@ GSSAPIサポートは、<productname>PostgreSQL</productname>を構築する時�
    </para>
 
    <para>
-<!--
     When <productname>GSSAPI</productname> uses
     <productname>Kerberos</productname>, it uses a standard service
     principal (authentication identity) name in the format
@@ -1842,6 +1841,7 @@ GSSAPIサポートは、<productname>PostgreSQL</productname>を構築する時�
    </para>
 
    <para>
+<!--
     The client will also have a principal name for its own identity
     (and it must have a valid ticket for this principal).  To
     use <productname>GSSAPI</productname> for authentication, the client

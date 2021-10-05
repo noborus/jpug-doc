@@ -31,18 +31,6 @@
 詳細についてはパッケージレベルのドキュメントを参照してください。
  </para>
 
- <para>
-  The directions in this chapter assume that you are working with
-  plain <productname>PostgreSQL</productname> without any additional
-  infrastructure, for example a copy that you built from source
-  according to the directions in the preceding chapters.
-  If you are working with a pre-packaged or vendor-supplied
-  version of <productname>PostgreSQL</productname>, it is likely that
-  the packager has made special provisions for installing and starting
-  the database server according to your system's conventions.
-  Consult the package-level documentation for details.
- </para>
-
  <sect1 id="postgres-user">
 <!--
   <title>The <productname>PostgreSQL</productname> User Account</title>

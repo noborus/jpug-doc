@@ -99,13 +99,13 @@ Cコードから<acronym>SQL</acronym>コマンドを扱う場合は、埋め込
 <programlisting>
 EXEC SQL ...;
 </programlisting>
-<!--
    These statements syntactically take the place of a C statement.
    Depending on the particular statement, they can appear at the
    global level or within a function.
   </para>
 
   <para>
+<!--
    Embedded
    <acronym>SQL</acronym> statements follow the case-sensitivity rules of
    normal <acronym>SQL</acronym> code, and not those of C. Also they allow nested

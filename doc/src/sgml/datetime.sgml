@@ -1294,6 +1294,7 @@ $ <userinput>cal 9 1752</userinput>
   </para>
 
   <para>
+<!--
    In the Julian Date system, each day has a sequential number, starting
    from JD 0 (which is sometimes called <emphasis>the</emphasis> Julian Date).
    JD 0 corresponds to 1 January 4713 BC in the Julian calendar, or

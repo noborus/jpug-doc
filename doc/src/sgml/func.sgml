@@ -10400,16 +10400,6 @@ POSIXはバックスラッシュ以降の空白文字を無視しません。
 
      <listitem>
       <para>
-<!--
-       In <function>to_timestamp</function> and <function>to_date</function>,
-       negative years are treated as signifying BC.  If you write both a
-       negative year and an explicit <literal>BC</literal> field, you get AD
-       again.  An input of year zero is treated as 1 BC.
-      </para>
-     </listitem>
-
-     <listitem>
-      <para>
        In <function>to_timestamp</function> and <function>to_date</function>,
        the <literal>YYYY</literal> conversion has a restriction when
        processing years with more than 4 digits. You must
@@ -22879,26 +22869,7 @@ SELECT NULLIF(value, '(none)') ...
 実際に返却されるのは<literal>=</literal>演算子が暗示する最初の引数で、場合によっては2番目の引数にマッチするように昇格されています。
 たとえば<literal>NULLIF(1, 2.2)</literal>は<type>numeric</type>を出力します。なぜなら<type>integer</type> <literal>=</literal> <type>numeric</type>演算子はなく、<type>numeric</type> <literal>=</literal> <type>numeric</type>があるだけだからです。
   </para>
-
-  <para>
-   The two arguments must be of comparable types.
-   To be specific, they are compared exactly as if you had
-   written <literal><replaceable>value1</replaceable>
-   = <replaceable>value2</replaceable></literal>, so there must be a
-   suitable <literal>=</literal> operator available.
-  </para>
-
-  <para>
-   The result has the same type as the first argument &mdash; but there is
-   a subtlety.  What is actually returned is the first argument of the
-   implied <literal>=</literal> operator, and in some cases that will have
-   been promoted to match the second argument's type.  For
-   example, <literal>NULLIF(1, 2.2)</literal> yields <type>numeric</type>,
-   because there is no <type>integer</type> <literal>=</literal>
-   <type>numeric</type> operator,
-   only <type>numeric</type> <literal>=</literal> <type>numeric</type>.
-  </para>
-
+  
   </sect2>
 
   <sect2 id="functions-greatest-least">

@@ -13,6 +13,7 @@
  </para>
 
  <para>
+<!--
   The B-Tree checking functions verify various <emphasis>invariants</emphasis> in the
   structure of the representation of particular relations.  The
   correctness of the access method functions behind index scans and
