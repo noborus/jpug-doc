@@ -2988,6 +2988,7 @@ NULLとなっている列項目の割合
   </table>
 
   <para>
+<!--
    The maximum number of entries in the array fields can be controlled on a
    column-by-column basis using the <link linkend="sql-altertable"><command>ALTER
    TABLE SET STATISTICS</command></link> command, or globally by setting the

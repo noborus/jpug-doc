@@ -1136,7 +1136,6 @@ include_dir 'conf.d'
       </term>
       <listitem>
        <para>
-       <!--
         Specifies the directory of the Unix-domain socket(s) on which the
         server is to listen for connections from client applications.
         Multiple sockets can be created by listing multiple directories
@@ -1161,12 +1160,13 @@ include_dir 'conf.d'
        </para>
 
        <para>
+<!--
         The default value is normally
         <filename>/tmp</filename>, but that can be changed at build time.
         On Windows, the default is empty, which means no Unix-domain socket is
         created by default.
         This parameter can only be set at server start.
-       -->
+-->
 サーバがクライアントアプリケーションからの接続要求を監視するUnixドメインソケットのディレクトリを指定します。
 複数ソケットはコンマで区切られた複数ディレクトリをリストすることで作成できます。
 項目間の空白文字は無視されます。
@@ -1983,15 +1983,6 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command
         line.
-       </para>
-
-       <para>
-<!--
-        This parameter can only be set in the
-        <filename>postgresql.conf</filename> file or on the server command
-        line.
--->
-このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
 
        <para>
