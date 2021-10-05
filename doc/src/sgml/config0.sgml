@@ -1980,9 +1980,12 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command
         line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
 
        <para>
@@ -2191,8 +2194,11 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -2223,8 +2229,11 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -3551,6 +3560,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
        </term>
        <listitem>
         <para>
+<!--
          Whenever more than this amount of data has
          been written by a single backend, attempt to force the OS to issue
          these writes to the underlying storage.  Doing so will limit the
@@ -3569,6 +3579,15 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          and <literal>2MB</literal>.  The default is <literal>0</literal>, i.e., no
          forced writeback.  (If <symbol>BLCKSZ</symbol> is not 8kB,
          the maximum value scales proportionally to it.)
+-->
+この量を超えるデータが単一のバックエンドによって書き込まれたときはいつでも、OSが記憶装置に書き込むことを強制します。
+このことにより、カーネルのページキャッシュが持つダーティデータの量を一定量に制限し、チェックポイントの最後に<function>fsync</function>が実行される際、あるいはバックグラウンドで実行される大きなバッチの中でOSがデータを書き出す際に性能の急激な低下を招く可能性を減らします。
+多くの場合これによってトランザクションの遅延が大幅に少なくなりますが、あるケース、特にワークロードが<xref linkend="guc-shared-buffers"/>よりも大きく、OSのページキャッシュよりも小さい時には性能が低下するかもしれません。
+この設定が無効なプラットフォームがあります。
+この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
+有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
+デフォルト値は<literal>0</literal>です(すなわち書き出し制御を行いません)。
+(<symbol>BLCKSZ</symbol>が8kbでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
         </para>
        </listitem>
       </varlistentry>
@@ -3882,6 +3901,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        </term>
        <listitem>
         <para>
+<!--
          Allows the leader process to execute the query plan under
          <literal>Gather</literal> and <literal>Gather Merge</literal> nodes
          instead of waiting for worker processes.  The default is
@@ -3892,6 +3912,11 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          tuples can be produced.  The degree to which the leader can help or
          hinder performance depends on the plan type, number of workers and
          query duration.
+-->
+ワーカープロセスを待つ代わりに、<literal>Gather</literal>ノードと<literal>Gather Merge</literal>ノード配下の問い合わせプランをリーダープロセスが実行できるようにします。
+デフォルトは<literal>on</literal>です。
+この値を<literal>off</literal>にすると、リーダーがタプルを十分早く読まないためにワーカーがブロックされる可能性を減らすことができますが、リーダープロセスは最初のタプルが生成される前にワーカープロセスが起動するのを待つ必要があります。
+これがリーダーの性能を助けるのか、阻害要因になるかは計画型、ワーカーの数、問い合わせの長さによります。
         </para>
        </listitem>
       </varlistentry>

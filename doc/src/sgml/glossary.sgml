@@ -97,10 +97,6 @@
 -->
 詳細については<xref linkend="sql-analyze"/>を参照してください。
     </para>
-    <para>
-     For more information, see
-     <xref linkend="sql-analyze"/>.
-    </para>
    </glossdef>
   </glossentry>
 

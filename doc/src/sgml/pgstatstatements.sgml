@@ -721,7 +721,10 @@ SQL文により生成されたWALバイトの総量
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>

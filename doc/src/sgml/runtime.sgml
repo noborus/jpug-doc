@@ -64,9 +64,12 @@
   </para>
 
   <para>
+<!--
    Pre-packaged versions of <productname>PostgreSQL</productname> will
    typically create a suitable user account automatically during
    package installation.
+-->
+パッケージ化された版の<productname>PostgreSQL</productname>は、通常、パッケージのインストール中に自動的に適切なユーザアカウントを作成します。
   </para>
 
   <para>

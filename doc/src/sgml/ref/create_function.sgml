@@ -151,8 +151,11 @@ CREATE [ OR REPLACE ] FUNCTION
   </para>
 
   <para>
+<!--
    Refer to <xref linkend="xfunc"/> for further information on writing
    functions.
+-->
+さらに詳しい関数の作成方法については<xref linkend="xfunc"/>を参照してください。
   </para>
  </refsect1>
 

@@ -1776,7 +1776,10 @@
        <structfield>attalign</structfield> <type>char</type>
       </para>
       <para>
+<!--
        A copy of <literal>pg_type.typalign</literal> of this column's type
+-->
+この列の型の<literal>pg_type.typalign</literal>のコピー
       </para></entry>
      </row>
 

@@ -959,7 +959,10 @@ int SPI_execute_extended(const char *<parameter>command</parameter>,
     <term><literal>const char * <parameter>command</parameter></literal></term>
     <listitem>
      <para>
+<!--
       command string
+-->
+コマンド文字列
      </para>
     </listitem>
    </varlistentry>
@@ -1013,8 +1016,11 @@ int SPI_execute_extended(const char *<parameter>command</parameter>,
     <term><literal>uint64 <parameter>tcount</parameter></literal></term>
     <listitem>
      <para>
+<!--
       maximum number of rows to return,
       or <literal>0</literal> for no limit
+-->
+返される行の最大数。無制限なら<literal>0</literal>。
      </para>
     </listitem>
    </varlistentry>
@@ -1049,7 +1055,10 @@ int SPI_execute_extended(const char *<parameter>command</parameter>,
   <title>Return Value</title>
 
   <para>
+<!--
    The return value is the same as for <function>SPI_execute</function>.
+-->
+戻り値は<function>SPI_execute</function>と同じです。
   </para>
 
   <para>
@@ -1704,7 +1713,10 @@ SPIPlanPtr SPI_prepare_extended(const char * <parameter>command</parameter>,
     <term><literal>const char * <parameter>command</parameter></literal></term>
     <listitem>
      <para>
+<!--
       command string
+-->
+コマンド文字列
      </para>
     </listitem>
    </varlistentry>
@@ -1732,7 +1744,10 @@ SPIPlanPtr SPI_prepare_extended(const char * <parameter>command</parameter>,
     <term><literal>ParserSetupHook <parameter>parserSetup</parameter></literal></term>
     <listitem>
      <para>
+<!--
       Parser hook setup function
+-->
+パーサフック設定関数
      </para>
     </listitem>
    </varlistentry>
@@ -1741,7 +1756,10 @@ SPIPlanPtr SPI_prepare_extended(const char * <parameter>command</parameter>,
     <term><literal>void * <parameter>parserSetupArg</parameter></literal></term>
     <listitem>
      <para>
+<!--
       pass-through argument for <parameter>parserSetup</parameter>
+-->
+<parameter>parserSetup</parameter>に渡される引数
      </para>
     </listitem>
    </varlistentry>
@@ -1760,7 +1778,10 @@ SPIPlanPtr SPI_prepare_extended(const char * <parameter>command</parameter>,
     <term><literal>int <parameter>cursorOptions</parameter></literal></term>
     <listitem>
      <para>
+<!--
       integer bit mask of cursor options; zero produces default behavior
+-->
+カーソルオプションの整数ビットマスク。ゼロの場合はデフォルトの動作
      </para>
     </listitem>
    </varlistentry>
@@ -2430,7 +2451,10 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
     <term><literal>SPIPlanPtr <parameter>plan</parameter></literal></term>
     <listitem>
      <para>
+<!--
       prepared statement (returned by <function>SPI_prepare</function>)
+-->
+（<function>SPI_prepare</function>で返される）準備済み文
      </para>
     </listitem>
    </varlistentry>
@@ -2484,8 +2508,11 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
     <term><literal>uint64 <parameter>tcount</parameter></literal></term>
     <listitem>
      <para>
+<!--
       maximum number of rows to return,
       or <literal>0</literal> for no limit
+-->
+返される行の最大数。無制限なら<literal>0</literal>。
      </para>
     </listitem>
    </varlistentry>
@@ -2519,7 +2546,10 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
   <title>Return Value</title>
 
   <para>
+<!--
    The return value is the same as for <function>SPI_execute_plan</function>.
+-->
+戻り値は<function>SPI_execute_plan</function>と同じです。
   </para>
 
   <para>
@@ -3411,8 +3441,12 @@ Portal SPI_cursor_parse_open(const char *<parameter>name</parameter>,
   </para>
 
   <para>
+<!--
    The passed-in parameter data will be copied into the cursor's portal, so it
    can be freed while the cursor still exists.
+-->
+渡されるパラメータデータはカーソルのポータルにコピーされます。
+そのため、カーソルが存在している間にそのデータを解放することができます。
   </para>
  </refsect1>
 
@@ -3424,8 +3458,11 @@ Portal SPI_cursor_parse_open(const char *<parameter>name</parameter>,
     <term><literal>const char * <parameter>name</parameter></literal></term>
     <listitem>
      <para>
+<!--
       name for portal, or <symbol>NULL</symbol> to let the system
       select a name
+-->
+ポータルの名前、あるいはシステムに名前を決定させる場合は<symbol>NULL</symbol>
      </para>
     </listitem>
    </varlistentry>
@@ -3434,7 +3471,10 @@ Portal SPI_cursor_parse_open(const char *<parameter>name</parameter>,
     <term><literal>const char * <parameter>command</parameter></literal></term>
     <listitem>
      <para>
+<!--
       command string
+-->
+コマンド文字列
      </para>
     </listitem>
    </varlistentry>
@@ -3471,7 +3511,10 @@ Portal SPI_cursor_parse_open(const char *<parameter>name</parameter>,
     <term><literal>int <parameter>cursorOptions</parameter></literal></term>
     <listitem>
      <para>
+<!--
       integer bit mask of cursor options; zero produces default behavior
+-->
+カーソルオプションの整数ビットマスク。ゼロの場合はデフォルトの動作
      </para>
     </listitem>
    </varlistentry>
@@ -3489,8 +3532,13 @@ Portal SPI_cursor_parse_open(const char *<parameter>name</parameter>,
   <title>Return Value</title>
 
   <para>
+<!--
    Pointer to portal containing the cursor.  Note there is no error
    return convention; any error will be reported via <function>elog</function>.
+-->
+カーソルを含むポータルへのポインタ。
+戻り値の規約にはエラーを表すものがないことに注意してください。
+エラーはすべて<function>elog</function>経由で報告されます。
   </para>
  </refsect1>
 </refentry>

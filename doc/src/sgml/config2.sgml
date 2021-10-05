@@ -73,6 +73,7 @@
       </term>
       <listitem>
        <para>
+<!--
         Prepared statements (either explicitly prepared or implicitly
         generated, for example by PL/pgSQL) can be executed using custom or
         generic plans.  Custom plans are made afresh for each execution
@@ -89,6 +90,15 @@
         This setting is considered when a cached plan is to be executed,
         not when it is prepared.
         For more information see <xref linkend="sql-prepare"/>.
+-->
+準備された文（明示的に準備されたものあるいはPL/pgSQLのように暗黙的に生成されたもののどちらにおいても）は、カスタムあるいは汎用(generic)プランで実行することができます。
+カスタムプランは実行ごとに指定されたパラメータ値の集合で新たに作られます。
+一方汎用プランはパラメータ値に依存せず、複数の実行にまたがって再利用できます。
+したがって、汎用プランはプランニングに要する時間を節約できますが、理想的なプランがパラメータ値に強く依存している場合は、汎用プランは非効率かも知れません。
+通常この両者の選択は自動的に行われますが、<varname>plan_cache_mode</varname>で上書きできます。
+可能な値は<literal>auto</literal>（デフォルト）、<literal>force_custom_plan</literal>、<literal>force_generic_plan</literal>です。
+この設定は、準備するときではなく、キャッシュされたプランを実行する際に考慮されます。
+詳細は<xref linkend="sql-prepare"/>をご覧ください。
        </para>
       </listitem>
      </varlistentry>
@@ -1316,6 +1326,7 @@ linkend="guc-log-timezone"/>で指定された時間帯で計算が行われま�
       </term>
       <listitem>
        <para>
+<!--
         Causes each action executed by autovacuum to be logged if it ran for at
         least the specified amount of time.  Setting this to zero logs
         all autovacuum actions. <literal>-1</literal> (the default) disables
@@ -1331,6 +1342,16 @@ linkend="guc-log-timezone"/>で指定された時間帯で計算が行われま�
         the <filename>postgresql.conf</filename> file or on the server command line;
         but the setting can be overridden for individual tables by
         changing table storage parameters.
+-->
+少なくとも指定時間実行した場合、autovacuumで実行される各活動がログに残るようになります。
+これをゼロに設定すると、すべてのautovacuumの活動がログに残ります。
+<literal>-1</literal>（デフォルト）はautovacuum活動のログを無効にします。
+この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
+例えば、これを<literal>250ms</literal>に設定すると、250ms以上かかって実行されたautovacuumや解析はすべてログに残ります。
+さらに、<literal>-1</literal>以外の値にこのパラメータが設定された場合、競合するロックや並行して削除されたリレーションによりautovacuum動作が省略されるとメッセージはログに記録されます。
+このパラメータを有効にすることは、autovacuum活動の追跡に役に立ちます。
+このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>

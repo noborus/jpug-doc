@@ -206,8 +206,11 @@ PostgreSQL documentation
        </para>
        <note>
         <para>
+<!--
          This option is only available for servers running
          <productname>PostgreSQL</productname> 12 and later.
+-->
+このオプションは<productname>PostgreSQL</productname> 12以降が動作しているサーバでのみ利用可能です。
         </para>
        </note>
       </listitem>
@@ -330,8 +333,11 @@ PostgreSQL documentation
        </para>
        <note>
         <para>
+<!--
          This option is only available for servers running
          <productname>PostgreSQL</productname> 12 and later.
+-->
+このオプションは<productname>PostgreSQL</productname> 12以降が動作しているサーバでのみ利用可能です。
         </para>
        </note>
       </listitem>
@@ -360,8 +366,11 @@ PostgreSQL documentation
        </para>
        <note>
         <para>
+<!--
          This option is only available for servers running
          <productname>PostgreSQL</productname> 12 and later.
+-->
+このオプションは<productname>PostgreSQL</productname> 12以降が動作しているサーバでのみ利用可能です。
         </para>
        </note>
       </listitem>

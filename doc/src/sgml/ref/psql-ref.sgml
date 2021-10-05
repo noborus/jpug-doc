@@ -1279,12 +1279,15 @@ Cの形式のブロックコメントは、サーバに送信され、サーバ�
         </para>
 
         <para>
+<!--
         Specifying any
         of <replaceable class="parameter">dbname</replaceable>,
         <replaceable class="parameter">username</replaceable>,
         <replaceable class="parameter">host</replaceable> or
         <replaceable class="parameter">port</replaceable>
         as <literal>-</literal> is equivalent to omitting that parameter.
+-->
+<replaceable class="parameter">dbname</replaceable>、<replaceable class="parameter">username</replaceable>、<replaceable class="parameter">host</replaceable>、<replaceable class="parameter">port</replaceable>のいずれについても<literal>-</literal>を指定するのは、パラメータを省略するのと同じになります。
         </para>
 
         <para>

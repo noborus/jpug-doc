@@ -729,10 +729,14 @@ SQL経由で作成された準備済み文では、これはクライアント�
         </listitem>
         <listitem>
          <para>
+<!--
           <literal>unreserved</literal> means that the slot no longer
           retains the required WAL files and some of them are to be removed at
           the next checkpoint.  This state can return
           to <literal>reserved</literal> or <literal>extended</literal>.
+-->
+<literal>unreserved</literal>は、スロットはもはや必要なWALファイルを保存しておらず、その一部は次のチェックポイントで削除予定であることを意味します。
+この状態は<literal>reserved</literal>あるいは<literal>extended</literal>を返すことがあります。
          </para>
         </listitem>
         <listitem>
@@ -2800,7 +2804,10 @@ NULLとなっている列項目の割合
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -2812,7 +2819,10 @@ NULLとなっている列項目の割合
        (references <link linkend="catalog-pg-namespace"><structname>pg_namespace</structname></link>.<structfield>nspname</structfield>)
       </para>
       <para>
+<!--
        Name of schema containing table
+-->
+テーブルがあるスキーマの名前
       </para></entry>
      </row>
 
@@ -2914,9 +2924,12 @@ NULLとなっている列項目の割合
        <structfield>most_common_freqs</structfield> <type>float4[]</type>
       </para>
       <para>
+<!--
        A list of the frequencies of the most common values,
        i.e., number of occurrences of each divided by total number of rows.
        (Null when <structfield>most_common_vals</structfield> is.)
+-->
+最も一般的な値の出現頻度のリストで、つまり行の総数で出現数を割算した数字です（<structfield>most_common_vals</structfield>がNULLの時はNULLです）。
       </para></entry>
      </row>
 
@@ -2964,12 +2977,18 @@ NULLとなっている列項目の割合
        <structfield>most_common_elem_freqs</structfield> <type>float4[]</type>
       </para>
       <para>
+<!--
        A list of the frequencies of the most common element values, i.e., the
        fraction of rows containing at least one instance of the given value.
        Two or three additional values follow the per-element frequencies;
        these are the minimum and maximum of the preceding per-element
        frequencies, and optionally the frequency of null elements.
        (Null when <structfield>most_common_elems</structfield> is.)
+-->
+最も一般的な要素値の出現頻度のリストで、与えられた値の少なくとも1つのインスタンスを含む行の断片です。
+2つもしくは3つの追加の値が1つの要素ごとの出現頻度に続きます。
+最小で最大の要素ごとの出現頻度があります。さらにオプションとしてNULL要素の出現頻度もあります。
+（<structfield>most_common_elems</structfield>がNULLの時はNULLです。）
       </para></entry>
      </row>
 

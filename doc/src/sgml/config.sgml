@@ -1972,9 +1972,12 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command
         line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
 
        <para>
@@ -2183,8 +2186,11 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -2215,8 +2221,11 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -3543,6 +3552,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
        </term>
        <listitem>
         <para>
+<!--
          Whenever more than this amount of data has
          been written by a single backend, attempt to force the OS to issue
          these writes to the underlying storage.  Doing so will limit the
@@ -3561,6 +3571,15 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          and <literal>2MB</literal>.  The default is <literal>0</literal>, i.e., no
          forced writeback.  (If <symbol>BLCKSZ</symbol> is not 8kB,
          the maximum value scales proportionally to it.)
+-->
+この量を超えるデータが単一のバックエンドによって書き込まれたときはいつでも、OSが記憶装置に書き込むことを強制します。
+このことにより、カーネルのページキャッシュが持つダーティデータの量を一定量に制限し、チェックポイントの最後に<function>fsync</function>が実行される際、あるいはバックグラウンドで実行される大きなバッチの中でOSがデータを書き出す際に性能の急激な低下を招く可能性を減らします。
+多くの場合これによってトランザクションの遅延が大幅に少なくなりますが、あるケース、特にワークロードが<xref linkend="guc-shared-buffers"/>よりも大きく、OSのページキャッシュよりも小さい時には性能が低下するかもしれません。
+この設定が無効なプラットフォームがあります。
+この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
+有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
+デフォルト値は<literal>0</literal>です(すなわち書き出し制御を行いません)。
+(<symbol>BLCKSZ</symbol>が8kbでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
         </para>
        </listitem>
       </varlistentry>
@@ -3874,6 +3893,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        </term>
        <listitem>
         <para>
+<!--
          Allows the leader process to execute the query plan under
          <literal>Gather</literal> and <literal>Gather Merge</literal> nodes
          instead of waiting for worker processes.  The default is
@@ -3884,6 +3904,11 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          tuples can be produced.  The degree to which the leader can help or
          hinder performance depends on the plan type, number of workers and
          query duration.
+-->
+ワーカープロセスを待つ代わりに、<literal>Gather</literal>ノードと<literal>Gather Merge</literal>ノード配下の問い合わせプランをリーダープロセスが実行できるようにします。
+デフォルトは<literal>on</literal>です。
+この値を<literal>off</literal>にすると、リーダーがタプルを十分早く読まないためにワーカーがブロックされる可能性を減らすことができますが、リーダープロセスは最初のタプルが生成される前にワーカープロセスが起動するのを待つ必要があります。
+これがリーダーの性能を助けるのか、阻害要因になるかは計画型、ワーカーの数、問い合わせの長さによります。
         </para>
        </listitem>
       </varlistentry>
@@ -8616,6 +8641,7 @@ SELECT * FROM parent WHERE key = 2400;
       </term>
       <listitem>
        <para>
+<!--
         Prepared statements (either explicitly prepared or implicitly
         generated, for example by PL/pgSQL) can be executed using custom or
         generic plans.  Custom plans are made afresh for each execution
@@ -8632,6 +8658,15 @@ SELECT * FROM parent WHERE key = 2400;
         This setting is considered when a cached plan is to be executed,
         not when it is prepared.
         For more information see <xref linkend="sql-prepare"/>.
+-->
+準備された文（明示的に準備されたものあるいはPL/pgSQLのように暗黙的に生成されたもののどちらにおいても）は、カスタムあるいは汎用(generic)プランで実行することができます。
+カスタムプランは実行ごとに指定されたパラメータ値の集合で新たに作られます。
+一方汎用プランはパラメータ値に依存せず、複数の実行にまたがって再利用できます。
+したがって、汎用プランはプランニングに要する時間を節約できますが、理想的なプランがパラメータ値に強く依存している場合は、汎用プランは非効率かも知れません。
+通常この両者の選択は自動的に行われますが、<varname>plan_cache_mode</varname>で上書きできます。
+可能な値は<literal>auto</literal>（デフォルト）、<literal>force_custom_plan</literal>、<literal>force_generic_plan</literal>です。
+この設定は、準備するときではなく、キャッシュされたプランを実行する際に考慮されます。
+詳細は<xref linkend="sql-prepare"/>をご覧ください。
        </para>
       </listitem>
      </varlistentry>
@@ -9859,6 +9894,7 @@ linkend="guc-log-timezone"/>で指定された時間帯で計算が行われま�
       </term>
       <listitem>
        <para>
+<!--
         Causes each action executed by autovacuum to be logged if it ran for at
         least the specified amount of time.  Setting this to zero logs
         all autovacuum actions. <literal>-1</literal> (the default) disables
@@ -9874,6 +9910,16 @@ linkend="guc-log-timezone"/>で指定された時間帯で計算が行われま�
         the <filename>postgresql.conf</filename> file or on the server command line;
         but the setting can be overridden for individual tables by
         changing table storage parameters.
+-->
+少なくとも指定時間実行した場合、autovacuumで実行される各活動がログに残るようになります。
+これをゼロに設定すると、すべてのautovacuumの活動がログに残ります。
+<literal>-1</literal>（デフォルト）はautovacuum活動のログを無効にします。
+この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
+例えば、これを<literal>250ms</literal>に設定すると、250ms以上かかって実行されたautovacuumや解析はすべてログに残ります。
+さらに、<literal>-1</literal>以外の値にこのパラメータが設定された場合、競合するロックや並行して削除されたリレーションによりautovacuum動作が省略されるとメッセージはログに記録されます。
+このパラメータを有効にすることは、autovacuum活動の追跡に役に立ちます。
+このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -14538,8 +14584,11 @@ onなら、全てのエラーは現在のセッションを中止させます。
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -14626,8 +14675,11 @@ onに設定すると、代わりに<productname>PostgreSQL</productname>はエ�
         appear only in kernel logs.
        </para>
        <para>
+<!--
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -15262,6 +15314,7 @@ WALディスクブロックの容量を報告します。
       </term>
       <listitem>
        <para>
+<!--
         Allows the use of parallel queries for testing purposes even in cases
         where no performance benefit is expected.
         The allowed values of <varname>force_parallel_mode</varname> are
@@ -15270,9 +15323,13 @@ WALディスクブロックの容量を報告します。
         for which it is thought to be safe), and <literal>regress</literal> (like
         <literal>on</literal>, but with additional behavior changes as explained
         below).
+-->
+性能改善が期待できなくても、テスト目的のためにパラレルクエリを利用できるようにします。
+<varname>force_parallel_mode</varname>に設定できる値は、<literal>off</literal>（性能改善が期待できるときにだけパラレルクエリを使用する）、<literal>on</literal>（安全なクエリに対しては常にパラレルクエリを強制する）、<literal>regress</literal>（<literal>on</literal>と同様だが、下記のような振る舞いの変更を伴う）です。
        </para>
 
        <para>
+<!--
         More specifically, setting this value to <literal>on</literal> will add
         a <literal>Gather</literal> node to the top of any query plan for which this
         appears to be safe, so that the query runs inside of a parallel worker.
@@ -15283,9 +15340,14 @@ WALディスクブロックの容量を報告します。
         unexpected results occur when this option is set, some functions used
         by the query may need to be marked <literal>PARALLEL UNSAFE</literal>
         (or, possibly, <literal>PARALLEL RESTRICTED</literal>).
+-->
+正確に言えば、この値を<literal>on</literal>にすると、安全と見なされるすべての問い合わせ計画の上に<literal>Gather</literal>ノードを追加し、クエリをパラレルワーカー上で実行するようにします。
+プランナがこれによってクエリが失敗すると思わない限り、パラレルワーカーが利用できない、あるいは使用できないような場合でも、たとえばサブトランザクションの開始のように、パラレルクエリコンテキストでは許可されない操作は不許可となります。
+このオプションを設定することによって、エラーとなったり、あるいは期待していなかった結果がもたらされる場合には、クエリで使用されている関数は<literal>PARALLEL UNSAFE</literal>（もしくは、<literal>PARALLEL RESTRICTED</literal>）と印を付ける必要があるかもしません。
        </para>
 
        <para>
+<!--
         Setting this value to <literal>regress</literal> has all of the same effects
         as setting it to <literal>on</literal> plus some additional effects that are
         intended to facilitate automated regression testing.  Normally,
@@ -15295,6 +15357,10 @@ WALディスクブロックの容量を報告します。
         the <literal>Gather</literal> nodes added to plans by this setting are hidden
         in <literal>EXPLAIN</literal> output so that the output matches what
         would be obtained if this setting were turned <literal>off</literal>.
+-->
+この設定値を<literal>regress</literal>とすると、<literal>on</literal>とするのに加え、自動リグレッションテストを助けるための付加的な効果が現れます。
+通常パラレルワーカーからのメッセージは、そのことを表すコンテキスト行を表示しますが、<literal>regress</literal>と設定すると、非パラレル実行と同じ出力になるように、これを抑止します。
+また、プランに追加された<literal>Gather</literal>ノードは、<literal>EXPLAIN</literal>出力から隠され、<literal>off</literal>に設定したときと同じ出力が得られるようにします。
        </para>
       </listitem>
      </varlistentry>

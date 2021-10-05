@@ -4002,7 +4002,10 @@ WAL送信サーバの現在の状態です。
         Column Type
        </para>
        <para>
+<!--
         Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -4121,7 +4124,10 @@ WAL送信サーバの現在の状態です。
         <structfield>stats_reset</structfield> <type>timestamp with time zone</type>
        </para>
        <para>
+<!--
         Time at which these statistics were last reset
+-->
+統計情報がリセットされた最終時刻です。
        </para></entry>
      </row>
     </tbody>
@@ -5124,7 +5130,10 @@ WALファイルのアーカイブに失敗した回数です。
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -5228,7 +5237,10 @@ WALファイルのアーカイブに失敗した回数です。
        <structfield>stats_reset</structfield> <type>timestamp with time zone</type>
       </para>
       <para>
+<!--
        Time at which these statistics were last reset
+-->
+統計情報がリセットされた最終時刻です。
       </para></entry>
      </row>
      </tbody>
@@ -7288,8 +7300,11 @@ SLRUでの切り詰めの数です。
         the replication slots.
        </para>
        <para>
+<!--
          This function is restricted to superusers by default, but other users
          can be granted EXECUTE to run the function.
+-->
+この関数はデフォルトでスーパーユーザに限定されていますが、関数を実行できるように他のユーザにEXECUTE権限を付与できます。
        </para></entry>
       </row>
      </tbody>
@@ -9295,7 +9310,10 @@ WAL送信プロセスはバックアップ中に生成されたWALログをす�
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -9306,7 +9324,10 @@ WAL送信プロセスはバックアップ中に生成されたWALログをす�
        <structfield>pid</structfield> <type>integer</type>
       </para>
       <para>
+<!--
        Process ID of backend.
+-->
+バックエンドのプロセスIDです。
       </para></entry>
      </row>
 
@@ -9315,7 +9336,10 @@ WAL送信プロセスはバックアップ中に生成されたWALログをす�
        <structfield>datid</structfield> <type>oid</type>
       </para>
       <para>
+<!--
        OID of the database to which this backend is connected.
+-->
+バックエンドが接続されているデータベースのOIDです。
       </para></entry>
      </row>
 
@@ -9324,7 +9348,10 @@ WAL送信プロセスはバックアップ中に生成されたWALログをす�
        <structfield>datname</structfield> <type>name</type>
       </para>
       <para>
+<!--
        Name of the database to which this backend is connected.
+-->
+バックエンドが接続されているデータベースの名前です。
       </para></entry>
      </row>
 

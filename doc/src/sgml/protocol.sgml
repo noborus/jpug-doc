@@ -4735,7 +4735,10 @@ AuthenticationGSSContinue (B)
 </term>
 <listitem>
 <para>
+<!--
                 Specifies that this message contains GSSAPI or SSPI data.
+-->
+このメッセージがGSSAPIまたはSSPIデータを含むことを指定します。
 </para>
 </listitem>
 </varlistentry>
@@ -4745,7 +4748,10 @@ AuthenticationGSSContinue (B)
 </term>
 <listitem>
 <para>
+<!--
                 GSSAPI or SSPI authentication data.
+-->
+GSSAPIまたはSSPI認証データです。
 </para>
 </listitem>
 </varlistentry>
@@ -4783,7 +4789,10 @@ AuthenticationSSPI (B)
 </term>
 <listitem>
 <para>
+<!--
                 Length of message contents in bytes, including self.
+-->
+自身を含む、メッセージ内容の長さ（バイト単位）。
 </para>
 </listitem>
 </varlistentry>
@@ -4793,7 +4802,10 @@ AuthenticationSSPI (B)
 </term>
 <listitem>
 <para>
+<!--
                 Specifies that SSPI authentication is required.
+-->
+SSPI認証証明メッセージが必要であることを指定します。
 </para>
 </listitem>
 </varlistentry>
@@ -6772,10 +6784,15 @@ GSSENCRequest (F)
 </term>
 <listitem>
 <para>
+<!--
                 The <acronym>GSSAPI</acronym> Encryption request code.  The value is chosen to contain
                 <literal>1234</literal> in the most significant 16 bits, and <literal>5680</literal> in the
                 least significant 16 bits.  (To avoid confusion, this code
                 must not be the same as any protocol version number.)
+-->
+<acronym>GSSAPI</acronym>暗号化要求コードです。
+この値は最上位の16ビットに<literal>1234</literal>が、最下位の16ビットに<literal>5680</literal>が含まれるように選択されます。
+（混乱を防ぐため、このコードはどのプロトコルのバージョン番号とも同じになってはいけません。）
 </para>
 </listitem>
 </varlistentry>
@@ -9656,7 +9673,10 @@ Stream Start
 </term>
 <listitem>
 <para>
+<!--
                 Xid of the transaction.
+-->
+トランザクションのXIDです。
 </para>
 </listitem>
 </varlistentry>
@@ -9725,7 +9745,10 @@ Stream Commit
 </term>
 <listitem>
 <para>
+<!--
                 Xid of the transaction.
+-->
+トランザクションのXIDです。
 </para>
 </listitem>
 </varlistentry>
@@ -9735,7 +9758,10 @@ Stream Commit
 </term>
 <listitem>
 <para>
+<!--
                 Flags; currently unused (must be 0).
+-->
+フラグですが現在は未使用です（0でなければなりません）。
 </para>
 </listitem>
 </varlistentry>
@@ -9745,7 +9771,10 @@ Stream Commit
 </term>
 <listitem>
 <para>
+<!--
                 The LSN of the commit.
+-->
+コミットのLSNです。
 </para>
 </listitem>
 </varlistentry>
@@ -9755,7 +9784,10 @@ Stream Commit
 </term>
 <listitem>
 <para>
+<!--
                 The end LSN of the transaction.
+-->
+トランザクションの終了LSNです。
 </para>
 </listitem>
 </varlistentry>
@@ -9765,8 +9797,12 @@ Stream Commit
 </term>
 <listitem>
 <para>
+<!--
                 Commit timestamp of the transaction. The value is in number
                 of microseconds since PostgreSQL epoch (2000-01-01).
+-->
+トランザクションのコミット時刻です。
+その値はPostgreSQLのエポック（2000-01-01）からのマイクロ秒数です。
 </para>
 </listitem>
 </varlistentry>
@@ -9800,7 +9836,10 @@ Stream Abort
 </term>
 <listitem>
 <para>
+<!--
                 Xid of the transaction.
+-->
+トランザクションのXIDです。
 </para>
 </listitem>
 </varlistentry>

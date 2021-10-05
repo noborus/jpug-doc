@@ -2270,8 +2270,11 @@ onなら、全てのエラーは現在のセッションを中止させます。
        </para>
 
        <para>
+<!--
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -2358,8 +2361,11 @@ onに設定すると、代わりに<productname>PostgreSQL</productname>はエ�
         appear only in kernel logs.
        </para>
        <para>
+<!--
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
+-->
+このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
        </para>
       </listitem>
      </varlistentry>
@@ -2994,6 +3000,7 @@ WALディスクブロックの容量を報告します。
       </term>
       <listitem>
        <para>
+<!--
         Allows the use of parallel queries for testing purposes even in cases
         where no performance benefit is expected.
         The allowed values of <varname>force_parallel_mode</varname> are
@@ -3002,9 +3009,13 @@ WALディスクブロックの容量を報告します。
         for which it is thought to be safe), and <literal>regress</literal> (like
         <literal>on</literal>, but with additional behavior changes as explained
         below).
+-->
+性能改善が期待できなくても、テスト目的のためにパラレルクエリを利用できるようにします。
+<varname>force_parallel_mode</varname>に設定できる値は、<literal>off</literal>（性能改善が期待できるときにだけパラレルクエリを使用する）、<literal>on</literal>（安全なクエリに対しては常にパラレルクエリを強制する）、<literal>regress</literal>（<literal>on</literal>と同様だが、下記のような振る舞いの変更を伴う）です。
        </para>
 
        <para>
+<!--
         More specifically, setting this value to <literal>on</literal> will add
         a <literal>Gather</literal> node to the top of any query plan for which this
         appears to be safe, so that the query runs inside of a parallel worker.
@@ -3015,9 +3026,14 @@ WALディスクブロックの容量を報告します。
         unexpected results occur when this option is set, some functions used
         by the query may need to be marked <literal>PARALLEL UNSAFE</literal>
         (or, possibly, <literal>PARALLEL RESTRICTED</literal>).
+-->
+正確に言えば、この値を<literal>on</literal>にすると、安全と見なされるすべての問い合わせ計画の上に<literal>Gather</literal>ノードを追加し、クエリをパラレルワーカー上で実行するようにします。
+プランナがこれによってクエリが失敗すると思わない限り、パラレルワーカーが利用できない、あるいは使用できないような場合でも、たとえばサブトランザクションの開始のように、パラレルクエリコンテキストでは許可されない操作は不許可となります。
+このオプションを設定することによって、エラーとなったり、あるいは期待していなかった結果がもたらされる場合には、クエリで使用されている関数は<literal>PARALLEL UNSAFE</literal>（もしくは、<literal>PARALLEL RESTRICTED</literal>）と印を付ける必要があるかもしません。
        </para>
 
        <para>
+<!--
         Setting this value to <literal>regress</literal> has all of the same effects
         as setting it to <literal>on</literal> plus some additional effects that are
         intended to facilitate automated regression testing.  Normally,
@@ -3027,6 +3043,10 @@ WALディスクブロックの容量を報告します。
         the <literal>Gather</literal> nodes added to plans by this setting are hidden
         in <literal>EXPLAIN</literal> output so that the output matches what
         would be obtained if this setting were turned <literal>off</literal>.
+-->
+この設定値を<literal>regress</literal>とすると、<literal>on</literal>とするのに加え、自動リグレッションテストを助けるための付加的な効果が現れます。
+通常パラレルワーカーからのメッセージは、そのことを表すコンテキスト行を表示しますが、<literal>regress</literal>と設定すると、非パラレル実行と同じ出力になるように、これを抑止します。
+また、プランに追加された<literal>Gather</literal>ノードは、<literal>EXPLAIN</literal>出力から隠され、<literal>off</literal>に設定したときと同じ出力が得られるようにします。
        </para>
       </listitem>
      </varlistentry>

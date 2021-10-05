@@ -1406,8 +1406,11 @@ CREATE TABLE orders (
    </para>
 
    <para>
+<!--
     You can assign your own name for a foreign key constraint,
     in the usual way.
+-->
+外部キー制約には、通常の方法で名前を割り当てることもできます。
    </para>
 
    <para>

@@ -630,8 +630,11 @@ NULLキーがこの関数に渡されることはありません。
      <term><function>void options(local_relopts *relopts)</function></term>
      <listitem>
       <para>
+<!--
        Defines a set of user-visible parameters that control operator class
        behavior.
+-->
+演算子クラスの振舞いを制御するユーザに可視のパラメータの集合を定義します。
       </para>
 
       <para>
@@ -644,9 +647,12 @@ NULLキーがこの関数に渡されることはありません。
       </para>
 
       <para>
+<!--
        Since both key extraction of indexed values and representation of the
        key in <acronym>GIN</acronym> are flexible, they may depend on
        user-specified parameters.
+-->
+インデックス付けされた値からのキーの抽出にも<acronym>GIN</acronym>でのキーの表現にも柔軟性がありますので、ユーザに固有のパラメータに依存するかもしれません。
       </para>
      </listitem>
     </varlistentry>

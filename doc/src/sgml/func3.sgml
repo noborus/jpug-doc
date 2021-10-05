@@ -4649,7 +4649,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the first range strictly right of the second?
+-->
+最初の範囲は厳密に2番目の右か？
        </para>
        <para>
         <literal>int8range(50,60) &gt;&gt; int8range(20,30)</literal>
@@ -4663,7 +4666,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Does the first range not extend to the right of the second?
+-->
+最初の範囲は2番目の右を被覆していないか？
        </para>
        <para>
         <literal>int8range(1,20) &amp;&lt; int8range(18,20)</literal>
@@ -4677,7 +4683,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Does the first range not extend to the left of the second?
+-->
+最初の範囲は2番目の左を被覆していないか？
        </para>
        <para>
         <literal>int8range(7,20) &amp;&gt; int8range(5,10)</literal>
@@ -4691,7 +4700,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Are the ranges adjacent?
+-->
+範囲は隣接しているか？
        </para>
        <para>
         <literal>numrange(1.1,2.2) -|- numrange(2.2,3.3)</literal>
@@ -4705,9 +4717,12 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyrange</returnvalue>
        </para>
        <para>
+<!--
         Computes the union of the ranges.  The ranges must overlap or be
         adjacent, so that the union is a single range (but
         see <function>range_merge()</function>).
+-->
+範囲の和を計算します。範囲は和の結果が単一の範囲になるように、重なり合っているか、隣接していなければなりません。（ただし<function>range_merge()</function>を参照してください。）
        </para>
        <para>
         <literal>numrange(5,15) + numrange(10,20)</literal>
@@ -4721,7 +4736,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyrange</returnvalue>
        </para>
        <para>
+<!--
         Computes the intersection of the ranges.
+-->
+範囲の共通部分を計算します。
        </para>
        <para>
         <literal>int8range(5,15) * int8range(10,20)</literal>
@@ -4735,9 +4753,13 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyrange</returnvalue>
        </para>
        <para>
+<!--
         Computes the difference of the ranges.  The second range must not be
         contained in the first in such a way that the difference would not be
         a single range.
+-->
+範囲の差を計算します。
+差が単一の範囲にならないように、2番目の範囲は最初の範囲に含まれていてはいけません。
        </para>
        <para>
         <literal>int8range(5,15) - int8range(10,20)</literal>
@@ -4757,10 +4779,16 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         Operator
        </para>
        <para>
+<!--
         Description
+-->
+説明
        </para>
        <para>
+<!--
         Example(s)
+-->
+例
        </para></entry>
       </row>
      </thead>
@@ -5216,10 +5244,16 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         Function
        </para>
        <para>
+<!--
         Description
+-->
+説明
        </para>
        <para>
+<!--
         Example(s)
+-->
+例
        </para></entry>
       </row>
      </thead>
@@ -5234,8 +5268,11 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyelement</returnvalue>
        </para>
        <para>
+<!--
         Extracts the lower bound of the range (<literal>NULL</literal> if the
         range is empty or the lower bound is infinite).
+-->
+範囲の下限を取り出します。（範囲が空か下限が無限ならば<literal>NULL</literal>となります。）
        </para>
        <para>
         <literal>lower(numrange(1.1,2.2))</literal>
@@ -5252,8 +5289,11 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyelement</returnvalue>
        </para>
        <para>
+<!--
         Extracts the upper bound of the range (<literal>NULL</literal> if the
         range is empty or the upper bound is infinite).
+-->
+範囲の上限を取り出します。（範囲が空か上限が無限ならば<literal>NULL</literal>となります。）
        </para>
        <para>
         <literal>upper(numrange(1.1,2.2))</literal>
@@ -5270,7 +5310,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the range empty?
+-->
+範囲は空か？
        </para>
        <para>
         <literal>isempty(numrange(1.1,2.2))</literal>
@@ -5287,7 +5330,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the range's lower bound inclusive?
+-->
+範囲の下限は境界を含むか？
        </para>
        <para>
         <literal>lower_inc(numrange(1.1,2.2))</literal>
@@ -5304,7 +5350,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the range's upper bound inclusive?
+-->
+範囲の上限は境界を含むか？
        </para>
        <para>
         <literal>upper_inc(numrange(1.1,2.2))</literal>
@@ -5321,7 +5370,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the range's lower bound infinite?
+-->
+範囲の下限は無限か？
        </para>
        <para>
         <literal>lower_inf('(,)'::daterange)</literal>
@@ -5338,7 +5390,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
+<!--
         Is the range's upper bound infinite?
+-->
+範囲の上限は無限か？
        </para>
        <para>
         <literal>upper_inf('(,)'::daterange)</literal>
@@ -5355,7 +5410,10 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>anyrange</returnvalue>
        </para>
        <para>
+<!--
         Computes the smallest range that includes both of the given ranges.
+-->
+与えられた両方の範囲を含む最小の範囲を計算します。
        </para>
        <para>
         <literal>range_merge('[1,2)'::int4range, '[3,4)'::int4range)</literal>
