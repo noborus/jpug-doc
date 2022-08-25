@@ -981,9 +981,13 @@ IDENTITY列については、<command>COPY FROM</command>コマンドは<command
    </para>
 
    <para>
+<!--
      All backslash sequences are interpreted after encoding conversion.
      The bytes specified with the octal and hex-digit backslash sequences must
      form valid characters in the database encoding.
+-->
+バックスラッシュで始まる文字の並びはすべて符号化方式変換の後で解釈されます。
+バックスラッシュの後ろに8進数や16進数を付けた形式で指定されたバイトはデータベース符号化方式において有効な文字でなければなりません。
    </para>
 
    <para>

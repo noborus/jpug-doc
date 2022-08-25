@@ -603,9 +603,13 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
       <term><option>--discard-caches</option></term>
       <listitem>
        <para>
+<!--
         Run the bootstrap backend with the
         <literal>debug_discard_caches=1</literal> option.
         This takes a very long time and is only of use for deep debugging.
+-->
+<literal>debug_discard_caches=1</literal>オプションをつけてブートストラップバックエンドを実行します。
+これは非常に長い時間がかかるため、難解なデバッグでのみ使用されます。
        </para>
       </listitem>
      </varlistentry>

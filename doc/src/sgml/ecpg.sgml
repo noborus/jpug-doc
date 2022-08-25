@@ -12505,10 +12505,14 @@ int dectoint(decimal *np, int *ip);
 オーバーフローが発生した場合は<literal>ECPG_INFORMIX_NUM_OVERFLOW</literal>が返されます。
        </para>
        <para>
+<!--
         Note that the ECPG implementation differs from the <productname>Informix</productname>
         implementation. <productname>Informix</productname> limits an integer to the range from -32767 to
         32767, while the limits in the ECPG implementation depend on the
         architecture (<literal>INT_MIN .. INT_MAX</literal>).
+-->
+このECPGの実装は<productname>Informix</productname>の実装と異なることに注意してください。
+<productname>Informix</productname>では、整数範囲に-32767から32767までという制限をしていますが、ECPGでの制限はアーキテクチャに依存(<literal>INT_MIN .. INT_MAX</literal>)します。
        </para>
       </listitem>
      </varlistentry>

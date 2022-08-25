@@ -129,6 +129,7 @@
  </para>
 
  <para>
+<!--
   It is generally recommended that the columns of a foreign table be declared
   with exactly the same data types, and collations if applicable, as the
   referenced columns of the remote table.  Although <filename>postgres_fdw</filename>
@@ -136,6 +137,9 @@
   need, surprising semantic anomalies may arise when types or collations do
   not match, due to the remote server interpreting query conditions
   differently from the local server.
+-->
+一般的な推奨事項として、可能であれば外部テーブルのカラムを、被参照側のリモートテーブル側のカラムと全く同一のデータ型および照合順序によって定義してください。
+<filename>postgres_fdw</filename>は必要に応じてデータ型の変換を行いますが、リモートサーバがローカルサーバとは異なる問い合わせ条件の解釈を行うため、データ型や照合順序が一致していないと、時には予期しない意味論的に異常な結果を得る事があるかもしれません。
  </para>
 
  <para>
@@ -831,6 +835,7 @@ IMMUTABLEで、列挙された拡張に属する関数と演算子は、リモ�
      <term><literal>import_collate</literal> (<type>boolean</type>)</term>
      <listitem>
       <para>
+<!--
        This option controls whether column <literal>COLLATE</literal> options
        are included in the definitions of foreign tables imported
        from a foreign server. The default is <literal>true</literal>.  You might
@@ -840,14 +845,24 @@ IMMUTABLEで、列挙された拡張に属する関数と演算子は、リモ�
        If you do so, however, there is a very severe risk that the imported
        table columns' collations will not match the underlying data, resulting
        in anomalous query behavior.
+-->
+このオプションは、列の<literal>COLLATE</literal>オプションが、外部サーバからインポートする外部テーブルの定義に含まれているかどうかを制御します。
+デフォルトは<literal>true</literal>です。
+リモートサーバとローカルサーバで照合順序の名前の集合が異なる場合は、この設定を無効にする必要があるでしょう。
+リモートサーバが異なるOSで動作しているなら、そういうことがありそうです。
+しかし、そうした時には、インポートしたテーブルの列の照合順序が実際のデータと一致せず、問い合わせの振る舞いが結果として異常になる大きなリスクがあります。
       </para>
 
       <para>
+<!--
        Even when this parameter is set to <literal>true</literal>, importing
        columns whose collation is the remote server's default can be risky.
        They will be imported with <literal>COLLATE "default"</literal>, which
        will select the local server's default collation, which could be
        different.
+-->
+このパラメータが<literal>true</literal>のときでさえ、照合順序がリモートサーバのデフォルトである列をインポートするのは危険性があります。
+これらの列は<literal>COLLATE "default"</literal>としてインポートされますが、ローカルサーバのデフォルトの照合順序は異なるかもしれません。
       </para>
      </listitem>
     </varlistentry>
@@ -894,11 +909,16 @@ IMMUTABLEで、列挙された拡張に属する関数と演算子は、リモ�
      <term><literal>import_generated</literal> (<type>boolean</type>)</term>
      <listitem>
       <para>
+<!--
        This option controls whether column <literal>GENERATED</literal> expressions
        are included in the definitions of foreign tables imported
        from a foreign server. The default is <literal>true</literal>.
        The <command>IMPORT</command> will fail altogether if an imported generated
        expression uses a function or operator that does not exist locally.
+-->
+このオプションは、外部サーバからインポートされた外部テーブルの定義に<literal>GENERATED</literal>列式が含まれるかどうかを制御します。
+デフォルトは<literal>true</literal>です。
+インポートされる生成式がローカルには存在しない関数あるいは演算子を使っていた場合、<command>IMPORT</command>は失敗します。
       </para>
      </listitem>
     </varlistentry>

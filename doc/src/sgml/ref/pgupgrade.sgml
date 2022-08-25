@@ -455,6 +455,7 @@ make prefix=/usr/local/pgsql.new install
     <title>Install extension shared object files</title>
 
     <para>
+<!--
      Many extensions and custom modules, whether from
      <filename>contrib</filename> or another source, use shared object
      files (or DLLs), e.g., <filename>pgcrypto.so</filename>.  If the old
@@ -465,6 +466,11 @@ make prefix=/usr/local/pgsql.new install
      the old cluster.  If extension updates are available,
      <application>pg_upgrade</application> will report this and create
      a script that can be run later to update them.
+-->
+<filename>contrib</filename>からのものであろうとその他のソースからのものであろうと、多くの拡張や独自のモジュールは、例えば<filename>pgcrypto.so</filename>などの独自の共有オブジェクトファイル(またはDLL)を使います。
+古いクラスタがこれらを使用していたのであれば、新しいサーバのバイナリに合った共有オブジェクトファイルを、たいていはオペレーティングシステムのコマンドで、新しいクラスタにインストールしなければなりません。
+例えば<command>CREATE EXTENSION pgcrypto</command>などのスキーマ定義はロードしないでください。これらは古いクラスタから複製されるためです。
+拡張アップデートが利用可能であれば、<application>pg_upgrade</application>はこれを報告し、アップデートのために後で実行できるスクリプトを作成します。
     </para>
    </step>
 
@@ -472,8 +478,11 @@ make prefix=/usr/local/pgsql.new install
     <title>Copy custom full-text search files</title>
 
     <para>
+<!--
      Copy any custom full text search files (dictionary, synonym,
      thesaurus, stop words) from the old to the new cluster.
+-->
+独自の全文検索ファイル(辞書、同義語、類語辞書、ストップワード)を古いクラスタから新しいクラスタにコピーしてください。
     </para>
    </step>
 

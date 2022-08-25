@@ -7331,11 +7331,15 @@ int PQflush(PGconn *conn);
     </para>
 
     <para>
+<!--
      <function>PQisBusy</function>, <function>PQconsumeInput</function>, etc
      operate as normal when processing pipeline results.  In particular,
      a call to <function>PQisBusy</function> in the middle of a pipeline
      returns 0 if the results for all the queries issued so far have been
      consumed.
+-->
+パイプラインの結果を処理する場合、<function>PQisBusy</function>や<function>PQconsumeInput</function>などは通常どおりに動作します。
+特に、パイプラインの途中で<function>PQisBusy</function>を呼び出した場合、これまでに発行されたすべての問い合わせの結果が消費されていれば0を返します。
     </para>
 
     <para>
@@ -7667,9 +7671,14 @@ int PQsendFlushRequest(PGconn *conn);
        </para>
 
        <para>
+<!--
         Returns 1 for success.  Returns 0 on any failure.
+-->
+成功した場合は1を返します。
+失敗した場合は0を返します。
        </para>
        <para>
+<!--
         The server flushes its output buffer automatically as a result of
         <function>PQpipelineSync</function> being called, or
         on any request when not in pipeline mode; this function is useful
@@ -7677,6 +7686,11 @@ int PQsendFlushRequest(PGconn *conn);
         without establishing a synchronization point.
         Note that the request is not itself flushed to the server automatically;
         use <function>PQflush</function> if necessary.
+-->
+サーバは、<function>PQpipelineSync</function>が呼び出された結果として、あるいはパイプラインモードでない要求があった場合に、自動的に出力バッファをフラッシュします。
+この関数は、同期ポイントを確立せずに、サーバにパイプラインモードで出力バッファをフラッシュさせるのに便利です。
+要求自体は自動的にサーバにフラッシュされないことに注意してください。
+必要であれば<function>PQflush</function>を使用してください。
        </para>
       </listitem>
      </varlistentry>

@@ -4086,10 +4086,14 @@ WAL送信サーバの現在の状態です。
         <structfield>spill_txns</structfield> <type>bigint</type>
        </para>
        <para>
+<!--
         Number of transactions spilled to disk once the memory used by
         logical decoding to decode changes from WAL has exceeded
         <literal>logical_decoding_work_mem</literal>. The counter gets
         incremented for both top-level transactions and subtransactions.
+-->
+WALからの変更をデコードするために論理デコードによって使用されるメモリが<literal>logical_decoding_work_mem</literal>を超えたときにディスクにあふれたトランザクション数です。
+カウンタは、トップレベルのトランザクションとサブトランザクションの両方で増分されます。
       </para></entry>
      </row>
 
@@ -4493,7 +4497,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -4505,7 +4512,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
         <structfield>stats_reset</structfield> <type>timestamp with time zone</type>
        </para>
        <para>
+<!--
         Time at which these statistics were last reset
+-->
+統計情報がリセットされた最終時刻です。
        </para>
       </entry>
      </row>
@@ -4782,7 +4792,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -4793,7 +4806,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        <structfield>subid</structfield> <type>oid</type>
       </para>
       <para>
+<!--
        OID of the subscription
+-->
+サブスクリプションのOIDです。
       </para></entry>
      </row>
 
@@ -4802,7 +4818,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        <structfield>subname</structfield> <type>name</type>
       </para>
       <para>
+<!--
        Name of the subscription
+-->
+サブスクリプションの名前です。
       </para></entry>
      </row>
 
@@ -4830,7 +4849,10 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        <structfield>stats_reset</structfield> <type>timestamp with time zone</type>
       </para>
       <para>
+<!--
        Time at which these statistics were last reset
+-->
+統計情報がリセットされた最終時刻です。
       </para></entry>
      </row>
     </tbody>
@@ -7670,8 +7692,11 @@ SLRUでの切り詰めの数です。
         subscriptions.
        </para>
        <para>
+<!--
         This function is restricted to superusers by default, but other users
         can be granted EXECUTE to run the function.
+-->
+この関数はデフォルトでスーパーユーザに限定されていますが、関数を実行できるように他のユーザにEXECUTE権限を付与できます。
        </para></entry>
       </row>
      </tbody>

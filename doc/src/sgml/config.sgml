@@ -2876,9 +2876,12 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 無効タプル識別子の集合に対しては、<command>VACUUM</command>は最大でも<literal>1GB</literal>までしか使用することができないことに注意してください。
        </para>
        <para>
+<!--
         Note that for the collection of dead tuple identifiers,
         <command>VACUUM</command> is only able to utilize up to a maximum of
         <literal>1GB</literal> of memory.
+-->
+無効タプル識別子の集合に対しては、<command>VACUUM</command>は最大でも<literal>1GB</literal>までしか使用することができないことに注意してください。
        </para>
       </listitem>
      </varlistentry>
@@ -2924,11 +2927,15 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 ですから<varname>autovacuum_work_mem</varname>をそれ以上に指定しても、自動バキュームがテーブルを走査して収集できる無効タプルの数には影響を与えません。
        </para>
        <para>
+<!--
         For the collection of dead tuple identifiers, autovacuum is only able
         to utilize up to a maximum of <literal>1GB</literal> of memory, so
         setting <varname>autovacuum_work_mem</varname> to a value higher than
         that has no effect on the number of dead tuples that autovacuum can
         collect while scanning a table.
+-->
+無効タプル識別子の集合に対しては、自動バキュームは最大でも<literal>1GB</literal>までしか使用することができません。
+ですから<varname>autovacuum_work_mem</varname>をそれ以上に指定しても、自動バキュームがテーブルを走査して収集できる無効タプルの数には影響を与えません。
        </para>
       </listitem>
      </varlistentry>
@@ -5305,8 +5312,11 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
         <xref linkend="archive-modules"/>.
        </para>
        <para>
+<!--
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
+-->
+このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -12834,11 +12844,16 @@ SQLトランザクションはそれぞれ、<quote>read uncommitted</quote>、<
       </term>
       <listitem>
        <para>
+<!--
         This parameter reflects the current transaction's isolation level.
         At the beginning of each transaction, it is set to the current value
         of <xref linkend="guc-default-transaction-isolation"/>.
         Any subsequent attempt to change it is equivalent to a <xref
         linkend="sql-set-transaction"/> command.
+-->
+このパラメータは現在のトランザクションの隔離レベルを反映します。
+個々のトランザクションの開始時、これに<xref linkend="guc-default-transaction-isolation"/>の現在の値が設定されます。
+その後のこの変数の値を変更する試みは、<xref linkend="sql-set-transaction"/>と同等です。
        </para>
       </listitem>
      </varlistentry>
@@ -12854,11 +12869,16 @@ SQLトランザクションはそれぞれ、<quote>read uncommitted</quote>、<
       </term>
       <listitem>
        <para>
+<!--
         This parameter reflects the current transaction's read-only status.
         At the beginning of each transaction, it is set to the current value
         of <xref linkend="guc-default-transaction-read-only"/>.
         Any subsequent attempt to change it is equivalent to a <xref
         linkend="sql-set-transaction"/> command.
+-->
+このパラメータは現在のトランザクションの読み込み専用状態を反映します。
+個々のトランザクションの開始時、これに<xref linkend="guc-default-transaction-read-only"/>の現在の値が設定されます。
+その後のこの変数の値を変更する試みは、<xref linkend="sql-set-transaction"/>と同等です。
        </para>
       </listitem>
      </varlistentry>
@@ -12874,11 +12894,16 @@ SQLトランザクションはそれぞれ、<quote>read uncommitted</quote>、<
       </term>
       <listitem>
        <para>
+<!--
         This parameter reflects the current transaction's deferrability status.
         At the beginning of each transaction, it is set to the current value
         of <xref linkend="guc-default-transaction-deferrable"/>.
         Any subsequent attempt to change it is equivalent to a <xref
         linkend="sql-set-transaction"/> command.
+-->
+このパラメータは現在のトランザクションの延期状態(deferrable status)を反映します。
+個々のトランザクションの開始時、これに<xref linkend="guc-default-transaction-deferrable"/>の現在の値が設定されます。
+その後のこの変数の値を変更する試みは、<xref linkend="sql-set-transaction"/>と同等です。
        </para>
       </listitem>
      </varlistentry>

@@ -386,10 +386,14 @@ PostgreSQL documentation
      <term><option>--no-strict-names</option></term>
      <listitem>
       <para>
+<!--
        By default, if an argument to <literal>&#045;-database</literal>,
        <literal>&#045;-table</literal>, <literal>&#045;-index</literal>,
        or <literal>&#045;-relation</literal> matches no objects, it is a fatal
        error. This option downgrades that error to a warning.
+-->
+デフォルトでは、<literal>--database</literal>、<literal>--table</literal>、<literal>--index</literal>、<literal>--relation</literal>への引数がどのオブジェクトにもマッチしなければ、フェイタルエラーが起こります。
+このオプションはそのエラーをワーニングへと格下げします。
       </para>
      </listitem>
     </varlistentry>
@@ -759,7 +763,10 @@ TCPポートあるいはサーバが接続をリッスンしているマシン�
 サーバへの<replaceable>num</replaceable>並列接続か、検査対象オブジェクト1つにつき1本の接続のどちらか少ない方を使います。
       </para>
       <para>
+<!--
        The default is to use a single connection.
+-->
+デフォルトでは単一の接続を使います。
       </para>
      </listitem>
     </varlistentry>

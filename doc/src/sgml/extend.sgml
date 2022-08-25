@@ -1976,6 +1976,7 @@ XXX 名前を(スキーマ)修飾するだけでは十分ではありません�
      </para>
 
      <para>
+<!--
       Cross-extension references are extremely difficult to make fully
       secure, partially because of uncertainty about which schema the other
       extension is in.  The hazards are reduced if both extensions are
@@ -1985,6 +1986,13 @@ XXX 名前を(スキーマ)修飾するだけでは十分ではありません�
       to require that.  For now, best practice is to not mark an extension
       trusted if it depends on another one, unless that other one is always
       installed in <literal>pg_catalog</literal>.
+-->
+拡張をまたがる参照を完璧に安全にすることは極めて困難です。
+理由の一つに、他の拡張がどのスキーマにあるのか定かではないことがあります。
+この危険性は両方の拡張を同じスキーマにインストールすることで軽減できます。
+悪意あるオブジェクトをインストール時の<varname>search_path</varname>内で参照された拡張の前に置くことができないからです。
+しかしながら、現時点ではこれを要求するメカニズムはありません。
+今のところ、最良の手段は他の拡張に依存する拡張であるなら、依存する拡張が常に<literal>pg_catalog</literal>にインストールされるのでない限り、拡張をtrustedと印付けしないことです。
      </para>
     </sect3>
    </sect2>

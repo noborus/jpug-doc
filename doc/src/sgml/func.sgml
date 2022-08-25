@@ -1341,15 +1341,21 @@ NULL引数の数を返す。
         <returnvalue>double precision</returnvalue>
        </para>
        <para>
+<!--
         Exponentiation
+-->
+累乗
        </para>
        <para>
         <literal>2 ^ 3</literal>
         <returnvalue>8</returnvalue>
        </para>
        <para>
+<!--
         Unlike typical mathematical practice, multiple uses of
         <literal>^</literal> will associate left to right by default:
+-->
+典型的な数学的用法とは違って、デフォルトでは<literal>^</literal>は左から右に適用されます。
        </para>
        <para>
         <literal>2 ^ 3 ^ 3</literal>
@@ -3289,9 +3295,12 @@ NULL引数の数を返す。
         <returnvalue>integer</returnvalue>
        </para>
        <para>
+<!--
         Returns first starting index of the specified
         <parameter>substring</parameter> within
         <parameter>string</parameter>, or zero if it's not present.
+-->
+<parameter>string</parameter>中の<parameter>substring</parameter>で指定する文字列の最初の開始位置を返します。0ならその文字列は存在しません。
        </para>
        <para>
         <literal>position('om' in 'Thomas')</literal>
@@ -4465,11 +4474,15 @@ POSIX正規表現を区切り文字に使って<parameter>string</parameter>を�
         <returnvalue>integer</returnvalue>
        </para>
        <para>
+<!--
         Returns first starting index of the specified <parameter>substring</parameter>
         within <parameter>string</parameter>, or zero if it's not present.
         (Same as <literal>position(<parameter>substring</parameter> in
         <parameter>string</parameter>)</literal>, but note the reversed
         argument order.)
+-->
+<parameter>string</parameter>中の指定した<parameter>substring</parameter>の最初の開始位置を返します。<parameter>substring</parameter>が存在しなければゼロを返します。
+（<literal>position(<parameter>substring</parameter> in <parameter>string</parameter>)</literal>と同じですが、引数の順序が逆であることに注意してください。）
        </para>
        <para>
         <literal>strpos('high', 'ig')</literal>
@@ -4486,6 +4499,7 @@ POSIX正規表現を区切り文字に使って<parameter>string</parameter>を�
         <returnvalue>text</returnvalue>
        </para>
        <para>
+<!--
         Extracts the substring of <parameter>string</parameter> starting at
         the <parameter>start</parameter>'th character,
         and extending for <parameter>count</parameter> characters if that is
@@ -4493,6 +4507,8 @@ POSIX正規表現を区切り文字に使って<parameter>string</parameter>を�
         as <literal>substring(<parameter>string</parameter>
         from <parameter>start</parameter>
         for <parameter>count</parameter>)</literal>.)
+-->
+<parameter>string</parameter>の<parameter>start</parameter>番目の文字から始まり、指定されている場合は<parameter>count</parameter>文字だけ連続したが部分文字列を取り出します（<literal>substring(<parameter>string</parameter> from <parameter>from</parameter> for <parameter>count</parameter>)</literal>と同じです）。
        </para>
        <para>
         <literal>substr('alphabet', 3)</literal>
@@ -5154,9 +5170,12 @@ SELECT format('Testing %3$s, %2$s, %s', 'one', 'two', 'three');
         <returnvalue>integer</returnvalue>
        </para>
        <para>
+<!--
         Returns first starting index of the specified
         <parameter>substring</parameter> within
         <parameter>bytes</parameter>, or zero if it's not present.
+-->
+<parameter>bytes</parameter>中の<parameter>substring</parameter>で指定する最初の文字列開始位置を返します。その文字列が存在しなければ0を返します。
        </para>
        <para>
         <literal>position('\x5678'::bytea in '\x1234567890'::bytea)</literal>
@@ -13634,8 +13653,11 @@ SELECT date_bin('15 minutes', TIMESTAMP '2020-02-11 15:44:17', TIMESTAMP '2001-0
    </para>
 
    <para>
+<!--
     The <parameter>stride</parameter> interval must be greater than zero and
     cannot contain units of month or larger.
+-->
+<parameter>stride</parameter>間隔はゼロより大きくなければならず、かつ月単位あるいはそれよりも大きくてはいけません。
    </para>
   </sect2>
 
@@ -22813,10 +22835,16 @@ $.* ? (@ like_regex "^\\d+$")
         Function signature
        </para>
        <para>
+<!--
         Description
+-->
+説明
        </para>
        <para>
+<!--
         Example(s)
+-->
+例
       </para></entry>
      </row>
     </thead>
@@ -22991,10 +23019,16 @@ $.* ? (@ like_regex "^\\d+$")
         Function signature
        </para>
        <para>
+<!--
         Description
+-->
+説明
        </para>
        <para>
+<!--
         Example(s)
+-->
+例
       </para></entry>
      </row>
     </thead>
@@ -23081,10 +23115,16 @@ FROM
         Function signature
        </para>
        <para>
+<!--
         Description
+-->
+説明
        </para>
        <para>
+<!--
         Example(s)
+-->
+例
       </para></entry>
      </row>
     </thead>
@@ -26287,8 +26327,12 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>setof anyrange</returnvalue>
        </para>
        <para>
+<!--
         Expands a multirange into a set of ranges.
         The ranges are read out in storage order (ascending).
+-->
+多重範囲を範囲の集合に拡張します。
+範囲は格納順で読み出されます（昇順）。
        </para>
        <para>
         <literal>unnest('{[1,2), [3,4)}'::int4multirange)</literal>
@@ -36258,6 +36302,7 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
         <returnvalue>integer</returnvalue>
        </para>
        <para>
+<!--
         Adds collations to the system
         catalog <structname>pg_collation</structname> based on all the locales
         it finds in the operating system.  This is
@@ -36274,6 +36319,15 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
         collations could be installed into some other schema as well.  The
         function returns the number of new collation objects it created.
         Use of this function is restricted to superusers.
+-->
+オペレーティングシステム上にあるすべてのロケールに基づき、システムカタログ<structname>pg_collation</structname>に照合順序を追加します。
+これは<command>initdb</command>が使用しているもので、より詳細については<xref linkend="collation-managing"/>を参照してください。
+その後にオペレーティングシステムに追加のロケールをインストールした場合、この関数を再度実行して、その新しいロケールの照合順序を追加することができます。
+<structname>pg_collation</structname>の既存のエントリにマッチするロケールはスキップされます。
+（しかし、オペレーティングシステム上にもはや存在しなくなったロケールに基づく照合順序オブジェクトはこの関数では削除されません。）
+<parameter>schema</parameter>パラメータは通常は<literal>pg_catalog</literal>ですが、必ずしもそうでなければならないわけではなく、照合順序をどれか他のスキーマにインストールすることもできます。
+この関数は新しく作成された照合順序オブジェクトの数を返します。
+この関数の利用はスーパユーザにのみ限定されています。
        </para></entry>
       </row>
      </tbody>
@@ -36715,9 +36769,12 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         special files are excluded.
        </para>
        <para>
+<!--
         This function is restricted to superusers and members of
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
+-->
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -36739,9 +36796,12 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         special files are excluded.
        </para>
        <para>
+<!--
         This function is restricted to superusers and members of
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
+-->
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 

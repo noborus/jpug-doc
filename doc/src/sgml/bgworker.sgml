@@ -409,6 +409,7 @@ postmasterがバックグラウンドワーカを開始しようと試みたか�
   </para>
 
   <para>
+<!--
    Background workers can send asynchronous notification messages, either by
    using the <command>NOTIFY</command> command via <acronym>SPI</acronym>,
    or directly via <function>Async_Notify()</function>.  Such notifications
@@ -416,6 +417,11 @@ postmasterがバックグラウンドワーカを開始しようと試みたか�
    Background workers should not register to receive asynchronous
    notifications with the <command>LISTEN</command> command, as there is no
    infrastructure for a worker to consume such notifications.
+-->
+バックグラウンドワーカは、<acronym>SPI</acronym>経由で<command>NOTIFY</command>コマンドを使用して、あるいは<function>Async_Notify()</function>で直接、非同期通知メッセージを送ることができます。
+そのような通知はトランザクションのコミット時に送信されます。
+バックグラウンドワーカは、<command>LISTEN</command>コマンドによる非同期通知メッセージの受信登録をすべきではありません。
+ワーカがそのような通知を消費する基盤が存在しないからです。
   </para>
 
   <para>

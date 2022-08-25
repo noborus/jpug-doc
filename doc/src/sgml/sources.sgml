@@ -1345,10 +1345,14 @@ BETTER: unrecognized node type: 42
   <formalpara>
     <title>Non-negative</title>
    <para>
+<!--
     Avoid <quote>non-negative</quote> as it is ambiguous
     about whether it accepts zero.  It's better to use
     <quote>greater than zero</quote> or
     <quote>greater than or equal to zero</quote>.
+-->
+0を受け入れるかどうかが不明確なため、<quote>non-negative（非負）</quote>の使用は避けてください。
+<quote>0より大きい</quote>または<quote>0以上</quote>を使用することをお勧めします。
    </para>
   </formalpara>
 

@@ -17,6 +17,7 @@
  <title>法的告知</title>
 
  <para>
+<!--
   <productname>PostgreSQL</productname> is Copyright &copy; 1996&ndash;2022
   by the PostgreSQL Global Development Group.
 -->

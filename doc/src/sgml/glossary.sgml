@@ -649,8 +649,11 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      activities.
     </para>
     <para>
+<!--
       For more information, see
       <xref linkend="monitoring-stats"/>.
+-->
+詳細については<xref linkend="monitoring-stats"/>を参照してください。
     </para>
    </glossdef>
   </glossentry>

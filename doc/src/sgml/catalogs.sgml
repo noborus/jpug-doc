@@ -4432,7 +4432,10 @@ falseの場合、スーパーユーザまたはデータベースの所有者だ
        <structfield>datcollate</structfield> <type>text</type>
       </para>
       <para>
+<!--
        LC_COLLATE for this database
+-->
+このデータベースのLC_COLLATE
       </para></entry>
      </row>
 
@@ -4441,7 +4444,10 @@ falseの場合、スーパーユーザまたはデータベースの所有者だ
        <structfield>datctype</structfield> <type>text</type>
       </para>
       <para>
+<!--
        LC_CTYPE for this database
+-->
+このデータベースのLC_CTYPE
       </para></entry>
      </row>
 
@@ -7900,7 +7906,10 @@ falseの場合、スーパーユーザまたはデータベースの所有者だ
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -7911,7 +7920,10 @@ falseの場合、スーパーユーザまたはデータベースの所有者だ
        <structfield>oid</structfield> <type>oid</type>
       </para>
       <para>
+<!--
        Row identifier
+-->
+行識別子
       </para></entry>
      </row>
 
@@ -7929,7 +7941,11 @@ falseの場合、スーパーユーザまたはデータベースの所有者だ
        <structfield>paracl</structfield> <type>aclitem[]</type>
       </para>
       <para>
+<!--
        Access privileges; see <xref linkend="ddl-priv"/> for details
+-->
+アクセス権限。
+詳細は<xref linkend="ddl-priv"/>を参照してください。
       </para></entry>
      </row>
 
@@ -9066,7 +9082,10 @@ SQL言語関数に対しては、関数が文字列リテラルで与えられ�
        Column Type
       </para>
       <para>
+<!--
        Description
+-->
+説明
       </para></entry>
      </row>
     </thead>
@@ -9077,7 +9096,10 @@ SQL言語関数に対しては、関数が文字列リテラルで与えられ�
        <structfield>oid</structfield> <type>oid</type>
       </para>
       <para>
+<!--
        Row identifier
+-->
+行識別子
       </para></entry>
      </row>
 
@@ -9087,7 +9109,10 @@ SQL言語関数に対しては、関数が文字列リテラルで与えられ�
        (references <link linkend="catalog-pg-publication"><structname>pg_publication</structname></link>.<structfield>oid</structfield>)
       </para>
       <para>
+<!--
        Reference to publication
+-->
+パブリケーションの参照
       </para></entry>
      </row>
 

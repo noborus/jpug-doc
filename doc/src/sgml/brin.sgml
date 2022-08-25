@@ -814,7 +814,10 @@ LOG:  request for BRIN range summarization for index "brin_wi_idx" page 128 was 
    </para>
 
    <para>
+<!--
     bloom operator classes accept these parameters:
+-->
+bloom演算子クラスでは次のパラメータを受け取ります。
    </para>
 
    <variablelist>
@@ -862,7 +865,10 @@ LOG:  request for BRIN range summarization for index "brin_wi_idx" page 128 was 
    </variablelist>
 
    <para>
+<!--
     minmax-multi operator classes accept these parameters:
+-->
+minmax-multi演算子クラスでは次のパラメータを受け取ります。
    </para>
 
    <variablelist>

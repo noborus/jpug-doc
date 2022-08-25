@@ -1973,6 +1973,7 @@ predicateの前後に括弧が必要であることに注意して下さい。
  </indexterm>
 
    <para>
+<!--
     The <literal>WITH</literal> clause can specify <firstterm>storage parameters</firstterm>
     for tables, and for indexes associated with a <literal>UNIQUE</literal>,
     <literal>PRIMARY KEY</literal>, or <literal>EXCLUDE</literal> constraint.
@@ -1989,6 +1990,15 @@ predicateの前後に括弧が必要であることに注意して下さい。
     will use the table's parameter value.
     Specifying these parameters for partitioned tables is not supported,
     but you may specify them for individual leaf partitions.
+-->
+<literal>WITH</literal>句により、テーブルおよび<literal>UNIQUE</literal>、<literal>PRIMARY KEY</literal>、または<literal>EXCLUDE</literal>制約と関連づいたインデックスの<firstterm>格納パラメータ</firstterm>を指定することができます。
+インデックスの格納パラメータについては<xref linkend="sql-createindex"/>で説明します。
+現在テーブルで設定可能な格納パラメータの一覧を以下に示します。
+これらのパラメータの多くに対して、示した通り、さらに<literal>toast</literal>という接頭辞のついた、同一の名前のパラメータがあります。
+これはもしあれば、テーブルの補助<acronym>TOAST</acronym>テーブルの動作を制御します。
+(TOASTに関する詳細については<xref linkend="storage-toast"/>を参照してください。)
+テーブルのパラメータ値が設定され、それと同等の<literal>toast.</literal>パラメータが設定されていない場合、TOASTテーブルはテーブルのパラメータ値を利用します。
+これらのパラメータをパーティションテーブルについて指定することはサポートされませんが、個々の末端のパーティションについて指定することはできます。
    </para>
 
    <variablelist>
@@ -2298,8 +2308,11 @@ falseの場合、トランザクションIDの周回問題を回避するため�
     </term>
     <listitem>
      <para>
+<!--
       Per-table value for <xref linkend="guc-autovacuum-analyze-threshold"/>
       parameter.
+-->
+<xref linkend="guc-autovacuum-analyze-threshold"/>パラメータについて、テーブル毎に設定する値です。
      </para>
     </listitem>
    </varlistentry>
@@ -2317,8 +2330,11 @@ falseの場合、トランザクションIDの周回問題を回避するため�
     </term>
     <listitem>
      <para>
+<!--
       Per-table value for <xref linkend="guc-autovacuum-analyze-scale-factor"/>
       parameter.
+-->
+<xref linkend="guc-autovacuum-analyze-scale-factor"/>パラメータについて、テーブル毎に設定する値です。
      </para>
     </listitem>
    </varlistentry>

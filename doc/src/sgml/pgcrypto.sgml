@@ -1767,10 +1767,13 @@ ZLIB付きでコンパイルされた場合、PGP暗号化関数は暗号化前�
    </para>
 
    <para>
+<!--
     When compiled against <productname>OpenSSL</productname> 3.0.0 and later
     versions, the legacy provider must be activated in the
     <filename>openssl.cnf</filename> configuration file in order to use older
     ciphers like DES or Blowfish.
+-->
+<productname>OpenSSL</productname> 3.0.0とそれ以降に対してコンパイルされた場合、DESやBlowfishのような古い暗号を使うためには<filename>openssl.cnf</filename>設定ファイルでレガシープロバイダを有効にしなければなりません。
    </para>
   </sect3>
 
