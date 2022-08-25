@@ -863,7 +863,6 @@ pgbench <optional> <replaceable>options</replaceable> </optional> <replaceable>d
       <term><option>--progress=</option><replaceable>sec</replaceable></term>
       <listitem>
        <para>
-<!--
         Show progress report every <replaceable>sec</replaceable> seconds.  The report
         includes the time since the beginning of the run, the TPS since the
         last report, and the transaction latency average, standard deviation,
@@ -1341,7 +1340,6 @@ pgbench <optional> <replaceable>options</replaceable> </optional> <replaceable>d
   <title>終了ステータス</title>
 
   <para>
-<!--
    A successful run will exit with status 0.  Exit status 1 indicates static
    problems such as invalid command-line options or internal errors which
    are supposed to never occur.  Early errors that occur when starting
@@ -1404,6 +1402,7 @@ pgbench <optional> <replaceable>options</replaceable> </optional> <replaceable>d
   <title>注釈</title>
 
  <refsect2 id="transactions-and-scripts" xreflabel="What Is the &quot;Transaction&quot; Actually Performed in pgbench?">
+<!--
   <title>What Is the <quote>Transaction</quote> Actually Performed in <application>pgbench</application>?</title>
 -->
   <title><application>pgbench</application>で実際に実行される<quote>トランザクション</quote>は何か?</title>
@@ -3569,6 +3568,7 @@ statement latencies in milliseconds, failures and retries:
 </screen></para>
 
   <para>
+<!--
    If multiple script files are specified, all statistics are reported
    separately for each script file.
 -->

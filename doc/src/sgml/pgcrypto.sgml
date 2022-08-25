@@ -57,7 +57,6 @@ digest(data bytea, type text) returns bytea
 </synopsis>
 
    <para>
-<!--
     Computes a binary hash of the given <parameter>data</parameter>.
     <parameter>type</parameter> is the algorithm to use.
     Standard algorithms are <literal>md5</literal>, <literal>sha1</literal>,

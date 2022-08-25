@@ -170,7 +170,6 @@
    <glossterm>Autovacuum【自動バキューム】（プロセス）</glossterm>
    <glossdef>
     <para>
-<!--
      A set of background processes that routinely perform
      <glossterm linkend="glossary-vacuum">vacuum</glossterm>
      and <glossterm linkend="glossary-analyze">analyze</glossterm> operations.
@@ -626,7 +625,6 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
    <glossterm>Constraint【制約】</glossterm>
    <glossdef>
     <para>
-<!--
      A restriction on the values of data allowed within a
      <glossterm linkend="glossary-table">table</glossterm>,
      or in attributes of a

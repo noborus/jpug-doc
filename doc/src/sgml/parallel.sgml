@@ -752,7 +752,6 @@ btree以外のインデックススキャンのような他のスキャンタイ
 
     <listitem>
       <para>
-<!--
         Scans of foreign tables, unless the foreign data wrapper has
         an <literal>IsForeignScanParallelSafe</literal> API that indicates otherwise.
       </para>

@@ -53,7 +53,6 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
   </para>
 
   <para>
-<!--
    A logical replication worker will be started to replicate data for the new
    subscription at the commit of the transaction where this command is run,
    unless the subscription is initially disabled.
@@ -155,7 +154,6 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         <term><literal>create_slot</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
-<!--
           Specifies whether the command should create the replication slot on
           the publisher.  The default is <literal>true</literal>.
           If set to <literal>false</literal>, you are responsible for
@@ -354,6 +352,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
  </refsect1>
 
  <refsect1 id="sql-createsubscription-notes" xreflabel="Notes">
+<!--
   <title>Notes</title>
 -->
   <title>注釈</title>

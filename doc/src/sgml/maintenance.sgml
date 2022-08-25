@@ -752,7 +752,6 @@ XIDのカウンタが一周して0に戻り、そして、突然に、過去に�
    </para>
 
    <para>
-<!--
     <command>VACUUM</command> uses the <link linkend="storage-vm">visibility map</link>
     to determine which pages of a table must be scanned.  Normally, it
     will skip pages that don't have any dead row versions even if those pages
@@ -1278,7 +1277,6 @@ analyze threshold = analyze base threshold + analyze scale factor * number of tu
 -->
 解析閾値 = 解析基礎閾値 + 解析規模係数 * タプル数
 </programlisting>
-<!--
     is compared to the total number of tuples inserted, updated, or deleted
     since the last <command>ANALYZE</command>.
    </para>

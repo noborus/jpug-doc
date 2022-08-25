@@ -192,7 +192,6 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     <term><literal>REFRESH PUBLICATION</literal></term>
     <listitem>
      <para>
-<!--
       Fetch missing table information from publisher.  This will start
       replication of tables that were added to the subscribed-to publications
       since <command>CREATE SUBSCRIPTION</command> or
@@ -250,7 +249,6 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     <term><literal>SET ( <replaceable class="parameter">subscription_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
-<!--
       This clause alters parameters originally set by
       <xref linkend="sql-createsubscription"/>.  See there for more
       information.  The parameters that can be altered

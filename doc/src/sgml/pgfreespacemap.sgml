@@ -42,7 +42,6 @@
 
     <listitem>
      <para>
-<!--
       Returns the amount of free space on the page of the relation, specified
       by <literal>blkno</literal>, according to the <acronym>FSM</acronym>.
      </para>
@@ -138,7 +137,6 @@ postgres=# SELECT * FROM pg_freespace('foo', 7);
   <title>作者</title>
 
   <para>
-<!--
    Original version by Mark Kirkwood <email>markir@paradise.net.nz</email>.
    Rewritten in version 8.4 to suit new <acronym>FSM</acronym> implementation
    by Heikki Linnakangas <email>heikki@enterprisedb.com</email>

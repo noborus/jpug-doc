@@ -4399,7 +4399,6 @@ POSIX正規表現を区切り文字に使って<parameter>string</parameter>を�
         <returnvalue>text[]</returnvalue>
        </para>
        <para>
-<!--
         Splits the <parameter>string</parameter> at occurrences
         of <parameter>delimiter</parameter> and forms the resulting fields
         into a <type>text</type> array.
@@ -17151,7 +17150,6 @@ MACアドレス型である<type>macaddr</type>と<type>macaddr8</type>は、<xr
         <returnvalue>tsvector</returnvalue>
        </para>
        <para>
-<!--
         Assigns the specified <parameter>weight</parameter> to elements
         of the <parameter>vector</parameter> that are listed
         in <parameter>lexemes</parameter>.
@@ -17343,7 +17341,6 @@ MACアドレス型である<type>macaddr</type>と<type>macaddr8</type>は、<xr
         <returnvalue>tsvector</returnvalue>
        </para>
        <para>
-<!--
         Removes any occurrence of the given <parameter>lexeme</parameter>
         from the <parameter>vector</parameter>.
         The <parameter>lexeme</parameter> string is treated as a lexeme as-is,
@@ -17361,7 +17358,6 @@ MACアドレス型である<type>macaddr</type>と<type>macaddr8</type>は、<xr
         <returnvalue>tsvector</returnvalue>
        </para>
        <para>
-<!--
         Removes any occurrences of the lexemes
         in <parameter>lexemes</parameter>
         from the <parameter>vector</parameter>.
@@ -24847,7 +24843,6 @@ nullあるいは空の配列の結合は無処理です。そうでない場合�
         <returnvalue>text</returnvalue>
        </para>
        <para>
-<!--
         Converts each array element to its text representation, and
         concatenates those separated by
         the <parameter>delimiter</parameter> string.
@@ -26716,7 +26711,6 @@ NULLも含めてすべての入力値を収集し、JSON配列に格納します
         <returnvalue>jsonb</returnvalue>
        </para>
        <para>
-<!--
         Collects all the key/value pairs into a JSON object.  Key arguments
         are coerced to text; value arguments are converted as per
         <function>to_json</function> or <function>to_jsonb</function>
@@ -34161,7 +34155,6 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
         <returnvalue>boolean</returnvalue>
        </para>
        <para>
-<!--
         Requests to log the memory contexts of the backend with the
         specified process ID.  This function can send the request to
         backends and auxiliary processes except logger.  These memory contexts
@@ -34476,7 +34469,6 @@ LOG:  Grand total: 1651920 bytes in 201 blocks; 622360 free (88 chunks); 1029560
         <returnvalue>pg_lsn</returnvalue>
        </para>
        <para>
-<!--
         Prepares the server to begin an on-line backup.  The only required
         parameter is an arbitrary user-defined label for the backup.
         (Typically this would be the name under which the backup dump file
@@ -34556,7 +34548,6 @@ falseの場合、<function>pg_stop_backup</function>はバックアップの完�
 従って、終了先行書き込みログファイルをすぐにアーカイブし、バックアップを完了させることができます。
        </para>
        <para>
-<!--
         The result of the function is a single record.
         The <parameter>lsn</parameter> column holds the backup's ending
         write-ahead log location (which again can be ignored).  The second
@@ -35574,7 +35565,6 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
         <returnvalue>oid</returnvalue>
        </para>
        <para>
-<!--
         Looks up a replication origin by name and returns the internal ID. If
         no such replication origin is found, <literal>NULL</literal> is
         returned.
@@ -36268,7 +36258,6 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
         <returnvalue>integer</returnvalue>
        </para>
        <para>
-<!--
         Adds collations to the system
         catalog <structname>pg_collation</structname> based on all the locales
         it finds in the operating system.  This is

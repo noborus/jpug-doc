@@ -1002,7 +1002,6 @@ tarアーカイブ形式では現在圧縮を全くサポートしていませ�
       <term><option>--disable-triggers</option></term>
       <listitem>
        <para>
-<!--
         This option is relevant only when creating a data-only dump.
         It instructs <application>pg_dump</application> to include commands
         to temporarily disable triggers on the target tables while
@@ -1963,7 +1962,6 @@ CREATE DATABASE foo WITH TEMPLATE template0;
   </para>
 
   <para>
-<!--
    When dumping logical replication subscriptions,
    <application>pg_dump</application> will generate <command>CREATE
    SUBSCRIPTION</command> commands that use the <literal>connect = false</literal>

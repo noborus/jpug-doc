@@ -420,7 +420,6 @@ XPath問い合わせより多くの結果列が存在する場合は余った列
   </para>
 
   <para>
-<!--
    The calling <command>SELECT</command> statement doesn't necessarily have to be
    just <literal>SELECT *</literal> &mdash; it can reference the output
    columns by name or join them to other tables. The function produces a

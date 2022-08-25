@@ -123,7 +123,6 @@ typedef struct BackgroundWorker
      <term><literal>BGWORKER_SHMEM_ACCESS</literal></term>
      <listitem>
       <para>
-<!--
        <indexterm><primary>BGWORKER_SHMEM_ACCESS</primary></indexterm>
        Requests shared memory access.  This flag is required.
       </para>

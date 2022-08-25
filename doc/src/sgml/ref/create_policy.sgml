@@ -857,7 +857,6 @@ AND
   </para>
 
   <para>
-<!--
    Since policy expressions
    are added to the user's query directly, they will be run with the rights of
    the user running the overall query.  Therefore, users who are using a given

@@ -386,7 +386,6 @@ PostgreSQL documentation
      <term><option>--no-strict-names</option></term>
      <listitem>
       <para>
-<!--
        By default, if an argument to <literal>&#045;-database</literal>,
        <literal>&#045;-table</literal>, <literal>&#045;-index</literal>,
        or <literal>&#045;-relation</literal> matches no objects, it is a fatal
@@ -760,7 +759,6 @@ TCPポートあるいはサーバが接続をリッスンしているマシン�
 サーバへの<replaceable>num</replaceable>並列接続か、検査対象オブジェクト1つにつき1本の接続のどちらか少ない方を使います。
       </para>
       <para>
-<!--
        The default is to use a single connection.
       </para>
      </listitem>

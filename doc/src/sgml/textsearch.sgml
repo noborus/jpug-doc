@@ -2608,7 +2608,6 @@ CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
    </para>
 
    <para>
-<!--
     Keep in mind that it is important to specify the configuration name
     explicitly when creating <type>tsvector</type> values inside triggers,
     so that the column's contents will not be affected by changes to

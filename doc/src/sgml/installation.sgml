@@ -264,7 +264,6 @@ su - postgres
 
     <listitem>
      <para>
-<!--
       To build the <application>PL/Python</application> server programming
       language, you need a <productname>Python</productname>
       installation with the header files and
@@ -337,7 +336,6 @@ su - postgres
 
     <listitem>
      <para>
-<!--
       You need <productname>OpenSSL</productname>, if you want to support
       encrypted client connections.  <productname>OpenSSL</productname> is
       also required for random number generation on platforms that do not
@@ -359,7 +357,6 @@ su - postgres
 
     <listitem>
      <para>
-<!--
       You need <productname>LZ4</productname>, if you want to support
       compression of data with that method; see
       <xref linkend="guc-default-toast-compression"/> and
@@ -622,7 +619,6 @@ Windows上で構築する場合、いずれにしても<application>Perl</applic
 <userinput>make</userinput>
 <userinput>make all</userinput>
 </screen>
-<!--
     (Remember to use <acronym>GNU</acronym> <application>make</application>.)
     The build will take a few minutes depending on your
     hardware.
@@ -1386,7 +1382,6 @@ Tclは、Tclへのインタフェースモジュールを構築するために�
        <term><option>--with-lz4</option></term>
        <listitem>
         <para>
-<!--
          Build with <productname>LZ4</productname> compression support.
         </para>
        </listitem>

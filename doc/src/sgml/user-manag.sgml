@@ -921,7 +921,6 @@ DROP ROLE doomed_role;
   </para>
 
   <para>
-<!--
   The <literal>pg_database_owner</literal> role has one implicit,
   situation-dependent member, namely the owner of the current database.  Like
   any role, it can own objects or receive grants of access privileges.
@@ -992,7 +991,6 @@ GRANT pg_signal_backend TO admin_user;
   <title>関数のセキュリティ</title>
 
   <para>
-<!--
    Functions, triggers and row-level security policies allow users to insert
    code into the backend server that other users might execute
    unintentionally. Hence, these mechanisms permit users to <quote>Trojan

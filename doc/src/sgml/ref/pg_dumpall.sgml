@@ -373,7 +373,6 @@ SQLスクリプトは標準出力に書き込まれます。
       <term><option>--disable-triggers</option></term>
       <listitem>
        <para>
-<!--
         This option is relevant only when creating a data-only dump.
         It instructs <application>pg_dumpall</application> to include commands
         to temporarily disable triggers on the target tables while

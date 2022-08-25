@@ -427,7 +427,6 @@ cat <replaceable class="parameter">filename</replaceable>.gz | gunzip | psql <re
 -->
     <title><command>split</command>の使用</title>
     <para>
-<!--
      The <command>split</command> command
      allows you to split the output into smaller files that are
      acceptable in size to the underlying file system. For example, to
@@ -896,7 +895,6 @@ WALアーカイブを行わない場合、システムは通常数個のセグ�
    </para>
 
    <para>
-<!--
     When archiving WAL data, we need to capture the contents of each segment
     file once it is filled, and save that data somewhere before the segment
     file is recycled for reuse.  Depending on the application and the
@@ -1535,7 +1533,6 @@ GNUの <application>tar</application>で1.23以降のバージョンを使用し
    </para>
 
    <para>
-<!--
     The contents of the directories <filename>pg_dynshmem/</filename>,
     <filename>pg_notify/</filename>, <filename>pg_serial/</filename>,
     <filename>pg_snapshots/</filename>, <filename>pg_stat_tmp/</filename>,

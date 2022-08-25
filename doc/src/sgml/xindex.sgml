@@ -737,6 +737,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
       </row>
       <row>
        <entry>
+<!--
         Define options that are specific to this operator class
         (optional)
 -->
@@ -798,6 +799,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
       </row>
       <row>
        <entry>
+<!--
         Define options that are specific to this operator class
         (optional)
 -->
@@ -810,6 +812,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
    </table>
 
   <para>
+<!--
    GiST indexes have eleven support functions, six of which are optional,
    as shown in <xref linkend="xindex-gist-support-table"/>.
    (For more information see <xref linkend="gist"/>.)
@@ -889,6 +892,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
       </row>
       <row>
        <entry><function>same</function></entry>
+<!--
        <entry>compare two keys and return true if they are equal</entry>
 -->
        <entry>2つのキーを比較し、等しければ真を返します。</entry>

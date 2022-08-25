@@ -206,7 +206,6 @@ Cで拡張として書かれた手続き言語ハンドラの雛型が<literal>s
    </para>
 
    <para>
-<!--
     Validator functions should typically honor the <xref
     linkend="guc-check-function-bodies"/> parameter: if it is turned off then
     any expensive or context-sensitive checking should be skipped.  If the

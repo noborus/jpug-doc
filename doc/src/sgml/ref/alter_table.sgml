@@ -1410,7 +1410,6 @@ fillfactor、TOAST、およびautovacuumのストレージパラメータおよ�
      </para>
 
      <para>
-<!--
       Attaching a partition acquires a
       <literal>SHARE UPDATE EXCLUSIVE</literal> lock on the parent table,
       in addition to the <literal>ACCESS EXCLUSIVE</literal> locks on the table

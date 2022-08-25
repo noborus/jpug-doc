@@ -895,7 +895,6 @@ SQLコマンドが正常に終了しました。
       <term>DataRow</term>
       <listitem>
        <para>
-<!--
         One of the set of rows returned by
         a <command>SELECT</command>, <command>FETCH</command>, etc. query.
        </para>
@@ -4061,7 +4060,6 @@ psql "dbname=postgres replication=database" -c "IDENTIFY_SYSTEM;"
   </para>
 
   <para>
-<!--
    The logical replication protocol sends individual transactions one by one.
    This means that all messages between a pair of Begin and Commit messages
    belong to the same transaction. Similarly, all messages between a pair of

@@ -1071,7 +1071,6 @@ INSERT INTO distributors (did, dname) VALUES (10, 'Conrad International')
   </title>
 
   <para>
-<!--
    <command>INSERT</command> conforms to the SQL standard, except that
    the <literal>RETURNING</literal> clause is a
    <productname>PostgreSQL</productname> extension, as is the ability

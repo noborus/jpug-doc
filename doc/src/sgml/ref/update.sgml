@@ -543,7 +543,6 @@ UPDATE employees SET sales_count = sales_count + 1 WHERE id =
   </para>
 
   <para>
-<!--
    Update contact names in an accounts table to match the currently assigned
    salespeople:
 <programlisting>

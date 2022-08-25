@@ -165,7 +165,6 @@ PostgreSQLは両方の仕組みを同時にサポートします。
   </para>
 
   <para>
-<!--
    Publications are different from schemas and do not affect how the table is
    accessed.  Each table can be added to multiple publications if needed.
    Publications may currently only contain tables and all tables in schema.
@@ -174,7 +173,6 @@ PostgreSQLは両方の仕組みを同時にサポートします。
   </para>
 
   <para>
-<!--
    Publications can choose to limit the changes they produce to
    any combination of <command>INSERT</command>, <command>UPDATE</command>,
    <command>DELETE</command>, and <command>TRUNCATE</command>, similar to how triggers are fired by
@@ -1685,7 +1683,6 @@ walsenderプロセスはWALのロジカルデコーディング（<xref linkend=
   </para>
 
   <para>
-<!--
    To add tables to a publication, the user must have ownership rights on the
    table. To add all tables in schema to a publication, the user must be a
    superuser. To create a publication that publishes all tables or all tables in
@@ -1700,7 +1697,6 @@ walsenderプロセスはWALのロジカルデコーディング（<xref linkend=
   </para>
 
   <para>
-<!--
    The subscription apply process will run in the local database with the
    privileges of the subscription owner.
   </para>

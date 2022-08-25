@@ -595,7 +595,6 @@ make check EXTRA_REGRESS_OPTS="--temp-config=test_postgresql.conf"
    </para>
 
    <para>
-<!--
     This can be useful to enable additional logging, adjust resource limits,
     or enable extra run-time checks such as <xref
     linkend="guc-debug-discard-caches"/>.
@@ -1183,7 +1182,6 @@ make check PROVE_TESTS='t/001_test1.pl t/003_test3.pl'
    </para>
 
    <para>
-<!--
     The TAP tests require the Perl module <literal>IPC::Run</literal>.
     This module is available from CPAN or an operating system package.
     They also require <productname>PostgreSQL</productname> to be

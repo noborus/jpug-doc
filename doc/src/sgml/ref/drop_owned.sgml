@@ -38,7 +38,6 @@ DROP OWNED BY { <replaceable class="parameter">name</replaceable> | CURRENT_ROLE
   <title>説明</title>
 
   <para>
-<!--
    <command>DROP OWNED</command> drops all the objects within the current
    database that are owned by one of the specified roles. Any
    privileges granted to the given roles on objects in the current

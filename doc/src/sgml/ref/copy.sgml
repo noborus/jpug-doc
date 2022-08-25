@@ -382,7 +382,6 @@ NULL値と空文字列を区別する必要がない場合は、テキスト形�
     <term><literal>HEADER</literal></term>
     <listitem>
      <para>
-<!--
       Specifies that the file contains a header line with the names of each
       column in the file.  On output, the first line contains the column
       names from the table.  On input, the first line is discarded when this
@@ -926,13 +925,11 @@ IDENTITY列については、<command>COPY FROM</command>コマンドは<command
 <entry>垂直タブ（ASCII 11）</entry>
       </row>
       <row>
-<!--
        <entry><literal>\</literal><replaceable>digits</replaceable></entry>
        <entry>Backslash followed by one to three octal digits specifies
        the byte with that numeric code</entry>
       </row>
       <row>
-<!--
        <entry><literal>\x</literal><replaceable>digits</replaceable></entry>
        <entry>Backslash <literal>x</literal> followed by one or two hex digits specifies
        the byte with that numeric code</entry>

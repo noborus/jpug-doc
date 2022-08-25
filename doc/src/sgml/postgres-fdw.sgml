@@ -129,7 +129,6 @@
  </para>
 
  <para>
-<!--
   It is generally recommended that the columns of a foreign table be declared
   with exactly the same data types, and collations if applicable, as the
   referenced columns of the remote table.  Although <filename>postgres_fdw</filename>
@@ -699,6 +698,7 @@ IMMUTABLEで、列挙された拡張に属する関数と演算子は、リモ�
   </sect3>
 
   <sect3>
+<!--
    <title>Updatability Options</title>
 -->
    <title>更新機能オプション</title>
@@ -831,7 +831,6 @@ IMMUTABLEで、列挙された拡張に属する関数と演算子は、リモ�
      <term><literal>import_collate</literal> (<type>boolean</type>)</term>
      <listitem>
       <para>
-<!--
        This option controls whether column <literal>COLLATE</literal> options
        are included in the definitions of foreign tables imported
        from a foreign server. The default is <literal>true</literal>.  You might
@@ -1497,6 +1496,7 @@ postgres=# SELECT postgres_fdw_disconnect_all();
  </sect2>
 
  <sect2>
+<!--
   <title>Examples</title>
 -->
   <title>例</title>

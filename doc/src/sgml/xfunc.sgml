@@ -4598,6 +4598,8 @@ retcomposite(PG_FUNCTION_ARGS)
 
 ]]><!--
         /* total number of tuples to be returned */
+--><![CDATA[
+        /* 返されるタプルの合計数 */
         funcctx->max_calls = PG_GETARG_INT32(0);
 
 ]]><!--

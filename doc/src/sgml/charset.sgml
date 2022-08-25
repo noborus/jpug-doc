@@ -524,6 +524,7 @@ initdb --locale-provider=icu --icu-locale=en
   </sect2>
 
   <sect2>
+<!--
    <title>Problems</title>
 -->
 <title>問題点</title>
@@ -1391,7 +1392,6 @@ SQL環境における照合順序オブジェクトにはどのような名前�
      </varlistentry>
     </variablelist>
 
-<!--
     See <ulink url="https://www.unicode.org/reports/tr35/tr35-collation.html">Unicode
     Technical Standard #35</ulink>
     and <ulink url="https://tools.ietf.org/html/bcp47">BCP 47</ulink> for

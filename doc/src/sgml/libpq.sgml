@@ -7331,7 +7331,6 @@ int PQflush(PGconn *conn);
     </para>
 
     <para>
-<!--
      <function>PQisBusy</function>, <function>PQconsumeInput</function>, etc
      operate as normal when processing pipeline results.  In particular,
      a call to <function>PQisBusy</function> in the middle of a pipeline
@@ -9687,7 +9686,6 @@ PGresult *PQcopyResult(const PGresult *src, int flags);
      </para>
 
      <para>
-<!--
       This is not intended to make an exact copy.  The returned result is
       always put into <literal>PGRES_TUPLES_OK</literal> status, and does not
       copy any error message in the source.  (It does copy the command status
@@ -10163,7 +10161,6 @@ defaultNoticeProcessor(void *arg, const char *message)
      <term><literal>PGEVT_REGISTER</literal></term>
      <listitem>
       <para>
-<!--
        The register event occurs when <xref linkend="libpq-PQregisterEventProc"/>
        is called.  It is the ideal time to initialize any
        <literal>instanceData</literal> an event procedure may need.  Only one
@@ -10200,7 +10197,6 @@ typedef struct
      <term><literal>PGEVT_CONNRESET</literal></term>
      <listitem>
       <para>
-<!--
        The connection reset event is fired on completion of
        <xref linkend="libpq-PQreset"/> or <function>PQresetPoll</function>.  In
        both cases, the event is only fired if the reset was successful.
@@ -10296,7 +10292,6 @@ typedef struct
 } PGEventResultCreate;
 </synopsis>
 
-<!--
        When a <literal>PGEVT_RESULTCREATE</literal> event is received, the
        <parameter>evtInfo</parameter> pointer should be cast to a
        <structname>PGEventResultCreate *</structname>.  The
@@ -10336,7 +10331,6 @@ typedef struct
 } PGEventResultCopy;
 </synopsis>
 
-<!--
        When a <literal>PGEVT_RESULTCOPY</literal> event is received, the
        <parameter>evtInfo</parameter> pointer should be cast to a
        <structname>PGEventResultCopy *</structname>.  The
@@ -10788,7 +10782,6 @@ myEventProc(PGEventId evtId, void *evtInfo, void *passThrough)
             mydata *conn_data = PQinstanceData(e->conn, myEventProc);
             mydata *res_data = dup_mydata(conn_data);
 
-]]><!--
             /* associate app specific data with result (copy it from conn) */
             PQresultSetInstanceData(e->result, myEventProc, res_data);
             break;
@@ -10800,7 +10793,6 @@ myEventProc(PGEventId evtId, void *evtInfo, void *passThrough)
             mydata *src_data = PQresultInstanceData(e->src, myEventProc);
             mydata *dest_data = dup_mydata(src_data);
 
-]]><!--
             /* associate app specific data with result (copy it from a result) */
             PQresultSetInstanceData(e->dest, myEventProc, dest_data);
             break;
@@ -11804,7 +11796,6 @@ SSL接続はサーバ証明書が検証されない場合失敗します。
   </para>
 
   <para>
-<!--
    In <literal>verify-full</literal> mode, the host name is matched against the
    certificate's Subject Alternative Name attribute(s) (SAN), or against the
    Common Name attribute if no SAN of type <literal>dNSName</literal> is

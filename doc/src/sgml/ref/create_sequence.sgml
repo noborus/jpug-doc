@@ -56,7 +56,6 @@ CREATE [ { TEMPORARY | TEMP } | UNLOGGED ] SEQUENCE [ IF NOT EXISTS ] <replaceab
   </para>
 
   <para>
-<!--
    If a schema name is given then the sequence is created in the
    specified schema.  Otherwise it is created in the current schema.
    Temporary sequences exist in a special schema, so a schema name cannot be

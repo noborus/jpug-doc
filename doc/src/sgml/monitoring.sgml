@@ -214,7 +214,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   </para>
 
   <para>
-<!--
    <productname>PostgreSQL</productname> also supports reporting dynamic
    information about exactly what is going on in the system right now, such as
    the exact command currently being executed by other server processes, and
@@ -250,7 +249,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   </para>
 
   <para>
-<!--
    The parameter <xref linkend="guc-track-counts"/> controls whether
    cumulative statistics are collected about table and index accesses.
   </para>
@@ -315,7 +313,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   <title>統計情報の表示</title>
 
   <para>
-<!--
    Several predefined views, listed in <xref
    linkend="monitoring-stats-dynamic-views-table"/>, are available to show
    the current state of the system. There are also several other
@@ -439,7 +436,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 
      <row>
       <entry><structname>pg_stat_replication</structname><indexterm><primary>pg_stat_replication</primary></indexterm></entry>
-<!--
       <entry>One row per WAL sender process, showing statistics about
        replication to that sender's connected standby server.
        See <link linkend="monitoring-pg-stat-replication-view">
@@ -4090,7 +4086,6 @@ WAL送信サーバの現在の状態です。
         <structfield>spill_txns</structfield> <type>bigint</type>
        </para>
        <para>
-<!--
         Number of transactions spilled to disk once the memory used by
         logical decoding to decode changes from WAL has exceeded
         <literal>logical_decoding_work_mem</literal>. The counter gets
@@ -7529,7 +7524,6 @@ SLRUでの切り詰めの数です。
         <returnvalue>void</returnvalue>
        </para>
        <para>
-<!--
         Resets some cluster-wide statistics counters to zero, depending on the
         argument.  The argument can be <literal>bgwriter</literal> to reset
         all the counters shown in
@@ -7559,7 +7553,6 @@ SLRUでの切り詰めの数です。
         <returnvalue>void</returnvalue>
        </para>
        <para>
-<!--
         Resets statistics for a single table or index in the current database
         or shared across all databases in the cluster to zero.
        </para>
@@ -9026,7 +9019,6 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
     <row>
      <entry><literal>vacuuming indexes</literal></entry>
      <entry>
-<!--
        <command>VACUUM</command> is currently vacuuming the indexes.  If a table has
        any indexes, this will happen at least once per vacuum, after the heap
        has been completely scanned.  It may happen multiple times per vacuum
@@ -9079,7 +9071,6 @@ SELECT pg_stat_get_backend_pid(s.backendid) AS pid,
     <row>
      <entry><literal>performing final cleanup</literal></entry>
      <entry>
-<!--
        <command>VACUUM</command> is performing final cleanup.  During this phase,
        <command>VACUUM</command> will vacuum the free space map, update statistics
        in <literal>pg_class</literal>, and report statistics to the cumulative

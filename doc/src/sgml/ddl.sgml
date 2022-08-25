@@ -877,7 +877,6 @@ CREATE TABLE products (
     </para>
 
     <para>
-<!--
      If what you desire is a one-time check against other rows at row
      insertion, rather than a continuously-maintained consistency
      guarantee, a custom <link linkend="triggers">trigger</link> can be used
@@ -1161,7 +1160,6 @@ CREATE TABLE products (
    </indexterm>
 
    <para>
-<!--
     In general, a unique constraint is violated if there is more than
     one row in the table where the values of all of the
     columns included in the constraint are equal.

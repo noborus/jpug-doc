@@ -1469,7 +1469,6 @@ SET LOCAL search_path TO @extschema@, pg_temp;
     <title>拡張設定テーブル</title>
 
     <para>
-<!--
      Some extensions include configuration tables, which contain data that
      might be added or changed by the user after installation of the
      extension.  Ordinarily, if a table is part of an extension, neither
@@ -1977,7 +1976,6 @@ XXX 名前を(スキーマ)修飾するだけでは十分ではありません�
      </para>
 
      <para>
-<!--
       Cross-extension references are extremely difficult to make fully
       secure, partially because of uncertainty about which schema the other
       extension is in.  The hazards are reduced if both extensions are

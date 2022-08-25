@@ -8,7 +8,6 @@
  </indexterm>
 
  <para>
-<!--
   <filename>btree_gist</filename> provides GiST index operator classes that
   implement B-tree equivalent behavior for the data types
   <type>int2</type>, <type>int4</type>, <type>int8</type>, <type>float4</type>,

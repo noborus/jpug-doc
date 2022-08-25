@@ -617,7 +617,6 @@ Cコード中でOIDの実際の数値を書くのは非常に良くないと考�
    </para>
 
    <para>
-<!--
     If <filename>genbki.pl</filename> needs to assign an OID to a catalog
     entry that does not have a manually-assigned OID, it will use a value in
     the range 10000&mdash;11999.  The server's OID counter is set to 10000
@@ -641,7 +640,6 @@ Cコード中でOIDの実際の数値を書くのは非常に良くないと考�
    </para>
 
    <para>
-<!--
     OIDs assigned during normal database operation are constrained to be
     16384 or higher.  This ensures that the range 10000&mdash;16383 is free
     for OIDs assigned automatically by <filename>genbki.pl</filename> or
@@ -1207,7 +1205,6 @@ $ perl  rewrite_dat_with_prokind.pl  pg_proc.dat
      </para>
 
      <para>
-<!--
       When <literal>bootstrap</literal> is specified,
       the table will only be created on disk; nothing is entered into
       <structname>pg_class</structname>,

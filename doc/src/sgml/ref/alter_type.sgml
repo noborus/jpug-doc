@@ -566,7 +566,6 @@ ALTER TYPE <replaceable class="parameter">name</replaceable> SET ( <replaceable 
   </para>
 
   <para>
-<!--
    Comparisons involving an added enum value will sometimes be slower than
    comparisons involving only original members of the enum type.  This will
    usually only occur if <literal>BEFORE</literal> or <literal>AFTER</literal>

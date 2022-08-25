@@ -789,7 +789,6 @@ EOF
       <term><option>--single-transaction</option></term>
       <listitem>
        <para>
-<!--
         This option can only be used in combination with one or more
         <option>-c</option> and/or <option>-f</option> options.  It causes
         <application>psql</application> to issue a <command>BEGIN</command> command
@@ -2344,7 +2343,6 @@ Cの形式のブロックコメントは、サーバに送信され、サーバ�
         <term><literal>\dl[+]</literal></term>
         <listitem>
         <para>
-<!--
         This is an alias for <command>\lo_list</command>, which shows a
         list of large objects.
         If <literal>+</literal> is appended to the command name,
@@ -2576,7 +2574,6 @@ Cの形式のブロックコメントは、サーバに送信され、サーバ�
         <term><literal>\dRp[+] [ <link linkend="app-psql-patterns"><replaceable class="parameter">pattern</replaceable></link> ]</literal></term>
         <listitem>
         <para>
-<!--
         Lists replication publications.
         If <replaceable class="parameter">pattern</replaceable> is
         specified, only those publications whose names match the pattern are
@@ -3652,7 +3649,6 @@ lo_import 152801
         <term><literal>\lo_list[+]</literal></term>
         <listitem>
         <para>
-<!--
         Shows a list of all <productname>PostgreSQL</productname>
         large objects currently stored in the database,
         along with any comments provided for them.
@@ -5003,7 +4999,6 @@ select 1; select 2; select 3;
 <programlisting>
 select 1\; select 2\; select 3;
 </programlisting>
-<!--
         results in sending the three SQL commands to the server in a single
         request, when the non-backslashed semicolon is reached.
         The server executes such a request as a single transaction,
@@ -6442,6 +6437,7 @@ testdb=&gt; \set PROMPT1 '%[%033[1;33;40m%]%n@%/%R%[%033[0m%]%# '
    </refsect3>
 
    <refsect3 id="app-psql-readline">
+<!--
     <title>Command-Line Editing</title>
 -->
     <title>コマンドライン編集</title>

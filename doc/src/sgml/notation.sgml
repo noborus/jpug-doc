@@ -7,7 +7,6 @@
  <title>規約</title>
 
  <para>
-<!--
   The following conventions are used in the synopsis of a command:
   brackets (<literal>[</literal> and <literal>]</literal>) indicate
   optional parts.  Braces

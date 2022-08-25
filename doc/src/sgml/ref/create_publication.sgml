@@ -307,7 +307,6 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
   </para>
 
   <para>
-<!--
    To add a table to a publication, the invoking user must have ownership
    rights on the table.  The <command>FOR ALL TABLES</command> and
    <command>FOR ALL TABLES IN SCHEMA</command> clauses require the invoking

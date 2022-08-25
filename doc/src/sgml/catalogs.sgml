@@ -9998,7 +9998,6 @@ SQL言語関数に対しては、関数が文字列リテラルで与えられ�
 （参照先 <link linkend="catalog-pg-database"><structname>pg_database</structname></link>.<structfield>oid</structfield>）
       </para>
       <para>
-<!--
        The OID of the database the dependent object is in,
        or zero for a shared object
       </para></entry>

@@ -885,7 +885,6 @@ WALファイル(16MB)は隣り合うシステム、同じサイトの別シス�
   </para>
 
   <para>
-<!--
    Recovery performance is sufficiently good that the standby will
    typically be only moments away from full
    availability once it has been activated. As a result, this is called
@@ -2542,7 +2541,6 @@ WALアーカイブがプライマリとスタンバイで共有されるケー�
     <itemizedlist>
      <listitem>
       <para>
-<!--
        Data Manipulation Language (DML): <command>INSERT</command>,
        <command>UPDATE</command>, <command>DELETE</command>, <command>COPY FROM</command>,
        <command>TRUNCATE</command>.
@@ -3358,7 +3356,6 @@ HINT:  You can then restart the server after making the necessary configuration 
    </para>
 
    <para>
-<!--
     WAL file control commands will not work during recovery,
     e.g., <function>pg_backup_start</function>, <function>pg_switch_wal</function> etc.
    </para>

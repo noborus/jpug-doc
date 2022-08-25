@@ -92,7 +92,6 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
   </para>
 
   <para>
-<!--
    If a schema name is given (for example, <literal>CREATE FOREIGN TABLE
    myschema.mytable ...</literal>) then the table is created in the specified
    schema.  Otherwise it is created in the current schema.
@@ -549,7 +548,6 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </para>
 
    <para>
-<!--
     Similar considerations apply to generated columns.  Stored generated
     columns are computed on insert or update on the local
     <productname>PostgreSQL</productname> server and handed to the

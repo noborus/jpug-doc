@@ -335,7 +335,6 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
   </para>
 
   <para>
-<!--
    If <literal>WITH ADMIN OPTION</literal> is specified, the member can
    in turn grant membership in the role to others, and revoke membership
    in the role as well.  Without the admin option, ordinary users cannot

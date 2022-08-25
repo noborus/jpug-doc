@@ -773,7 +773,6 @@ WantedBy=multi-user.target
      </para>
 
      <para>
-<!--
       Consider carefully the timeout
       setting.  <application>systemd</application> has a default timeout of 90
       seconds as of this writing and will kill a process that does not report
@@ -2353,7 +2352,6 @@ $ <userinput>cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages</userinp
      <term><systemitem>SIGINT</systemitem><indexterm><primary>SIGINT</primary></indexterm></term>
      <listitem>
       <para>
-<!--
        This is the <firstterm>Fast Shutdown</firstterm> mode.
        The server disallows new connections and sends all existing
        server processes <systemitem>SIGTERM</systemitem>, which will cause them
@@ -2664,7 +2662,6 @@ $ <userinput>kill -INT `head -1 /usr/local/pgsql/data/postmaster.pid`</userinput
    </para>
 
    <para>
-<!--
     It is recommended that you use the <application>pg_dump</application> and
     <application>pg_dumpall</application> programs from the <emphasis>newer</emphasis>
     version of
@@ -3528,7 +3525,6 @@ Unixシステムでは、<filename>server.key</filename>の権限は所有者以
   </para>
 
   <para>
-<!--
    Intermediate certificates that chain up to existing root certificates
    can also appear in the <xref linkend="guc-ssl-ca-file"/> file if
    you wish to avoid storing them on clients (assuming the root and
