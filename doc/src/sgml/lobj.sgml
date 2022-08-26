@@ -219,6 +219,7 @@ libpqの接続がパイプラインモードである間は、クライアント
     <title>ラージオブジェクトの作成</title>
 
     <para>
+<!--
      <indexterm><primary>lo_create</primary></indexterm>
      The function
 -->
@@ -254,6 +255,7 @@ Oid lo_creat(PGconn *conn, int mode);
     </para>
 
     <para>
+<!--
      In <productname>PostgreSQL</productname> releases 8.1 and later,
      the <replaceable class="parameter">mode</replaceable> is ignored,
      so that <function>lo_creat</function> is exactly equivalent to

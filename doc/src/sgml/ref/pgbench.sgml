@@ -3266,6 +3266,7 @@ END;
   </para>
 
   <para>
+<!--
    When running a long test on hardware that can handle a lot of transactions,
    the log files can become very large.  The <option>&#045;&#045;sampling-rate</option> option
    can be used to log only a random sample of transactions.
@@ -3448,6 +3449,7 @@ END;
   </para>
 
   <para>
+<!--
    Notice that while the plain (unaggregated) log format shows which script
    was used for each transaction, the aggregated format does not. Therefore if
    you need per-script data, you need to aggregate the data on your own.

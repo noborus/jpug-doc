@@ -221,6 +221,7 @@ PostgreSQL documentation
        </para>
 
        <para>
+<!--
         This option is meant for other programs that interact with a server
         instance, such as <xref linkend="app-pg-ctl"/>, to query configuration
         parameter values.  User-facing applications should instead use <link

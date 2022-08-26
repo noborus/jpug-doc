@@ -296,6 +296,7 @@ SET SESSION CHARACTERISTICS AS TRANSACTION <replaceable class="parameter">transa
   </para>
 
   <para>
+<!--
    The session default transaction modes can also be set or examined via the
    configuration parameters <xref linkend="guc-default-transaction-isolation"/>,
    <xref linkend="guc-default-transaction-read-only"/>, and

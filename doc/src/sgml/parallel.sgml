@@ -14,6 +14,7 @@
   </indexterm>
 
   <para>
+<!--
    <productname>PostgreSQL</productname> can devise query plans that can leverage
    multiple CPUs in order to answer queries faster.  This feature is known
    as parallel query.  Many queries cannot benefit from parallel query, either
@@ -118,6 +119,7 @@ EXPLAIN SELECT * FROM pgbench_accounts WHERE filler LIKE '%x%';
    </para>
 
    <para>
+<!--
     Every background worker process that is successfully started for a given
     parallel query will execute the parallel portion of the plan.  The leader
     will also execute that portion of the plan, but it has an additional
@@ -162,6 +164,7 @@ EXPLAIN SELECT * FROM pgbench_accounts WHERE filler LIKE '%x%';
   <title>どのような時にパラレルクエリは使用できるのか？</title>
 
   <para>
+<!--
     There are several settings that can cause the query planner not to
     generate a parallel query plan under any circumstances.  In order for
     any parallel query plans whatsoever to be generated, the following
@@ -851,6 +854,7 @@ btree以外のインデックススキャンのような他のスキャンタイ
   </para>
 
   <para>
+<!--
     If a function executed within a parallel worker acquires locks that are
     not held by the leader, for example by querying a table not referenced in
     the query, those locks will be released at worker exit, not end of

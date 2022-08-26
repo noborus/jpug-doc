@@ -75,6 +75,7 @@ CREATE POLICY <replaceable class="parameter">name</replaceable> ON <replaceable 
   </para>
 
   <para>
+<!--
    For <command>INSERT</command>, <command>UPDATE</command>, and
    <command>MERGE</command> statements,
    <literal>WITH CHECK</literal> expressions are enforced after

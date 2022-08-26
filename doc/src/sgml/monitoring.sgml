@@ -337,7 +337,6 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   </para>
 
   <para>
-<!--
    Another important point is that when a server process is asked to display
    any of the accumulated statistics, accessed values are cached until the end
    of its current transaction in the default configuration. So the statistics
@@ -367,6 +366,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   </para>
 
   <para>
+<!--
    A transaction can also see its own statistics (not yet flushed out to the
    shared memory statistics) in the views
    <structname>pg_stat_xact_all_tables</structname>,

@@ -2542,7 +2542,7 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
   </para>
 
   <para>
-<!--    
+<!--
    Query parameter values are represented by
    a <literal>ParamListInfo</literal> struct, which is convenient for passing
    down values that are already available in that format.  Dynamic parameter
@@ -7103,6 +7103,7 @@ void SPI_commit_and_chain(void)
   </para>
 
   <para>
+<!--
    <function>SPI_commit_and_chain</function> is the same, but the new
    transaction is started with the same transaction
    characteristics as the just finished one, like with the SQL command
@@ -7165,6 +7166,7 @@ void SPI_rollback_and_chain(void)
    characteristics, so that the caller can continue using SPI facilities.
   </para>
   <para>
+<!--
    <function>SPI_rollback_and_chain</function> is the same, but the new
    transaction is started with the same transaction
    characteristics as the just finished one, like with the SQL command

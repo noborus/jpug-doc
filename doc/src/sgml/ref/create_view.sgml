@@ -447,6 +447,7 @@ CREATE VIEW vista AS SELECT text 'Hello World' AS hello;
    </para>
 
    <para>
+<!--
     When <command>CREATE OR REPLACE VIEW</command> is used on an existing
     view, only the view's defining SELECT rule, plus any
     <literal>WITH ( ... )</literal> parameters and its

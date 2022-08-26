@@ -169,7 +169,6 @@ echo '\x \\ SELECT * FROM foo;' | psql
 のようにします（<literal>\\</literal>はメタコマンドの区切り文字です）。
       </para>
       <para>
-<!--
        Each <acronym>SQL</acronym> command string passed
        to <option>-c</option> is sent to the server as a single request.
        Because of this, the server executes it as a single transaction even
@@ -180,6 +179,7 @@ echo '\x \\ SELECT * FROM foo;' | psql
        for more details about how the server handles multi-query strings.)
       </para>
       <para>
+<!--
        If having several commands executed in one transaction is not desired,
        use repeated <option>-c</option> commands or feed multiple commands to
        <application>psql</application>'s standard input,
@@ -4259,6 +4259,7 @@ null値の代わりに表示する文字列を設定します。
           </para>
 
           <para>
+<!--
           When the <literal>pager</literal> option is <literal>off</literal>, the pager
           program is not used. When the <literal>pager</literal> option is
           <literal>on</literal>, the pager is used when appropriate, i.e., when the

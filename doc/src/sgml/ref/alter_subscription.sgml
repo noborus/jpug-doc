@@ -127,6 +127,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
     <term><literal>CONNECTION '<replaceable class="parameter">conninfo</replaceable>'</literal></term>
     <listitem>
      <para>
+<!--
       This clause replaces the connection string originally set by
       <xref linkend="sql-createsubscription"/>.  See there for more
       information.

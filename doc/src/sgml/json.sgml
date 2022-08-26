@@ -826,6 +826,7 @@ SELECT jdoc->'guid', jdoc->'name' FROM api WHERE jdoc @@ '$.tags[*] == "qui"';
   </para>
 
   <para>
+<!--
     Although the <literal>jsonb_path_ops</literal> operator class supports
     only queries with the <literal>@&gt;</literal>, <literal>@?</literal>
     and <literal>@@</literal> operators, it has notable

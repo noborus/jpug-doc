@@ -3540,6 +3540,7 @@ PostgreSQLでは、データベースごとに一つの文字セットしか存�
   <title><literal>domains</literal></title>
 
   <para>
+<!--
    The view <literal>domains</literal> contains all
    <glossterm linkend="glossary-domain">domains</glossterm> defined in the
    current database.  Only those domains are shown that the current user has

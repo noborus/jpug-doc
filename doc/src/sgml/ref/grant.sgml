@@ -649,6 +649,7 @@ PostgreSQLではグラントオプションはロールに対して与えるこ�
    </para>
 
    <para>
+<!--
     Privileges on databases, tablespaces, schemas, languages, and
     configuration parameters are
     <productname>PostgreSQL</productname> extensions.

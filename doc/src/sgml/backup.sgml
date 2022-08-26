@@ -974,6 +974,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
    </para>
 
    <para>
+<!--
     The archive library will be executed under the ownership of the same
     user that the <productname>PostgreSQL</productname> server is running as.  Since
     the series of WAL files being archived contains effectively everything
@@ -1011,6 +1012,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
    </para>
 
    <para>
+<!--
     The archive library should generally be designed to refuse to overwrite
     any pre-existing archive file.  This is an important safety feature to
     preserve the integrity of your archive in case of administrator error
@@ -1023,6 +1025,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
    </para>
 
    <para>
+<!--
     It is advisable to test your proposed archive library to ensure that it
     indeed does not overwrite an existing file, <emphasis>and that it returns
     <literal>false</literal> in this case</emphasis>.
@@ -1065,6 +1068,7 @@ test ! -f /mnt/server/archivedir/00000001000000A900000065 &amp;&amp; cp pg_wal/0
    </para>
 
    <para>
+<!--
     The speed of the archive library is unimportant as long as it can keep up
     with the average rate at which your server generates WAL data.  Normal
     operation continues even if the archiving process falls a little behind.
@@ -1109,6 +1113,7 @@ WALアーカイブによって<productname>PostgreSQL</productname>データベ�
    </para>
 
    <para>
+<!--
     The archive function is only invoked on completed WAL segments.  Hence,
     if your server generates only little WAL traffic (or has slack periods
     where it does so), there could be a long delay between the completion
@@ -1279,6 +1284,7 @@ WALアーカイブによって<productname>PostgreSQL</productname>データベ�
 これらのステップは順番に実行することが重要で、次のステップに進む前にこれらのステップが成功していることを確認する必要があります。
    </para>
     <para>
+<!--
      Multiple backups are able to be run concurrently (both those
      started using this backup API and those started using
      <xref linkend="app-pgbasebackup"/>).
@@ -1369,6 +1375,7 @@ SELECT * FROM pg_backup_stop(wait_for_archive => true);
 この切換えの理由は、バックアップ期間中に書き出された最後のWALファイルがアーカイブできるよう準備することです。
     </para>
     <para>
+<!--
      <function>pg_backup_stop</function> will return one row with three
      values. The second of these fields should be written to a file named
      <filename>backup_label</filename> in the root directory of the backup. The

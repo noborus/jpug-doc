@@ -889,7 +889,6 @@ NUMERIC
     </note>
 
     <para>
-<!--
      If the scale of a value to be stored is greater than the declared
      scale of the column, the system will round the value to the specified
      number of fractional digits.  Then, if the number of digits to the
@@ -938,6 +937,7 @@ NUMERIC(3, 5)
     </note>
 
     <para>
+<!--
      Numeric values are physically stored without any extra leading or
      trailing zeroes.  Thus, the declared precision and scale of a column
      are maximums, not fixed allocations.  (In this sense the <type>numeric</type>
@@ -3758,6 +3758,7 @@ ISO 8601の仕様では日付と時刻を区切るために大文字の<literal>
     </para>
 
     <para>
+<!--
      The date/time style can be selected by the user using the
      <command>SET datestyle</command> command, the <xref
      linkend="guc-datestyle"/> parameter in the
@@ -4333,7 +4334,7 @@ P <optional> <replaceable>years</replaceable>-<replaceable>months</replaceable>-
         </row>
         <row>
          <entry><literal>P1Y2M3DT4H5M6S</literal></entry>
-<!--         
+<!--
          <entry>ISO 8601 <quote>format with designators</quote>: same meaning as above</entry>
 -->
          <entry>ISO 8601 <quote>指定文字付き書式</quote>。意味は上と同じ</entry>

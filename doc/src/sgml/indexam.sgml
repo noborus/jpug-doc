@@ -433,6 +433,7 @@ aminsert (Relation indexRelation,
   </para>
 
   <para>
+<!--
    The <literal>indexUnchanged</literal> Boolean value gives a hint
    about the nature of the tuple to be indexed.  When it is true,
    the tuple is a duplicate of some existing tuple in the index.  The

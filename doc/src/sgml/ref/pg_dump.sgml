@@ -556,6 +556,7 @@ tar形式アーカイブを展開すると、有効なディレクトリ形式�
 <application>pg_dump</application>には、ダンプを中断するしか選択肢がありません。
        </para>
        <para>
+<!--
         To perform a parallel dump, the database server needs to support
         synchronized snapshots, a feature that was introduced in
         <productname>PostgreSQL</productname> 9.2 for primary servers and 10
@@ -1380,6 +1381,7 @@ tarアーカイブ形式では現在圧縮を全くサポートしていませ�
       <term><option>--no-unlogged-table-data</option></term>
       <listitem>
        <para>
+<!--
         Do not dump the contents of unlogged tables and sequences.  This
         option has no effect on whether or not the table and sequence
         definitions (schema) are dumped; it only suppresses dumping the table

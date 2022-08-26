@@ -4941,6 +4941,7 @@ void RequestNamedLWLockTranche(const char *tranche_name, int num_lwlocks)
      <productname>PostgreSQL</productname> source tree.
     </para>
     <para>
+<!--
      To avoid possible race-conditions, each backend should use the LWLock
      <function>AddinShmemInitLock</function> when connecting to and initializing
      its allocation of shared memory, as shown here:

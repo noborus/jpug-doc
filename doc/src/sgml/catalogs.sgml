@@ -10592,6 +10592,7 @@ SQL言語関数に対しては、関数が文字列リテラルで与えられ�
        <structfield>stainherit</structfield> <type>bool</type>
       </para>
       <para>
+<!--
        If true, the stats include values from child tables, not just the
        values in the specified relation
 -->
@@ -10983,6 +10984,7 @@ NULL値である列項目の割合
   </para>
 
   <para>
+<!--
    Like <link linkend="catalog-pg-statistic"><structname>pg_statistic</structname></link>,
    <structname>pg_statistic_ext_data</structname> should not be
    readable by the public, since the contents might be considered sensitive.

@@ -2234,7 +2234,7 @@ ShutdownForeignScan(ForeignScanState *node);
    </sect2>
 
    <sect2 id="fdw-callbacks-async">
-<!--   
+<!--
     <title>FDW Routines for Asynchronous Execution</title>
 -->
     <title>非同期実行のためのFDWルーチン</title>

@@ -126,6 +126,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
      </para>
 
      <para>
+<!--
       Only persistent base tables and partitioned tables can be part of a
       publication.  Temporary tables, unlogged tables, foreign tables,
       materialized views, and regular views cannot be part of a publication.
@@ -260,6 +261,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
          </para>
 
          <para>
+<!--
           If this is enabled, <literal>TRUNCATE</literal> operations performed
           directly on partitions are not replicated.
 -->
@@ -350,6 +352,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
   </para>
 
   <para>
+<!--
    For an <command>INSERT ... ON CONFLICT</command> command, the publication will
    publish the operation that actually results from the command.  So depending
    of the outcome, it may be published as either <command>INSERT</command> or
@@ -367,6 +370,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
   </para>
 
   <para>
+<!--
    <command>COPY ... FROM</command> commands are published
    as <command>INSERT</command> operations.
 -->
@@ -410,6 +414,7 @@ CREATE PUBLICATION active_departments FOR TABLE departments WHERE (active IS TRU
   </para>
 
   <para>
+<!--
    Create a publication that publishes all changes in all tables:
 -->
 すべてのテーブルのすべての変更をパブリッシュするパブリケーションを作成します。

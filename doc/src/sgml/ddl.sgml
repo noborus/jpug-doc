@@ -1676,6 +1676,7 @@ CREATE TABLE posts (
    </para>
 
    <para>
+<!--
     Analogous to <literal>ON DELETE</literal> there is also
     <literal>ON UPDATE</literal> which is invoked when a referenced
     column is changed (updated).  The possible actions are the same,
@@ -4605,7 +4606,6 @@ SELECT 3 OPERATOR(pg_catalog.+) 4;
    </indexterm>
 
    <para>
-<!--
     By default, users cannot access any objects in schemas they do not
     own.  To allow that, the owner of the schema must grant the
     <literal>USAGE</literal> privilege on the schema.  By default, everyone
@@ -4615,6 +4615,7 @@ SELECT 3 OPERATOR(pg_catalog.+) 4;
    </para>
 
    <para>
+<!--
     A user can also be allowed to create objects in someone else's schema.  To
     allow that, the <literal>CREATE</literal> privilege on the schema needs to
     be granted.  In databases upgraded from

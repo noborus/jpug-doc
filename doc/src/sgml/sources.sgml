@@ -106,6 +106,7 @@
    </para>
 
    <para>
+<!--
     The <filename>src/tools/editors</filename> directory contains sample settings
     files that can be used with the <productname>Emacs</productname>,
     <productname>xemacs</productname> or <productname>vim</productname>

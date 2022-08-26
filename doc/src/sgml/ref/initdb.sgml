@@ -180,7 +180,6 @@ PostgreSQL documentation
       <term><option>--auth=<replaceable class="parameter">authmethod</replaceable></option></term>
       <listitem>
        <para>
-<!--
         This option specifies the default authentication method for local
         users used in <filename>pg_hba.conf</filename> (<literal>host</literal>
         and <literal>local</literal> lines).  See <xref linkend="auth-pg-hba-conf"/>
@@ -188,6 +187,7 @@ PostgreSQL documentation
        </para>
 
        <para>
+<!--
         <command>initdb</command> will
         prepopulate <filename>pg_hba.conf</filename> entries using the
         specified authentication method for non-replication as well as
@@ -262,6 +262,7 @@ PostgreSQL documentation
       <term><option>--encoding=<replaceable class="parameter">encoding</replaceable></option></term>
       <listitem>
        <para>
+<!--
         Selects the encoding of the template databases. This will also
         be the default encoding of any database you create later,
         unless you override it then.  The default is derived from the locale, or

@@ -131,6 +131,7 @@ SQL文が実行されたデータベースのOID
        <structfield>toplevel</structfield> <type>bool</type>
       </para>
       <para>
+<!--
        True if the query was executed as a top-level statement
        (always true if <varname>pg_stat_statements.track</varname> is set to
        <literal>top</literal>)
@@ -464,6 +465,7 @@ SQL文によって書き込まれた一時ブロックの総数
        <structfield>blk_read_time</structfield> <type>double precision</type>
       </para>
       <para>
+<!--
        Total time the statement spent reading data file blocks, in milliseconds
        (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
@@ -477,6 +479,7 @@ SQL文がブロック読み取りに費やした総時間（ミリ秒単位）
        <structfield>blk_write_time</structfield> <type>double precision</type>
       </para>
       <para>
+<!--
        Total time the statement spent writing data file blocks, in milliseconds
        (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
@@ -619,6 +622,7 @@ SQL文により生成されたバイト単位のWAL総量
   </table>
 
   <para>
+<!--
    For security reasons, only superusers and roles with privileges of the
    <literal>pg_read_all_stats</literal> role are allowed to see the SQL text and
    <structfield>queryid</structfield> of queries executed by other users.

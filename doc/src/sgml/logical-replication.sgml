@@ -1299,6 +1299,7 @@ test_sub=# SELECT * FROM child ORDER BY a;
   </para>
 
   <para>
+<!--
    A conflict will produce an error and will stop the replication; it must be
    resolved manually by the user.  Details about the conflict can be found in
    the subscriber's server log.

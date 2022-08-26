@@ -476,6 +476,7 @@
    </para>
 
    <para>
+<!--
     As with vacuuming for space recovery, frequent updates of statistics
     are more useful for heavily-updated tables than for seldom-updated
     ones. But even for a heavily-updated table, there might be no need for
@@ -1082,6 +1083,7 @@ HINT:  Stop the postmaster and vacuum that database in single-user mode.
     </para>
 
     <para>
+<!--
      Aggressive <command>VACUUM</command>s, regardless of what causes
      them, are <emphasis>guaranteed</emphasis> to be able to advance
      the table's <structfield>relminmxid</structfield>.

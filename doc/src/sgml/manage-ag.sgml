@@ -215,6 +215,7 @@ CREATE DATABASE <replaceable>name</replaceable>;
   </para>
 
   <para>
+<!--
    Two additional databases,
    <literal>template1</literal><indexterm><primary>template1</primary></indexterm>
    and

@@ -73,6 +73,7 @@
    <glossterm>Analyze【アナライズ】（操作）</glossterm>
    <glossdef>
     <para>
+<!--
      The act of collecting statistics from data in
      <glossterm linkend="glossary-table">tables</glossterm>
      and other <glossterm linkend="glossary-relation">relations</glossterm>
@@ -279,6 +280,7 @@
    <glossterm>Background writer【バックグラウンドライタ】（プロセス）</glossterm>
    <glossdef>
     <para>
+<!--
      An <glossterm linkend="glossary-auxiliary-proc">auxiliary process</glossterm>
      that writes dirty
      <glossterm linkend="glossary-data-page">data pages</glossterm> from
@@ -1238,6 +1240,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
    <glossterm>Instance【インスタンス】</glossterm>
    <glossdef>
     <para>
+<!--
      A group of <glossterm linkend="glossary-backend">backend</glossterm> and
      <glossterm linkend="glossary-auxiliary-proc">auxiliary processes</glossterm>
      that communicate using a common shared memory area.  One
@@ -1399,6 +1402,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
    <glossterm>Logger【ロガー】（プロセス）</glossterm>
    <glossdef>
     <para>
+<!--
      An <glossterm linkend="glossary-auxiliary-proc">auxiliary process</glossterm>
      which, if enabled, writes information about database events into the current
      <glossterm linkend="glossary-log-file">log file</glossterm>.
@@ -2333,7 +2337,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
    <glossterm>SQL standard【標準SQL】</glossterm>
    <glossdef>
     <para>
-<!-- 
+<!--
      A series of documents that define the <acronym>SQL</acronym> language.
 -->
 <acronym>SQL</acronym>言語を義する一連の文書。
@@ -2874,6 +2878,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
    <glossterm>WAL archiver【WALアーカイバ】（プロセス）</glossterm>
    <glossdef>
     <para>
+<!--
      An <glossterm linkend="glossary-auxiliary-proc">auxiliary process</glossterm>
      which, if enabled, saves copies of
      <glossterm linkend="glossary-wal-file">WAL files</glossterm>

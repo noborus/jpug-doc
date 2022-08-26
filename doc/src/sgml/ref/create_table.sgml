@@ -1719,6 +1719,7 @@ predicateの前後に括弧が必要であることに注意して下さい。
         <term><literal>SET DEFAULT [ ( <replaceable>column_name</replaceable> [, ... ] ) ]</literal></term>
         <listitem>
          <para>
+<!--
           Set all of the referencing columns, or a specified subset of the
           referencing columns, to their default values. A subset of columns
           can only be specified for <literal>ON DELETE</literal> actions.

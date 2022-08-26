@@ -2455,6 +2455,7 @@ GET DIAGNOSTICS integer_var = ROW_COUNT;
           </listitem>
           <listitem>
            <para>
+<!--
             <command>UPDATE</command>, <command>INSERT</command>, <command>DELETE</command>,
             and <command>MERGE</command>
             statements set <literal>FOUND</literal> true if at least one

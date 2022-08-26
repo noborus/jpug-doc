@@ -441,6 +441,7 @@ libxml2はiconvを必要とすることに注意してください。
     <varlistentry>
      <term><productname>LZ4</productname></term>
      <listitem><para>
+<!--
       Required for supporting <productname>LZ4</productname> compression.
       Binaries and source can be downloaded from
       <ulink url="https://github.com/lz4/lz4/releases"></ulink>.
@@ -542,6 +543,7 @@ Itaniumプロセッサをサポートしていません。
   </para>
 
   <para>
+<!--
    To use a server-side third party library such as <productname>Python</productname> or
    <productname>OpenSSL</productname>, this library <emphasis>must</emphasis> also be
    64-bit. There is no support for loading a 32-bit library in a 64-bit

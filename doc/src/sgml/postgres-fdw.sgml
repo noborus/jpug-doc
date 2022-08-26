@@ -208,6 +208,7 @@
      </listitem>
      <listitem>
       <para>
+<!--
        <literal>fallback_application_name</literal> (always set to
        <literal>postgres_fdw</literal>)
 -->
@@ -401,6 +402,7 @@ postgresサーバが動作しているシステムユーザのunixのホーム�
      <term><literal>fdw_startup_cost</literal> (<type>floating point</type>)</term>
      <listitem>
       <para>
+<!--
        This option, which can be specified for a foreign server, is a floating
        point value that is added to the estimated startup cost of any
        foreign-table scan on that server.  This represents the additional
@@ -419,6 +421,7 @@ postgresサーバが動作しているシステムユーザのunixのホーム�
      <term><literal>fdw_tuple_cost</literal> (<type>floating point</type>)</term>
      <listitem>
       <para>
+<!--
        This option, which can be specified for a foreign server, is a floating
        point value that is used as extra cost per-tuple for foreign-table
        scans on that server.  This represents the additional overhead of

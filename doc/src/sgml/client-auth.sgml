@@ -1336,6 +1336,7 @@ mymap   /^(.*)@otherdomain\.com$   guest
   </para>
 
   <para>
+<!--
    A <filename>pg_ident.conf</filename> file that could be used in
    conjunction with the <filename>pg_hba.conf</filename> file in <xref
    linkend="example-pg-hba.conf"/> is shown in <xref

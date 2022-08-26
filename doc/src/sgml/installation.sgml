@@ -776,6 +776,7 @@ build-postgresql:
    </para>
 
    <para>
+<!--
     You can use <literal>make install-strip</literal> instead of
     <literal>make install</literal> to strip the executable files and
     libraries as they are installed.  This will save some space.  If

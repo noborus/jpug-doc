@@ -39,7 +39,6 @@ ALTER TRIGGER <replaceable class="parameter">name</replaceable> ON <replaceable 
   <title>説明</title>
 
   <para>
-<!--
    <command>ALTER TRIGGER</command> changes properties of an existing
    trigger.
   </para>
@@ -54,6 +53,7 @@ ALTER TRIGGER <replaceable class="parameter">name</replaceable> ON <replaceable 
   </para>
 
   <para>
+<!--
    The <literal>DEPENDS ON EXTENSION</literal> clause marks
    the trigger as dependent on an extension, such that if the extension is
    dropped, the trigger will automatically be dropped as well.

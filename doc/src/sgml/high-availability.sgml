@@ -1701,7 +1701,6 @@ primary_slot_name = 'node_a_slot'
    </para>
 
    <para>
-<!--
     When requesting synchronous replication, each commit of a
     write transaction will wait until confirmation is
     received that the commit has been written to the write-ahead log on disk
@@ -1716,6 +1715,7 @@ primary_slot_name = 'node_a_slot'
    </para>
 
    <para>
+<!--
     Read-only transactions and transaction rollbacks need not wait for
     replies from standby servers. Subtransaction commits do not wait for
     responses from standby servers, only top-level commits. Long
@@ -2359,6 +2359,7 @@ WALアーカイブがプライマリとスタンバイで共有されるケー�
   </indexterm>
 
    <para>
+<!--
     Hot standby is the term used to describe the ability to connect to
     the server and run read-only queries while the server is in archive
     recovery or standby mode. This

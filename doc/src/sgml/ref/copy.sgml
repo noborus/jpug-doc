@@ -991,6 +991,7 @@ IDENTITY列については、<command>COPY FROM</command>コマンドは<command
    </para>
 
    <para>
+<!--
     <command>COPY TO</command> will terminate each row with a Unix-style
     newline (<quote><literal>\n</literal></quote>).  Servers running on Microsoft Windows instead
     output carriage return/newline (<quote><literal>\r\n</literal></quote>), but only for

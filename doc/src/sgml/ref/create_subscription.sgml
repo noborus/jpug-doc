@@ -166,6 +166,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         <term><literal>enabled</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
+<!--
           Specifies whether the subscription should be actively replicating
           or whether it should just be set up but not started yet.  The default
           is <literal>true</literal>.
@@ -185,6 +186,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
          </para>
 
          <para>
+<!--
           Setting <literal>slot_name</literal> to <literal>NONE</literal>
           means there will be no replication slot
           associated with the subscription.  Use this when you will be

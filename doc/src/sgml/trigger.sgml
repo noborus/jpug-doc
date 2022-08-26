@@ -201,6 +201,7 @@
    </para>
 
    <para>
+<!--
     A statement that targets a parent table in an inheritance or partitioning
     hierarchy does not cause the statement-level triggers of affected child
     tables to be fired; only the parent table's statement-level triggers are
