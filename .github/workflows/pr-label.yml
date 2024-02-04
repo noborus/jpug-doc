@@ -32,7 +32,7 @@ jobs:
       - name: review
         id: review
         uses: actions/github-script@v7
-        if: steps.rereview.conclusion == 'skipped' && ${{ steps.getlength.outputs.Label_length == '' }}
+        if: ${{ steps.rereview.conclusion == 'skipped' }} && ${{ steps.getlength.outputs.Label_length == '' }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
