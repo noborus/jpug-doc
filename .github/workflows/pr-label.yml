@@ -16,6 +16,7 @@ jobs:
       - name: re-review
         id: rereview
         uses: actions/github-script@v7
+        continue-on-error: true
         if: contains(github.event.pull_request.labels.*.name, '指摘事項あり')
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
