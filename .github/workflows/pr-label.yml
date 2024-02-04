@@ -14,8 +14,9 @@ jobs:
           LL=$(echo $labels | jq '. | length' )
           echo "Label_length=$LL" >> $GITHUB_OUTPUT
       - name: re-review
-        id: re-review
+        id: rereview
         uses: actions/github-script@v7
+        continue-on-error: true
         if: contains(github.event.pull_request.labels.*.name, '指摘事項あり')
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -29,10 +30,14 @@ jobs:
               repo: context.repo.repo,
               labels: ['再レビュー待ち']
             })
+      - name: Output rereview conclusion
+        run: |
+          echo "rereview conclusion: ${{ steps.rereview.conclusion }}"
+          echo "steps.getlength.outputs.Label_length: ${{ steps.getlength.outputs.Label_length }}"
       - name: review
         id: review
         uses: actions/github-script@v7
-        if: steps.re-review.conclusion == 'skipped' && ${{ steps.getlength.outputs.Label_length == '' }}
+        if: steps.rereview.conclusion == 'skipped' && steps.getlength.outputs.Label_length == '' 
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
