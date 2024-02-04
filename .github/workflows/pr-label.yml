@@ -33,7 +33,7 @@ jobs:
       - name: Output rereview conclusion
         run: |
           echo "rereview conclusion: ${{ steps.rereview.conclusion }}"
-          echo "steps.getlength.outputs.Label_length: ${{ steps.rereview.conclusion }}"
+          echo "steps.getlength.outputs.Label_length: ${{ steps.getlength.outputs.Label_length }}"
       - name: review
         id: review
         uses: actions/github-script@v7

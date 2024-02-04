@@ -138,11 +138,14 @@ dropuser <replaceable>name</replaceable>
    To determine the set of existing roles, examine the <structname>pg_roles</structname>
    system catalog, for example:
 -->
-《マッチ度[]》既存のロール群を求めるためには、以下のように<structname>pg_roles</structname>システムカタログを確認してください。
+既存のロール群を求めるためには、以下のように<structname>pg_roles</structname>システムカタログを確認してください。
 <synopsis>
 SELECT rolname FROM pg_roles;
 </synopsis>
+<!--
    or to see just those capable of logging in:
+-->
+またはログイン可能なユーザーだけを見るためには以下のようにします。
 <synopsis>
 SELECT rolname FROM pg_roles WHERE rolcanlogin;
 </synopsis>
@@ -165,8 +168,8 @@ SELECT rolname FROM pg_roles WHERE rolcanlogin;
    <literal>postgres</literal>. In order to create more roles you
    first have to connect as this initial role.
 -->
-《マッチ度[62.830189]》データベースシステム自身を起動するために、初期化されたばかりのシステムは常に定義済みのロールを1つ持ちます。
-このロールは必ず<quote>スーパーユーザ</quote>であり、デフォルトでは（<command>initdb</command>実行時に変更しない限り）そのデータベースクラスタを初期化したオペレーティングシステムユーザと同じ名前となります。
+データベースシステム自身を起動するために、初期化されたばかりのシステムは常に定義済みのログイン可能ロールを1つ持ちます。
+このロールは必ず<quote>スーパーユーザ</quote>であり、デフォルトではそのデータベースクラスタを初期化したオペレーティングシステムユーザと同じ名前となります。
 習慣的にこのロールは<literal>postgres</literal>と名付けられます。
 ロールを追加する場合はまずこの初期ロールで接続しなければいけません。
   </para>
@@ -423,8 +426,9 @@ CREATE USER <replaceable>name</replaceable>;
         for individual grants by using <literal>WITH INHERIT TRUE</literal>
         or <literal>WITH INHERIT FALSE</literal>.
 -->
-《マッチ度[]》ロールには、デフォルトでメンバであるロールの権限を継承する権限が付与されます。
+ロールには、デフォルトでメンバであるロールの権限を継承する権限が付与されます。
 ただし、権限なしでロールを作成するには、<literal>CREATE ROLE <replaceable>name</replaceable> NOINHERIT</literal>を使用します。
+また、<literal>WITH INHERIT TRUE</literal>または<literal>WITH INHERIT FALSE</literal>を使用して、個々の権限に対して継承をオーバーライドすることもできます。
        </para>
       </listitem>
      </varlistentry>
@@ -630,16 +634,12 @@ REVOKE <replaceable>group_role</replaceable> FROM <replaceable>role1</replaceabl
    privileges inherited by those roles.
    As an example, suppose we have done:
 -->
-《マッチ度[]》1つ目は、グループ内のすべてのメンバは明示的に、一時的にそのグループロールに<quote>なる</quote>ために<link linkend="sql-set-role"><command>SET ROLE</command></link>を行うことができます。
-この状態では、データベースセッションは元々のログインロールの権限ではなくグループの権限でアクセスされます。
-そして、作成されたデータベースオブジェクトの所有者はログインロールではなくグループロールであるとみなされます。
-2つ目は、<literal>INHERIT</literal>属性を持つメンバロールは、それらがメンバとなるロールの権限を自動的に使用します。これには、ロールによって継承されるいかなる権限も含んでいます。
-例えば、以下の状態を想定します。
-《機械翻訳》グループロールのメンバーは、2つの方法でロールの権限を使用できます。
-まず、メンバーシップが<literal>SET</literal>オプションで付与されたメンバーロールは、<link linkend="sql-set-role"><command>SET</command></link>オプションを使用して、一時的に<quote>グループロールになる</quote>ことができます。
-この状態では、データベースセッションは、元のログインロールではなくグループロールの権限にアクセスでき、作成されたデータベースオブジェクトは、ログインロールではなくグループロールによって所有されているとみなされます。
-次に、<literal>INHERIT</literal>オプションでメンバーシップが付与されたメンバーロールは、それらのロールによって継承された権限を含む、それらのロールの権限を自動的に使用できます。
-例として、次のように行いました。
+グループロールのメンバは、ロールの権限を2つの方法で使用できます。
+まず、<literal>SET</literal>オプションを使用してメンバ資格を付与されたメンバロールは、<link linkend="sql-set-role"><command>SET ROLE</command></link>を使用してグループロールに一時的に<quote>なる</quote>ことができます。
+この状態では、データベースセッションは元のログインロールではなくグループロールの権限にアクセスでき、作成されたデータベースオブジェクトはログインロールではなくグループロールの所有と見なされます。
+次に、<literal>INHERIT</literal>オプションを使用してメンバ資格を付与されたメンバロールは、それらのロールによって継承された権限を含む、それらのロールの権限を自動的に使用できます。
+例えば、次のようにします。
+
 <programlisting>
 CREATE ROLE joe LOGIN;
 CREATE ROLE admin;
@@ -660,7 +660,7 @@ GRANT island TO joe WITH INHERIT TRUE, SET FALSE;
    membership is via <literal>admin</literal> which was granted using
    <literal>WITH INHERIT FALSE</literal>. After:
 -->
-《マッチ度[]》<literal>joe</literal>ロールで接続するとすぐに、<literal>joe</literal>は<literal>admin</literal>権限を<quote>継承</quote>しますので、そのデータベースセッションでは<literal>joe</literal>に直接与えられた権限に加えて、<literal>admin</literal>に与えられた権限を使用することができます。
+<literal>joe</literal>ロールで接続するとすぐに、<literal>joe</literal>は<literal>admin</literal>権限を<quote>継承</quote>しますので、そのデータベースセッションでは<literal>joe</literal>に直接与えられた権限に加えて、<literal>admin</literal>に与えられた権限を使用することができます。
 しかし、<literal>wheel</literal>に与えられた権限は利用できません。
 <literal>joe</literal>は間接的に<literal>wheel</literal>のメンバですが、<literal>admin</literal>経由のメンバ資格は<literal>NOINHERIT</literal>属性を持っているためです。
 《機械翻訳》ロール<literal>joe</literal>として接続した直後、データベースは<literal>joe</literal>に直接付与された権限に加えて、<literal>admin</literal>と<literal>island</literal>に付与された権限を<quote>継承</quote>するため、これらの権限を使用できます。
@@ -673,7 +673,7 @@ SET ROLE admin;
    <literal>admin</literal>, and not those granted to <literal>joe</literal> or
    <literal>island</literal>.  After:
 -->
-《機械翻訳》セッションは、<literal>admin</literal>に付与された権限のみを使用し、<literal>joe</literal>や<literal>island</literal>に付与された権限は使用しません。 後:
+を行った後、セッションは<literal>admin</literal>に与えられた権限のみを使用できるようになり、<literal>joe</literal>や<literal>island</literal>に与えられた権限は使用できなくなります。
 <programlisting>
 SET ROLE wheel;
 </programlisting>
@@ -1054,14 +1054,20 @@ RLSが使われているのであれば、管理者はこのロールがGRANTさ
       </row>
       <row>
        <entry>pg_use_reserved_connections</entry>
+<!--
        <entry>Allow use of connection slots reserved via
        <xref linkend="guc-reserved-connections"/>.</entry>
+-->
+       <entry><xref linkend="guc-reserved-connections"/>で予約された接続スロットの使用を許可する</entry>
       </row>
       <row>
        <entry>pg_create_subscription</entry>
+<!--
        <entry>Allow users with <literal>CREATE</literal> permission on the
        database to issue
        <link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>.</entry>
+-->
+       <entry>データベースに対して<literal>CREATE</literal>権限を持つユーザが、<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>を実行することを許可する</entry>
       </row>
      </tbody>
     </tgroup>
