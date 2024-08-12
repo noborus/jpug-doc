@@ -644,7 +644,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
         Only superusers and users with the appropriate <literal>SET</literal>
         privilege can change this setting.
 -->
-このパラメータは、指定された圧縮方法を使用したWALの圧縮を有効にします。
+このパラメータは、指定された圧縮方式を使用したWALの圧縮を有効にします。
 有効にすると、<productname>PostgreSQL</productname>サーバは<xref linkend="guc-full-page-writes"/>がオンの時またはベースバックアップ中にWALに書き込まれた全ページイメージを圧縮します。
 圧縮されたページイメージはWAL再生中に伸長されます。
 サポートされている方法は<literal>pglz</literal>、<literal>lz4</literal>(<productname>PostgreSQL</productname>が<option>--with-lz4</option>でコンパイルされた場合)および<literal>zstd</literal>(<productname>PostgreSQL</productname>が<option>--with-zstd</option>でコンパイルされた場合)です。
@@ -3089,7 +3089,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
        the <filename>postgresql.conf</filename> file or on the server
        command line.
 -->
-スタンバイサーバ上のWAL受信プロセスがプライマリー、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
+スタンバイサーバ上のWAL受信プロセスがプライマリ、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
 送信された進捗情報は<link linkend="monitoring-pg-stat-replication-view"><structname>pg_stat_replication</structname></link>ビューにより確認することが可能です。
 スタンバイサーバは書き込みがされた直近の先行書き込みログ位置、ディスクにフラッシュされた直近のログ位置、およびリカバリ適用された直近のログ位置を報告します。
 このパラメータの値がそれぞれの報告間における最大の時間間隔です。
@@ -3126,9 +3126,9 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         <literal>off</literal>. This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリーまたは上位サーバにフィードバックを送るか否かを指定します。
+ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリまたは上位サーバにフィードバックを送るか否かを指定します。
 このパラメータはレコードの回収に起因する問い合わせの取り消しを排除するために使用することができます。
-しかし、いくつかのワークロードに対してはプライマリーサーバ上でのデータベース肥大の原因となります。
+しかし、いくつかのワークロードに対してはプライマリサーバ上でのデータベース肥大の原因となります。
 フィードバックメッセージは<varname>wal_receiver_status_interval</varname>毎に、2回以上送信されません。
 デフォルトの値は<literal>off</literal>です。
 このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
@@ -3139,7 +3139,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         until it eventually reaches the primary.  Standbys make no other use
         of feedback they receive other than to pass upstream.
 -->
-カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリーに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
+カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
        </para>
       </listitem>
      </varlistentry>
@@ -4012,13 +4012,9 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         time and memory during planning, the default is
         <literal>off</literal>.
 -->
-《マッチ度[86.578450]》パーティション同士（partitionwise）のグループ化、あるいは集約を、問い合わせプランナが使用するのを有効あるいは無効にします。
-パーティション同士のグループ化、あるいは集約は、個々のパーティション毎にパーティション化されたテーブルに対して、グループ化あるいは集約を実行するのを可能にします。
+パーティション化されたテーブルに対してグループ化または集約を個別に実行できるように、問い合わせプランナのパーティションごと（partitionwise）のグループ化または集約の使用を有効または無効にします。
 <literal>GROUP BY</literal>句がパーティションキーを含まない場合は、パーティション単位で部分集約だけが実行でき、最終結果の算出は後で行われます。
 パーティション同士のグループ化あるいは集約には大量のCPU時間とメモリが使用されることがあるので、デフォルトは<literal>off</literal>です。
-《機械翻訳》パーティション化されたテーブルに対してグループ化または集計を個別に実行できるように、問い合わせプランナのパーティション化されたグループ化または集計の使用を有効または無効にします。
- <literal>GROUP BY</literal>句にパーティションキーが含まれていない場合、パーティションごとの部分集計のみが可能で、最終的なファイナライズは後で行う必要があります。
- パーティション化されたグループ化または集計は計画中にかなり多くのCPU時間とメモリを使用する可能性があるため、デフォルトは<literal>off</literal>です。
        </para>
       </listitem>
      </varlistentry>

@@ -3523,9 +3523,9 @@ SELECT pg_type_is_visible('myschema.widget'::regtype);
 -->
 サーバが認識するSQLキーワードを記述するレコードの集合を返します。
 <parameter>word</parameter>列にはキーワードが含まれます。
-<parameter>catcode</parameter>列にはカテゴリーコードが含まれます。<literal>U</literal>は非予約キーワード、<literal>C</literal>は列名になり得るキーワード、<literal>T</literal>は型あるいは関数名になり得るキーワード、<literal>R</literal>は完全な予約キーワードです。
+<parameter>catcode</parameter>列にはカテゴリコードが含まれます。<literal>U</literal>は非予約キーワード、<literal>C</literal>は列名になり得るキーワード、<literal>T</literal>は型あるいは関数名になり得るキーワード、<literal>R</literal>は完全な予約キーワードです。
 <parameter>barelabel</parameter>列は、キーワードが<quote>bare</quote>列ラベルとして<command>SELECT</command>リスト中で使えるなら<literal>true</literal>で、<literal>AS</literal>の後にのみ使えるのなら<literal>false</literal>です。
-<parameter>catdesc</parameter>列にはキーワードカテゴリーを記述する、ローカライズ化されることもある文字列が含まれます。
+<parameter>catdesc</parameter>列にはキーワードカテゴリを記述する、ローカライズ化されることもある文字列が含まれます。
 <parameter>baredesc</parameter>列にはキーワードの列ラベル状態を記述する、ローカライズ化されることもある文字列が含まれます。
        </para></entry>
       </row>
@@ -6422,7 +6422,7 @@ WALサマライザが実行中でない場合、この値は<literal>summarized_
         however only superusers can cancel superuser backends.
 -->
 指定したプロセスIDを持つバックエンドプロセスの現在のセッションの問い合わせを取り消します。
-呼び出し側のロールがキャンセルされるバックエンドのロールのメンバーであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
+呼び出し側のロールがキャンセルされるバックエンドのロールのメンバであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
 ただし、スーパーユーザのバックエンドはスーパーユーザのみが取り消せます。
        </para></entry>
       </row>
@@ -6516,7 +6516,7 @@ WALサマライザが実行中でない場合、この値は<literal>summarized_
         however only superusers can terminate superuser backends.
 -->
 バックエンドが指定したプロセスIDを持つセッションを終了させます。
-呼び出し側のロールが終了されるバックエンドのロールのメンバーであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
+呼び出し側のロールが終了されるバックエンドのロールのメンバであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
 ただし、スーパーユーザのバックエンドはスーパーユーザのみが終了できます。
        </para>
        <para>
@@ -9248,7 +9248,7 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -9279,7 +9279,7 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -9343,7 +9343,7 @@ WALアーカイブステータスディレクトリ(<filename>pg_wal/archive_sta
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -9379,7 +9379,7 @@ WALアーカイブステータスディレクトリ(<filename>pg_wal/archive_sta
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 

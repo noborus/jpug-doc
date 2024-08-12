@@ -1996,7 +1996,7 @@ default:\
     system to run out of virtual memory.
 -->
 Linuxでのデフォルトの仮想メモリの動作は<productname>PostgreSQL</productname>には最適ではありません。
-カーネルがメモリオーバーコミットを実装する方法のため、カーネルは、<productname>PostgreSQL</productname>や他のプロセスのメモリ要求がシステムの仮想メモリを枯渇させた場合、<productname>PostgreSQL</productname> postmaster （スーパーバイザーサーバプロセス）を終了させる可能性があります。
+カーネルがメモリオーバーコミットを実装する方法のため、カーネルは、<productname>PostgreSQL</productname>や他のプロセスのメモリ要求がシステムの仮想メモリを枯渇させた場合、<productname>PostgreSQL</productname> postmaster （スーパーバイザサーバプロセス）を終了させる可能性があります。
    </para>
 
    <para>
@@ -2069,7 +2069,7 @@ Out of Memory: Killed process 12345 (postgres).
 -->
 メモリを<quote>オーバーコミット</quote>させないようにカーネルの動作を変更することができます。
 この設定は完全に<ulink url="https://lwn.net/Articles/104179/">OOM killer</ulink>の発生を防ぐことはできませんが、その発生頻度をかなり軽減しますので、システム動作の堅牢性をより高めます。
-これは、以下のように<command>sysctl</command>を使用して厳密なオーバーコミットモードを選択するこで実施されます。
+これは、以下のように<command>sysctl</command>を使用して厳密なオーバーコミットモードを選択することで実施されます。
 <programlisting>
 sysctl -w vm.overcommit_memory=2
 </programlisting>
@@ -2504,7 +2504,7 @@ $ <userinput>kill -INT `head -1 /usr/local/pgsql/data/postmaster.pid`</userinput
 したがって、アップグレードは複雑になります。
 新しいメジャーバージョンにデータを移行する伝統的な方法は、遅くなることがありますが、データベースをダンプしてリストアすることです。
 より速い方法については、<xref linkend="pgupgrade"/>を参照してください。以下で説明するようにレプリケーションを使用する方法もあります。
-（パッケージ化された版の<productname>PostgreSQL</productname>を使用している場合は、 主要バージョンのアップルグレードを支援するスクリプトが提供される場合があります。
+（パッケージ化された版の<productname>PostgreSQL</productname>を使用している場合は、主要バージョンのアップグレードを支援するスクリプトが提供される場合があります。
 詳細についてはパッケージレベルのドキュメントを参照してください。）
   </para>
 
@@ -3381,7 +3381,7 @@ Unixシステムでは、<filename>server.key</filename>の権限は所有者以
 これは<command>chmod 0600 server.key</command>というコマンドで実現できます。
 あるいは、このファイルの所有者をrootにして、グループに読み取りアクセス権を与える（つまり、パーミッションを<literal>0640</literal>にする）ということもできます。
 この設定は、証明書と鍵ファイルがオペレーティングシステムによって管理されるインストレーションのためのものです。
-<productname>PostgreSQL</productname>サーバを実行するユーザは、証明書と鍵ファイルにアクセス権のあるグループのメンバーにする必要があります。
+<productname>PostgreSQL</productname>サーバを実行するユーザは、証明書と鍵ファイルにアクセス権のあるグループのメンバにする必要があります。
   </para>
 
   <para>

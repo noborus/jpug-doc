@@ -370,7 +370,7 @@ pg_upgradeは9.2.X以降から現時点の<productname>PostgreSQL</productname>�
         tablespace.
 -->
 《機械翻訳》デフォルトの<literal>fsync</literal>に設定すると、<command>pg_upgrade</command>はアップグレードされたクラスタのデータディレクトリ内のすべてのファイルを再帰的に開いて同期します。
-ファイルの検索はWALディレクトリと設定された各テーブルスペースのシンボリックリンクをたどります。
+ファイルの検索はWALディレクトリと設定された各テーブル空間のシンボリックリンクをたどります。
        </para>
        <para>
 <!--
@@ -380,7 +380,7 @@ pg_upgradeは9.2.X以降から現時点の<productname>PostgreSQL</productname>�
         See <xref linkend="guc-recovery-init-sync-method"/> for information
         about the caveats to be aware of when using <literal>syncfs</literal>.
 -->
-《機械翻訳》Linuxでは、<literal>syncfs</literal>を使用して、アップグレードされたクラスタのデータディレクトリ、WALファイル、各テーブルスペースを含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます。
+《機械翻訳》Linuxでは、<literal>syncfs</literal>を使用して、アップグレードされたクラスタのデータディレクトリ、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます。
 <xref linkend="guc-recovery-init-sync-method"/>を参照してください。
        </para>
        <para>

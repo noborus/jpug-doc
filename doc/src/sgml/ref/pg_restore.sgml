@@ -162,9 +162,9 @@ PostgreSQL documentation
         ignorable error messages will be reported,
         unless <option>&#45;-if-exists</option> is also specified.
 -->
-《機械翻訳》データベースオブジェクトをリストアする前に、リストアされるすべてのオブジェクトを<command>DROP</command>するコマンドを発行します。
+データベースオブジェクトをリストアする前に、リストアされるすべてのオブジェクトを<command>DROP</command>するコマンドを発行します。
 このオプションは既存のデータベースを上書きする場合に便利です。
-もし、宛先データベースにオブジェクトが存在しない場合は、<option>--if-exists</option>も指定しない限り、無視できるエラーメッセージが報告されます。
+もし、対象のデータベースにオブジェクトが存在しない場合は、<option>--if-exists</option>も指定しない限り、無視できるエラーメッセージが報告されます。
        </para>
       </listitem>
      </varlistentry>
@@ -935,9 +935,9 @@ PostgreSQL documentation
         option is not valid unless <option>&#45;-clean</option> is also
         specified.
 -->
-《機械翻訳》<literal>DROP ... IF EXISTS</literal>コマンドを使用して、<option>--clean</option>モードでオブジェクトを削除します。
-これは、<quote>存在しない</quote>エラーを抑制します。
-このオプションは、<option>--clean</option>が指定されていない場合は無効です。
+<literal>DROP ... IF EXISTS</literal>コマンドを使用して、<option>--clean</option>モードでオブジェクトを削除します。
+これは、そうでなければ報告される<quote>does not exist</quote>エラーを抑制します。
+このオプションは、<option>--clean</option>も指定されていない場合は無効です。
        </para>
       </listitem>
      </varlistentry>
@@ -1131,7 +1131,7 @@ pre-data項目は、他のすべてのデータ定義項目から構成されま
         capping the amount of lock table space needed.
 -->
 《機械翻訳》<option>--transaction-size</option>は、デフォルトの動作（SQLコマンドごとに1トランザクション）と<option>-1</option>/<option>--single-transaction</option>（リストアされたすべてのオブジェクトに対して1トランザクション）の中間的な選択肢を提供します。
-<option>--single-transaction</option>は最もオーバーヘッドが少ないですが、大きなデータベースでは、リストアされたオブジェクトごとにトランザクションがロックを取得するため、サーバのロックテーブルスペースを使い果たす可能性があるため、実用的ではないかもしれません。
+<option>--single-transaction</option>は最もオーバーヘッドが少ないですが、大きなデータベースでは、リストアされたオブジェクトごとにトランザクションがロックを取得するため、サーバのロックテーブル空間を使い果たす可能性があるため、実用的ではないかもしれません。
 数千のオブジェクトを対象とする<option>--transaction-size</option>を使用すると、必要なロックテーブル領域の量を制限しながら、ほぼ同じパフォーマンス上の利点が得られます。
        </para>
       </listitem>

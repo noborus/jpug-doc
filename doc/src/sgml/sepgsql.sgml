@@ -50,7 +50,7 @@
    the usual SQL permissions checking performed by
    <productname>PostgreSQL</productname>.
 -->
-このモジュールは、<productname>PostgreSQL</productname>が標準で提供しているものに加えて、<productname>SELinux</productname>と統合されたアクセス制御のレイヤーを追加します。
+このモジュールは、<productname>PostgreSQL</productname>が標準で提供しているものに加えて、<productname>SELinux</productname>と統合されたアクセス制御のレイヤを追加します。
 <productname>SELinux</productname>の視点からは、このモジュールが<productname>PostgreSQL</productname>をユーザ空間オブジェクトマネージャとして機能することを可能にします。
 すなわち、DMLクエリによる個々のテーブルや関数へのアクセスは、オペレーティングシステムのセキュリティポリシーによってチェックされます。
 このチェックは、<productname>PostgreSQL</productname>による通常のSQLパーミッションチェックに対して追加的に実施されます。
@@ -606,7 +606,7 @@ UPDATE t1 SET x = 2, y = func1(y) WHERE z = 100;
     can perform as entry point of trusted procedure.
 -->
 利用者がクエリの一部として、あるいは近道インタフェースを用いた呼び出しによって関数を実行しようとするとき、<literal>db_procedure:{execute}</literal>権限がチェックされます。
-関数がトラステッドプロシージャである場合、関数がトラステッドプロシージャのエントリーポイントとして振る舞う事ができるかどうかを検査するために<literal>db_procedure:{entrypoint}</literal>権限がチェックされます。
+関数がトラステッドプロシージャである場合、関数がトラステッドプロシージャのエントリポイントとして振る舞う事ができるかどうかを検査するために<literal>db_procedure:{entrypoint}</literal>権限がチェックされます。
    </para>
 
    <para>

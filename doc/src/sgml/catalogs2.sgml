@@ -77,7 +77,7 @@
 <!--
        The name of a configuration parameter for which privileges are granted
 -->
-権限が付与される設定パラメーターの名前
+権限が付与される設定パラメータの名前
       </para></entry>
      </row>
 
@@ -3216,12 +3216,9 @@ NULL値は、参照される列の統計ターゲットの最大値（設定さ�
    with <link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>) that only exposes
    information about tables the current user owns.
 -->
-《マッチ度[87.987520]》<link linkend="catalog-pg-statistic"><structname>pg_statistic</structname></link>同様、<structname>pg_statistic_ext_data</structname>はテーブル内容が秘密の情報とみなされますので、一般のユーザが読み取り可能であってはいけません。
+<link linkend="catalog-pg-statistic"><structname>pg_statistic</structname></link>同様、<structname>pg_statistic_ext_data</structname>はテーブル内容が秘密の情報とみなされますので、一般のユーザが読み取り可能であってはいけません。
 （列の値の最も共通した組み合わせは誰もが興味をそそられる良い例ですよね。）
-<link linkend="view-pg-stats-ext"><structname>pg_stats_ext</structname></link>は一般のユーザが読み取り可能な（<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と結合後の）<structname>pg_statistic_ext_data</structname>に対するビューで、現在のユーザが読んでも差し支えないテーブルと列の情報のみを開示しています。
-《機械翻訳》<link linkend="catalog-pg-statistic"><structname>pg_statistic</structname></link>と同様に、<structname>pg_statistic_ext_data</structname>は、その内容が機密と見なされる可能性があるため、一般には読み取り不可能であるべきです。
-（例: 列の値の最も一般的な組み合わせは非常に興味深いものになる可能性があります。
-<link linkend="view-pg-stats-ext"><structname>pg_stats_ext</structname></link>は<structname>pg_statistic_ext_data</structname>（<structname>pg_statistic_ext</structname>と結合した後）の読み取り可能なビューで、現在のユーザが所有するテーブルに関する情報のみを公開します。
+<link linkend="view-pg-stats-ext"><structname>pg_stats_ext</structname></link>は一般のユーザが読み取り可能な（<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と結合後の）<structname>pg_statistic_ext_data</structname>に対するビューで、現在のユーザが所有するテーブルに関する情報のみを公開します。
   </para>
 
   <table>
@@ -4277,7 +4274,7 @@ NULLは<literal>NONE</literal>を表します
 <!--
        True if constraint trigger is initially deferred
 -->
-制約トリガの初期状態が遅延可能と宣言されてる場合はtrue
+制約トリガの初期状態が遅延可能と宣言されている場合はtrue
       </para></entry>
      </row>
 

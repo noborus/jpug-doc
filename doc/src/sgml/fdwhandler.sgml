@@ -1228,7 +1228,7 @@ BeginForeignInsert(ModifyTableState *mtstate,
 外部テーブルへの挿入操作の実行を開始します。
 このルーチンは、タプル転送のためにパーティションが選択された場合か、<command>COPY FROM</command>コマンドでターゲットが指定された場合に、最初の行が外部テーブルに挿入される直前に呼び出されます。
 この関数は、実際の挿入に先立つすべての必要な初期化を実行すべきです。
-続いて、<function>ExecForeignInsert</function>または<function>ExecForeignBatchInsert</function>が外部テーブルにタブルを挿入するために呼び出されます。
+続いて、<function>ExecForeignInsert</function>または<function>ExecForeignBatchInsert</function>が外部テーブルにタプルを挿入するために呼び出されます。
     </para>
 
     <para>
@@ -1265,7 +1265,7 @@ BeginForeignInsert(ModifyTableState *mtstate,
      If the <function>BeginForeignInsert</function> pointer is set to
      <literal>NULL</literal>, no action is taken for the initialization.
 -->
-<function>BeginForeignInsert</function>ポインターが<literal>NULL</literal>なら、初期化処理は実施されません。
+<function>BeginForeignInsert</function>ポインタが<literal>NULL</literal>なら、初期化処理は実施されません。
     </para>
 
     <para>
@@ -1299,7 +1299,7 @@ EndForeignInsert(EState *estate,
      If the <function>EndForeignInsert</function> pointer is set to
      <literal>NULL</literal>, no action is taken for the termination.
 -->
-<function>EndForeignInsert</function>ポインターが<literal>NULL</literal>なら、終了処理は実施されません。
+<function>EndForeignInsert</function>ポインタが<literal>NULL</literal>なら、終了処理は実施されません。
     </para>
 
     <para>
@@ -1678,7 +1678,7 @@ GetForeignRowMarkType(RangeTblEntry *rte,
 -->
 行の印付けでどのオプションを外部テーブルに使うかを報告します。
 <literal>rte</literal>はテーブルの<structname>RangeTblEntry</structname>ノードで、<literal>strength</literal>は関連する<literal>FOR UPDATE/SHARE</literal>句があれば、それが要求するロックの強さを表します。
-その結果は、<literal>RowMarkType</literal>列挙型のメンバーでなければなりません。
+その結果は、<literal>RowMarkType</literal>列挙型のメンバでなければなりません。
     </para>
 
     <para>
@@ -2231,7 +2231,7 @@ ReInitializeDSMForeignScan(ForeignScanState *node, ParallelContext *pcxt,
     before <function>ReScanForeignScan</function>, but it's best not to rely on
     that ordering.
 -->
-外部スキャンプランノードが再スキャンされようとしているときに、並列操作に必要な動的共有メモリーを再初期化します。
+外部スキャンプランノードが再スキャンされようとしているときに、並列操作に必要な動的共有メモリを再初期化します。
 この関数はオプションであり、必要でない場合は省略することができます。
 <function>ReScanForeignScan</function>関数はローカル状態のみをリセットし、この関数は共有状態のみをリセットすることをお勧めします。
 現在、この関数は<function>ReScanForeignScan</function>より前に呼び出されますが、その順序に依存しないようにする方が良いでしょう。
@@ -2419,7 +2419,7 @@ ReparameterizeForeignPathByChild(PlannerInfo *root, List *fdw_private,
     <literal>adjust_appendrel_attrs_multilevel</literal> as required.
 -->
 この関数は、<literal>child_rel</literal>で指定された子リレーションの最上位の親によってパラメータ化されたパスを、子リレーションによってパラメータ化されたパスに変換する際に呼び出されます。
-この関数はパスをパラメータ化する、あるいは<structname>ForeignPath</structname>の<literal>fdw_private</literal>メンバーに保存されている式ノードを変換するために使用されます。
+この関数はパスをパラメータ化する、あるいは<structname>ForeignPath</structname>の<literal>fdw_private</literal>メンバに保存されている式ノードを変換するために使用されます。
 このコールバックは必要に応じて、<literal>reparameterize_path_by_child</literal>、<literal>adjust_appendrel_attrs</literal>あるいは<literal>adjust_appendrel_attrs_multilevel</literal>を呼び出すことができます。
     </para>
    </sect2>

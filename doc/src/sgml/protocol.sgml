@@ -2433,7 +2433,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <acronym>GSSAPI</acronym>暗号化接続を開始するには、フロントエンドは最初にStartupMessageではなく、GSSENCRequestメッセージを送ります。
 次にサーバは、それぞれ<acronym>GSSAPI</acronym>暗号化を希望する、しないを意味する<literal>G</literal>または<literal>N</literal>を含む1バイトを送信します。
 このレスポンスに満足できなければ、この時点でフロントエンドは接続を打ち切って構いません。
-<literal>G</literal>の受信後継続するには、<ulink url="https://datatracker.ietf.org/doc/html/rfc2744">RFC 2744</ulink>あるいは同様の文書で議論されているGSSAPI Cバインディングを使い、ループの中で<function>gss_init_sec_context()</function>を呼び出して<acronym>GSSAPI</acronym>を初期化し、結果をサーバに送信し、空の入力を受け取ることから始めて、サーバが出力を返さなくなるまでサーバからの出力を受け取ります。
+<literal>G</literal>の受信後継続するには、<ulink url="https://datatracker.ietf.org/doc/html/rfc2744">RFC 2744</ulink>あるいは同様の文書で説明されているGSSAPI Cバインディングを使い、ループの中で<function>gss_init_sec_context()</function>を呼び出して<acronym>GSSAPI</acronym>を初期化し、結果をサーバに送信し、空の入力を受け取ることから始めて、サーバが出力を返さなくなるまでサーバからの出力を受け取ります。
 <function>gss_init_sec_context()</function>の結果をサーバに送る際には、ネットワークバイトオーダーで4バイトの整数にメッセージ長を先頭に付与します。
 <literal>N</literal>の後継続するには、通常のStartupMessageを送信し、暗号化せずに続けてください。
 （他に、<acronym>GSSAPI</acronym>の代わりに<acronym>SSL</acronym>暗号化の使用を試行するために、<literal>N</literal>応答の後にSSLRequestメッセージを送信することが認められています。）
@@ -4295,7 +4295,7 @@ falseの場合、スキップされます。
 また、サイズ、最終更新時刻、オプションでファイル毎のチェックサムも格納します。
 <literal>force-encode</literal>の値は、全てのファイル名を強制的に16進数でエンコーディングします。
 それ以外の場合、このタイプのエンコードは、名前が非UTF-8オクテットシーケンスであるファイルに対してのみ実行されます。
-<literal>force-encode</literal>は、主にテスト目的で使用されており、バックアップマニュフェストを読み取るクライアントがこのケースを処理できることを確認するために使用されます。
+<literal>force-encode</literal>は、主にテスト目的で使用されており、バックアップマニフェストを読み取るクライアントがこのケースを処理できることを確認するために使用されます。
 以前のリリースとの互換性を保つため、デフォルトは、<literal>MANIFEST 'no'</literal>です。
           </para>
          </listitem>
@@ -4313,7 +4313,7 @@ falseの場合、スキップされます。
            <literal>SHA384</literal>, and <literal>SHA512</literal>.
            The default is <literal>CRC32C</literal>.
 -->
-バックアップマニュフェストに含まれている各ファイルに適用するチェックサムアルゴリズムを指定します。
+バックアップマニフェストに含まれている各ファイルに適用するチェックサムアルゴリズムを指定します。
 現在使用可能なアルゴリズムは、<literal>NONE</literal>、<literal>CRC32C</literal>、<literal>SHA224</literal>, <literal>SHA256</literal>、<literal>SHA384</literal>、<literal>SHA512</literal>です。
 デフォルトは<literal>CRC32C</literal>です。
           </para>
@@ -4436,7 +4436,7 @@ falseの場合、スキップされます。
             in the POSIX 1003.1-2008 standard).
 -->
 新規アーカイブの開始を示すメッセージを識別します。
-メイン・データ・ディレクトリ用に1つのアーカイブがあり、追加表領域ごとに1つのアーカイブがあります。
+メインデータディレクトリ用に1つのアーカイブがあり、追加テーブル空間ごとに1つのアーカイブがあります。
 各アーカイブはtarフォーマットを使用します（POSIX 1003.1-2008標準で規定されている<quote>ustar交換形式</quote>に従う）。
            </para></listitem>
           </varlistentry>
@@ -4460,7 +4460,7 @@ falseの場合、スキップされます。
             archive was created.
 -->
 メインデータディレクトリの場合は空の文字列。
-その他のテーブルスペースの場合は、このアーカイブが作成されたディレクトリへのフルパス。
+その他のテーブル空間の場合は、このアーカイブが作成されたディレクトリへのフルパス。
            </para></listitem>
           </varlistentry>
          </variablelist>
@@ -4533,7 +4533,7 @@ falseの場合、スキップされます。
             The number of bytes from the current tablespace for which
             processing has been completed.
 -->
-処理が完了した現在の表領域のバイト数。
+処理が完了した現在のテーブル空間のバイト数。
            </para></listitem>
           </varlistentry>
          </variablelist>

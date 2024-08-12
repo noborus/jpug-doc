@@ -518,7 +518,7 @@ JSON入力が要求と一致する正しい構造をしていなければ、フ�
         To append an array to another array as a single entry, wrap it
         in an additional layer of array, for example:
 -->
-一つの要素を持つとして配列を他の配列に追加するには、例のように配列の追加のレイヤー中に含めてください。
+一つの要素を持つとして配列を他の配列に追加するには、例のように配列の追加のレイヤ中に含めてください。
        </para>
        <para>
         <literal>'[1, 2]'::jsonb || jsonb_build_array('[3, 4]'::jsonb)</literal>
@@ -4336,6 +4336,21 @@ DETAIL:  Missing "]" after array dimensions.
     </tbody>
    </tgroup>
   </table>
+  <note>
+   <para>
+<!--
+    The <replaceable>context_item</replaceable> expression is converted to
+    <type>jsonb</type> by an implicit cast if the expression is not already of
+    type <type>jsonb</type>. Note, however, that any parsing errors that occur
+    during that conversion are thrown unconditionally, that is, are not
+    handled according to the (specified or implicit) <literal>ON ERROR</literal>
+    clause.
+-->
+《機械翻訳》<replaceable>context_item</replaceable>式は、式がまだ<type>jsonb</type>になっていない場合、暗黙キャストによって<type>jsonb</type>に変換されます。
+ただし、ノートでは、その変換中に発生したパースエラーは無条件にスローされます。
+つまり、<literal>ON ERROR</literal>句に従って処理されません。
+   </para>
+  </note>
   </sect2>
 
  <sect2 id="functions-sqljson-table">
@@ -4432,7 +4447,7 @@ NESTED COLUMNSから構成される行は<firstterm>子行</firstterm>と呼ば�
 JSON_TABLE (
     <replaceable>context_item</replaceable>, <replaceable>path_expression</replaceable> <optional> AS <replaceable>json_path_name</replaceable> </optional> <optional> PASSING { <replaceable>value</replaceable> AS <replaceable>varname</replaceable> } <optional>, ...</optional> </optional>
     COLUMNS ( <replaceable class="parameter">json_table_column</replaceable> <optional>, ...</optional> )
-    <optional> { <literal>ERROR</literal> | <literal>EMPTY</literal> } <literal>ON ERROR</literal> </optional>
+    <optional> { <literal>ERROR</literal> | <literal>EMPTY</literal> <optional>ARRAY</optional>} <literal>ON ERROR</literal> </optional>
 )
 
 <phrase>
@@ -4444,8 +4459,8 @@ where <replaceable class="parameter">json_table_column</replaceable> is:
         <optional> PATH <replaceable>path_expression</replaceable> </optional>
         <optional> { WITHOUT | WITH { CONDITIONAL | <optional>UNCONDITIONAL</optional> } } <optional> ARRAY </optional> WRAPPER </optional>
         <optional> { KEEP | OMIT } QUOTES <optional> ON SCALAR STRING </optional> </optional>
-        <optional> { ERROR | NULL | EMPTY { ARRAY | OBJECT } | DEFAULT <replaceable>expression</replaceable> } ON EMPTY </optional>
-        <optional> { ERROR | NULL | EMPTY { ARRAY | OBJECT } | DEFAULT <replaceable>expression</replaceable> } ON ERROR </optional>
+        <optional> { ERROR | NULL | EMPTY { <optional>ARRAY</optional> | OBJECT } | DEFAULT <replaceable>expression</replaceable> } ON EMPTY </optional>
+        <optional> { ERROR | NULL | EMPTY { <optional>ARRAY</optional> | OBJECT } | DEFAULT <replaceable>expression</replaceable> } ON ERROR </optional>
   | <replaceable>name</replaceable> <replaceable>type</replaceable> EXISTS <optional> PATH <replaceable>path_expression</replaceable> </optional>
         <optional> { ERROR | TRUE | FALSE | UNKNOWN } ON ERROR </optional>
   | NESTED <optional> PATH </optional> <replaceable>path_expression</replaceable> <optional> AS <replaceable>json_path_name</replaceable> </optional> COLUMNS ( <replaceable>json_table_column</replaceable> <optional>, ...</optional> )
