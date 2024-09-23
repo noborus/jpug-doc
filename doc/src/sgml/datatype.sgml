@@ -1447,7 +1447,7 @@ IEEE 754では、<literal>NaN</literal>は（<literal>NaN</literal>を含む）�
       autoincrementing column.  Another way is to use the SQL-standard
       identity column feature, described at <xref linkend="sql-createtable"/>.
 -->
-このセクションではPostgreSQL固有の自動増分列の作成方法について記述します。
+この節ではPostgreSQL固有の自動増分列の作成方法について記述します。
 SQL標準の識別列を作成する方法は、<xref linkend="sql-createtable"/>に記述されています。
      </para>
     </note>
