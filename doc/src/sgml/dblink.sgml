@@ -21,6 +21,53 @@
 
  <para>
 <!--
+  <filename>dblink</filename> can report the following wait events under the wait
+  event type <literal>Extension</literal>.
+-->
+<filename>dblink</filename>は、待機イベントの種類<literal>Extension</literal>で以下の待機イベントを報告できます。
+ </para>
+
+ <variablelist>
+  <varlistentry>
+   <term><literal>DblinkConnect</literal></term>
+   <listitem>
+    <para>
+<!--
+     Waiting to establish a connection to a remote server.
+-->
+リモートサーバへの接続が確立するのを待機しています。
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term><literal>DblinkGetConnect</literal></term>
+   <listitem>
+    <para>
+<!--
+     Waiting to establish a connection to a remote server when it could not
+     be found in the list of already-opened connections.
+-->
+すでに開かれた接続のリストに見つからなかった場合、リモートサーバへの接続が確立するのを待機しています。
+    </para>
+   </listitem>
+  </varlistentry>
+
+  <varlistentry>
+   <term><literal>DblinkGetResult</literal></term>
+   <listitem>
+    <para>
+<!--
+     Waiting to receive the results of a query from a remote server.
+-->
+リモートサーバから問い合わせの結果を受信するのを待機しています。
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+
+ <para>
+<!--
   See also <xref linkend="postgres-fdw"/>, which provides roughly the same
   functionality using a more modern and standards-compliant infrastructure.
 -->

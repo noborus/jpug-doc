@@ -77,7 +77,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
   <title>パラメータ</title>
 
   <variablelist>
-   <varlistentry id="sql-createpublication-name">
+   <varlistentry id="sql-createpublication-params-name">
     <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
@@ -89,7 +89,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createpublication-for-table">
+   <varlistentry id="sql-createpublication-params-for-table">
     <term><literal>FOR TABLE</literal></term>
     <listitem>
      <para>
@@ -174,7 +174,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createpublication-for-all-tables">
+   <varlistentry id="sql-createpublication-params-for-all-tables">
     <term><literal>FOR ALL TABLES</literal></term>
     <listitem>
      <para>
@@ -187,7 +187,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createpublication-for-tables-in-schema">
+   <varlistentry id="sql-createpublication-params-for-tables-in-schema">
     <term><literal>FOR TABLES IN SCHEMA</literal></term>
     <listitem>
      <para>
@@ -232,7 +232,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createpublication-with">
+   <varlistentry id="sql-createpublication-params-with">
     <term><literal>WITH ( <replaceable class="parameter">publication_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
@@ -244,7 +244,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
 以下のパラメータがサポートされています。
 
       <variablelist>
-       <varlistentry id="sql-createpublication-with-publish">
+       <varlistentry id="sql-createpublication-params-with-publish">
         <term><literal>publish</literal> (<type>string</type>)</term>
         <listitem>
          <para>
@@ -276,7 +276,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createpublication-with-publish-via-partition-root">
+       <varlistentry id="sql-createpublication-params-with-publish-via-partition-root">
         <term><literal>publish_via_partition_root</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -425,7 +425,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
 -->
 行フィルタ式(すなわち、<literal>WHERE</literal>句)には、<command>UPDATE</command>および<command>DELETE</command>操作をパブリッシュするために、<literal>REPLICA IDENTITY</literal>でカバーされる列のみを含めることが必要です。
 <command>INSERT</command>操作のパブリッシュでは、<literal>WHERE</literal>式で任意の列を使用できます。
-行フィルタでは、ユーザー定義関数、ユーザー定義演算子、ユーザー定義型、ユーザー定義照合順序、不変でない組み込み関数、またはシステム列への参照を持たない単純な式を使用できます。
+行フィルタでは、ユーザ定義関数、ユーザ定義演算子、ユーザ定義型、ユーザ定義照合順序、不変でない組み込み関数、またはシステム列への参照を持たない単純な式を使用できます。
   </para>
 
   <para>

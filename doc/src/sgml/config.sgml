@@ -4,7 +4,7 @@
 <!--
   <title>Server Configuration</title>
 -->
-  <title>サーバの設定</title>
+  <title>サーバ設定</title>
 
   <indexterm>
    <primary>configuration</primary>
@@ -310,14 +310,15 @@ shared_buffers = 128MB
 <!--
      External tools may also
      modify <filename>postgresql.auto.conf</filename>.  It is not
-     recommended to do this while the server is running, since a
+     recommended to do this while the server is running unless <xref
+     linkend="guc-allow-alter-system"/> is set to <literal>off</literal>, since a
      concurrent <command>ALTER SYSTEM</command> command could overwrite
      such changes.  Such tools might simply append new settings to the end,
      or they might choose to remove duplicate settings and/or comments
      (as <command>ALTER SYSTEM</command> will).
 -->
 外部ツールも<filename>postgresql.auto.conf</filename>を変更するかも知れません。
-<command>ALTER SYSTEM</command>が変更を上書きする可能性があるので、サーバが稼働中は外部ツールによる変更は推奨されません。
+<command>ALTER SYSTEM</command>が変更を上書きする可能性があるので、<xref linkend="guc-allow-alter-system"/>が<literal>off</literal>に設定されていない限り、サーバが稼働中は外部ツールによる変更は推奨されません。
 そのようなツールは、単に新しい設定を最後に追加するか、重複した設定あるいはコメント(<command>ALTER SYSTEM</command>が行います)を削除することを選択するかも知れません。
     </para>
 
@@ -385,7 +386,8 @@ shared_buffers = 128MB
       so cannot be set with these commands (or the ones listed below).
 -->
 <command>ALTER DATABASE</command>と<command>ALTER ROLE</command>による設定値は新しくデータベースセッションを開始した時にのみ適用されます。
-これらのコマンドは設定ファイルやサーバへのコマンド引数による設定値を上書きし、セッションの以後の状態に適用します。なお、一部の設定はサーバを起動した後では変更できず、これらのコマンドを使っては設定できません(以下に記述するコマンドでも同じことが言えます)。
+これらのコマンドは設定ファイルやサーバのコマンドラインから取得した値を上書きし、セッションの残りの部分のデフォルト値を構成します。
+なお、一部の設定はサーバを起動した後では変更できず、これらのコマンドを使っては設定できません（以下に記述するコマンドでも同じことが言えます）。
     </para>
 
      <para>
@@ -450,7 +452,7 @@ shared_buffers = 128MB
        to specify filter conditions or join against other relations.
 -->
 このビューを問い合わせるのは、<command>SHOW ALL</command>を使うのと同じですが、更に詳細な情報を提供します。
-フィルター条件を指定したり他のリレーションと結合ができるので、より柔軟です。
+フィルタ条件を指定したり他のリレーションと結合ができるので、より柔軟です。
       </para>
      </listitem>
 
@@ -503,11 +505,12 @@ UPDATE pg_settings SET setting = reset_val WHERE name = 'configuration_parameter
 <!--
        During server startup, parameter settings can be
        passed to the <command>postgres</command> command via the
-       <option>-c</option> command-line parameter.  For example,
+       <option>-c name=value</option> command-line parameter, or its equivalent
+       <option>&#45;-name=value</option> variation.  For example,
 -->
-サーバ起動時に、<option>-c</option>コマンドラインパラメータを使ってパラメータ設定値を<command>postgres</command>に渡すことができます。たとえば、
+サーバ起動時に、<option>-c</option>コマンドラインパラメータか、それと同等で別の形式の<option>--name=value</option>を使ってパラメータ設定値を<command>postgres</command>に渡すことができます。たとえば、
 <programlisting>
-postgres -c log_connections=yes -c log_destination='syslog'
+postgres -c log_connections=yes --log-destination='syslog'
 </programlisting>
 <!--
        Settings provided in this way override those set via
@@ -529,14 +532,14 @@ postgres -c log_connections=yes -c log_destination='syslog'
       of the session, but do not affect other sessions.
       For historical reasons, the format of <envar>PGOPTIONS</envar> is
       similar to that used when launching the <command>postgres</command>
-      command; specifically, the <option>-c</option> flag must be specified.
-      For example,
+      command; specifically, the <option>-c</option>, or prepended
+      <literal>&#45;-</literal>, before the name must be specified. For example,
 -->
 <application>libpq</application>を使ってクライアントセッションを開始するときに<envar>PGOPTIONS</envar>環境変数を使って設定値を指定できます。
 このようにして渡された設定値はセッションのデフォルトとなりますが、他のセッションには影響を与えません。
-歴史的な理由により、<envar>PGOPTIONS</envar>の形式は<command>postgres</command>を起動するときのものと似ています。たとえば、<option>-c</option>フラグを指定しなければならない点です。
+歴史的な理由により、<envar>PGOPTIONS</envar>の形式は<command>postgres</command>を起動するときのものと似ています。とりわけ、<option>-c</option>を指定するか、先頭に<literal>--</literal>を付加した名前を指定しなければならない点です。たとえば、
 <programlisting>
-env PGOPTIONS="-c geqo=off -c statement_timeout=5min" psql
+env PGOPTIONS="-c geqo=off --statement-timeout=5min" psql
 </programlisting>
      </para>
 
@@ -687,7 +690,7 @@ includeされるディレクトリにある複数ファイルはファイル名�
       them:
 -->
 includeされるファイルもしくはディレクトリは、大きな単一の<filename>postgresql.conf</filename>ファイルを使う代わりに、データベース設定の一部分を論理的に分離するために使用することが可能です。
-異なるメモリー容量を持つ二つのデータベースサーバを所有する会社を考えてみてください。
+異なるメモリ容量を持つ二つのデータベースサーバを所有する会社を考えてみてください。
 例えばログ取得のように、二つが共有する設定の要素があると思われます。
 しかし、サーバ上のメモリに関連したパラメータは二つの間では異なります。
 更に、サーバ特有のカスタマイズも存在することがあります。
@@ -707,7 +710,7 @@ include 'server.conf'
       configuration information in it.
 -->
 全てのシステムは同一の<filename>shared.conf</filename>を所有する様になるでしょう。
-特定のメモリー容量を所有するそれぞれのサーバは同じ<filename>memory.conf</filename>を共有できます。
+特定のメモリ容量を所有するそれぞれのサーバは同じ<filename>memory.conf</filename>を共有できます。
 RAMが8GBのすべてのサーバには共通の<filename>memory.conf</filename>を1つ使い、16GBのサーバ群には別のものを使う、ということもできるでしょう。
 そして最後の<filename>server.conf</filename>には、本当にサーバ固有となる設定情報を記載します。
      </para>
@@ -766,7 +769,7 @@ include_dir 'conf.d'
 -->
 こういった工夫で、設定ファイルのバリエーションに対して固有の名前を付与することができます。
 また、バージョン管理リポジトリのリポジトリに複数のサーバの設定ファイルを置く場合に生じる曖昧さを排除することができます。
-（データベース設定ファイルをバージョン管理することは、これもまた検討に値するやり方です）。
+（データベース設定ファイルをバージョン管理することは、これもまた検討に値するやり方です。）
      </para>
     </sect2>
    </sect1>
@@ -815,7 +818,7 @@ include_dir 'conf.d'
          This parameter can only be set at server start.
 -->
 データ格納に使用するディレクトリを指定します。
-このパラメータはサーバ起動時のみ設定可能です
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1002,10 +1005,25 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
          <literal>::</literal> allows listening for all IPv6 addresses.
          If the list is empty, the server does not listen on any IP interface
          at all, in which case only Unix-domain sockets can be used to connect
-         to it.
+         to it.  If the list is not empty, the server will start if it
+         can listen on at least one TCP/IP address.  A warning will be
+         emitted for any TCP/IP address which cannot be opened.
          The default value is <systemitem class="systemname">localhost</systemitem>,
          which allows only local TCP/IP <quote>loopback</quote> connections to be
-         made.  While client authentication (<xref
+         made.
+-->
+クライアントアプリケーションからの接続をサーバが監視するTCP/IPアドレスを指定します。
+この値は、ホスト名をカンマで区切ったリスト、そして/もしくは、数値によるIPアドレスです。
+<literal>*</literal>という特別なエントリは利用可能な全てのIPインタフェースに対応します。
+エントリ<literal>0.0.0.0</literal>は全てのIPv4アドレスの監視を、そしてエントリ<literal>::</literal>は全てのIPv6アドレスの監視を許容します。
+リストが空の場合、サーバはいかなるIPインタフェースも全く監視しないで、Unixドメインソケットのみを使用して接続が行われます。
+リストが空でない場合、少なくとも1つのTCP/IPアドレスがリスニングできる場合にサーバは起動します。
+開くことのできなかったすべてのTCP/IPアドレスに対して警告が発せられます。
+デフォルトの値は<systemitem class="systemname">localhost</systemitem>で、ローカルなTCP/IP <quote>loopback</quote>接続のみ許可します。
+       </para>
+       <para>
+<!--
+         While client authentication (<xref
          linkend="client-authentication"/>) allows fine-grained control
          over who can access the server, <varname>listen_addresses</varname>
          controls which interfaces accept connection attempts, which
@@ -1013,15 +1031,9 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
          insecure network interfaces.  This parameter can only be set
          at server start.
 -->
-クライアントアプリケーションからの接続をサーバが監視する TCP/IP アドレスを指定します。
-この値は、ホスト名をコンマで区切ったリスト、そして/もしくは、数値によるIPアドレスです。
-<literal>*</literal>という特別なエントリは利用可能な全てのIPインタフェースに対応します。
-エントリ<literal>0.0.0.0</literal>は全てのIPv4アドレスの監視を、そしてエントリ<literal>::</literal>は全てのIPv6アドレスの監視を許容します。
-リストが空の場合、サーバはいかなるIPインタフェースも全く監視しないで、Unixドメインソケットのみを使用して接続が行われます。
-デフォルトの値は<systemitem class="systemname">localhost</systemitem>で、ローカルなTCP/IP <quote>loopback</quote>接続のみ許可します。
-クライアント認証 (<xref linkend="client-authentication"/>)は誰がサーバにアクセス可能かをきめ細かく制御するのに対し、<varname>listen_addresses</varname>はどのインタフェースが接続を試みるかを制御します。
-これにより、安全でないネットワークインタフェース上において繰り返して行われる悪意のある接続要求の防止に役立ちます。
-このパラメータはサーバ起動時のみ設定可能です。
+クライアント認証(<xref linkend="client-authentication"/>)は、誰がサーバにアクセスできるかを細かく制御できますが、<varname>listen_addresses</varname>は接続要求を受け付けるインタフェースを制御します。
+これは、セキュアでないネットワークインタフェース上での悪意のある接続試行の繰り返しを防ぐのに役立ちます。
+このパラメータはサーバ起動時にのみ設定できます。
        </para>
       </listitem>
      </varlistentry>
@@ -1070,6 +1082,16 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
 データベースサーバに同時接続する最大数を決定します。
 デフォルトは典型的に100接続ですが、カーネルの設定が（<application>initdb</application>の過程で）それをサポートしていない場合、もっと少なくなることがあります。
 このパラメータはサーバ起動時のみに設定可能です。
+       </para>
+
+       <para>
+<!--
+        PostgreSQL sizes certain resources based directly on the value of
+        <varname>max_connections</varname>. Increasing its value leads to
+        higher allocation of those resources, including shared memory.
+-->
+PostgreSQLは、<varname>max_connections</varname>の値に直接基づいてある種のリソースのサイズを設定します。
+その値を大きくすると、共有メモリを含み、より大きなリソースがアロケーションされます。
        </para>
 
        <para>
@@ -1271,7 +1293,8 @@ Windowsではデフォルトは空文字で、これはつまりUnixドメイン
         group of the server user.  This parameter can only be set at
         server start.
 -->
-Unixドメインソケット（複数も）を所有するグループを設定します（ソケットを所有するユーザは常にサーバを起動するユーザです）。
+Unixドメインソケット（複数も）を所有するグループを設定します。
+（ソケットを所有するユーザは常にサーバを起動するユーザです。）
 <varname>unix_socket_permissions</varname>パラメータとの組合せで、Unixドメインソケット接続の追加的アクセス管理機構として使うことができます。
 デフォルトでは空文字列で、サーバユーザのデフォルトグループを使用します。
 このパラメータはサーバ起動時のみ設定可能です。
@@ -1362,7 +1385,7 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
         Sockets in the abstract namespace have no file permissions, so this
         setting is also ignored in that case.
 -->
-抽象名前空間にあるソケットはパーミッションを持たないので、この設定も無視されます。
+抽象名前空間にあるソケットはファイルパーミッションを持たないので、この設定も無視されます。
        </para>
       </listitem>
      </varlistentry>
@@ -1383,7 +1406,8 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
         <productname>Bonjour</productname>.  The default is off.
         This parameter can only be set at server start.
 -->
-<productname>Bonjour</productname>によりサーバの存在を公表することを可能にします。デフォルトはoffです。このパラメータはサーバ起動時のみ設定可能です。
+<productname>Bonjour</productname>によりサーバの存在を公表することを可能にします。デフォルトはoffです。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1410,7 +1434,7 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
 <productname>Bonjour</productname>サービス名を指定します。
 このパラメータが空文字列<literal>''</literal>（デフォルトです）に設定されていると、コンピュータ名が使用されます。
 サーバが<productname>Bonjour</productname>サポート付でコンパイルでされていない場合は無視されます。
-このオプションはサーバ起動時のみに設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1578,7 +1602,7 @@ UNIXドメインソケットで接続しているセッションではこのパ�
         and the BSD family of operating systems, and is not currently available
         on other systems.
 -->
-このオプションは、Linux、macOS、illumos、BSDファミリーのオペレーティングシステムによって公開されるカーネルイベントに依存しており、現在他のシステムでは利用できません。
+このオプションは、Linux、macOS、illumos、BSD系のオペレーティングシステムによって公開されるカーネルイベントに依存しており、現在他のシステムでは利用できません。
        </para>
        <para>
 <!--
@@ -1648,7 +1672,7 @@ UNIXドメインソケットで接続しているセッションではこのパ�
 これはハングしたクライアントが接続を永久に占有することを防ぎます。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 デフォルトは1分（<literal>1m</literal>）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1741,12 +1765,12 @@ SCRAM-SHA-256を使用してパスワードを暗号化するときに実行さ�
         <filename>postgresql.conf</filename> file or on the server command line.
         See <xref linkend="gssapi-auth"/> for more information.
 -->
-Kerberosサーバーキーファイルの場所を設定します。
+Kerberosサーバキーファイルの場所を設定します。
 デフォルトは<filename>FILE:/usr/local/pgsql/etc/krb5.keytab</filename>です。
 （ディレクトリ部分は構築時に<varname>sysconfdir</varname>で指定されたものです。
 <literal>pg_config --sysconfdir</literal>を使って確認してください。）
 このパラメータが空文字列に設定されると、それは無視されてシステム依存のデフォルトが使用されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 詳細は<xref linkend="gssapi-auth"/>をご覧ください。
        </para>
       </listitem>
@@ -1771,7 +1795,7 @@ Kerberosサーバーキーファイルの場所を設定します。
 -->
 GSSAPIユーザ名を大文字小文字の区別なく取り扱うかどうかを設定します。
 デフォルトは<literal>off</literal>（大文字小文字を区別する）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1798,87 +1822,8 @@ GSSAPIユーザ名を大文字小文字の区別なく取り扱うかどうか�
 デフォルトは<literal>off</literal>です。
 これは、クライアントからの資格証明が受け入れ<emphasis>られない</emphasis>ことを意味します。
 これを<literal>on</literal>に変更すると、サーバは、クライアントから委任された資格証明を受け入れます。
-このパラメータは、<filename>postgresql.conf</filename>ファイルまたはサーバコマンドラインでのみ設定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry id="guc-db-user-namespace" xreflabel="db_user_namespace">
-      <term><varname>db_user_namespace</varname> (<type>boolean</type>)
-      <indexterm>
-       <primary><varname>db_user_namespace</varname> configuration parameter</primary>
-      </indexterm>
-      <indexterm>
-       <primary><varname>db_user_namespace</varname>設定パラメータ</primary>
-      </indexterm>
-      </term>
-      <listitem>
-       <para>
-<!--
-        This parameter enables per-database user names.  It is off by default.
-        This parameter can only be set in the <filename>postgresql.conf</filename>
-        file or on the server command line.
--->
-このパラメータはデータベース毎のユーザ名を可能にします。
-デフォルトはオフです。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
-       </para>
-
-       <para>
-<!--
-        If this is on, you should create users as <replaceable>username@dbname</replaceable>.
-        When <replaceable>username</replaceable> is passed by a connecting client,
-        <literal>@</literal> and the database name are appended to the user
-        name and that database-specific user name is looked up by the
-        server. Note that when you create users with names containing
-        <literal>@</literal> within the SQL environment, you will need to
-        quote the user name.
--->
-これがオンの場合、<replaceable>username@dbname</replaceable>の様にしてユーザを作成しなければなりません。
-<replaceable>username</replaceable>が接続中のクライアントより渡された時、 <literal>@</literal>およびデータベース名がユーザ名に付加され、そのデータベース特有のユーザ名をサーバが見に行きます。
-SQL環境下で<literal>@</literal>を含む名前のユーザを作成する場合、そのユーザ名は引用符で括られなければならないことに注意してください。
-       </para>
-
-       <para>
-<!--
-        With this parameter enabled, you can still create ordinary global
-        users.  Simply append <literal>@</literal> when specifying the user
-        name in the client, e.g., <literal>joe@</literal>.  The <literal>@</literal>
-        will be stripped off before the user name is looked up by the
-        server.
--->
-このパラメータを有効にしていても通常の広域ユーザを作成することができます。
-クライアントにユーザ名を指定する時に、たとえば<literal>joe@</literal>のように単に<literal>@</literal>を付け加えてください。
-<literal>@</literal>はサーバがユーザ名を検索する以前に取り去られます。
-       </para>
-
-       <para>
-<!--
-        <varname>db_user_namespace</varname> causes the client's and
-        server's user name representation to differ.
-        Authentication checks are always done with the server's user name
-        so authentication methods must be configured for the
-        server's user name, not the client's.  Because
-        <literal>md5</literal> uses the user name as salt on both the
-        client and server, <literal>md5</literal> cannot be used with
-        <varname>db_user_namespace</varname>.
--->
-<varname>db_user_namespace</varname>はクライアントとサーバのユーザ名の表示を区別することができます。
-認証検査は常にサーバのユーザ名で行われるので、認証方式はクライアントのではなくサーバのユーザ名で構成されなければなりません。
-<literal>md5</literal>では、クライアントおよびサーバの両方でユーザ名をソルトとして使用するので、<literal>md5</literal>を<varname>db_user_namespace</varname>と一緒に使用することはできません。
-       </para>
-
-       <note>
-        <para>
-<!--
-         This feature is intended as a temporary measure until a
-         complete solution is found.  At that time, this option will
-         be removed.
--->
-この機能は完全な解決方法が見つかるまでの一時的なものです。
-完全な解決方法が見つかったら、このオプションは削除される予定です。
-        </para>
-       </note>
       </listitem>
      </varlistentry>
      </variablelist>
@@ -2210,7 +2155,7 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
 <productname>OpenSSL</productname>のバージョンにより、利用可能な暗号スイートの詳細は異なります。
 <literal>openssl ciphers -v 'HIGH:MEDIUM:+3DES:!aNULL'</literal>
 コマンドを使って現在インストールされている<productname>OpenSSL</productname>のバージョンに関する詳細情報を得てください。
-ここで得られるリストは、サーバキータイプにより実行時にフィルターされることに注意してください。
+ここで得られるリストは、サーバキータイプにより実行時にフィルタされることに注意してください。
        </para>
       </listitem>
      </varlistentry>
@@ -2240,13 +2185,13 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
 
        <para>
 <!--
-        Older PostgreSQL versions do not have this setting and always use the
-        client's preferences.  This setting is mainly for backward
-        compatibility with those versions.  Using the server's preferences is
-        usually better because it is more likely that the server is appropriately
-        configured.
+        <productname>PostgreSQL</productname> versions before 9.4 do not have
+        this setting and always use the client's preferences.  This setting is
+        mainly for backward compatibility with those versions.  Using the
+        server's preferences is usually better because it is more likely that
+        the server is appropriately configured.
 -->
-古いバージョンのPostgreSQLにはこの設定がなく、常にクライアントの設定を使います。
+バージョン9.4より前の<productname>PostgreSQL</productname>にはこの設定がなく、常にクライアントの設定が使用されます。
 この設定は、主に古いバージョンとの互換性のために設けられています。
 通常サーバの設定に従うほうが良いです。大抵の場合、サーバはより適切に設定されているからです。
        </para>
@@ -2466,7 +2411,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2504,7 +2449,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2557,7 +2502,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
 しかし、良い性能を引き出すためには、最小値よりかなり高い値の設定が通例必要です。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 （<symbol>BLCKSZ</symbol>がデフォルト値と異なる場合、この最小値も異なる値になります。）
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -2611,13 +2556,16 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         server will try to request huge pages, but fall back to the default if
         that fails. With <literal>on</literal>, failure to request huge pages
         will prevent the server from starting up. With <literal>off</literal>,
-        huge pages will not be requested.
+        huge pages will not be requested. The actual state of huge pages is
+        indicated by the server variable
+        <xref linkend="guc-huge-pages-status"/>.
 -->
 主共有メモリ領域に対してhuge pageを要求するかどうかを管理します。
 可能な値は<literal>try</literal> (デフォルト)、<literal>on</literal>、<literal>off</literal>です。
 <varname>huge_pages</varname>を<literal>try</literal>に設定すると、サーバはhuge pageの要求を試み、失敗したらデフォルトに戻します。
 <literal>on</literal>にすると、要求に失敗した場合にサーバの起動ができなくなることになります。
 <literal>off</literal>ならhuge pageの要求は行いません。
+huge pageの実際の状態は、サーバ変数<xref linkend="guc-huge-pages-status"/>で示されています。
        </para>
 
        <para>
@@ -2707,7 +2655,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 <xref linkend="guc-huge-pages"/>が有効なときにhuge pageのサイズを制御します。
 デフォルトはゼロ(<literal>0</literal>)です。
 <literal>0</literal>に設定すると、システムのデフォルトのhuge pageのサイズが使われます。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
        <para>
 <!--
@@ -2801,7 +2749,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 -->
 同時に<quote>プリペアド</quote>状態にできるトランザクションの最大数を設定します（<xref linkend="sql-prepare-transaction"/>を参照してください）。
 このパラメータをゼロ（これがデフォルトです）に設定すると、プリペアドトランザクション機能が無効になります。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -2844,9 +2792,10 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         (such as a sort or hash table) before writing to temporary disk files.
         If this value is specified without units, it is taken as kilobytes.
         The default value is four megabytes (<literal>4MB</literal>).
-        Note that for a complex query, several sort or hash operations might be
-        running in parallel; each operation will generally be allowed
-        to use as much memory as this value specifies before it starts
+        Note that a complex query might perform several sort and hash
+        operations at the same time, with each operation generally being
+        allowed to use as much memory as this value specifies before
+        it starts
         to write data into temporary files.  Also, several running
         sessions could be doing such operations concurrently.
         Therefore, the total memory used could be many times the value
@@ -2857,21 +2806,22 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         Hash tables are used in hash joins, hash-based aggregation, memoize
         nodes and hash-based processing of <literal>IN</literal> subqueries.
 -->
-一時ディスクファイルに書き込むようになる前に、問い合わせ操作（たとえば並べ替えとハッシュテーブル操作）が使用する基本的な最大のメモリ容量を指定します。
+一時ディスクファイルに書き込む前に、問い合わせ操作（ソートやハッシュなど）で使用される最大メモリ量を設定します。
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
-デフォルト値は4メガバイト（<literal>4MB</literal>）です。
-複雑な問い合わせの場合、いくつかの並べ替えもしくはハッシュ操作が並行して実行されることに注意してください。
-一時ファイルへの書き込み開始の前に、それぞれの操作にこの値が指定するのと同じメモリ容量の使用が許容されます。
-さらに、いくつかの実行中のセッションはこれらの動作を同時に行います。
-したがって、使用されるメモリの合計は、<varname>work_mem</varname>の数倍になります。値を選択する時には、この事実に留意することが必要です。
-並べ替え操作は<literal>ORDER BY</literal>、<literal>DISTINCT</literal>、およびマージ結合に対して使われます。
+デフォルト値は4MB(<literal>4MB</literal>)です。
+複雑な問い合わせでは、同時に複数のソート操作とハッシュ操作が実行される可能性があります。
+各操作は通常、データを一時ファイルに書き込む前にこの値で指定された量のメモリを使用できます。
+また、複数の実行中のセッションが同時にこのような操作を実行することもあります。
+したがって、使用されるメモリの合計量は<varname>work_mem</varname>の数倍になる可能性があります。
+値を選択する時には、この事実に留意することが必要です。
+ソート操作は<literal>ORDER BY</literal>、<literal>DISTINCT</literal>、およびマージ結合に対して使われます。
 ハッシュテーブルはハッシュ結合、ハッシュに基づいた集約、メモ化（memoize）ノードおよび<literal>IN</literal>副問い合わせのハッシュに基づいた処理で使用されます。
        </para>
        <para>
 <!--
         Hash-based operations are generally more sensitive to memory
         availability than equivalent sort-based operations.  The
-        memory available for hash tables is computed by multiplying
+        memory limit for a hash table is computed by multiplying
         <varname>work_mem</varname> by
         <varname>hash_mem_multiplier</varname>.  This makes it
         possible for hash-based operations to use an amount of memory
@@ -2879,7 +2829,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         amount.
 -->
 一般的に、ハッシュに基づく操作はソートに基づく操作よりも利用可能なメモリに敏感です。
-ハッシュテーブルが利用可能なメモリは<varname>work_mem</varname>に<varname>hash_mem_multiplier</varname>を掛けて計算します。
+ハッシュテーブルのメモリ制限は、<varname>work_mem</varname>に<varname>hash_mem_multiplier</varname>を乗算することで計算されます。
 これにより、ハッシュに基づく操作では通常の<varname>work_mem</varname>に基づく量を超える量のメモリが使用される可能性があります。
        </para>
       </listitem>
@@ -2969,14 +2919,6 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 自動バキュームが稼働すると、最大でこのメモリの<xref linkend="guc-autovacuum-max-workers"/>倍が配分されるので、デフォルトの値をあまり高く設定しないよう注意してください。
 別の設定項目<xref linkend="guc-autovacuum-work-mem"/>で制御するのが良いかもしれません。
        </para>
-       <para>
-<!--
-        Note that for the collection of dead tuple identifiers,
-        <command>VACUUM</command> is only able to utilize up to a maximum of
-        <literal>1GB</literal> of memory.
--->
-無効タプル識別子の集合に対しては、<command>VACUUM</command>は最大でも<literal>1GB</literal>までしか使用することができないことに注意してください。
-       </para>
       </listitem>
      </varlistentry>
 
@@ -3007,18 +2949,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
 デフォルトは-1で、<xref linkend="guc-maintenance-work-mem"/>が代わりに使われる設定になります。
 別の文脈で実行される<command>VACUUM</command>にはこの設定は影響しません。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
-       </para>
-       <para>
-<!--
-        For the collection of dead tuple identifiers, autovacuum is only able
-        to utilize up to a maximum of <literal>1GB</literal> of memory, so
-        setting <varname>autovacuum_work_mem</varname> to a value higher than
-        that has no effect on the number of dead tuples that autovacuum can
-        collect while scanning a table.
--->
-無効タプル識別子の集合に対しては、自動バキュームは最大でも<literal>1GB</literal>までしか使用することができません。
-ですから<varname>autovacuum_work_mem</varname>をそれ以上に指定しても、自動バキュームがテーブルを走査して収集できる無効タプルの数には影響を与えません。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3044,7 +2975,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         valid sizes range from <literal>128 kB</literal> to
         <literal>16 GB</literal>.  If the specified size would exceed 1/8 the
         size of <varname>shared_buffers</varname>, the size is silently capped
-        to that value.  The default value is <literal>256 kB</literal>.  If
+        to that value.  The default value is <literal>2MB</literal>.  If
         this value is specified without units, it is taken as kilobytes.  This
         parameter can be set at any time.  It can be overridden for
         <xref linkend="sql-vacuum"/> and <xref linkend="sql-analyze"/>
@@ -3058,7 +2989,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 <literal>0</literal>を設定すると、それらの操作で任意の数の<varname>shared_buffers</varname>を使用できることになります。
 それ以外の場合は、有効なサイズは<literal>128 kB</literal>から<literal>16 GB</literal>までの範囲です。
 指定されたサイズが<varname>shared_buffers</varname>のサイズの1/8を超える場合、サイズは黙ってその値に制限されます。
-デフォルト値は<literal>256 kB</literal>です。
+デフォルト値は<literal>2MB</literal>です。
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
 このパラメータはいつでも設定できます。
 このパラメータは、<option>BUFFER_USAGE_LIMIT</option>オプションを渡すことによって、<xref linkend="sql-vacuum"/>および<xref linkend="sql-analyze"/>に対して上書きできます。
@@ -3093,6 +3024,208 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 これにより、ロジカルストリーミングレプリケーションの接続が使用する最大メモリが制限されます。
 デフォルトは64メガバイト(<literal>64MB</literal>)です。
 個々のレプリケーション接続がここで指定した単一のバッファだけを使用し、インストールは通常たくさんの接続を並行して使わないので（<varname>max_wal_senders</varname>で制限されます）、この値を<varname>work_mem</varname>よりもずっと大きくしても安全で、それによってデコードされた更新がディスクに書かれる量が削減されます。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-commit-timestamp-buffers" xreflabel="commit_timestamp_buffers">
+      <term><varname>commit_timestamp_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>commit_timestamp_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>commit_timestamp_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of memory to use to cache the contents of
+        <literal>pg_commit_ts</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_commit_ts</literal>の内容をキャッシュするために使用するメモリ量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-multixact-member-buffers" xreflabel="multixact_member_buffers">
+      <term><varname>multixact_member_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>multixact_member_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>multixact_member_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_multixact/members</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>32</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_multixact/members</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>32</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-multixact-offset-buffers" xreflabel="multixact_offset_buffers">
+      <term><varname>multixact_offset_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>multixact_offset_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>multixact_offset_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_multixact/offsets</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>16</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_multixact/offsets</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>16</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-notify-buffers" xreflabel="notify_buffers">
+      <term><varname>notify_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>notify_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>notify_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_notify</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>16</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_notify</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>16</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-serializable-buffers" xreflabel="serializable_buffers">
+      <term><varname>serializable_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>serializable_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>serializable_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_serial</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>32</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_serial</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>32</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-subtransaction-buffers" xreflabel="subtransaction_buffers">
+      <term><varname>subtransaction_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>subtransaction_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>subtransaction_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_subtrans</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_subtrans</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-transaction-buffers" xreflabel="transaction_buffers">
+      <term><varname>transaction_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>transaction_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>transaction_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_xact</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_xact</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3312,6 +3445,27 @@ huge pageを自動管理するオペレーティングシステム上でより�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-max-notify-queue-pages" xreflabel="max_notify_queue_pages">
+      <term><varname>max_notify_queue_pages</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>max_notify_queue_pages</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the maximum amount of allocated pages for
+        <xref linkend="sql-notify"/> / <xref linkend="sql-listen"/> queue.
+        The default value is 1048576. For 8 KB pages it allows to consume
+        up to 8 GB of disk space.
+-->
+<xref linkend="sql-notify"/>/<xref linkend="sql-listen"/>キューのために割り当てられたページの最大量を指定します。
+デフォルト値は1048576です。
+8キロバイトページの場合、最大8ギガバイトのディスクスペースが消費されます。
+       </para>
+      </listitem>
+     </varlistentry>
+
      </variablelist>
      </sect2>
 
@@ -3348,7 +3502,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
 デフォルトは1000ファイルです。
 もしもカーネルがプロセス毎の安全制限を強要している場合、この設定を気にかける必要はありません。
 しかし、いくつかのプラットフォーム（特にほとんどのBSDシステム）では、もし多くのプロセス全てがそれだけ多くのファイルを開くことを試みたとした場合、実際にサポートできるファイル数より多くのファイルを開くことを許しています。もしも<quote>Too many open files</quote>エラーが発生した場合、この設定を削減してみてください。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3472,7 +3626,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
          the shared hash table and scan the content of the page. The
          default value is one.
 -->
-共有バッファキャッシュの中のバッファにvacuumを掛ける予測コストです。バッファプールのロック、共有ハッシュテーブルの検索、およびページ内容走査のコストを示します。デフォルトの値は1です。
+共有バッファキャッシュの中のバッファにvacuumを掛ける予測コストです。バッファプールのロック、共有ハッシュテーブルの検索、およびページ内容のスキャンのコストを示します。デフォルトの値は1です。
         </para>
        </listitem>
       </varlistentry>
@@ -3494,7 +3648,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
          lookup the shared hash table, read the desired block in from
          the disk and scan its content. The default value is 2.
 -->
-ディスクから読み込まれなければならないバッファにvacuumを掛ける予測コストです。これが示すものは、バッファプールロックの試み、共有ハッシュテーブルの参照、ディスクから目的ブロックの読み込み、そしてその内容走査です。デフォルトの値は2です。
+ディスクから読み込まれなければならないバッファにvacuumを掛ける予測コストです。これが示すものは、バッファプールロックの試み、共有ハッシュテーブルの参照、ディスクから目的ブロックの読み込み、そしてその内容のスキャンです。デフォルトの値は2です。
         </para>
        </listitem>
       </varlistentry>
@@ -3534,10 +3688,10 @@ vacuumが、先だって掃除したブロックを変更するのに必要な�
        <listitem>
         <para>
 <!--
-         The accumulated cost that will cause the vacuuming process to sleep.
-         The default value is 200.
+         This is the accumulated cost that will cause the vacuuming process to sleep
+         for <varname>vacuum_cost_delay</varname>.  The default is 200.
 -->
-vacuumを掛けるプロセスをスリープさせることになる累計されたコストです。
+vacuumを掛けるプロセスを<varname>vacuum_cost_delay</varname>の間スリープさせることになる累計されたコストです。
 デフォルトの値は200です。
         </para>
        </listitem>
@@ -3619,7 +3773,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          <varname>bgwriter_delay</varname>.
          If this value is specified without units, it is taken as milliseconds.
          The default value is 200
-         milliseconds (<literal>200ms</literal>). Note that on many systems, the
+         milliseconds (<literal>200ms</literal>). Note that on some systems, the
          effective resolution of sleep delays is 10 milliseconds; setting
          <varname>bgwriter_delay</varname> to a value that is not a multiple of 10
          might have the same results as setting it to the next higher multiple
@@ -3632,7 +3786,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 しかし、バッファプールにダーティバッファが存在しない場合、<varname>bgwriter_delay</varname>に係わらずより長くスリープします。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルトの値は200ミリ秒（<literal>200ms</literal>）です。
-多くのシステムで、スリープ遅延の実精度は10ミリ秒です。
+ある種のシステムでは、スリープ遅延の実精度は10ミリ秒です。
 <varname>bgwriter_delay</varname>の値の設定を10の倍数としない場合、次に大きい10の倍数に設定した結果と同一になるかもしれないことを覚えておいてください。
 このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインで設定可能です。
         </para>
@@ -3663,7 +3817,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 ゼロに設定することでバックグラウンド書き込みは無効になります。
 （分離し、そして専用の補助プロセスにより管理されるチェックポイントは影響を受けません。）
 デフォルト値は100バッファです。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3705,7 +3859,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 より大きな値は突発的な要求に対する多少の緩衝材を提供します。
 より小さな値はサーバプロセスでなされる書き込みを意図的に残します。
 デフォルトは2.0です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3750,8 +3904,8 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は、Linuxでは<literal>512kB</literal>で、それ以外は<literal>0</literal>です。
-(<symbol>BLCKSZ</symbol>が8kBでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+（<symbol>BLCKSZ</symbol>が8kBでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3814,7 +3968,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な範囲は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は<literal>0</literal>です(すなわち書き出し制御を行いません)。
-(<symbol>BLCKSZ</symbol>が8kBでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
+（<symbol>BLCKSZ</symbol>が8kBでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
         </para>
        </listitem>
       </varlistentry>
@@ -3858,10 +4012,11 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          SSDs and other memory-based storage can often process many
          concurrent requests, so the best value might be in the hundreds.
 -->
-磁気ディスクドライブにおいては、データベースに使用されるRAID 0ストライプ、RAID 1ミラーを構成する個々のドライブ数から始めると良いでしょう。（RAID 5ではパリティ用のドライブを数に含めません）
+磁気ディスクドライブにおいては、データベースに使用されるRAID 0ストライプ、RAID 1ミラーを構成する個々のドライブ数から始めると良いでしょう。
+（RAID 5ではパリティ用のドライブを数に含めません。）
 しかし、同時実行セッションで発行される複数の問い合わせでデータベースが頻繁にビジーとなる場合、小さめの値で十分ディスクアレイがビジーになるかもしれません。
 ディスクをビジーにするのに必要な値より大きな値を設定しても、余計なCPUオーバーヘッドを発生させるだけです。
-SSDやそれ以外のメモリーベースの記憶装置は、多くの同時リクエストをこなすことができるので、最適な値は数百になるかもしれません。
+SSDやそれ以外のメモリベースの記憶装置は、多くの同時リクエストをこなすことができるので、最適な値は数百になるかもしれません。
         </para>
 
         <para>
@@ -3886,7 +4041,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          <xref linkend="sql-altertablespace"/>).
 -->
 デフォルトは、サポートされているシステムでは1、そうでなければ0です。
-この値は、テーブルスペースパラメータの同じ名前のパラメータを設定することで、特定のテーブルスペース内のテーブルに対して上書きできます。
+この値は、テーブル空間パラメータの同じ名前のパラメータを設定することで、特定のテーブル空間内のテーブルに対して上書きできます。
 (<xref linkend="sql-altertablespace"/>を参照ください)。
         </para>
        </listitem>
@@ -3922,6 +4077,24 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        </listitem>
       </varlistentry>
 
+      <varlistentry id="guc-io-combine-limit" xreflabel="io_combine_limit">
+       <term><varname>io_combine_limit</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>io_combine_limit</varname> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+<!--
+         Controls the largest I/O size in operations that combine I/O.
+         The default is 128kB.
+-->
+I/Oを結合する操作で最大のI/Oサイズを制御します。
+デフォルトは128キロバイトです。
+        </para>
+       </listitem>
+      </varlistentry>
+
       <varlistentry id="guc-max-worker-processes" xreflabel="max_worker_processes">
        <term><varname>max_worker_processes</varname> (<type>integer</type>)
        <indexterm>
@@ -3934,12 +4107,12 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        <listitem>
         <para>
 <!--
-         Sets the maximum number of background processes that the system
+         Sets the maximum number of background processes that the cluster
          can support.  This parameter can only be set at server start.  The
          default is 8.
 -->
-システムがサポートするバックグラウンドプロセスの最大数を指定します。
-このパラメータはサーバ起動時にのみ設定できます。
+クラスタがサポートするバックグラウンドプロセスの最大数を指定します。
+このパラメータはサーバ起動時のみ設定可能です。
 デフォルトは8です。
         </para>
 
@@ -4097,7 +4270,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        <listitem>
         <para>
 <!--
-         Sets the maximum number of workers that the system can support for
+         Sets the maximum number of workers that the cluster can support for
          parallel operations.  The default value is 8.  When increasing or
          decreasing this value, consider also adjusting
          <xref linkend="guc-max-parallel-maintenance-workers"/> and
@@ -4107,7 +4280,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          since parallel workers are taken from the pool of worker processes
          established by that setting.
 -->
-パラレルクエリ操作用にシステムがサポートできる最大のワーカー数を設定します。
+パラレルクエリ操作用にクラスタがサポートできる最大のワーカー数を設定します。
 デフォルト値は8です。
 この値を増減するときは、<xref linkend="guc-max-parallel-maintenance-workers"/>と<xref linkend="guc-max-parallel-workers-per-gather"/>を調整することを考慮してください。
 また、この設定値を<xref linkend="guc-max-worker-processes"/>よりも高い値にしても効果がないことに注意してください。
@@ -4147,101 +4320,12 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
         </para>
        </listitem>
       </varlistentry>
-
-<!-- split-config0-end -->
-<!-- split-config1-start -->
-      <varlistentry id="guc-old-snapshot-threshold" xreflabel="old_snapshot_threshold">
-       <term><varname>old_snapshot_threshold</varname> (<type>integer</type>)
-       <indexterm>
-        <primary><varname>old_snapshot_threshold</varname> configuration parameter</primary>
-       </indexterm>
-       <indexterm>
-        <primary><varname>old_snapshot_threshold</varname> 設定パラメータ</primary>
-       </indexterm>
-       </term>
-       <listitem>
-        <para>
-<!--
-         Sets the minimum amount of time that a query snapshot can be used
-         without risk of a <quote>snapshot too old</quote> error occurring
-         when using the snapshot.  Data that has been dead for longer than
-         this threshold is allowed to be vacuumed away.  This can help
-         prevent bloat in the face of snapshots which remain in use for a
-         long time.  To prevent incorrect results due to cleanup of data which
-         would otherwise be visible to the snapshot, an error is generated
-         when the snapshot is older than this threshold and the snapshot is
-         used to read a page which has been modified since the snapshot was
-         built.
--->
-スナップショットを使用する際に、<quote>snapshot too old</quote>エラーが起こるリスク無しに問い合わせスナップショットが利用できる最小の期間を設定します。
-この制限値を越えてデッド状態のままになったデータはバキュームしてしまうことが許可されます。
-これにより、長い間残っていたスナップショットによりデータが溢れてしまうのを防ぐことができます。
-スナップショットから見えるデータが消えることによる不正な結果を防ぐため、スナップショットがこの制限値よりも古く、かつこのスナップショットが作られた以降に変更されたページを読むためにスナップショットが使用されるときはエラーが発生します。
-        </para>
-
-        <para>
-<!--
-         If this value is specified without units, it is taken as minutes.
-         A value of <literal>-1</literal> (the default) disables this feature,
-         effectively setting the snapshot age limit to infinity.
-         This parameter can only be set at server start.
--->
-この値が単位なしで指定された場合は、分単位であるとみなします。
-<literal>-1</literal>（デフォルトです）を設定するとこの機能が無効になり、実質的にスナップショットの寿命を無限にします。
-このパラメータはサーバ起動時にのみ設定可能です。
-        </para>
-
-        <para>
-<!--
-         Useful values for production work probably range from a small number
-         of hours to a few days.  Small values (such as <literal>0</literal> or
-         <literal>1min</literal>) are only allowed because they may sometimes be
-         useful for testing.  While a setting as high as <literal>60d</literal> is
-         allowed, please note that in many workloads extreme bloat or
-         transaction ID wraparound may occur in much shorter time frames.
--->
-実際の環境でのおすすめの値はおそらく数時間から2, 3日の間となるでしょう。
-小さな値(たとえば<literal>0</literal>や<literal>1min</literal>)は、テストの際に有用だということで許可されています。
-<literal>60d</literal>のような大きな値の設定もできますが、多くのワークロードにおいて、大きなデータ溢れやトランザクションIDの周回がそれよりはずっと短い期間で起こる可能性があることに注意してください。
-        </para>
-
-        <para>
-<!--
-         When this feature is enabled, freed space at the end of a relation
-         cannot be released to the operating system, since that could remove
-         information needed to detect the <quote>snapshot too old</quote>
-         condition.  All space allocated to a relation remains associated with
-         that relation for reuse only within that relation unless explicitly
-         freed (for example, with <command>VACUUM FULL</command>).
--->
-この機能が有効であると、リレーションの終端部にあるフリースペースはオペレーティングシステムには返却されません。
-そうしないと、<quote>snapshot too old</quote>の条件の検出に必要な情報を削除してしまうことになるからです。
-明示的に解放されない限り（たとえば<command>VACUUM FULL</command>によって）、リレーションに割り当てられた領域は、そのリレーションの中での再利用に限定して紐付けられます。
-        </para>
-
-        <para>
-<!--
-         This setting does not attempt to guarantee that an error will be
-         generated under any particular circumstances.  In fact, if the
-         correct results can be generated from (for example) a cursor which
-         has materialized a result set, no error will be generated even if the
-         underlying rows in the referenced table have been vacuumed away.
-         Some tables cannot safely be vacuumed early, and so will not be
-         affected by this setting, such as system catalogs.  For such tables
-         this setting will neither reduce bloat nor create a possibility
-         of a <quote>snapshot too old</quote> error on scanning.
--->
-この設定は、どのような状況でもエラーが検出されることを保証するものではありません。
-（たとえば）マテリアライズされた結果集合を持つカーソルから正しい結果を得ることができるのであれば、たとえ参照している元のテーブルからVACUUMによって行が削除されたとしてもエラーにはなりません。
-ある種のテーブルでは、早期にVACUUMできないので、この設定の影響を受けません。
-例としては、システムカタログが挙げられます。
-このようなテーブルにおいては、この設定によってデータ溢れを防ぐことも、スキャンの際に<quote>snapshot too old</quote>エラーを起こす可能性を作り出すこともできません。
-        </para>
-       </listitem>
-      </varlistentry>
      </variablelist>
     </sect2>
    </sect1>
+
+<!-- split-config0-end -->
+<!-- split-config1-start -->
 
    <sect1 id="runtime-config-wal">
 <!--
@@ -4737,7 +4821,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
 デフォルトは必ずしも理想的なものではありません。
 クラッシュに適応した構成にする、あるいはアーカイブの最適性能を導くためには、この設定あるいはシステム構成の他の部分を変更することが必要かもしれません。
 これらの側面は <xref linkend="wal-reliability"/>で解説されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -4805,7 +4889,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
         file or on the server command line.
         The default is <literal>on</literal>.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -4879,7 +4963,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
         Only superusers and users with the appropriate <literal>SET</literal>
         privilege can change this setting.
 -->
-このパラメータは、指定された圧縮方法を使用したWALの圧縮を有効にします。
+このパラメータは、指定された圧縮方式を使用したWALの圧縮を有効にします。
 有効にすると、<productname>PostgreSQL</productname>サーバは<xref linkend="guc-full-page-writes"/>がオンの時またはベースバックアップ中にWALに書き込まれた全ページイメージを圧縮します。
 圧縮されたページイメージはWAL再生中に伸長されます。
 サポートされている方法は<literal>pglz</literal>、<literal>lz4</literal>(<productname>PostgreSQL</productname>が<option>--with-lz4</option>でコンパイルされた場合)および<literal>zstd</literal>(<productname>PostgreSQL</productname>が<option>--with-zstd</option>でコンパイルされた場合)です。
@@ -5025,7 +5109,7 @@ WALバッファの内容はトランザクションのコミット毎にディ�
         flushed to disk.
         If this value is specified without units, it is taken as milliseconds.
         The default value is 200 milliseconds (<literal>200ms</literal>).  Note that
-        on many systems, the effective resolution of sleep delays is 10
+        on some systems, the effective resolution of sleep delays is 10
         milliseconds; setting <varname>wal_writer_delay</varname> to a value that is
         not a multiple of 10 might have the same results as setting it to the
         next higher multiple of 10. This parameter can only be set in the
@@ -5033,12 +5117,12 @@ WALバッファの内容はトランザクションのコミット毎にディ�
 -->
 WALライタがWALをフラッシュする頻度を時間で指定します。
 WALをフラッシュしたあと、非同期コミットしているトランザクションに起こされない限り、<varname>wal_writer_delay</varname>ミリ秒待機します。
-最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されている場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
+最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されていない場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は200ミリ秒（<literal>200ms</literal>）です。
-多くのシステムでは、待機間隔の実質的な分解能は10ミリ秒です。
+ある種のシステムでは、待機間隔の実質的な分解能は10ミリ秒です。
 10の倍数以外の値を<varname>wal_writer_delay</varname>に設定しても、その次に大きい10の倍数を設定した場合と同じ結果となります。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5069,11 +5153,11 @@ WALをフラッシュしたあと、非同期コミットしているトラン�
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
 WALライタがWALをフラッシュする頻度を量で指定します。
-最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に起こなわれ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されている場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
+最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されていない場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
 <varname>wal_writer_flush_after</varname>が<literal>0</literal>に設定されている場合は、WALデータが書かれるたびにWALが即時にフラッシュされます。
 この値が単位なしで指定された場合は、WALブロック単位であるとみなします。すなわち、<symbol>XLOG_BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルト値は<literal>1MB</literal>です。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5225,7 +5309,7 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 有効な範囲は、30秒から1日の間です。
 デフォルトは5分（<literal>5min</literal>）です。
 このパラメータを増やすと、クラッシュリカバリで必要となる時間が増加します。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5257,7 +5341,7 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 デフォルトは0.9で、可能な限りの間隔のほとんどにチェックポイントを拡散し、かなり一定のI/O負荷をもたらしますが、チェックポイントが完了するにあたってオーバーヘッドをもたらします。
 チェックポイントの完了を早くするので、このパラメータを小さくするのはお勧めできません。
 これにより、チェックポイント中はI/Oの割合が大きくなり、チェックポイントの完了から次のチェックポイントまでの間はより少ないI/Oとなります。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5302,8 +5386,8 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は、Linuxでは<literal>256kB</literal>で、それ以外は<literal>0</literal>です。
-(<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+（<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5338,7 +5422,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 デフォルトは30秒（<literal>30s</literal>）です。
 零の場合は警告を出しません。
 <varname>checkpoint_timeout</varname>が<varname>checkpoint_warning</varname>より小さい場合は警告を出しません。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5372,7 +5456,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 この値が単位なしで指定された場合は、メガバイト単位であるとみなします。
 デフォルトは1GBです。
 このパラメータを大きくすると、クラッシュリカバリに必要な時間が長くなります。
-このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5403,7 +5487,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 この設定は、たとえば大きなバッチジョブを走らせる際のWALの利用スパイクを取り扱うために、十分なWALのスペースが予約されていることを保証するために使用できます。
 この値が単位なしで指定された場合は、メガバイト単位であるとみなします。
 デフォルトは80MBです。
-このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5515,7 +5599,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
         archiving, but also breaks the chain of WAL files needed for
         archive recovery, so it should only be used in unusual circumstances.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 サーバ起動時に<varname>archive_mode</varname>が有効で、<varname>archive_library</varname>が空文字の時にのみ使用されます。
 <varname>archive_command</varname>と<varname>archive_library</varname>の両方が有効ならばエラーが発生します。
 <varname>archive_mode</varname>が有効であるにもかかわらず、<varname>archive_command</varname>が空文字列（デフォルト）、（そして<varname>archive_library</varname>が空文字列）である場合、WALアーカイブ処理は一時的に無効になりますが、コマンドが後で提供されることを見越して、サーバはWALセグメントの蓄積を続けます。
@@ -5555,7 +5639,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5603,7 +5687,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
 したがって、非常に短い<varname>archive_timeout</varname>を使用することは賢明ではなく、アーカイブストレージを膨張させます。
 通常は1分程度の<varname>archive_timeout</varname>設定が妥当です。
 プライマリサーバからデータをより迅速にコピーしたい場合は、アーカイブではなくストリーミングレプリケーションを使用することを検討してください。この値が単位なしで指定された場合、秒として取得されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5635,7 +5719,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
      affecting crash recovery, streaming replication and archive-based
      replication.
 -->
-このセクションでは、クラッシュリカバリ、ストリーミングレプリケーション、およびアーカイブベースのレプリケーションに影響する一般的なリカバリに適用される設定について説明します。
+この節では、クラッシュリカバリ、ストリーミングレプリケーション、およびアーカイブベースのレプリケーションに影響する一般的なリカバリに適用される設定について説明します。
     </para>
 
 
@@ -5856,7 +5940,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは <filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5888,7 +5972,15 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         The <xref linkend="pgarchivecleanup"/> module
         is often used in <varname>archive_cleanup_command</varname> for
         single-standby configurations, for example:
+-->
+オプションのパラメータは、すべてのリスタートポイントで実行されるシェルコマンドを指定します。
+<varname>archive_cleanup_command</varname>の目的は、スタンバイサーバにとって必要とされない古いアーカイブWALファイルをクリーンアップする仕組みを提供することです。
+<literal>%r</literal>は最後の有効なリスタートポイントを含むファイル名に置換されます。
+これはリストアが再開可能であるために<emphasis>保持</emphasis>しなければならない最古のファイルで、<literal>%r</literal>よりも前のすべてのファイルは安全に削除できます。
+これは現在のリストアからの再開をサポートするのに最小限必要なアーカイブを残して切り詰めるのに必要な情報として利用できます。
+単一のスタンバイ構成用の<varname>archive_cleanup_command</varname>で、たとえば以下のように、しばしば<xref linkend="pgarchivecleanup"/>モジュールが使われます。
 <programlisting>archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</programlisting>
+<!--
         Note however that if multiple standby servers are restoring from the
         same archive directory, you will need to ensure that you do not delete
         WAL files until they are no longer needed by any of the servers.
@@ -5897,12 +5989,6 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         Write <literal>%%</literal> to embed an actual <literal>%</literal> character in the
         command.
 -->
-オプションのパラメータは、すべてのリスタートポイントで実行されるシェルコマンドを指定します。
-<varname>archive_cleanup_command</varname>の目的は、スタンバイサーバにとって必要とされない古いアーカイブWALファイルをクリーンアップする仕組みを提供することです。
-<literal>%r</literal>は最後の有効なリスタートポイントを含むファイル名に置換されます。
-これはリストアが再開可能であるために<emphasis>保持</emphasis>しなければならない最古のファイルで、<literal>%r</literal>よりも前のすべてのファイルは安全に削除できます。
-これは現在のリストアからの再開をサポートするのに最小限必要なアーカイブを残して切り詰めるのに必要な情報として利用できます。
-単一のスタンバイ構成用の<varname>archive_cleanup_command</varname>で、たとえば<programlisting>archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</programlisting>のようにして、しばしば<xref linkend="pgarchivecleanup"/>モジュールが使われます。
 だたし、複数のスタンバイサーバが同じアーカイブディレクトリからリストアしている場合は、どのサーバにおいてももはや必要がなくなるまでWALファイルが削除されることのないようにする必要があることに留意してください。
 <varname>archive_cleanup_command</varname>は通常ウォームスタンバイ構成で使用されます。
 （<xref linkend="warm-standby"/>参照。）
@@ -5923,7 +6009,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -5968,7 +6054,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -6329,6 +6415,105 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
     </variablelist>
    </sect2>
 
+   <sect2 id="runtime-config-wal-summarization">
+<!--
+    <title>WAL Summarization</title>
+-->
+    <title>WAL要約</title>
+
+    <para>
+<!--
+     These settings control WAL summarization, a feature which must be
+     enabled in order to perform an
+     <link linkend="backup-incremental-backup">incremental backup</link>.
+-->
+これらの設定は、WAL要約を制御します。この機能は、<link linkend="backup-incremental-backup">インクリメンタルバックアップ</link>を実行するために有効にする必要があります。
+    </para>
+
+    <variablelist>
+     <varlistentry id="guc-summarize-wal" xreflabel="summarize_wal">
+      <term><varname>summarize_wal</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>summarize_wal</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>summarize_wal</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+     <listitem>
+      <para>
+<!--
+       Enables the WAL summarizer process. Note that WAL summarization can
+       be enabled either on a primary or on a standby.  This parameter can only
+       be set in the <filename>postgresql.conf</filename> file or on the server
+       command line.  The default is <literal>off</literal>.
+-->
+WAL要約プロセスを有効にします。
+WAL要約はプライマリまたはスタンバイのいずれかで有効にできることに注意してください
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+デフォルトは<literal>off</literal>です。
+      </para>
+      <para>
+<!--
+       The server cannot be started with <literal>summarize_wal=on</literal>
+       if <literal>wal_level</literal> is set to <literal>minimal</literal>. If
+       <literal>summarize_wal=on</literal> is configured after server startup
+       while <literal>wal_level=minimal</literal>, the summarizer will run
+       but refuse to generate summary files for any WAL generated with
+       <literal>wal_level=minimal</literal>.
+-->
+<literal>wal_level</literal>が<literal>minimal</literal>に設定されている場合、サーバを<literal>summarize_wal=on</literal>で起動することはできません。
+<literal>wal_level=minimal</literal>の状態でサーバを起動し、その後<literal>summarize_wal=on</literal>に設定した場合、要約処理は動作しますが、<literal>wal_level=minimal</literal>で生成されたWALの要約ファイルの生成は拒否します。
+      </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-wal-summary-keep-time" xreflabel="wal_summary_keep_time">
+      <term><varname>wal_summary_keep_time</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>wal_summary_keep_time</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>wal_summary_keep_time</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+     <listitem>
+      <para>
+<!--
+       Configures the amount of time after which the WAL summarizer
+       automatically removes old WAL summaries. The file timestamp is used to
+       determine which files are old enough to remove. Typically, you should set
+       this comfortably higher than the time that could pass between a backup
+       and a later incremental backup that depends on it.  WAL summaries must
+       be available for the entire range of WAL records between the preceding
+       backup and the new one being taken; if not, the incremental backup will
+       fail. If this parameter is set to zero, WAL summaries will not be
+       automatically deleted, but it is safe to manually remove files that you
+       know will not be required for future incremental backups.
+       This parameter can only be set in the
+       <filename>postgresql.conf</filename> file or on the server command line.
+       If this value is specified without units, it is taken as minutes.
+       The default is 10 days. If <literal>summarize_wal = off</literal>,
+       existing WAL summaries will not be removed regardless of the value of
+       this parameter, because the WAL summarizer will not run.
+-->
+WAL要約処理が自動的に古いWAL要約を削除するまでの時間を設定します。
+ファイルタイムスタンプは、どのファイルが削除するのに十分な古さであるかを判断するために使用されます。
+通常、この値は、バックアップとそれに依存する後のインクリメンタルバックアップとの間で経過する時間よりも余裕を持って高く設定する必要があります。
+WAL要約は、先行するバックアップと新しいバックアップの間のWALレコードの全範囲に対して利用可能でなければなりません。そうでない場合、インクリメンタルバックアップは失敗します。
+このパラメータがゼロに設定されている場合、WAL要約は自動的には削除されませんが、将来の増分バックアップに必要でないことが分かっているファイルは手動で安全に削除できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+この値が単位なしで指定されると、分として解釈されます。
+デフォルトは10日間です。
+<literal>summarize_wal = off</literal>の場合、WAL要約処理が動作しないため、このパラメータの値に関わらず、既存のWAL要約は削除されません。
+      </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+
+   </sect2>
+
    </sect1>
 
    <sect1 id="runtime-config-replication">
@@ -6380,7 +6565,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 -->
 <emphasis>ロジカルレプリケーション</emphasis>の場合、<firstterm>パブリッシャー（</firstterm><link linkend="sql-createpublication"><command>CREATE PUBLICATION</command></link>を実行するサーバ）は、データを<firstterm>サブスクライバー</firstterm>（<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>を実行するサーバ）に複製します。
 サーバは、パブリッシャーとサブスクライバーを同時に兼ねることもできます。
-次の項でパブリッシャーを「送信者」と呼ぶことに注意してください。
+以降の節でパブリッシャーを「送信者」と呼ぶことに注意してください。
 ロジカルレプリケーション設定設定の詳細は、<xref linkend="logical-replication-config"/>を参照してください。
     </para>
 
@@ -6536,7 +6721,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 もし<varname>wal_keep_size</varname>が（デフォルトの）ゼロの場合、システムはスタンバイサーバのために追加セグメントを保持することはしません。
 従って、スタンバイサーバが使用できる古いWALセグメントの数は、直前のチェックポイントの場所とWALアーカイブの状況によって算出されます。
 この値が単位無しで指定されると、メガバイトであると見なします。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        </listitem>
       </varlistentry>
@@ -6574,7 +6759,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 そうでなければ、レプリケーションスロットのrestart_lsnが現在のLSNよりも与えられたサイズ分遅れると、そのスロットを使っているスタンバイは必要なWALファイルが削除されたためにレプリケーションを継続できなくなります。
 レプリケーションスロットのWALが存在するかどうかは<link linkend="view-pg-replication-slots">pg_replication_slots</link>を見て確認できます。
 この値が単位無しで指定されると、メガバイトであると見なします。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        </listitem>
       </varlistentry>
@@ -6638,8 +6823,64 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         command line. The default value is <literal>off</literal>.
 -->
 トランザクションのコミットタイムを記録します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは<literal>off</literal>です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-synchronized-standby-slots" xreflabel="synchronized_standby_slots">
+      <term><varname>synchronized_standby_slots</varname> (<type>string</type>)
+      <indexterm>
+       <primary><varname>synchronized_standby_slots</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>synchronized_standby_slots</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        A comma-separated list of streaming replication standby server slot names
+        that logical WAL sender processes will wait for. Logical WAL sender processes
+        will send decoded changes to plugins only after the specified replication
+        slots confirm receiving WAL. This guarantees that logical replication
+        failover slots do not consume changes until those changes are received
+        and flushed to corresponding physical standbys. If a
+        logical replication connection is meant to switch to a physical standby
+        after the standby is promoted, the physical replication slot for the
+        standby should be listed here. Note that logical replication will not
+        proceed if the slots specified in the
+        <varname>synchronized_standby_slots</varname> do not exist or are invalidated.
+        Additionally, the replication management functions
+-->
+ロジカルWAL送信プロセスが待機する、カンマで区切られたストリーミングレプリケーションのスタンバイサーバのスロット名です。
+ロジカルWAL送信プロセスは、指定されたレプリケーションスロットがWALの受信を確認した後にのみ、デコードされた変更をプラグインに送信します。
+これにより、ロジカルレプリケーションフェイルオーバースロットは、変更が受信され、対応する物理的スタンバイに吐き出されるまで、変更を消費しないことが保証されます。
+物理スタンバイが昇格した後、ロジカルレプリケーションコネクションがその物理スタンバイに移動した場合は、スタンバイの物理レプリケーションスロットがここに表示されます。
+<varname>synchronized_standby_slots</varname>で指定されたスロットが存在しないか、無効になっている場合、ロジカルレプリケーションが続行しないことに注意してください。
+また、レプリケーション管理関数である
+<!--
+        <link linkend="pg-replication-slot-advance">
+        <function>pg_replication_slot_advance</function></link>,
+        <link linkend="pg-logical-slot-get-changes">
+        <function>pg_logical_slot_get_changes</function></link>, and
+        <link linkend="pg-logical-slot-peek-changes">
+        <function>pg_logical_slot_peek_changes</function></link>,
+        when used with logical failover slots, will block until all
+        physical slots specified in <varname>synchronized_standby_slots</varname> have
+        confirmed WAL receipt.
+-->
+<link linkend="pg-replication-slot-advance">、<function>pg_replication_slot_advance</function></link>、<link linkend="pg-logical-slot-get-changes">、<function>pg_logical_slot_get_changes</function></link>、<link linkend="pg-logical-slot-peek-changes">、<function>pg_logical_slot_peek_changes</function></link>がロジカルフェイルオーバースロットに使用されると、<varname>synchronized_standby_slots</varname>で指定されたすべての物理スロットでWAL受信が確認されるまでブロックします。
+       </para>
+       <para>
+<!--
+        The standbys corresponding to the physical replication slots in
+        <varname>synchronized_standby_slots</varname> must configure
+        <literal>sync_replication_slots = true</literal> so they can receive
+        logical failover slot changes from the primary.
+-->
+<varname>synchronized_standby_slots</varname>内の物理的レプリケーションスロットに対応するスタンバイは、<literal>sync_replication_slots = true</literal>を設定して、プライマリからロジカルフェイルオーバースロットの変更を受信できるようにする必要があります。
        </para>
       </listitem>
      </varlistentry>
@@ -6723,7 +6964,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 物理レプリケーションスタンバイでは、<varname>primary_conninfo</varname>設定です。
 デフォルトは<xref linkend="guc-cluster-name"/>の設定で、さもなければ<literal>walreceiver</literal>です。
 論理レプリケーションでは、サブスクリプションの接続情報で設定でき、デフォルトはサブスクリプション名です。
-それ以外のレプリケーションストリームコンシューマーについては、それぞれのドキュメントをご覧ください。
+それ以外のレプリケーションストリームの消費者については、それぞれのドキュメントをご覧ください。
        </para>
        <para>
 <!--
@@ -6747,7 +6988,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
 -->
 ここで、<replaceable class="parameter">num_sync</replaceable>は、トランザクションが応答を待機する必要のある同期スタンバイの数です。
 <replaceable class="parameter">standby_name</replaceable>は、スタンバイサーバの名前です。
-<literal>FIRST</literal>と<literal>ANY</literal>は、リスト中のサーバーから同期スタンバイを選ぶ方法を指定します。
+<literal>FIRST</literal>と<literal>ANY</literal>は、リスト中のサーバから同期スタンバイを選ぶ方法を指定します。
        </para>
        <para>
 <!--
@@ -6770,7 +7011,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
 キーワード<literal>FIRST</literal>を<replaceable class="parameter">num_sync</replaceable>と組み合わせると、優先度に基づく同期レプリケーションを指定し、優先度に基づいて選ばれた<replaceable class="parameter">num_sync</replaceable>個の同期スタンバイにWALレコードがレプリケーションされるまで、トランザクションのコミットは待機します。
 たとえば<literal>FIRST 3 (s1, s2, s3, s4)</literal>とすると、<literal>s1</literal>、<literal>s2</literal>、<literal>s3</literal>、<literal>s4</literal>の中から選ばれた優先順位の高い3つのスタンバイサーバが応答を返すまでコミットは待機します。
 リストの中で前の方に名前が出現するスタンバイには高い優先度が与えられ、同期と見なされます。
-それ以外のリストの中で後の方に名前が上がっているスタンバイサーバーは、潜在的な同期スタンバイであることを表しています。
+それ以外のリストの中で後の方に名前が上がっているスタンバイサーバは、潜在的な同期スタンバイであることを表しています。
 どんな理由であれ、現在の同期スタンバイが切断されると、次に高い優先度を持つスタンバイに直ちに取って代わられます。
 キーワード<literal>FIRST</literal>はオプションです。
        </para>
@@ -6861,7 +7102,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -6927,14 +7168,23 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
           <varname>primary_conninfo</varname> string, or in a separate
           <filename>~/.pgpass</filename> file on the standby server (use
           <literal>replication</literal> as the database name).
-          Do not specify a database name in the
-          <varname>primary_conninfo</varname> string.
 -->
 接続文字列では、プライマリサーバのホスト名（またはアドレス）、スタンバイサーバのデフォルトと異なるのであればポート番号も指定する必要があります。
 また、送信サーバ上で適切な権限を保有するロールのユーザを指定しなければなりません (<xref linkend="streaming-replication-authentication"/> 参照)。
-送信サーバが要求するのであれば、パスワードも記述される必要があります。
+送信サーバがパスワード認証を要求するのであれば、パスワードも記述される必要があります。
 パスワードは <varname>primary_conninfo</varname>に記述することもできますし、スタンバイサーバ上の分離されたファイル<filename>~/.pgpass</filename>に記述することもできます (データベース名には <literal>replication</literal> を使います)。
-<varname>primary_conninfo</varname>文字列の中には、データベース名を指定しないでください。
+         </para>
+         <para>
+<!--
+          For replication slot synchronization (see
+          <xref linkend="logicaldecoding-replication-slots-synchronization"/>),
+          it is also necessary to specify a valid <literal>dbname</literal>
+          in the <varname>primary_conninfo</varname> string. This will only be
+          used for slot synchronization. It is ignored for streaming.
+-->
+レプリケーションスロットを同期（<xref linkend="logicaldecoding-replication-slots-synchronization"/>を参照）するために、<varname>primary_conninfo</varname>文字列に有効な<literal>dbname</literal>を指定する必要もあります。
+これはスロットの同期にのみ使用されます。
+ストリーミングでは無視されます。
          </para>
          <para>
 <!--
@@ -6946,7 +7196,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
           is an empty string).
           This setting has no effect if the server is not in standby mode.
 -->
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します（<varname>primary_conninfo</varname>が空文字の場合を除きます。）
 サーバがスタンバイモードでなければこの設定は無効となります。
          </para>
@@ -6977,7 +7227,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
           set or the server is not in standby mode.
 -->
 上流ノードのリソース削除を制御するためにストリーミングレプリケーション経由でプライマリに接続した場合、既存のレプリケーションスロットを使うように、必要に応じて指定します（<xref linkend="streaming-replication-slots"/>を参照）。
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します。
 <varname>primary_conninfo</varname>が設定されていない場合、この設定は無効です。
          </para>
@@ -7003,7 +7253,8 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         during archive recovery or in standby mode.
 -->
 <xref linkend="hot-standby"/>に記載されている通り、リカバリの最中に接続し、そして問い合わせを実行できるか否かを設定します。デフォルト値は<literal>on</literal>です。
-このパラメータはサーバ起動時のみ設定可能です。これは、アーカイブリカバリ期間、又はスタンバイモードにある場合にのみ効果をもたらします。
+このパラメータはサーバ起動時のみ設定可能です。
+これは、アーカイブリカバリ期間、又はスタンバイモードにある場合にのみ効果をもたらします。
        </para>
       </listitem>
      </varlistentry>
@@ -7038,7 +7289,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合、ミリ秒単位で取得されます。
 デフォルトは30秒です。
 値-1を指定すると、スタンバイは競合するクエリが完了するまで永遠に待機します。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバコマンドラインからのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -7086,7 +7337,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合、ミリ秒単位で取得されます。
 デフォルトは30秒です。
 値-1を指定すると、スタンバイは競合するクエリが完了するまで永久に待機します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -7127,7 +7378,8 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         the new setting.
 -->
 永続レプリケーションスロットが(<xref linkend="guc-primary-slot-name"/>を使って)作成されない設定になっている時に、WAL受信プロセスがリモートインスタンス上に一時レプリケーションスロットを作るかどうかを指定します。
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+デフォルトはoffです。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します。
        </para>
       </listitem>
@@ -7166,7 +7418,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
        the <filename>postgresql.conf</filename> file or on the server
        command line.
 -->
-スタンバイサーバ上のWAL受信プロセスがプライマリー、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
+スタンバイサーバ上のWAL受信プロセスがプライマリ、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
 送信された進捗情報は<link linkend="monitoring-pg-stat-replication-view"><structname>pg_stat_replication</structname></link>ビューにより確認することが可能です。
 スタンバイサーバは書き込みがされた直近の先行書き込みログ位置、ディスクにフラッシュされた直近のログ位置、およびリカバリ適用された直近のログ位置を報告します。
 このパラメータの値がそれぞれの報告間における最大の時間間隔です。
@@ -7176,7 +7428,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 従って、適用位置は真の位置よりも少し後ろにずれることがあります。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 デフォルトの値は10秒です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
       </para>
       </listitem>
      </varlistentry>
@@ -7203,12 +7455,12 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         <literal>off</literal>. This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリーまたは上位サーバにフィードバックを送るか否かを指定します。
+ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリまたは上位サーバにフィードバックを送るか否かを指定します。
 このパラメータはレコードの回収に起因する問い合わせの取り消しを排除するために使用することができます。
-しかし、いくつかのワークロードに対してはプライマリーサーバ上でのデータベース肥大の原因となります。
+しかし、いくつかのワークロードに対してはプライマリサーバ上でのデータベース肥大の原因となります。
 フィードバックメッセージは<varname>wal_receiver_status_interval</varname>毎に、2回以上送信されません。
 デフォルトの値は<literal>off</literal>です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -7216,23 +7468,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         until it eventually reaches the primary.  Standbys make no other use
         of feedback they receive other than to pass upstream.
 -->
-カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリーに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
-       </para>
-       <para>
-<!--
-        This setting does not override the behavior of
-        <varname>old_snapshot_threshold</varname> on the primary; a snapshot on the
-        standby which exceeds the primary's age threshold can become invalid,
-        resulting in cancellation of transactions on the standby.  This is
-        because <varname>old_snapshot_threshold</varname> is intended to provide an
-        absolute limit on the time which dead rows can contribute to bloat,
-        which would otherwise be violated because of the configuration of a
-        standby.
--->
-この設定は、プライマリの<varname>old_snapshot_threshold</varname>の挙動を上書きしません。
-プライマリの年齢上限を超えたスタンバイ上のスナップショットは無効となる可能性があり、その場合スタンバイにおいてトランザクションのキャンセルを引き起こします。
-これは、<varname>old_snapshot_threshold</varname>が、無効行によってデータ溢れが起こる時刻の絶対的な制限を提供することを意図しているからです。
-そうでなければ、スタンバイの設定によってこの目的は成立しなくなってしまいます。
+カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
        </para>
       </listitem>
      </varlistentry>
@@ -7265,7 +7501,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は60秒です。
 値ゼロは時間切れメカニズムを無効にします。
-このパラメータは<filename>postgresql.conf</filename>ファイルまたはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -7293,7 +7529,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         command line.
 -->
 WALデータがソース(ストリーミングレプリケーション、ローカルの<filename>pg_wal</filename>、またはWALアーカイブ)から取得できない時に、スタンバイサーバがWALデータ受信をリトライするまでにどの位の時間待つべきかを指定します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は5秒です。
 このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
@@ -7391,7 +7627,7 @@ WALの生成頻度が少ないシステムでは、この値を大きくする�
         state, until the standby is promoted or triggered. After that the standby
         will end recovery without further waiting.
 -->
-ひとたびリカバリ中のデータベースが整合性のとれた状態になれば、スタンバイサーバが昇格またはトリガーになるまで、遅延が発生します。
+ひとたびリカバリ中のデータベースが整合性のとれた状態になれば、スタンバイサーバが昇格またはトリガになるまで、遅延が発生します。
 その後、スタンバイサーバはそれ以上待たずにリカバリを終了します。
        </para>
        <para>
@@ -7437,6 +7673,34 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-sync-replication-slots" xreflabel="sync_replication_slots">
+      <term><varname>sync_replication_slots</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>sync_replication_slots</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>sync_replication_slots</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        It enables a physical standby to synchronize logical failover slots
+        from the primary server so that logical subscribers can resume
+        replication from the new primary server after failover.
+-->
+これにより、物理スタンバイはプライマリサーバからのロジカルフェイルオーバースロットの同期が可能となり、ロジカルサブスクライバーはフェイルオーバー後に新しいプライマリサーバからレプリケーションを再開できます。
+       </para>
+       <para>
+<!--
+        It is disabled by default. This parameter can only be set in the
+        <filename>postgresql.conf</filename> file or on the server command line.
+-->
+このパラメータはデフォルトで無効です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
      </variablelist>
     </sect2>
 
@@ -7572,7 +7836,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         line.
 -->
 デフォルト値は2です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -7611,7 +7875,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         line.
 -->
 デフォルト値は2です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -7725,6 +7989,34 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-enable-groupby-reordering" xreflabel="enable_group_by_reordering">
+      <term><varname>enable_group_by_reordering</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>enable_group_by_reordering</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>enable_group_by_reordering</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Controls if the query planner will produce a plan which will provide
+        <literal>GROUP BY</literal> keys sorted in the order of keys of
+        a child node of the plan, such as an index scan.  When disabled, the
+        query planner will produce a plan with <literal>GROUP BY</literal>
+        keys only sorted to match the <literal>ORDER BY</literal> clause,
+        if any. When enabled, the planner will try to produce a more
+        efficient plan. The default value is <literal>on</literal>.
+-->
+問い合わせプランナが、インデックススキャンのようなプランの子ノードのキーの順でソートされた<literal>GROUP BY</literal>キーを提供するプランを生成するかどうかを制御します。
+無効にすると、問い合わせプランナは、<literal>GROUP BY</literal>句があれば、それに合わせたソート順の<literal>ORDER BY</literal>キーを持つプランを生成します。
+有効にすると、プランナはより効率的プランの生成を試みます。
+デフォルト値は<literal>on</literal>です。
+       </para>
+      </listitem>
+     </varlistentry>
+
      <varlistentry id="guc-enable-hashagg" xreflabel="enable_hashagg">
       <term><varname>enable_hashagg</varname> (<type>boolean</type>)
       <indexterm>
@@ -7808,7 +8100,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         Enables or disables the query planner's use of index-scan plan
         types. The default is <literal>on</literal>.
 -->
-問い合わせプランナがインデックス走査計画型を選択することを有効もしくは無効にします。デフォルトは<literal>on</literal>です。
+問い合わせプランナがインデックススキャン計画型を選択することを有効もしくは無効にします。デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -7830,7 +8122,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         The default is <literal>on</literal>.
 -->
 問い合わせプランナがインデックスオンリースキャン計画型を選択することを有効もしくは無効にします。
-(<xref linkend="indexes-index-only-scans"/>を参照してください)
+（<xref linkend="indexes-index-only-scans"/>を参照してください）。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -7880,7 +8172,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         space is required for new entries. The default is
         <literal>on</literal>.
 -->
-問い合わせプランナが、ネステッドループ結合の中のパラメータ付き走査の結果をキャッシュするメモ化計画を使用するのを有効あるいは無効にします。
+問い合わせプランナが、ネステッドループ結合の中のパラメータ付きスキャンの結果をキャッシュするメモ化計画を使用するのを有効あるいは無効にします。
 この計画型は、キャッシュ中に現在のパラメータに対応する結果があれば、配下の計画をスキップすることを可能にします。
 新しい項目のためにより多くのスペースが必要な場合は、あまり参照されていない結果は削除されるかもしれません。
 デフォルトは<literal>on</literal>です。
@@ -7970,7 +8262,8 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         types with parallel hash. Has no effect if hash-join plans are not
         also enabled. The default is <literal>on</literal>.
 -->
-問い合わせプランナによる、パラレルハッシュを使ったハッシュジョイン計画型の利用を有効あるいは無効にします。
+問い合わせプランナによる、パラレルハッシュを使ったハッシュ結合計画型の利用を有効あるいは無効にします。
+ハッシュ結合計画が有効でない場合は無効です。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -8020,14 +8313,21 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         joining the matching partitions.  Partitionwise join currently applies
         only when the join conditions include all the partition keys, which
         must be of the same data type and have one-to-one matching sets of
-        child partitions.  Because partitionwise join planning can use
-        significantly more CPU time and memory during planning, the default is
-        <literal>off</literal>.
+        child partitions.  With this setting enabled, the number of nodes
+        whose memory usage is restricted by <varname>work_mem</varname>
+        appearing in the final plan can increase linearly according to the
+        number of partitions being scanned.  This can result in a large
+        increase in overall memory consumption during the execution of the
+        query.  Query planning also becomes significantly more expensive in
+        terms of memory and CPU.  The default value is <literal>off</literal>.
 -->
 パーティション同士の結合(partitionwise join)を問い合わせプランナが使用するのを有効あるいは無効にします。
 パーティション同士の結合は、適合するパーティションを結合することによって実行される、パーティション化テーブルにまたがる結合を可能にします。
 今の所、パーティション同士の結合は、すべてのパーティションキーを含んでいて、かつパーティションキーの型が同じで、一対一で一致する子パーティションの集合を持つ結合条件のときだけに適用されます。
-パーティション同士の結合のプランニングには大量のCPU時間とメモリが使用されることがあるので、デフォルトは<literal>off</literal>です。
+この設定を有効にすると、最終プランに表示され、<varname>work_mem</varname>によってメモリ使用が制限されるノードの数は、スキャンされるパーティションの数に応じて直線的に増加します。
+これにより、問い合わせの実行中の全体的なメモリ消費の大きな増加をもたらす可能性があります。
+また、問い合わせ計画の作成が、メモリとCPU使用率の点でも非常に高価になります。
+デフォルト値は<literal>off</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -8045,18 +8345,25 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
        <para>
 <!--
         Enables or disables the query planner's use of partitionwise grouping
-        or aggregation, which allows grouping or aggregation on a partitioned
-        tables performed separately for each partition.  If the <literal>GROUP
-        BY</literal> clause does not include the partition keys, only partial
-        aggregation can be performed on a per-partition basis, and
-        finalization must be performed later.  Because partitionwise grouping
-        or aggregation can use significantly more CPU time and memory during
-        planning, the default is <literal>off</literal>.
+        or aggregation, which allows grouping or aggregation on partitioned
+        tables to be performed separately for each partition.  If the
+        <literal>GROUP BY</literal> clause does not include the partition
+        keys, only partial aggregation can be performed on a per-partition
+        basis, and finalization must be performed later.  With this setting
+        enabled, the number of nodes whose memory usage is restricted by
+        <varname>work_mem</varname> appearing in the final plan can increase
+        linearly according to the number of partitions being scanned.  This
+        can result in a large increase in overall memory consumption during
+        the execution of the query.  Query planning also becomes significantly
+        more expensive in terms of memory and CPU.  The default value is
+        <literal>off</literal>.
 -->
-パーティション同士（partitionwise）のグループ化、あるいは集約を、問い合わせプランナが使用するのを有効あるいは無効にします。
-パーティション同士のグループ化、あるいは集約は、個々のパーティション毎にパーティション化されたテーブルに対して、グループ化あるいは集約を実行するのを可能にします。
+パーティション化されたテーブルに対してグループ化または集約を個別に実行できるように、問い合わせプランナのパーティションごと（partitionwise）のグループ化または集約の使用を有効または無効にします。
 <literal>GROUP BY</literal>句がパーティションキーを含まない場合は、パーティション単位で部分集約だけが実行でき、最終結果の算出は後で行われます。
-パーティション同士のグループ化あるいは集約には大量のCPU時間とメモリが使用されることがあるので、デフォルトは<literal>off</literal>です。
+この設定を有効にすると、最終プランに表示され、<varname>work_mem</varname>によってメモリ使用が制限されるノードの数は、スキャンされるパーティションの数に応じて直線的に増加します。
+これにより、問い合わせの実行中の全体的なメモリ消費の大きな増加をもたらす可能性があります。
+また、問い合わせ計画の作成が、メモリとCPU使用率の点でも非常に高価になります。
+デフォルト値は<literal>off</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -8117,8 +8424,8 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         from using one if there are other methods available. The
         default is <literal>on</literal>.
 -->
-問い合わせプランナがシーケンシャル走査計画型を選択することを有効もしくは無効にします。
-シーケンシャル走査を完全に禁止することは不可能ですが、この変数をオフにすると、もし他の方法が利用できるのであれば、プランナはその使用を行わないようになります。
+問い合わせプランナがシーケンシャルスキャン計画型を選択することを有効もしくは無効にします。
+シーケンシャルスキャンを完全に禁止することは不可能ですが、この変数をオフにすると、もし他の方法が利用できるのであれば、プランナはその使用を行わないようになります。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -8164,7 +8471,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         Enables or disables the query planner's use of <acronym>TID</acronym>
         scan plan types. The default is <literal>on</literal>.
 -->
-問い合わせプランナが<acronym>TID</acronym>走査計画型を選択することを有効もしくは無効にします。
+問い合わせプランナが<acronym>TID</acronym>スキャン計画型を選択することを有効もしくは無効にします。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -8368,7 +8675,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
         each index entry during an index scan.
         The default is 0.005.
 -->
-インデックス走査時のそれぞれのインデックス行の処理コストに対するプランナの推測を設定します。
+インデックススキャン時のそれぞれのインデックス行の処理コストに対するプランナの推測を設定します。
 デフォルトは0.005です。
        </para>
       </listitem>
@@ -8461,7 +8768,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
         The default is 8 megabytes (<literal>8MB</literal>).
 -->
 パラレルスキャンを考慮する最小のテーブルデータのサイズを指定します。
-パラレル順スキャンでは、スキャンされるテーブルのデータ量は、常にテーブルのサイズと同じです。
+パラレルシーケンシャルスキャンでは、スキャンされるテーブルのデータ量は、常にテーブルのサイズと同じです。
 しかし、インデックスが使われる場合は、スキャンされるテーブルの量は通常少なくなるでしょう。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルトは8メガバイト（ <literal>8MB</literal>）です。
@@ -8548,7 +8855,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
 同時に、システムは問い合わせの間のディスクキャッシュ内のデータの残滓を想定していません。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルトは4ギガバイト（<literal>4GB</literal>）です。
-(<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
+（<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
        </para>
       </listitem>
      </varlistentry>
@@ -8632,7 +8939,7 @@ JITが有効な場合（<xref linkend="jit"/>参照）、それ以上ならJIT�
 それ以上ならJITコンパイルが高価な最適化を実行する問い合わせコストを設定します。
 そうした最適化にはプラン時間がかかりますが、問い合わせの実行速度を改善できます。
 これを<varname>jit_above_cost</varname>よりも小さくするのは意味がなく、また<varname>jit_inline_above_cost</varname>よりも大きくしても利益はないでしょう。
-これを<literal>-1</literal>にすると、高価な最適化は無効になります
+これを<literal>-1</literal>にすると、高価な最適化は無効になります。
 デフォルトは<literal>500000</literal>です。
        </para>
       </listitem>
@@ -8944,7 +9251,7 @@ GEQOで使用される淘汰の偏りを管理します。
         constraints, and omits scanning tables for which the conditions
         contradict the constraints.  For example:
 -->
-このパラメータが特定のテーブルに対して許される時、プランナはそのテーブルの<literal>CHECK</literal>制約で問い合わせ条件を比較し、制約と矛盾する条件のテーブルの走査を省きます。
+このパラメータが特定のテーブルに対して許される時、プランナはそのテーブルの<literal>CHECK</literal>制約で問い合わせ条件を比較し、制約と矛盾する条件のテーブルのスキャンを省きます。
 例えば以下のようになります。
 
 <programlisting>
@@ -8959,7 +9266,7 @@ SELECT * FROM parent WHERE key = 2400;
         With constraint exclusion enabled, this <command>SELECT</command>
         will not scan <structname>child1000</structname> at all, improving performance.
 -->
-制約排除が有効であると、この<command>SELECT</command>は全く<structname>child1000</structname>を走査せず、性能を向上させます。
+制約排除が有効であると、この<command>SELECT</command>は全く<structname>child1000</structname>をスキャンせず、性能を向上させます。
        </para>
 
        <para>
@@ -9279,9 +9586,9 @@ SELECT * FROM parent WHERE key = 2400;
 -->
 <productname>PostgreSQL</productname>は、<systemitem>stderr</systemitem>、<systemitem>jsonlog</systemitem>、<systemitem>csvlog</systemitem>、<systemitem>jsonlog</systemitem>および<systemitem>syslog</systemitem>を含めて、サーバメッセージのログ取得に対し数種類の方法を提供します。
 Windowsでは、<systemitem>eventlog</systemitem>も同時に提供します。
-このパラメータを設定するには、コンマ区切りでお好みのログ出力先を記載します。
+このパラメータを設定するには、カンマ区切りでお好みのログ出力先を記載します。
 デフォルトでは、ログは<systemitem>stderr</systemitem>のみに出力されます。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -9367,7 +9674,7 @@ local0.*    /var/log/postgresql
          to the  <application>syslog</application> daemon's configuration file
          to make it work.
 -->
-<application>syslog</application>デーモンの設定に追加しなければならないでしょう。
+<application>syslog</application>デーモンの設定ファイルに追加しなければならないでしょう。
         </para>
         <para>
 <!--
@@ -9411,7 +9718,7 @@ Windowsで<varname>log_destination</varname>に対し<literal>eventlog</literal>
 それは<systemitem>stderr</systemitem>に送られたログメッセージを捕捉し、ログファイルにリダイレクトするバックグラウンドプロセスです。
 この手法は<application>syslog</application>へのログよりもしばしば有用です。
 メッセージの一部の種類が<application>syslog</application>では出力されない可能性があるためです。
-（一般的な例として、ダイナミックリンカのエラーメッセージがあり、その他の例として<varname>archive_command</varname>のようなスクリプトにより生成されたエラーメッセージが挙げられます）。
+（一般的な例として、ダイナミックリンカのエラーメッセージがあり、その他の例として<varname>archive_command</varname>のようなスクリプトにより生成されたエラーメッセージが挙げられます。）
 このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
@@ -9477,7 +9784,7 @@ Windowsで<varname>log_destination</varname>に対し<literal>eventlog</literal>
 -->
 <varname>logging_collector</varname>を有効と設定した場合、このパラメータはログファイルが作成されるディレクトリを確定します。
 ディレクトリは、絶対パス、もしくはデータベースクラスタのディレクトリに対する相対パスで指定することができます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバコマンドラインからのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは<literal>log</literal>です。
        </para>
       </listitem>
@@ -9604,6 +9911,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 デフォルトのパーミッションは<literal>0600</literal>で、意味するところはサーバの所有者のみログファイルの読み書きが可能です。
 そのほか一般的に実用的な設定は<literal>0640</literal>で、所有者のグループはファイルを読み込めます。
 しかし、これらの設定を活用するには<xref linkend="guc-log-directory"/>がクラスタデータディレクトリの外部のどこかにあるファイルを格納できるように変更する必要があります。
+いずれにせよ、それらは機密データを含む可能性があるため、ログファイルを誰もが読み取り可能にすることは賢明ではありません。
        </para>
        <para>
 <!--
@@ -9641,7 +9949,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 この値が単位なしで指定された場合は、分単位であるとみなします。
 デフォルトは24時間です。
 ゼロに設定することで、時間に基づいた新しいログファイルの生成は無効になります。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -9673,7 +9981,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
 デフォルトは10メガバイトです。
 ゼロに設定することで、サイズに基づいた新しいログファイルの生成は無効になります。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -9707,7 +10015,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 しかし、切り詰めは時間を基にしたローテーションのために新規にファイルが開かれた時にのみ発生し、サーバ起動時やサイズを基にしたローテーションでは発生しません。
 偽の場合、全ての場合において既存のファイルは追記されます。
 例えば、この設定を<literal>postgresql-%H.log</literal>のような<varname>log_filename</varname>と組み合わせて使用すると、24個の時別のログファイルが生成され、それらは周期的に上書きされることになります。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -9767,7 +10075,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 <literal>LOCAL0</literal>、<literal>LOCAL1</literal>、<literal>LOCAL2</literal>、<literal>LOCAL3</literal>、<literal>LOCAL4</literal>、<literal>LOCAL5</literal>、<literal>LOCAL6</literal>、<literal>LOCAL7</literal>の中から選んでください。
 デフォルトは<literal>LOCAL0</literal>です。
 使用しているシステムの<application>syslog</application>デーモンの文書を同時に参照してください。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -9793,7 +10101,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
          file or on the server command line.
 -->
 <application>syslog</application>にログ取得が有効な場合、このパラメータは<application>syslog</application>ログ内の<productname>PostgreSQL</productname>メッセージを特定するのに使用するプログラム名を確定します。デフォルトは<literal>postgres</literal>です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -9833,7 +10141,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
          This parameter can only be set in the <filename>postgresql.conf</filename>
          file or on the server command line.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
       </listitem>
      </varlistentry>
@@ -9884,7 +10192,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -9908,7 +10216,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-<application>event log</application>へのログ取得が有効になっていると、このパラメータはログ中の<productname>PostgreSQL</productname>メッセージを特定するのに使用されるプログラム名を決定します。デフォルトは<literal>PostgreSQL</literal>です。このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+<application>event log</application>へのログ取得が有効になっていると、このパラメータはログ中の<productname>PostgreSQL</productname>メッセージを特定するのに使用されるプログラム名を決定します。デフォルトは<literal>PostgreSQL</literal>です。このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -10241,7 +10549,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 デフォルトは10秒です。
 <literal>0</literal>に設定すると、この機能は無効になります。この値を単位なしで指定すると、ミリ秒とみなされます。
 この設定は、各操作に個別に適用されます。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
 
         <para>
@@ -10428,14 +10736,16 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
         and included in CSV log entries.  It can also be included in regular
         log entries via the <xref linkend="guc-log-line-prefix"/> parameter.
         Only printable ASCII characters may be used in the
-        <varname>application_name</varname> value. Other characters will be
-        replaced with question marks (<literal>?</literal>).
+        <varname>application_name</varname> value.
+        Other characters are replaced with <link
+        linkend="sql-syntax-strings-escape">C-style hexadecimal escapes</link>.
 -->
-<varname>application_name</varname>は<symbol>NAMEDATALEN</symbol>（標準構築では64）文字以下の任意の文字列を指定できます。
-通常はサーバへの接続時にアプリケーションによって設定されます。
-この名前は <structname>pg_stat_activity</structname>ビューに表示され、CSVログに含まれます。
+<varname>application_name</varname>は<symbol>NAMEDATALEN</symbol>文字未満の任意の文字列（標準ビルドでは64文字）にすることができます。
+これは通常、サーバへの接続時にアプリケーションによって設定されます。
+この名前は<structname>pg_stat_activity</structname>ビューに表示され、CSVログエントリに含まれます。
 また<xref linkend="guc-log-line-prefix"/>パラメータにより通常のログ項目に含めることができます。
-<varname>application_name</varname>には表示可能なASCII文字のみ使用することができ、それ以外の文字は疑問符（<literal>?</literal>）に置換されます。
+<varname>application_name</varname>値には印字可能なASCII文字のみを使用できます。
+他の文字は<link linkend="sql-syntax-strings-escape">Cスタイルの16進エスケープ文字</link>に置き換えられます。
        </para>
       </listitem>
      </varlistentry>
@@ -10549,7 +10859,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 さらに、<literal>-1</literal>以外の値にこのパラメータが設定された場合、競合するロックや並行して削除されたリレーションによりautovacuum動作がスキップされるとメッセージはログに記録されます。
 デフォルトは<literal>10min</literal>です。
 このパラメータを有効にすることは、autovacuum活動の追跡に役に立ちます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
@@ -10575,7 +10885,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 -->
 チェックポイントおよびリスタートポイントをサーバログに記録するようにします。
 書き出されたバッファ数や書き出しに要した時間など、いくつかの統計情報がこのログメッセージに含まれます。
-このパラメータは<filename>postgresql.conf</filename>ファイルまたはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトはonです。
        </para>
       </listitem>
@@ -10755,7 +11065,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
 デフォルトでは、接続ログメッセージは接続元ホストのIPアドレスのみを表示します。
 このパラメータを有効にすると、ホスト名もログに残るようになります。
 ホスト名解決方法の設定に依存しますが、これが無視できないほどの性能劣化を起こす可能性があることに注意してください。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -10803,7 +11113,7 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
          file or on the server command line. The default is
          <literal>'%m [%p] '</literal> which logs a time stamp and the process ID.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定することができます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは、タイムスタンプとプロセスIDをログ出力する<literal>'%m [%p] '</literal>です。
        </para>
 
@@ -10970,13 +11280,12 @@ Unixシステムにおいては、<varname>logging_collector</varname>が有効�
             <row>
              <entry><literal>%v</literal></entry>
 <!--
-             <entry>Virtual transaction ID (backendID/localXID);  see
+             <entry>Virtual transaction ID (procNumber/localXID);  see
              <xref linkend="transaction-id"/></entry>
-             <entry>no</entry>
 -->
-             <entry>仮想トランザクションID（backendID/localXID）。
-              <xref linkend="transaction-id"/>参照</entry>
-             <entry>×</entry>
+             <entry>仮想トランザクションID(procNumber/localXID)。
+             <xref linkend="transaction-id"/>を参照してください</entry>
+             <entry>no</entry>
             </row>
             <row>
              <entry><literal>%x</literal></entry>
@@ -11171,7 +11480,7 @@ log_line_prefix = '%m [%p] %q%u@%d/%a '
         command line.
 -->
 デフォルトは<literal>off</literal>です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -11305,7 +11614,7 @@ log_line_prefix = '%m [%p] %q%u@%d/%a '
         privilege can change this setting.
 -->
 デフォルトは<literal>none</literal>です。
-スーパーユーザーおよび適切な<literal>SET</literal>権限を持つユーザーのみがこの設定を変更できます。
+スーパーユーザおよび適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更できます。
        </para>
 
        <note>
@@ -11347,13 +11656,14 @@ log_line_prefix = '%m [%p] %q%u@%d/%a '
       <listitem>
        <para>
 <!--
-        Causes each replication command to be logged in the server log.
-        See <xref linkend="protocol-replication"/> for more information about
-        replication command. The default value is <literal>off</literal>.
-        Only superusers and users with the appropriate <literal>SET</literal>
-        privilege can change this setting.
+        Causes each replication command and <literal>walsender</literal>
+        process's replication slot acquisition/release to be logged in the
+        server log. See <xref linkend="protocol-replication"/> for more
+        information about replication command. The default value is
+        <literal>off</literal>. Only superusers and users with the appropriate
+        <literal>SET</literal> privilege can change this setting.
 -->
-サーバログにレプリケーションコマンドを記録します。
+サーバログに各レプリケーションコマンドと、<literal>walsender</literal>プロセスのレプリケーションスロットの獲得／解放を記録します。
 レプリケーションコマンドの更なる情報は<xref linkend="protocol-replication"/>をご覧ください。
 デフォルト値は<literal>off</literal>です。
 スーパーユーザと、適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更することができます。
@@ -11425,7 +11735,7 @@ log_line_prefix = '%m [%p] %q%u@%d/%a '
 <xref linkend="guc-timezone"/>と異なり、すべてのセッションで一貫性を持ってタイムスタンプが報告されるようにこの値はクラスタ全体に適用されます。
 組み込まれているデフォルトは<literal>GMT</literal>ですが、<filename>postgresql.conf</filename>により通常は上書きされます。<application>initdb</application>によりこれらと関連した設定をシステム環境にインストールされます。
 詳細は<xref linkend="datatype-timezones"/>を参照してください。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -11538,7 +11848,7 @@ CREATE TABLE postgres_log
         To import a log file into this table, use the <command>COPY FROM</command>
         command:
 -->
-このテーブルにインポートするためには、<command>COPY FROM</command>コマンドを使用してください。
+このテーブルにログファイルをインポートするためには、<command>COPY FROM</command>コマンドを使用してください。
 
 <programlisting>
 COPY postgres_log FROM '/full/path/to/logfile.csv' WITH csv;
@@ -11643,7 +11953,7 @@ CSVログファイルをインポートする作業を単純にするために�
 -->
 NULL値を持つ文字列フィールドは出力から除外されます。
 将来、フィールドが追加される可能性があります。
-<literal>jsonlog</literal>出力を処理するユーザーアプリケーションは不明なフィールドを無視する必要があります。
+<literal>jsonlog</literal>出力を処理するユーザアプリケーションは不明なフィールドを無視する必要があります。
      </para>
 
      <para>
@@ -11959,15 +12269,17 @@ NULL値を持つ文字列フィールドは出力から除外されます。
         The name can be any string of less
         than <symbol>NAMEDATALEN</symbol> characters (64 characters in a standard
         build). Only printable ASCII characters may be used in the
-        <varname>cluster_name</varname> value. Other characters will be
-        replaced with question marks (<literal>?</literal>).  No name is shown
-        if this parameter is set to the empty string <literal>''</literal> (which is
-        the default). This parameter can only be set at server start.
+        <varname>cluster_name</varname> value.
+        Other characters are replaced with <link
+        linkend="sql-syntax-strings-escape">C-style hexadecimal escapes</link>.
+        No name is shown if this parameter is set to the empty string
+        <literal>''</literal> (which is the default).
+        This parameter can only be set at server start.
 -->
-クラスタ名は<symbol>NAMEDATALEN</symbol>文字(標準のビルドでは64文字)より少ない文字列です。
+名前は<symbol>NAMEDATALEN</symbol>文字（標準のビルドでは64文字）より少ない文字列です。
 表示可能なASCII文字だけが<varname>cluster_name</varname>の値として設定できます。
-他の文字は、疑問符(<literal>?</literal>)に置き換えられます。
-空文字<literal>''</literal>(これがデフォルト値です)が設定されると、クラスタ名は表示されません。
+他の文字は、<link linkend="sql-syntax-strings-escape">Cスタイルの16進エスケープ文字</link>に置き換えられます。
+空文字<literal>''</literal>（これがデフォルト値です）が設定されると、クラスタ名は表示されません。
 このパラメータはサーバ起動時にのみ設定できます。
        </para>
       </listitem>
@@ -12133,7 +12445,9 @@ NULL値を持つ文字列フィールドは出力から除外されます。
         measure the overhead of timing on your system.
         I/O timing information is
         displayed in <link linkend="monitoring-pg-stat-database-view">
-        <structname>pg_stat_database</structname></link>, in the output of
+        <structname>pg_stat_database</structname></link>,
+        <link linkend="monitoring-pg-stat-io-view">
+        <structname>pg_stat_io</structname></link>, in the output of
         <xref linkend="sql-explain"/> when the <literal>BUFFERS</literal> option
         is used, in the output of <xref linkend="sql-vacuum"/> when
         the <literal>VERBOSE</literal> option is used, by autovacuum
@@ -12146,7 +12460,7 @@ NULL値を持つ文字列フィールドは出力から除外されます。
 データベースによるI/O呼び出しの記録を有効にします。
 このパラメータはデフォルトで無効になっています。その理由は、現時点の時刻をオペレーティングシステムに繰り返し問い合わせるので、プラットフォームによっては深刻な負荷の原因になるからです。
 使用しているシステムにおける記録の負荷を計測するため<xref linkend="pgtesttiming"/>ツールが使用できます。
-I/O呼び出し情報は、<link linkend="monitoring-pg-stat-database-view"><structname>pg_stat_database</structname></link>に表示されます。
+I/O呼び出し情報は、<link linkend="monitoring-pg-stat-database-view"><structname>pg_stat_database</structname></link>、<link linkend="monitoring-pg-stat-io-view"><structname>pg_stat_io</structname></link>に表示されます。
 <literal>BUFFERS</literal>オプションが設定されている時は<xref linkend="sql-explain"/> の出力、<literal>VERBOSE</literal>オプションが設定されている時は<xref linkend="sql-vacuum"/>の出力、<xref linkend="guc-log-autovacuum-min-duration"/>が設定されている時は<xref linkend="pgstatstatements"/>により表示されます。
 スーパーユーザと、適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更することができます。
        </para>
@@ -12455,7 +12769,7 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 サーバがautovacuumランチャデーモンを実行すべきかどうかを管理します。
 デフォルトでは有効です。
 しかしautovacuumを作動させるためには<xref linkend="guc-track-counts"/>も有効でなければなりません。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 ただし、テーブルストレージパラメータを変更することにより、autovacuumは個々のテーブルに対して無効にできます。
        </para>
        <para>
@@ -12489,7 +12803,7 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 同時に実行することができるautovacuumプロセス（autovacuumランチャ以外）の最大数を指定します。
 デフォルトは3です。
-サーバ起動時のみで設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -12519,7 +12833,7 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 それぞれの周期で、デーモンはそのデータベースを試験し、そしてそのデータベース内のテーブルで必要性が認められると、<command>VACUUM</command>および<command>ANALYZE</command>コマンドを発行します。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 デフォルトは1分（<literal>1min</literal>）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -12548,7 +12862,7 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 どのテーブルに対しても<command>VACUUM</command>を起動するために必要な、更新もしくは削除されたタプルの最小数を指定します。
 デフォルトは50タプルです。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
@@ -12581,7 +12895,7 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 あるテーブルで<command>VACUUM</command>を起動するきっかけとなるのに必要な挿入タプル数を設定します。
 デフォルトは1000タプルです。
 -1が指定されると、自動VACUUMが挿入タプル数に基づいて<command>VACUUM</command>操作を引き起こすことはなくなります。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
@@ -12611,8 +12925,8 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 どのテーブルに対しても<command>ANALYZE</command>を起動するのに必要な、挿入、更新、もしくは削除されたタプルの最小数を指定します。
 デフォルトは50タプルです。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
-この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -12642,7 +12956,8 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 <command>VACUUM</command>を起動するか否かを決定するときに、<varname>autovacuum_vacuum_threshold</varname>に足し算するテーブル容量の割合を指定します。
 デフォルトは0.2（テーブルサイズの20%）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されますが、テーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -12672,7 +12987,8 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 <command>VACUUM</command>を起動するかどうか決める際の<varname>autovacuum_vacuum_insert_threshold</varname>に追加するテーブルサイズの割合を指定します。
 デフォルトは0.2（テーブルサイズの20%）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されますが、テーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -12702,8 +13018,8 @@ SQL関数、C言語関数も追跡するためには<literal>all</literal>と指
 -->
 <command>ANALYZE</command>を起動するか否かを決定するときに、<varname>autovacuum_analyze_threshold</varname>に足し算するテーブル容量の割合を指定します。
 デフォルトは0.1（テーブルサイズの10%）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
-この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きされます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -12824,7 +13140,7 @@ vacuumは同時に<filename>pg_xact</filename>サブディレクトリから古�
 -1に指定されると、一定の <xref linkend="guc-vacuum-cost-delay"/>の値が使用されます。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は2ミリ秒です。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
@@ -12860,8 +13176,8 @@ vacuumは同時に<filename>pg_xact</filename>サブディレクトリから古�
 （デフォルトの）-1が指定されると、一定の <xref linkend="guc-vacuum-cost-limit"/>の値が使用されます。
 この値は、実行中の自動バキュームワーカーが複数存在する場合ワーカーすべてに比例分配されることに注意してください。
 したがって各ワーカーの制限を足し合わせてもこの変数による制限を超えることはありません。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインのみで設定可能です。
-この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+ただし、この設定はテーブルストレージパラメータの変更により、それぞれのテーブルに対して上書きすることができます。
        </para>
       </listitem>
      </varlistentry>
@@ -13148,7 +13464,7 @@ vacuumは同時に<filename>pg_xact</filename>サブディレクトリから古�
         objects (tables and indexes) when a <command>CREATE</command> command does
         not explicitly specify a tablespace.
 -->
-この変数は、<command>CREATE</command>コマンドで明示的にテーブル空間を指定していない場合にオブジェクトの作成先となるデフォルトのテーブル空間を指定します。
+この変数は、<command>CREATE</command>コマンドで明示的にテーブル空間を指定していない場合にオブジェクト（テーブルとインデックス）の作成先となるデフォルトのテーブル空間を指定します。
        </para>
 
        <para>
@@ -13194,7 +13510,7 @@ vacuumは同時に<filename>pg_xact</filename>サブディレクトリから古�
         the default tablespace for partitions created in the future,
         even if <varname>default_tablespace</varname> has changed since then.
 -->
-パーティションテーブルが作られたときにこのパラメータが空文字以外に設定されていると、<varname>default_tablespace</varname>がその後変更されたとしても、パーティションテーブルのテープル空間はその値になり、今後作られるパーティションのデフォルトテーブル空間として使われます。
+パーティションテーブルが作られたときにこのパラメータが空文字以外に設定されていると、<varname>default_tablespace</varname>がその後変更されたとしても、パーティションテーブルのテーブル空間はその値になり、今後作られるパーティションのデフォルトテーブル空間として使われます。
        </para>
 
        <para>
@@ -13589,10 +13905,10 @@ SQLトランザクションはそれぞれ、<quote>read uncommitted</quote>、<
         Only superusers and users with the appropriate <literal>SET</literal>
         privilege can change this setting.
 -->
-現在のセッションに対するレプリケーション関連のトリガーおよびルールの起動を制御します。
+現在のセッションに対するレプリケーション関連のトリガおよびルールの起動を制御します。
 使用可能な値は、<literal>origin</literal>(デフォルト)、<literal>replica</literal>および<literal>local</literal>です。
 このパラメータを設定すると、以前にキャッシュされた問合せ計画が破棄されます。
-スーパーユーザーおよび適切な<literal>SET</literal>権限を持つユーザーのみがこの設定を変更できます。
+スーパーユーザおよび適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更できます。
        </para>
 
        <para>
@@ -13663,7 +13979,7 @@ PostgreSQLは<literal>origin</literal>と<literal>local</literal>の設定を内
 <!--
         The timeout is measured from the time a command arrives at the
         server until it is completed by the server.  If multiple SQL
-        statements appear in a single simple-Query message, the timeout
+        statements appear in a single simple-query message, the timeout
         is applied to each statement separately.
         (<productname>PostgreSQL</productname> versions before 13 usually
         treated the timeout as applying to the whole query string.)
@@ -13685,6 +14001,60 @@ PostgreSQLは<literal>origin</literal>と<literal>local</literal>の設定を内
 -->
 すべてのセッションに影響することがあるので、<filename>postgresql.conf</filename>内で<varname>statement_timeout</varname>を設定することは推奨されません。
        </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-transaction-timeout" xreflabel="transaction_timeout">
+      <term><varname>transaction_timeout</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>transaction_timeout</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>transaction_timeout</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Terminate any session that spans longer than the specified amount of
+        time in a transaction. The limit applies both to explicit transactions
+        (started with <command>BEGIN</command>) and to an implicitly started
+        transaction corresponding to a single statement.
+        If this value is specified without units, it is taken as milliseconds.
+        A value of zero (the default) disables the timeout.
+-->
+トランザクションが指定された時間を超えていた場合に、このセッションを終了します。
+この時間制限は、明示的なトランザクション（<command>BEGIN</command>で開始）と、単一の文に対応する暗黙的に開始されたトランザクションの両方に適用されます。
+この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
+値がゼロ（デフォルト）の場合はタイムアウトは無効になります。
+       </para>
+
+       <para>
+<!--
+        If <varname>transaction_timeout</varname> is shorter or equal to
+        <varname>idle_in_transaction_session_timeout</varname> or <varname>statement_timeout</varname>
+        then the longer timeout is ignored.
+-->
+<varname>transaction_timeout</varname>が<varname>idle_in_transaction_session_timeout</varname>または<varname>statement_timeout</varname>より短いか、等しい場合、長い方のタイムアウトは無視されます。
+       </para>
+
+       <para>
+<!--
+        Setting <varname>transaction_timeout</varname> in
+        <filename>postgresql.conf</filename> is not recommended because it would
+        affect all sessions.
+-->
+すべてのセッションに影響することがあるので、<filename>postgresql.conf</filename>内で<varname>transaction_timeout</varname>を設定することは推奨されません。
+       </para>
+
+       <note>
+        <para>
+<!--
+         Prepared transactions are not subject to this timeout.
+-->
+準備されたトランザクションには、このタイムアウトは影響ありません。
+        </para>
+       </note>
       </listitem>
      </varlistentry>
 
@@ -13858,8 +14228,8 @@ PostgreSQLは<literal>origin</literal>と<literal>local</literal>の設定を内
         information see
         <xref linkend="vacuum-for-wraparound"/>.
 -->
-テーブルの<structname>pg_class</structname>.<structfield>relfrozenxid</structfield>フィールドがこの設定で指定した時期に達すると、<command>VACUUM</command>は積極的なテーブル走査を行います。
-積極的な走査は、無効タプルを含む可能性のあるページだけではなく、凍結されていないXIDあるいはMXIDを含むすべてのページを読む点で通常の<command>VACUUM</command>とは異なります。
+テーブルの<structname>pg_class</structname>.<structfield>relfrozenxid</structfield>フィールドがこの設定で指定した時期に達すると、<command>VACUUM</command>は積極的なテーブルスキャンを行います。
+積極的なスキャンは、無効タプルを含む可能性のあるページだけではなく、凍結されていないXIDあるいはMXIDを含むすべてのページを読む点で通常の<command>VACUUM</command>とは異なります。
 デフォルトは1.5億トランザクションです。
 ユーザはこの値をゼロから20億までの任意の値に設定することができますが、<command>VACUUM</command>は警告することなく、周回問題対策のautovacuumがテーブルに対して起動する前に定期的な手動<command>VACUUM</command>が実行する機会を持つように、<xref linkend="guc-autovacuum-freeze-max-age"/>の95%に実効値を制限します。
 詳細は<xref linkend="vacuum-for-wraparound"/>を参照してください。
@@ -14272,6 +14642,62 @@ SET XML OPTION { DOCUMENT | CONTENT };
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-event-triggers" xreflabel="event_triggers">
+      <term><varname>event_triggers</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>event_triggers</varname></primary>
+       <secondary>configuration parameter</secondary>
+     </indexterm>
+      <indexterm>
+       <primary><varname>event_triggers</varname></primary>
+       <secondary>設定パラメータ</secondary>
+      </indexterm>
+     </term>
+     <listitem>
+      <para>
+<!--
+       Allow temporarily disabling execution of event triggers in order to
+       troubleshoot and repair faulty event triggers. All event triggers will
+       be disabled by setting it to <literal>false</literal>. Setting the value
+       to <literal>true</literal> allows all event triggers to fire, this
+       is the default value. Only superusers and users with the appropriate
+       <literal>SET</literal> privilege can change this setting.
+-->
+イベントトリガーの実行を一時的に無効化して、障害のあるイベントトリガーのトラブルシューティングおよび修復を可能にします。
+<literal>false</literal>に設定することですべてのイベントトリガーが無効になります。
+値を<literal>true</literal>に設定すると、すべてのイベントトリガーが起動します。
+これがデフォルト値です。
+スーパーユーザおよび適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更できます。
+      </para>
+     </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-restrict-nonsystem-relation-kind" xreflabel="restrict_nonsystem_relation_kind">
+      <term><varname>restrict_nonsystem_relation_kind</varname> (<type>string</type>)
+      <indexterm>
+       <primary><varname>restrict_nonsystem_relation_kind</varname></primary>
+       <secondary>configuration parameter</secondary>
+     </indexterm>
+      <indexterm>
+       <primary><varname>restrict_nonsystem_relation_kind</varname></primary>
+       <secondary>設定パラメータ</secondary>
+      </indexterm>
+     </term>
+     <listitem>
+      <para>
+<!--
+       Set relation kinds for which access to non-system relations is prohibited.
+       The value takes the form of a comma-separated list of relation kinds.
+       Currently, the supported relation kinds are <literal>view</literal> and
+       <literal>foreign-table</literal>.
+-->
+非システムリレーションへのアクセスが禁止されているリレーションの種類を設定します。
+値は、カンマで区切られたリレーションの種類のリストのフォームを取ります。
+現在サポートされているリレーション種別は<literal>view</literal>と<literal>foreign-table</literal>です。
+      </para>
+     </listitem>
+     </varlistentry>
+
      </variablelist>
     </sect2>
      <sect2 id="runtime-config-client-format">
@@ -14349,7 +14775,7 @@ SET XML OPTION { DOCUMENT | CONTENT };
         interval <quote>format with designators</quote> defined in section
         4.4.3.2 of ISO 8601.
 -->
-間隔の値の表示形式を設定します。<literal>sql_standard</literal>値は、<acronym>SQL</acronym>標準間隔リテラルに一致する出力を生成します。
+間隔の値の表示形式を設定します。<literal>sql_standard</literal>値は、標準<acronym>SQL</acronym>間隔リテラルに一致する出力を生成します。
 （デフォルトの）値<literal>postgres</literal>は、<xref linkend="guc-datestyle"/>パラメータが<literal>ISO</literal>に設定されている場合、リリース8.4以前の<productname>PostgreSQL</productname>に一致する出力を生成します。
 値<literal>postgres_verbose</literal>は、<varname>DateStyle</varname>パラメータが非<literal>ISO</literal>出力に設定されている場合、リリース8.4以前の<productname>PostgreSQL</productname>に一致する出力を生成します。
 値<literal>iso_8601</literal>は、ISO 8601の4.4.3.2節で定義されている時間間隔<quote>format with designators</quote>に一致する出力を生成します。
@@ -14498,7 +14924,7 @@ SET XML OPTION { DOCUMENT | CONTENT };
          see <xref linkend="datatype-float"/> for further discussion.
 -->
 このパラメータの意味とデフォルト値は<productname>PostgreSQL</productname> 12で変更されました。
-更なる議論については<xref linkend="datatype-float"/>をご覧ください。
+更なる説明については<xref linkend="datatype-float"/>をご覧ください。
         </para>
        </note>
       </listitem>
@@ -14960,9 +15386,10 @@ PostgreSQLで使用することを意図したライブラリだけがこの方�
 -->
 この変数はサーバ起動時にプリロードされる一つ以上の共有ライブラリを指定します。
 ここにはカンマ区切りでライブラリ名のリストを格納し、各々の名前は<link linkend="sql-load"><command>LOAD</command></link>コマンドで解釈されます。
-スーパーユーザだけがこの設定を変更できます。
-このパラメータはサーバ起動時にのみ設定可能です。
-もし指定したライブラリが見つからない場合は、起動は失敗します。
+項目の間の空白は無視されます。
+名前の中に空白あるいはカンマを含める場合は、二重引用符で囲ってください。
+このパラメータはサーバ起動時のみ設定可能です。
+もし指定したライブラリが見つからない場合は、サーバの起動は失敗します。
        </para>
 
        <para>
@@ -15036,7 +15463,7 @@ Windowsのホストでは、ライブラリのプリロードは、新しいサ�
 -->
 この変数は、使用するJITプロバイダライブラリ(<xref linkend="jit-pluggable"/>参照)の名前です。
 デフォルトは<literal>llvmjit</literal>です。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -15102,8 +15529,8 @@ Windowsのホストでは、ライブラリのプリロードは、新しいサ�
 -->
 <varname>dynamic_library_path</varname>の値は、絶対パスのディレクトリ名をコロン（Windowsの場合はセミコロン）で区切った一覧です。
 この一覧の要素が特別な<literal>$libdir</literal>という値から始まる場合、コンパイルされた<productname>PostgreSQL</productname>パッケージのライブラリディレクトリで<literal>$libdir</literal>は置換されます。
-ここには、<productname>PostgreSQL</productname>の標準配布物により提供されるモジュールがインストールされます
-（このディレクトリ名を表示するには、<literal>pg_config --pkglibdir</literal> を使用してください）。
+ここには、<productname>PostgreSQL</productname>の標準配布物により提供されるモジュールがインストールされます。
+（このディレクトリ名を表示するには、<literal>pg_config --pkglibdir</literal> を使用してください。）
 例を以下に示します。
 <programlisting>
 dynamic_library_path = '/usr/local/lib/postgresql:/home/my_project/lib:$libdir'
@@ -15159,7 +15586,7 @@ dynamic_library_path = 'C:\tools\postgresql;H:\my_project\lib;$libdir'
         Soft upper limit of the size of the set returned by GIN index scans. For more
         information see <xref linkend="gin-tips"/>.
 -->
-GINインデックス走査により返されるセットのソフトな上限サイズです。
+GINインデックススキャンにより返されるセットのソフトな上限サイズです。
 詳細は<xref linkend="gin-tips"/>を参照してください。
        </para>
       </listitem>
@@ -15282,7 +15709,7 @@ GINインデックス走査により返されるセットのソフトな上限�
 個々のトランザクションでは、このロックテーブルにすべてのトランザクションのロックが収まる限りオブジェクトのロックを獲得できます。
 これは、ロックできる行数では<emphasis>ありません</emphasis>。この値には制限がありません。
 デフォルトの64は、経験的に十分であると証明されていますが、単一のトランザクションで数多くの異なるテーブルをいじる問い合わせがいる場合、たとえば、数多くの子テーブルを持つ親テーブルの問い合わせなど、この値を大きくする必要があるかも知れません。
-このパラメータはサーバ起動時のみ設定されます。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -15358,7 +15785,7 @@ GINインデックス走査により返されるセットのソフトな上限�
 リレーション全体をカバーするロックに昇格する前に、一つリレーションの中で述語ロックできるページ数あるいはタプル数を指定します。
 0以上の値は、絶対的な制限を表し、負の数は<xref linkend="guc-max-pred-locks-per-transaction"/>をその絶対値で割ったものを表します。
 デフォルトは-2で、以前のバージョンの<productname>PostgreSQL</productname>の振る舞いを維持します。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -15382,7 +15809,7 @@ GINインデックス走査により返されるセットのソフトな上限�
 -->
 ページ全体をカバーするロックに昇格する前に、一つページの中で述語ロックできる行数を指定します。
 デフォルトは2です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -15525,7 +15952,7 @@ GINインデックス走査により返されるセットのソフトな上限�
         backslash as an ordinary character, per SQL standard.  This variable
         can be enabled to help locate code that needs to be changed.
 -->
-通常文字列のデフォルトの振る舞いは、SQL標準ではバックスラッシュを通常文字として取り扱うため、バックスラッシュをエスケープとして使用したいアプリケーションは、エスケープ文字列構文(<literal>E'...'</literal>)を使用するように変更すべきです。
+通常文字列のデフォルトの振る舞いは、標準SQLではバックスラッシュを通常文字として取り扱うため、バックスラッシュをエスケープとして使用したいアプリケーションは、エスケープ文字列構文(<literal>E'...'</literal>)を使用するように変更すべきです。
 この変数は変更すべきコードを突き止めるのに役立つよう、有効にすることができます。
        </para>
       </listitem>
@@ -15716,7 +16143,7 @@ GINインデックス走査により返されるセットのソフトな上限�
         involving null values, so this option is off by default.
 -->
 しかし、<productname>Microsoft Access</productname>のフィルタ形式はNULL値を検査するために<literal><replaceable>expr</replaceable> = NULL</literal>を使用する問い合わせを生成しますので、そのインタフェースを使用してデータベースにアクセスする場合は、このオプションを有効にする方が良いでしょう。
-<literal><replaceable>expr</replaceable> = NULL</literal>という形の式は（SQL標準解釈を使用した結果）常にNULL値を返しますので、通常のアプリケーションでは意味がほとんどなく、滅多に使用されません。
+<literal><replaceable>expr</replaceable> = NULL</literal>という形の式は（標準SQL解釈を使用した結果）常にNULL値を返しますので、通常のアプリケーションでは意味がほとんどなく、滅多に使用されません。
 ですので、このオプションは実際は害はありません。
 しかし、慣れていないユーザはしばしばNULL値に関する式の意味に戸惑いますので、デフォルトでこのオプションはoffです。
        </para>
@@ -15739,6 +16166,78 @@ GINインデックス走査により返されるセットのソフトな上限�
         Refer to <xref linkend="functions-comparison"/> for related information.
 -->
 関連する情報は<xref linkend="functions-comparison"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-allow-alter-system" xreflabel="allow_alter_system">
+      <term><varname>allow_alter_system</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>allow_alter_system</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>allow_alter_system</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        When <literal>allow_alter_system</literal> is set to
+        <literal>off</literal>, an error is returned if the <command>ALTER
+        SYSTEM</command> command is executed. This parameter can only be set in
+        the <filename>postgresql.conf</filename> file or on the server command
+        line. The default value is <literal>on</literal>.
+-->
+<literal>allow_alter_system</literal>が<literal>off</literal>に設定されている場合、<command>ALTER SYSTEM</command>コマンドが実行されるとエラーが返されます。
+このパラメータは、<filename>PostgreSQL.conf</filename>ファイルまたはサーバコマンドラインでのみ設定できます。
+デフォルト値は<literal>on</literal>です。
+       </para>
+
+       <para>
+<!--
+        Note that this setting must not be regarded as a security feature. It
+        only disables the <literal>ALTER SYSTEM</literal> command. It does not
+        prevent a superuser from changing the configuration using other SQL
+        commands. A superuser has many ways of executing shell commands at
+        the operating system level, and can therefore modify
+        <literal>postgresql.auto.conf</literal> regardless of the value of
+        this setting.
+-->
+この設定をセキュリティ機能とみなしてはならないことに注意してください。
+これは<literal>ALTER SYSTEM</literal>コマンドを無効にするだけです。
+スーパーユーザが他のSQLコマンドを使用して設定を変更することを妨げるものではありません。
+スーパーユーザにはオペレーティングシステムレベルでシェルコマンドを実行する多くの方法があるため、この設定の値に関係なく<literal>postgresql.auto.conf</literal>を変更できます。
+       </para>
+
+       <para>
+<!--
+        Turning this setting off is intended for environments where the
+        configuration of <productname>PostgreSQL</productname> is managed by
+        some external tool.
+        In such environments, a well intentioned superuser might
+        <emphasis>mistakenly</emphasis> use <command>ALTER SYSTEM</command>
+        to change the configuration instead of using the external tool.
+        This might result in unintended behavior, such as the external tool
+        overwriting the change at some later point in time when it updates the
+        configuration.
+        Setting this parameter to <literal>off</literal> can
+        help avoid such mistakes.
+-->
+この設定をオフにすることは、<productname>PostgreSQL</productname>の設定が外部のツールによって管理されている環境を対象としています。
+このような環境では、善意のスーパーユーザがツールを使わずに、<emphasis>誤って</emphasis><command>ALTER SYSTEM</command>を使って設定を変更する可能性があります。
+これにより、外部ツールを使って後で設定を更新したときに、変更を上書きするなど、意図しない振る舞いとなる可能性があります。
+このパラメータを<literal>オフ</literal>に設定すると、そのような間違いを避けるための助けになります。
+       </para>
+
+       <para>
+<!--
+        This parameter only controls the use of <command>ALTER SYSTEM</command>.
+        The settings stored in <filename>postgresql.auto.conf</filename>
+        take effect even if <literal>allow_alter_system</literal> is set to
+        <literal>off</literal>.
+-->
+このパラメータは<command>ALTER SYSTEM</command>の使用のみを制御します。
+<filename>postgresql.auto.conf</filename>に保存された設定は、<literal>allow_alter_system</literal>が<literal>off</literal>に設定されていても有効になります。
        </para>
       </listitem>
      </varlistentry>
@@ -15845,6 +16344,8 @@ onなら、全てのエラーは現在のセッションを中止させます。
         faulty hardware.
 -->
 オペレーティングシステムによっては、カーネルキャッシュのページ内のデータの状態は、書き戻しの失敗の後は不明です。
+完全に忘れられてしまった場合には、再試行することが危険であるかもしれません。
+二度目の試行は成功と報告されるかもしれませんが、実際にはデータが失われているかもしれません。
 このような状況では、データロスを避ける唯一の方法は、失敗が報告された後、可能ならば失敗の根本原因を調査して故障したハードウェアを交換したのち、WALからの回復することだけです。
        </para>
        <para>
@@ -15891,7 +16392,7 @@ onに設定すると、代わりに<productname>PostgreSQL</productname>はエ�
        <para>
 <!--
         On Linux, <literal>syncfs</literal> may be used instead, to ask the
-        operating system to synchronize the whole file systems that contain the
+        operating system to synchronize the file systems that contain the
         data directory, the WAL files and each tablespace (but not any other
         file systems that may be reachable through symbolic links).  This may
         be a lot faster than the <literal>fsync</literal> setting, because it
@@ -15903,7 +16404,7 @@ onに設定すると、代わりに<productname>PostgreSQL</productname>はエ�
         <productname>PostgreSQL</productname>, and relevant error messages may
         appear only in kernel logs.
 -->
-Linuxでは代わりに、オペレーティングシステムに対して、データディレクトリ、WALファイル、各々のテーブル空間（しかし、シンボリックリンクを通じて到達可能な他のファイルシステムを含みません）を含むファイルシステム全体を同期することを依頼する<literal>syncfs</literal>が使えるかもしれません。
+Linuxでは代わりに、オペレーティングシステムに対して、データディレクトリ、WALファイル、各々のテーブル空間（しかし、シンボリックリンクを通じて到達可能な他のファイルシステムを含みません）を含むファイルシステムを同期することを依頼する<literal>syncfs</literal>が使えるかもしれません。
 これは各々のファイルを一つ一つ開けることが必要ないため、<literal>fsync</literal>を設定するよりもずっと速いかもしれません。
 一方で、そのファイルシステムが多くのファイルを変更するアプリケーションも利用している場合、これらのファイルもディスクに書かれるので、遅くなるかもしれません。
 更に、Linuxのバージョン5.8以前では、ディスクへの書き込み中に発生したI/Oエラーが<productname>PostgreSQL</productname>に報告されないことがあり、関連エラーメッセージはカーネルログにのみ現れるかもしれません。
@@ -15913,7 +16414,7 @@ Linuxでは代わりに、オペレーティングシステムに対して、デ
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -16045,6 +16546,33 @@ Linuxでは代わりに、オペレーティングシステムに対して、デ
 <productname>PostgreSQL</productname>がアサーションを有効にしてビルドされているかどうかを報告します。
 これは、<symbol>USE_ASSERT_CHECKING</symbol>マクロが<productname>PostgreSQL</productname>をビルドされた際に定義されている場合(つまり、<command>configure</command>オプションの<option>--enable-cassert</option>が適用されている)に該当します。
 デフォルトでは<productname>PostgreSQL</productname>は、アサーションなしにビルドされます。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-huge-pages-status" xreflabel="huge_pages_status">
+      <term><varname>huge_pages_status</varname> (<type>enum</type>)
+      <indexterm>
+       <primary><varname>huge_pages_status</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>huge_pages_status</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Reports the state of huge pages in the current instance:
+        <literal>on</literal>, <literal>off</literal>, or
+        <literal>unknown</literal> (if displayed with
+        <literal>postgres -C</literal>).
+        This parameter is useful to determine whether allocation of huge pages
+        was successful under <literal>huge_pages=try</literal>.
+        See <xref linkend="guc-huge-pages"/> for more information.
+-->
+現在インスタンスのhuge pagesの状態を報告します:<literal>on</literal>、<literal>off</literal>、または<literal>unknown</literal>のどれかです（<literal>postgres -C</literal>で表示される場合）。
+このパラメータは、<literal>huge_pages=try</literal>でhuge pagesのアロケーションが成功したかどうかを判断するのに役立ちます。
+詳細については、<xref linkend="guc-huge-pages"/>を参照してください。
        </para>
       </listitem>
      </varlistentry>
@@ -16422,8 +16950,8 @@ WALディスクブロックの容量を報告します。
      placeholders are removed.
 -->
 カスタムオプションは読み込まれていない関連性のある拡張モジュールのプロセスに設定される必要がある場合があるので、<productname>PostgreSQL</productname>はどんな２つの部分のパラメータ名による設定を受け付けます。これらの変数は代替物として取り扱われ、それらを定義したモジュールが読み込まれるまで機能しません。
-拡張モジュールが読み込まれた時、その変数定義が追加され、それら定義に基づいてプレースホルダー値が変換されます。
-拡張名で始まる認識できないプレースホルダーに対しては警告が発せられ、そのプレースホルダーは削除されます。
+拡張モジュールが読み込まれた時、その変数定義が追加され、それら定義に基づいてプレースホルダ値が変換されます。
+拡張名で始まる認識できないプレースホルダに対しては警告が発せられ、そのプレースホルダは削除されます。
     </para>
    </sect1>
 
@@ -16794,7 +17322,7 @@ WALディスクブロックの容量を報告します。
 これは、認証における誤動作を追跡するために、デバッガを使用してサーバプロセスに接続する機会を開発者に提供することを目的としたものです。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 値がゼロ（デフォルト）の場合、この機能は無効になります。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -16820,44 +17348,6 @@ WALディスクブロックの容量を報告します。
 -->
 <command>LISTEN</command>と<command>NOTIFY</command>コマンドのための大量なデバッグ出力を生成します。
 この出力をクライアントもしくはサーバログに送信するためには、それぞれ、<xref linkend="guc-client-min-messages"/>もしくは<xref linkend="guc-log-min-messages"/>は<literal>DEBUG1</literal>以下でなければなりません。
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry id="guc-trace-recovery-messages" xreflabel="trace_recovery_messages">
-      <term><varname>trace_recovery_messages</varname> (<type>enum</type>)
-      <indexterm>
-       <primary><varname>trace_recovery_messages</varname> configuration parameter</primary>
-      </indexterm>
-      <indexterm>
-       <primary><varname>trace_recovery_messages</varname>設定パラメータ</primary>
-      </indexterm>
-      </term>
-      <listitem>
-       <para>
-<!--
-        Enables logging of recovery-related debugging output that otherwise
-        would not be logged. This parameter allows the user to override the
-        normal setting of <xref linkend="guc-log-min-messages"/>, but only for
-        specific messages. This is intended for use in debugging hot standby.
-        Valid values are <literal>DEBUG5</literal>, <literal>DEBUG4</literal>,
-        <literal>DEBUG3</literal>, <literal>DEBUG2</literal>, <literal>DEBUG1</literal>, and
-        <literal>LOG</literal>.  The default, <literal>LOG</literal>, does not affect
-        logging decisions at all.  The other values cause recovery-related
-        debug messages of that priority or higher to be logged as though they
-        had <literal>LOG</literal> priority; for common settings of
-        <varname>log_min_messages</varname> this results in unconditionally sending
-        them to the server log.
-        This parameter can only be set in the <filename>postgresql.conf</filename>
-        file or on the server command line.
--->
-ロギングされないリカバリ関連のデバッグ出力のロギングを使用可能にします。このパラメータにより、ユーザーは<xref linkend="guc-log-min-messages"/>の通常の設定を上書きできますが、特定のメッセージに対してのみ使用できます。
-これはホット・スタンバイのデバッグに使用します。
-有効な値は、<literal>DEBUG5</literal>、<literal>DEBUG4</literal>、<literal>DEBUG3</literal>、<literal>DEBUG2</literal>、<literal>DEBUG1</literal>および<literal>LOG</literal>です。
-デフォルトの<literal>LOG</literal>はロギングの決定にまったく影響しません。
-その他の値を指定すると、その優先度以上のリカバリ関連のデバッグ・メッセージが<literal>LOG</literal>優先であるかのようにロギングされます。
-<varname>log_min_messages</varname>の一般的な設定では、無条件にサーバー・ログに送信されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -17222,7 +17712,7 @@ LOG:  CleanUpLock: deleting: lock(0xb7acd844) id(24688,24696,0,0,0,1)
 <varname>ignore_checksum_failure</varname>を有効（on）に設定するとシステムはその障害を無視し（しかし警告は報告をします）、処理を継続します。
 この振る舞いはたぶん<emphasis>クラッシュの原因、破損の伝播や隠ぺい、もしくはその他の深刻な問題</emphasis>の原因になることがあります。
 とは言っても、エラーを切り抜け、ブロックヘッダが健全に存在するテーブルにある障害を受けていないタプルの回収は行えます。
-もしヘッダーが破損されたら、オプションが有効になっていたとしても報告はなされます。
+もしヘッダが破損されたら、オプションが有効になっていたとしても報告はなされます。
 デフォルトの設定は<literal>off</literal>です。
 スーパーユーザと、適切な<literal>SET</literal>権限を持つユーザのみがこの設定を変更することができます。
        </para>
@@ -17405,6 +17895,7 @@ LLVMに要求された機能がある場合は、JITが生成した関数を<pro
 これにより<filename>~/.debug/jit/</filename>にファイルが書き出されます。
 ユーザは自分の責任で必要なときに後始末を行わなければなりません。
 デフォルト設定は<literal>off</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -17455,7 +17946,7 @@ JITコンパイルが有効な時にタプルデフォーミングがJITコン�
 デフォルトである<literal>on</literal>に設定すると、<productname>PostgreSQL</productname>はバックエンドがクラッシュした後に自動的に一時ファイルを削除します。
 無効にすると、ファイルは保存され、たとえばデバッグ目的で使用できます。
 しかしクラッシュを繰り返すと不要なファイルが溜まっていくかもしれません。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -17496,7 +17987,7 @@ JITコンパイルが有効な時にタプルデフォーミングがJITコン�
 これは、クラッシュの後の他のプロセスの状態を調査するのに便利です。
 また、クラッシュが繰り返されるイベントで大量のディスクスペースを消費する可能性があるため、注意深く監視していないシステムではこれを有効にしないでください。
 自動的にコアファイルを削除する機能は提供されていないことに注意してください。
-このパラメータは<filename>postgresql.conf</filename>ファイルまたはサーバコマンドラインでのみ設定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -17536,7 +18027,7 @@ JITコンパイルが有効な時にタプルデフォーミングがJITコン�
 これは、<quote>スタックした</quote>子プロセスの状態を調査するのに便利です。
 また、クラッシュが繰り返されるイベントで大量のディスクスペースを消費する可能性があるため、注意深く監視していないシステムではこれを有効にしないでください。
 自動的にコアファイルを削除する機能は提供されていないことに注意してください。
-このパラメータは<filename>postgresql.conf</filename>ファイルまたはサーバコマンドラインでのみ設定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -17571,7 +18062,7 @@ JITコンパイルが有効な時にタプルデフォーミングがJITコン�
         On the publisher side, <varname>debug_logical_replication_streaming</varname>
         allows streaming or serializing changes immediately in logical decoding.
         When set to <literal>immediate</literal>, stream each change if the
-        <link linkend="sql-createsubscription-with-streaming"><literal>streaming</literal></link>
+        <link linkend="sql-createsubscription-params-with-streaming"><literal>streaming</literal></link>
         option of
         <link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>
         is enabled, otherwise, serialize each change.  When set to
@@ -17579,7 +18070,7 @@ JITコンパイルが有効な時にタプルデフォーミングがJITコン�
         changes when <varname>logical_decoding_work_mem</varname> is reached.
 -->
 パブリッシャー側では、<varname>debug_logical_replication_streaming</varname>を使用すると、ロジカルデコーディングでただちに変更をストリーミングまたはシリアル化できます。
-<literal>immediate</literal>に設定すると、<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>の<link linkend="sql-createsubscription-with-streaming"><literal>ストリーミング</literal></link>オプションが有効になっている場合は各変更をストリームし、それ以外の場合は各変更をシリアル化します。
+<literal>immediate</literal>に設定すると、<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>の<link linkend="sql-createsubscription-params-with-streaming"><literal>streaming</literal></link>オプションが有効になっている場合は各変更をストリームし、それ以外の場合は各変更をシリアル化します。
 <literal>buffered</literal>に設定すると、<varname>logical_decoding_work_mem</varname>に達したときに、デコーディング処理がストリームまたはシリアル化します。
        </para>
 

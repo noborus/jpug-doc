@@ -2,7 +2,7 @@
  *
  * rewriteManip.c
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -496,9 +496,10 @@ OffsetVarNodes(Node *node, int offset, int sublevels_up)
 		/*
 		 * If we are starting at a Query, and sublevels_up is zero, then we
 		 * must also fix rangetable indexes in the Query itself --- namely
-		 * resultRelation, exclRelIndex and rowMarks entries.  sublevels_up
-		 * cannot be zero when recursing into a subquery, so there's no need
-		 * to have the same logic inside OffsetVarNodes_walker.
+		 * resultRelation, mergeTargetRelation, exclRelIndex and rowMarks
+		 * entries.  sublevels_up cannot be zero when recursing into a
+		 * subquery, so there's no need to have the same logic inside
+		 * OffsetVarNodes_walker.
 		 */
 		if (sublevels_up == 0)
 		{
@@ -506,6 +507,9 @@ OffsetVarNodes(Node *node, int offset, int sublevels_up)
 
 			if (qry->resultRelation)
 				qry->resultRelation += offset;
+
+			if (qry->mergeTargetRelation)
+				qry->mergeTargetRelation += offset;
 
 			if (qry->onConflict && qry->onConflict->exclRelIndex)
 				qry->onConflict->exclRelIndex += offset;
@@ -687,9 +691,10 @@ ChangeVarNodes(Node *node, int rt_index, int new_index, int sublevels_up)
 		/*
 		 * If we are starting at a Query, and sublevels_up is zero, then we
 		 * must also fix rangetable indexes in the Query itself --- namely
-		 * resultRelation and rowMarks entries.  sublevels_up cannot be zero
-		 * when recursing into a subquery, so there's no need to have the same
-		 * logic inside ChangeVarNodes_walker.
+		 * resultRelation, mergeTargetRelation, exclRelIndex  and rowMarks
+		 * entries.  sublevels_up cannot be zero when recursing into a
+		 * subquery, so there's no need to have the same logic inside
+		 * ChangeVarNodes_walker.
 		 */
 		if (sublevels_up == 0)
 		{
@@ -697,6 +702,9 @@ ChangeVarNodes(Node *node, int rt_index, int new_index, int sublevels_up)
 
 			if (qry->resultRelation == rt_index)
 				qry->resultRelation = new_index;
+
+			if (qry->mergeTargetRelation == rt_index)
+				qry->mergeTargetRelation = new_index;
 
 			/* this is unlikely to ever be used, but ... */
 			if (qry->onConflict && qry->onConflict->exclRelIndex == rt_index)
@@ -1133,7 +1141,8 @@ AddInvertedQual(Query *parsetree, Node *qual)
 /*
  * add_nulling_relids() finds Vars and PlaceHolderVars that belong to any
  * of the target_relids, and adds added_relids to their varnullingrels
- * and phnullingrels fields.
+ * and phnullingrels fields.  If target_relids is NULL, all level-zero
+ * Vars and PHVs are modified.
  */
 Node *
 add_nulling_relids(Node *node,
@@ -1162,7 +1171,8 @@ add_nulling_relids_mutator(Node *node,
 		Var		   *var = (Var *) node;
 
 		if (var->varlevelsup == context->sublevels_up &&
-			bms_is_member(var->varno, context->target_relids))
+			(context->target_relids == NULL ||
+			 bms_is_member(var->varno, context->target_relids)))
 		{
 			Relids		newnullingrels = bms_union(var->varnullingrels,
 												   context->added_relids);
@@ -1180,7 +1190,8 @@ add_nulling_relids_mutator(Node *node,
 		PlaceHolderVar *phv = (PlaceHolderVar *) node;
 
 		if (phv->phlevelsup == context->sublevels_up &&
-			bms_overlap(phv->phrels, context->target_relids))
+			(context->target_relids == NULL ||
+			 bms_overlap(phv->phrels, context->target_relids)))
 		{
 			Relids		newnullingrels = bms_union(phv->phnullingrels,
 												   context->added_relids);

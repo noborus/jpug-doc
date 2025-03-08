@@ -135,6 +135,14 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
 <replaceable>provider</replaceable>が<literal>libc</literal>なら、これは同時に<symbol>LC_COLLATE</symbol>および<symbol>LC_CTYPE</symbol>を設定する省略形です。
 <replaceable>locale</replaceable>を指定した場合、これらのパラメータのどちらも指定できません。
       </para>
+      <para>
+<!--
+       If <replaceable>provider</replaceable> is <literal>builtin</literal>,
+       then <replaceable>locale</replaceable> must be specified and set to
+       either <literal>C</literal> or <literal>C.UTF-8</literal>.
+-->
+<replaceable>provider</replaceable>が<literal>builtin</literal>の場合、<replaceable>locale</replaceable>を指定し、<literal>C</literal>または<literal>C.UTF-8</literal>のいずれかに設定することが必要です。
+      </para>
      </listitem>
     </varlistentry>
 
@@ -175,14 +183,14 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
       <para>
 <!--
        Specifies the provider to use for locale services associated with this
-       collation.  Possible values are
-       <literal>icu</literal><indexterm><primary>ICU</primary></indexterm>
-       (if the server was built with ICU support) or <literal>libc</literal>.
+       collation.  Possible values are <literal>builtin</literal>,
+       <literal>icu</literal><indexterm><primary>ICU</primary></indexterm> (if
+       the server was built with ICU support) or <literal>libc</literal>.
        <literal>libc</literal> is the default.  See <xref
        linkend="locale-providers"/> for details.
 -->
 この照合順序に関連するロケールサービスで使用するプロバイダを指定します。
-取り得る値は<literal>icu</literal><indexterm><primary>ICU</primary></indexterm>(サーバがICUサポートで構築されている場合)と<literal>libc</literal>です。
+取り得る値は<literal>builtin</literal>、<literal>icu</literal><indexterm><primary>ICU</primary></indexterm>（サーバがICUサポート付きで構築されている場合）と<literal>libc</literal>です。
 <literal>libc</literal>がデフォルトです。
 詳しくは<xref linkend="locale-providers"/>を参照してください。
       </para>
@@ -201,7 +209,7 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
        logically equal by the comparison.  PostgreSQL breaks ties using a
        byte-wise comparison.  Comparison that is not deterministic can make the
        collation be, say, case- or accent-insensitive.  For that, you need to
-       choose an appropriate <literal>LC_COLLATE</literal> setting
+       choose an appropriate <literal>LOCALE</literal> setting
        <emphasis>and</emphasis> set the collation to not deterministic here.
 -->
 照合順序が決定論的な比較を使うかどうかを指定します。
@@ -209,7 +217,7 @@ CREATE COLLATION [ IF NOT EXISTS ] <replaceable>name</replaceable> FROM <replace
 決定論的な比較では、たとえ論理的に比較すれば等しいとみなされるものであっても、バイト単位で等しくない文字列は等しくないとみなします。
 PostgreSQLはバイト単位の比較を使って分解します。
 決定論的でない比較では、例えば、照合順序で大文字小文字を区別しない、またはアクセントを区別しないようにできます。
-そのためには、適切な<literal>LC_COLLATE</literal>の設定を選んだ<emphasis>上で</emphasis>、ここで照合順序を非決定論的なものに設定することが必要です。
+そのためには、適切な<literal>LOCALE</literal>の設定を選んだ<emphasis>上で</emphasis>、ここで照合順序を非決定論的なものに設定することが必要です。
       </para>
 
       <para>

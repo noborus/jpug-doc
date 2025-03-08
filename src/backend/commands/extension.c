@@ -12,7 +12,7 @@
  * postgresql.conf.  An extension also has an installation script file,
  * containing SQL commands to create the extension's objects.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -32,7 +32,6 @@
 #include "access/genam.h"
 #include "access/htup_details.h"
 #include "access/relation.h"
-#include "access/sysattr.h"
 #include "access/table.h"
 #include "access/xact.h"
 #include "catalog/catalog.h"
@@ -55,7 +54,6 @@
 #include "funcapi.h"
 #include "mb/pg_wchar.h"
 #include "miscadmin.h"
-#include "nodes/makefuncs.h"
 #include "storage/fd.h"
 #include "tcop/utility.h"
 #include "utils/acl.h"
@@ -131,6 +129,9 @@ static void ApplyExtensionUpdates(Oid extensionOid,
 								  char *origSchemaName,
 								  bool cascade,
 								  bool is_create);
+static void ExecAlterExtensionContentsRecurse(AlterExtensionContentsStmt *stmt,
+											  ObjectAddress extension,
+											  ObjectAddress object);
 static char *read_whole_file(const char *filename, int *length);
 
 
@@ -967,11 +968,6 @@ execute_extension_script(Oid extensionOid, ExtensionControlFile *control,
 	 * searched anyway.  (Listing pg_catalog explicitly in a non-first
 	 * position would be bad for security.)  Finally add pg_temp to ensure
 	 * that temp objects can't take precedence over others.
-	 *
-	 * Note: it might look tempting to use PushOverrideSearchPath for this,
-	 * but we cannot do that.  We have to actually set the search_path GUC in
-	 * case the extension script examines or changes it.  In any case, the
-	 * GUC_ACTION_SAVE method is just as convenient.
 	 */
 	initStringInfo(&pathbuf);
 	appendStringInfoString(&pathbuf, quote_identifier(schemaName));
@@ -2944,7 +2940,7 @@ AlterExtensionNamespace(const char *extensionName, const char *newschema, Oid *o
 
 		/*
 		 * If not all the objects had the same old namespace (ignoring any
-		 * that are not in namespaces), complain.
+		 * that are not in namespaces or are dependent types), complain.
 		 */
 		if (dep_oldNspOid != InvalidOid && dep_oldNspOid != oldNspOid)
 			ereport(ERROR,
@@ -2971,9 +2967,11 @@ AlterExtensionNamespace(const char *extensionName, const char *newschema, Oid *o
 
 	table_close(extRel, RowExclusiveLock);
 
-	/* update dependencies to point to the new schema */
-	changeDependencyFor(ExtensionRelationId, extensionOid,
-						NamespaceRelationId, oldNspOid, nspOid);
+	/* update dependency to point to the new schema */
+	if (changeDependencyFor(ExtensionRelationId, extensionOid,
+							NamespaceRelationId, oldNspOid, nspOid) != 1)
+		elog(ERROR, "could not change schema dependency for extension %s",
+			 NameStr(extForm->extname));
 
 	InvokeObjectPostAlterHook(ExtensionRelationId, extensionOid, 0);
 
@@ -3297,7 +3295,6 @@ ExecAlterExtensionContentsStmt(AlterExtensionContentsStmt *stmt,
 	ObjectAddress extension;
 	ObjectAddress object;
 	Relation	relation;
-	Oid			oldExtension;
 
 	switch (stmt->objtype)
 	{
@@ -3351,6 +3348,38 @@ ExecAlterExtensionContentsStmt(AlterExtensionContentsStmt *stmt,
 	/* Permission check: must own target object, too */
 	check_object_ownership(GetUserId(), stmt->objtype, object,
 						   stmt->object, relation);
+
+	/* Do the update, recursing to any dependent objects */
+	ExecAlterExtensionContentsRecurse(stmt, extension, object);
+
+	/* Finish up */
+	InvokeObjectPostAlterHook(ExtensionRelationId, extension.objectId, 0);
+
+	/*
+	 * If get_object_address() opened the relation for us, we close it to keep
+	 * the reference count correct - but we retain any locks acquired by
+	 * get_object_address() until commit time, to guard against concurrent
+	 * activity.
+	 */
+	if (relation != NULL)
+		relation_close(relation, NoLock);
+
+	return extension;
+}
+
+/*
+ * ExecAlterExtensionContentsRecurse
+ *		Subroutine for ExecAlterExtensionContentsStmt
+ *
+ * Do the bare alteration of object's membership in extension,
+ * without permission checks.  Recurse to dependent objects, if any.
+ */
+static void
+ExecAlterExtensionContentsRecurse(AlterExtensionContentsStmt *stmt,
+								  ObjectAddress extension,
+								  ObjectAddress object)
+{
+	Oid			oldExtension;
 
 	/*
 	 * Check existing extension membership.
@@ -3435,18 +3464,47 @@ ExecAlterExtensionContentsStmt(AlterExtensionContentsStmt *stmt,
 		removeExtObjInitPriv(object.objectId, object.classId);
 	}
 
-	InvokeObjectPostAlterHook(ExtensionRelationId, extension.objectId, 0);
-
 	/*
-	 * If get_object_address() opened the relation for us, we close it to keep
-	 * the reference count correct - but we retain any locks acquired by
-	 * get_object_address() until commit time, to guard against concurrent
-	 * activity.
+	 * Recurse to any dependent objects; currently, this includes the array
+	 * type of a base type, the multirange type associated with a range type,
+	 * and the rowtype of a table.
 	 */
-	if (relation != NULL)
-		relation_close(relation, NoLock);
+	if (object.classId == TypeRelationId)
+	{
+		ObjectAddress depobject;
 
-	return extension;
+		depobject.classId = TypeRelationId;
+		depobject.objectSubId = 0;
+
+		/* If it has an array type, update that too */
+		depobject.objectId = get_array_type(object.objectId);
+		if (OidIsValid(depobject.objectId))
+			ExecAlterExtensionContentsRecurse(stmt, extension, depobject);
+
+		/* If it is a range type, update the associated multirange too */
+		if (type_is_range(object.objectId))
+		{
+			depobject.objectId = get_range_multirange(object.objectId);
+			if (!OidIsValid(depobject.objectId))
+				ereport(ERROR,
+						(errcode(ERRCODE_UNDEFINED_OBJECT),
+						 errmsg("could not find multirange type for data type %s",
+								format_type_be(object.objectId))));
+			ExecAlterExtensionContentsRecurse(stmt, extension, depobject);
+		}
+	}
+	if (object.classId == RelationRelationId)
+	{
+		ObjectAddress depobject;
+
+		depobject.classId = TypeRelationId;
+		depobject.objectSubId = 0;
+
+		/* It might not have a rowtype, but if it does, update that */
+		depobject.objectId = get_rel_type_id(object.objectId);
+		if (OidIsValid(depobject.objectId))
+			ExecAlterExtensionContentsRecurse(stmt, extension, depobject);
+	}
 }
 
 /*

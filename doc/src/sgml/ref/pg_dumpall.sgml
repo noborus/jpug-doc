@@ -37,7 +37,7 @@ PostgreSQL documentation
 <!--
   <title>Description</title>
 -->
-<title>説明</title>
+  <title>説明</title>
 
   <para>
 <!--
@@ -102,7 +102,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
   <title>Options</title>
 -->
-<title>オプション</title>
+  <title>オプション</title>
 
    <para>
 <!--
@@ -131,12 +131,16 @@ SQLスクリプトは標準出力に書き込まれます。
       <listitem>
        <para>
 <!--
-        Include SQL commands to clean (drop) databases before
-        recreating them.  <command>DROP</command> commands for roles and
-        tablespaces are added as well.
+        Emit SQL commands to <command>DROP</command> all the dumped
+        databases, roles, and tablespaces before recreating them.
+        This option is useful when the restore is to overwrite an existing
+        cluster.  If any of the objects do not exist in the destination
+        cluster, ignorable error messages will be reported during
+        restore, unless <option>&#45;-if-exists</option> is also specified.
 -->
-データベースを再作成するコマンドの前に、データベースのクリーンアップ（削除）するコマンドを書き出します。
-ロールおよびテーブル空間用の<command>DROP</command>コマンドも同様に追加されます。
+ダンプされたデータベース、ロール、テーブル空間を再作成する前に、それらをすべて<command>DROP</command>するSQLコマンドを発行します。
+このオプションは、リストアが既存のクラスタを上書きする場合に便利です。
+オブジェクトが対象とするクラスタに存在しない場合、<option>--if-exists</option>も指定されていない限り、リストア中に無視可能なエラーメッセージが報告されます。
        </para>
       </listitem>
      </varlistentry>
@@ -171,6 +175,52 @@ SQLスクリプトは標準出力に書き込まれます。
 出力を指定したファイルに送ります。
 これが省略されると標準出力が使用されます。
        </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term><option>--filter=<replaceable class="parameter">filename</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        Specify a filename from which to read patterns for databases excluded
+        from the dump. The patterns are interpreted according to the same rules
+        as <option>&#45;-exclude-database</option>.
+        To read from <literal>STDIN</literal>, use <filename>-</filename> as the
+        filename.  The <option>&#45;-filter</option> option can be specified in
+        conjunction with <option>&#45;-exclude-database</option> for excluding
+        databases, and can also be specified more than once for multiple filter
+        files.
+-->
+《機械翻訳》ダンプから除外するデータベースのパターンを読み込むファイル名を指定します。
+パターンは<option>--exclude-database</option>と同じ規則に従って解釈されます。
+<literal>STDIN</literal>から読み込むには、ファイル名として<filename>-</filename>を使用します。
+<option>--filter</option>オプションは、データベースを除外するために<option>--exclude-database</option>と一緒に指定でき、複数のフィルタファイルに対して複数回指定することもできます。
+       </para>
+
+       <para>
+<!--
+        The file lists one database pattern per row, with the following format:
+-->
+《機械翻訳》ファイルには、1 行に 1 つのデータベース パターンがリストされ、次の形式になります。
+<synopsis>
+exclude database <replaceable class="parameter">PATTERN</replaceable>
+</synopsis>
+       </para>
+
+       <para>
+<!--
+        Lines starting with <literal>#</literal> are considered comments and
+        ignored. Comments can be placed after an object pattern row as well.
+        Blank lines are also ignored. See <xref linkend="app-psql-patterns"/>
+        for how to perform quoting in patterns.
+-->
+《機械翻訳》<literal>#</literal>で始まる行はコメントと見なされ、無視されます。
+コメントはオブジェクトパターン行の後にも置くことができます。
+空行も無視されます。
+パターン内のクォートの実行方法については<xref linkend="app-psql-patterns"/>を参照してください。
+       </para>
+
       </listitem>
      </varlistentry>
 
@@ -444,12 +494,15 @@ SQLスクリプトは標準出力に書き込まれます。
       <listitem>
        <para>
 <!--
-        Use conditional commands (i.e., add an <literal>IF EXISTS</literal>
-        clause) to drop databases and other objects.  This option is not valid
-        unless <option>&#45;-clean</option> is also specified.
+        Use <literal>DROP ... IF EXISTS</literal> commands to drop objects
+        in <option>&#45;-clean</option> mode.  This suppresses <quote>does not
+        exist</quote> errors that might otherwise be reported.  This
+        option is not valid unless <option>&#45;-clean</option> is also
+        specified.
 -->
-データベースおよび他のオブジェクトを初期化するときに、条件コマンドを使います(つまり<literal>IF EXISTS</literal>句を追加します)。
-このオプションは、<option>--clean</option>も指定されているのでなければ、有効にはなりません。
+<literal>DROP ... IF EXISTS</literal>コマンドを使用して、<option>--clean</option>モードでオブジェクトを削除します。
+これは、<quote>does not exist</quote>エラーを抑制します。
+このオプションは、<option>--clean</option>も指定されていない場合には無効です。
        </para>
       </listitem>
      </varlistentry>
@@ -559,7 +612,7 @@ SQLスクリプトは標準出力に書き込まれます。
 ロールのパスワードをダンプしません。
 リストア時にロールのパスワードはNULLになるため、パスワードが設定されるまでは、パスワード認証は常に失敗します。
 このオプションが指定された場合、パスワードの値が不要となるので、ロール情報は<structname>pg_authid</structname>ではなく、カタログビューの<structname>pg_roles</structname>から読み取られます。
-従って、<structname>pg_authid</structname>へのアクセスが何らかのセキュリティーポリシーによって制限されている場合にも、このオプションは役立ちます。
+従って、<structname>pg_authid</structname>へのアクセスが何らかのセキュリティポリシーによって制限されている場合にも、このオプションは役立ちます。
        </para>
       </listitem>
      </varlistentry>
@@ -703,7 +756,7 @@ SQLスクリプトは標準出力に書き込まれます。
         such issues, at the price of a harder-to-read dump script.
 -->
 強制的にすべての識別子に引用符を付与します。
-このオプションは、<application>pg_dumpall</application>のメジャーバージョンとは異なるメジャーバージョンの<productname>PostgreSQL</productname>のサーバーからデータベースをダンプするとき、あるいは出力を異なるメジャーバージョンのサーバにロードする予定であるときに推奨されます。
+このオプションは、<application>pg_dumpall</application>のメジャーバージョンとは異なるメジャーバージョンの<productname>PostgreSQL</productname>のサーバからデータベースをダンプするとき、あるいは出力を異なるメジャーバージョンのサーバにロードする予定であるときに推奨されます。
 デフォルトでは、<application>pg_dumpall</application>は、それ自身のメジャーバージョンにおける予約語である識別子に対してのみ引用符を付与します。
 これは、他のバージョンのサーバを処理するときに互換性の問題を引き起こす場合があります。
 他のバージョンのサーバでは予約語の集合が多少、異なる場合があるからです。
@@ -959,7 +1012,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry>
@@ -988,7 +1041,7 @@ SQLスクリプトは標準出力に書き込まれます。
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -1000,7 +1053,7 @@ SQLスクリプトは標準出力に書き込まれます。
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>
@@ -1010,7 +1063,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
   <title>Notes</title>
 -->
-<title>注釈</title>
+  <title>注釈</title>
 
   <para>
 <!--
@@ -1061,7 +1114,7 @@ SQLスクリプトは標準出力に書き込まれます。
    minimize those by adding <option>&#45;-if-exists</option>.
 -->
 ダンプスクリプトはエラー無しに完全に実行すると期待すべきではありません。
-特にスクリプトは存在する全てのロールに対して<command>CREATE ROLE</command>を発行するので、宛先のクラスタが異なるベースストラップスーパーユーザ名で初期化されていない限り、ブートストラップスーパーユーザについて<quote>role already exists</quote>エラーを受け取ることは確実です。
+特にスクリプトは存在する全てのロールに対して<command>CREATE ROLE</command>を発行するので、宛先のクラスタが異なるブートストラップスーパーユーザ名で初期化されていない限り、ブートストラップスーパーユーザについて<quote>role already exists</quote>エラーを受け取ることは確実です。
 このエラーは無害であり、無視してください。
 <option>--clean</option>オプションの使用は、追加で無害な存在しないオブジェクトについてのエラーメッセージを発生させますが、<option>--if-exists</option>を加えることでエラー発生を最小化できます。
   </para>
@@ -1083,7 +1136,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
   <para>
 <!--
    To dump all databases:
@@ -1122,7 +1175,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
   <title>See Also</title>
 -->
-<title>関連項目</title>
+  <title>関連項目</title>
 
   <para>
 <!--

@@ -7,7 +7,7 @@
  *	  transfer pending entries into the regular index structure.  This
  *	  wins because bulk insertion is much more efficient than retail.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -31,7 +31,7 @@
 #include "storage/lmgr.h"
 #include "storage/predicate.h"
 #include "utils/acl.h"
-#include "utils/builtins.h"
+#include "utils/fmgrprotos.h"
 #include "utils/memutils.h"
 #include "utils/rel.h"
 
@@ -397,6 +397,9 @@ ginHeapTupleFastInsert(GinState *ginstate, GinTupleCollector *collector)
 		}
 
 		Assert((ptr - collectordata) <= collector->sumsize);
+
+		MarkBufferDirty(buffer);
+
 		if (needWal)
 		{
 			XLogRegisterBuffer(1, buffer, REGBUF_STANDARD);
@@ -404,8 +407,6 @@ ginHeapTupleFastInsert(GinState *ginstate, GinTupleCollector *collector)
 		}
 
 		metadata->tailFreeSize = PageGetExactFreeSpace(page);
-
-		MarkBufferDirty(buffer);
 	}
 
 	/*
@@ -811,7 +812,7 @@ ginInsertCleanup(GinState *ginstate, bool full_clean,
 		 */
 		LockPage(index, GIN_METAPAGE_BLKNO, ExclusiveLock);
 		workMemory =
-			(IsAutoVacuumWorkerProcess() && autovacuum_work_mem != -1) ?
+			(AmAutoVacuumWorkerProcess() && autovacuum_work_mem != -1) ?
 			autovacuum_work_mem : maintenance_work_mem;
 	}
 	else
@@ -1032,7 +1033,6 @@ gin_clean_pending_list(PG_FUNCTION_ARGS)
 	Oid			indexoid = PG_GETARG_OID(0);
 	Relation	indexRel = index_open(indexoid, RowExclusiveLock);
 	IndexBulkDeleteResult stats;
-	GinState	ginstate;
 
 	if (RecoveryInProgress())
 		ereport(ERROR,
@@ -1064,8 +1064,26 @@ gin_clean_pending_list(PG_FUNCTION_ARGS)
 					   RelationGetRelationName(indexRel));
 
 	memset(&stats, 0, sizeof(stats));
-	initGinState(&ginstate, indexRel);
-	ginInsertCleanup(&ginstate, true, true, true, &stats);
+
+	/*
+	 * Can't assume anything about the content of an !indisready index.  Make
+	 * those a no-op, not an error, so users can just run this function on all
+	 * indexes of the access method.  Since an indisready&&!indisvalid index
+	 * is merely awaiting missed aminsert calls, we're capable of processing
+	 * it.  Decline to do so, out of an abundance of caution.
+	 */
+	if (indexRel->rd_index->indisvalid)
+	{
+		GinState	ginstate;
+
+		initGinState(&ginstate, indexRel);
+		ginInsertCleanup(&ginstate, true, true, true, &stats);
+	}
+	else
+		ereport(DEBUG1,
+				(errcode(ERRCODE_OBJECT_NOT_IN_PREREQUISITE_STATE),
+				 errmsg("index \"%s\" is not valid",
+						RelationGetRelationName(indexRel))));
 
 	index_close(indexRel, RowExclusiveLock);
 

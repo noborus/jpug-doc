@@ -254,21 +254,20 @@ make installcheck-world
    limits, you can make things go substantially faster with parallelism.
    The recipe that most PostgreSQL developers actually use for running all
    tests is something like
+-->
+複数のCPUコアがあり、オペレーティングシステムの厳しい制限のない最近のマシンでは、並列処理でかなり速くできます。
+ほとんどのPostgreSQL開発者がテストをすべて実行するのに実際に使っている方法は以下のようなものです。
 <screen>
 make check-world -j8 >/dev/null
 </screen>
+<!--
    with a <option>-j</option> limit near to or a bit more than the number
    of available cores.  Discarding <systemitem>stdout</systemitem>
    eliminates chatter that's not interesting when you just want to verify
    success.  (In case of failure, the <systemitem>stderr</systemitem>
    messages are usually enough to determine where to look closer.)
 -->
-複数のCPUコアがあり、オペレーティングシステムの厳しい制限のない最近のマシンでは、並列処理でかなり速くできます。
-ほとんどのPostgreSQL開発者がテストをすべて実行するのに実際に使っている方法は
-<screen>
-make check-world -j8 >/dev/null
-</screen>
-のようなものです。ここで<option>-j</option>の範囲は利用可能なコアの数に近い、もしくはそれより少し多い値です。
+ここで<option>-j</option>の範囲は利用可能なコアの数に近い、もしくはそれより少し多い値です。
 <systemitem>stdout</systemitem>を捨てることで、成功を検証する時には興味のない出力を除きます。(失敗した場合、どこをより詳細に調べるべきか決めるには<systemitem>stderr</systemitem>メッセージでたいてい十分です。)
   </para>
 
@@ -415,7 +414,7 @@ make check-world -j8 >/dev/null
 どのテストスイートを追加で実行するかを<command>make</command>や環境変数<varname>PG_TEST_EXTRA</varname>に空白区切りのリストを設定することで決定できます。
 以下に例を示します。
 <programlisting>
-make check-world PG_TEST_EXTRA='kerberos ldap ssl load_balance'
+make check-world PG_TEST_EXTRA='kerberos ldap ssl load_balance libpq_encryption'
 </programlisting>
 <!--
    The following values are currently supported:
@@ -480,6 +479,23 @@ make check-world PG_TEST_EXTRA='kerberos ldap ssl load_balance'
     </varlistentry>
 
     <varlistentry>
+     <term><literal>libpq_encryption</literal></term>
+     <listitem>
+      <para>
+<!--
+       Runs the test <filename>src/interfaces/libpq/t/005_negotiate_encryption.pl</filename>.
+       This opens TCP/IP listen sockets. If <varname>PG_TEST_EXTRA</varname>
+       also includes <literal>kerberos</literal>, additional tests that require
+       an MIT Kerberos installation are enabled.
+-->
+《機械翻訳》テスト<filename>src/interfaces/libpq/t/005_negotiate_暗号化.pl</filename>を実行します。
+これにより、TCP/IP監視するソケットが開きます。
+<varname>PG_テスト_EXTRA</varname>に<literal>Kerberos</literal>も含まれている場合、MIT Kerberosインストールを必要とする追加のテストが有効になります。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
      <term><literal>wal_consistency_checking</literal></term>
      <listitem>
       <para>
@@ -490,6 +506,20 @@ make check-world PG_TEST_EXTRA='kerberos ldap ssl load_balance'
 -->
 <filename>src/test/recovery</filename>で特定のテストを実行する際に<literal>wal_consistency_checking=all</literal>を使用します。
 リソースを大量に消費するため、デフォルトでは有効になっていません。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term><literal>xid_wraparound</literal></term>
+     <listitem>
+      <para>
+<!--
+       Runs the test suite under <filename>src/test/modules/xid_wraparound</filename>.
+       Not enabled by default because it is resource intensive.
+-->
+《機械翻訳》<filename>src/テスト/モジュール/xid_周回</filename>の下でテストスイートを実行します。
+リソースを大量に消費するため、デフォルトでは使用できません。
       </para>
      </listitem>
     </varlistentry>
@@ -597,14 +627,54 @@ make check LANG=C ENCODING=EUC_JP
 
    <para>
 <!--
-    Custom server settings to use when running a regression test suite can be
-    set in the <varname>PGOPTIONS</varname> environment variable (for settings
-    that allow this):
+    There are several ways to use custom server settings when running a test
+    suite.  This can be useful to enable additional logging, adjust resource
+    limits, or enable extra run-time checks such as <xref
+    linkend="guc-debug-discard-caches"/>.  But note that not all tests can be
+    expected to pass cleanly with arbitrary settings.
 -->
-リグレッションテストスィートを実行する際に使用するカスタムサーバ設定は、（以下を有効にするためには）<varname>PGOPTIONS</varname>環境変数で設定できます。
+《機械翻訳》テストスイートの実行時にカスタムサーバ設定を使用するには、いくつかの方法があります。
+これは、追加のロギングを有効にしたり、リソース制限を調整したり、<xref linkend="guc-debug-discard-caches"/>などの追加のランタイム・チェックを有効にしたりする場合に便利です。
+しかし、ノートでは、すべてのテストが任意の設定で正常に通過するとは限りません。
+   </para>
+
+   <para>
+<!--
+    Extra options can be passed to the various <command>initdb</command>
+    commands that are run internally during test setup using the environment
+    variable <envar>PG_TEST_INITDB_EXTRA_OPTS</envar>.  For example, to run a
+    test with checksums enabled and a custom WAL segment size and
+    <varname>work_mem</varname> setting, use:
+-->
+《機械翻訳》環境変数<envar>PG_オプション_INITDB_EXTRA_OPTS</envar>を使用すると、テストセットアップ中に内部的に実行されるさまざまな<command>initdb</command>コマンドに追加のテストを渡すことができます。
+例の場合、チェックサムを有効にし、カスタムWALセグメント容量と<varname>work_mem</varname>を設定してテストを実行するには、次のコマンドを使用します。
+<screen>
+make check PG_TEST_INITDB_EXTRA_OPTS='-k --wal-segsize=4 -c work_mem=50MB'
+</screen>
+   </para>
+
+   <para>
+<!--
+    For the core regression test suite and other tests driven by
+    <command>pg_regress</command>, custom run-time server settings can also be
+    set in the <varname>PGOPTIONS</varname> environment variable (for settings
+    that allow this), for example:
+-->
+《マッチ度[53.526971]》リグレッションテストスイートを実行する際に使用するカスタムサーバ設定は、（以下を有効にするためには）<varname>PGOPTIONS</varname>環境変数で設定できます。
+《機械翻訳》<command>pg_regress</command>によって駆動されるコアリグレッションテストスイートやその他のテストの場合、カスタムランタイムサーバ設定は<varname>PGOPTIONS</varname>環境変数で設定することもできます（これを可能にする設定の場合）。
+例の場合:
 <screen>
 make check PGOPTIONS="-c debug_parallel_query=regress -c work_mem=50MB"
 </screen>
+<!--
+    (This makes use of functionality provided by libpq; see <xref
+    linkend="libpq-connect-options"/> for details.)
+-->
+《機械翻訳》（これはlibpqが提供する機能を利用しています。
+詳細については<xref linkend="libpq-connect-options"/>を参照してください。）
+   </para>
+
+   <para>
 <!--
     When running against a temporary installation, custom settings can also be
     set by supplying a pre-written <filename>postgresql.conf</filename>:
@@ -617,14 +687,6 @@ make check EXTRA_REGRESS_OPTS="--temp-config=test_postgresql.conf"
 </screen>
    </para>
 
-   <para>
-<!--
-    This can be useful to enable additional logging, adjust resource limits,
-    or enable extra run-time checks such as <xref
-    linkend="guc-debug-discard-caches"/>.
--->
-これは追加のログ取得、リソース制限の調整、<xref linkend="guc-debug-discard-caches"/>のような追加の実行時チェックを可能にするために有効かもしれません。
-   </para>
   </sect2>
 
   <sect2 id="regress-run-extra-tests">
@@ -826,15 +888,18 @@ make check NO_LOCALE=1
 <!--
      Most of the date and time results are dependent on the time zone
      environment.  The reference files are generated for time zone
-     <literal>PST8PDT</literal> (Berkeley, California), and there will be
+     <literal>America/Los_Angeles</literal>, and there will be
      apparent failures if the tests are not run with that time zone setting.
      The regression test driver sets environment variable
-     <envar>PGTZ</envar> to <literal>PST8PDT</literal>, which normally
-     ensures proper results.
+     <envar>PGTZ</envar> to <literal>America/Los_Angeles</literal>,
+     which normally ensures proper results.
 -->
-日付と時刻の結果のほとんどはタイムゾーンの環境に依存します。
+《マッチ度[78.780488]》日付と時刻の結果のほとんどはタイムゾーンの環境に依存します。
 参照ファイルはタイムゾーン <literal>PST8PDT</literal> (Berkeley, California) 用に生成されているため、このタイムゾーン設定で実行されていないテストは明らかに失敗します。
 リグレッションテストのドライバは、適切な結果を保証するために、環境変数<envar>PGTZ</envar>に<literal>PST8PDT</literal>を設定します。
+《機械翻訳》ほとんどの日付と時刻の結果は、タイムゾーン環境に依存しています。
+リファレンスファイルはタイムゾーン<literal>America/Los_Angeles</literal>に対して生成され、テストがそのタイムゾーン設定で実行されない場合は明らかに失敗します。
+リグレッションテストドライバは環境変数<envar>PGTZ</envar>を<literal>America/Los_Angeles</literal>に設定し、通常は適切な結果が保証されます。
     </para>
    </sect2>
 

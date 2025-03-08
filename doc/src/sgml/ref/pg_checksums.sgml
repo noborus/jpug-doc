@@ -192,6 +192,39 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
+      <term><option>--sync-method=<replaceable>method</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        When set to <literal>fsync</literal>, which is the default,
+        <command>pg_checksums</command> will recursively open and synchronize
+        all files in the data directory.  The search for files will follow
+        symbolic links for the WAL directory and each configured tablespace.
+-->
+デフォルトの<literal>fsync</literal>に設定すると、<command>pg_checksums</command>はデータディレクトリ内のすべてのファイルを再帰的に開いて同期します。
+ファイルの検索はWALディレクトリと設定された各テーブル空間のシンボリックリンクをたどります。
+       </para>
+       <para>
+<!--
+        On Linux, <literal>syncfs</literal> may be used instead to ask the
+        operating system to synchronize the whole file systems that contain the
+        data directory, the WAL files, and each tablespace.  See
+        <xref linkend="guc-recovery-init-sync-method"/> for information about
+        the caveats to be aware of when using <literal>syncfs</literal>.
+-->
+Linuxでは、<literal>syncfs</literal>を代わりに使用して、データディレクトリ、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます
+<literal>syncfs</literal>を使用する際に注意すべき点については、<xref linkend="guc-recovery-init-sync-method"/>を参照してください。
+       </para>
+       <para>
+<!--
+        This option has no effect when <option>&#45;-no-sync</option> is used.
+-->
+このオプションは<option>--no-sync</option>が使われている場合には効果がありません。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><option>-v</option></term>
       <term><option>--verbose</option></term>
       <listitem>
@@ -266,7 +299,7 @@ PostgreSQL documentation
       are <literal>always</literal>, <literal>auto</literal> and
       <literal>never</literal>.
 -->
-対話的メッセージで色を使用するかを指定します。
+診断メッセージで色を使うかどうかを指定します。
 指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>

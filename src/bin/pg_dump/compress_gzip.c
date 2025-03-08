@@ -3,7 +3,7 @@
  * compress_gzip.c
  *	 Routines for archivers to read or write a gzip compressed data stream.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -154,7 +154,7 @@ WriteDataToArchiveGzip(ArchiveHandle *AH, CompressorState *cs,
 {
 	GzipCompressorState *gzipcs = (GzipCompressorState *) cs->private_data;
 
-	gzipcs->zp->next_in = (void *) unconstify(void *, data);
+	gzipcs->zp->next_in = data;
 	gzipcs->zp->avail_in = dLen;
 	DeflateCompressorCommon(AH, cs, false);
 }
@@ -292,7 +292,7 @@ Gzip_getc(CompressFileHandle *CFH)
 	if (ret == EOF)
 	{
 		if (!gzeof(gzfp))
-			pg_fatal("could not read from input file: %s", strerror(errno));
+			pg_fatal("could not read from input file: %m");
 		else
 			pg_fatal("could not read from input file: end of file");
 	}

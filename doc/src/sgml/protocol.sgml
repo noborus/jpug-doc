@@ -4,7 +4,7 @@
 <!--
  <title>Frontend/Backend Protocol</title>
 -->
-<title>フロントエンド/バックエンドプロトコル</title>
+ <title>フロントエンド/バックエンドプロトコル</title>
 
  <indexterm zone="protocol">
   <primary>protocol</primary>
@@ -80,7 +80,7 @@
 <!--
   <title>Overview</title>
 -->
-<title>概要</title>
+  <title>概要</title>
 
   <para>
 <!--
@@ -152,7 +152,7 @@
 <!--
   <title>Messaging Overview</title>
 -->
-<title>メッセージ処理の概要</title>
+  <title>メッセージ処理の概要</title>
 
   <para>
 <!--
@@ -205,7 +205,7 @@
 <!--
    <title>Extended Query Overview</title>
 -->
-<title>拡張問い合わせの概要</title>
+   <title>拡張問い合わせの概要</title>
 
    <para>
 <!--
@@ -272,7 +272,7 @@
 <!--
    <title>Formats and Format Codes</title>
 -->
-<title>書式と書式コード</title>
+   <title>書式と書式コード</title>
 
    <para>
 <!--
@@ -329,7 +329,7 @@
 <!--
   <title>Message Flow</title>
 -->
-<title>メッセージの流れ</title>
+  <title>メッセージの流れ</title>
 
   <para>
 <!--
@@ -353,7 +353,7 @@
 <!--
    <title>Start-up</title>
 -->
-<title>開始</title>
+   <title>開始</title>
 
    <para>
 <!--
@@ -774,7 +774,7 @@ ReadyForQueryメッセージは各コマンドサイクルの後にバックエ�
 <!--
    <title>Simple Query</title>
 -->
-<title>簡易問い合わせ</title>
+   <title>簡易問い合わせ</title>
 
    <para>
 <!--
@@ -1089,7 +1089,7 @@ SELECT 1/0;
      executed by itself (when not in a transaction block).
 -->
 この振る舞いは、<firstterm>暗黙トランザクションブロック</firstterm>で複文Queryメッセージ内の文を実行することで、その中に明示的なトランザクションブロックがある場合を除き、発現します。
-暗黙トランザクションブロックと通常のトラザクションブロックとの主な違いは、暗黙ブロックは自動的にQueryメッセージの最後にて、エラーが無いなら暗黙のコミット、エラーがあるなら暗黙のロールバックで、自動的に閉じられることです。
+暗黙トランザクションブロックと通常のトランザクションブロックとの主な違いは、暗黙ブロックは自動的にQueryメッセージの最後にて、エラーが無いなら暗黙のコミット、エラーがあるなら暗黙のロールバックで、自動的に閉じられることです。
 これは（トランザクションブロック内に無いときの）文の単体実行に対して生じる暗黙のコミットあるいはロールバックに似ています。
     </para>
 
@@ -1203,7 +1203,7 @@ SELCT 1/0;<!-- this typo is intentional -->
 <!--
    <title>Extended Query</title>
 -->
-<title>拡張問い合わせ</title>
+   <title>拡張問い合わせ</title>
 
    <para>
 <!--
@@ -1652,7 +1652,7 @@ Flushを行わないと、バックエンドで返されるメッセージは、
 <!--
    <title>Function Call</title>
 -->
-<title>関数呼び出し</title>
+   <title>関数呼び出し</title>
 
    <para>
 <!--
@@ -1766,7 +1766,7 @@ ReadyForQueryはフロントエンドに対し新規の問い合わせまたは�
 <!--
    <title>COPY Operations</title>
 -->
-<title>COPY操作</title>
+   <title>COPY操作</title>
 
    <para>
 <!--
@@ -1937,7 +1937,7 @@ CopyInResponse、CopyOutResponse、CopyBothResponseメッセージには、フ�
 <!--
    <title>Asynchronous Operations</title>
 -->
-<title>非同期操作</title>
+   <title>非同期操作</title>
 
    <para>
 <!--
@@ -1990,30 +1990,31 @@ ParameterStatusメッセージは、任意のパラメータの実際の値が�
    <para>
 <!--
     At present there is a hard-wired set of parameters for which
-    ParameterStatus will be generated: they are
-    <varname>server_version</varname>,
-    <varname>server_encoding</varname>,
-    <varname>client_encoding</varname>,
-    <varname>application_name</varname>,
-    <varname>default_transaction_read_only</varname>,
-    <varname>in_hot_standby</varname>,
-    <varname>is_superuser</varname>,
-    <varname>session_authorization</varname>,
-    <varname>DateStyle</varname>,
-    <varname>IntervalStyle</varname>,
-    <varname>TimeZone</varname>,
-    <varname>integer_datetimes</varname>, and
-    <varname>standard_conforming_strings</varname>.
-    (<varname>server_encoding</varname>, <varname>TimeZone</varname>, and
-    <varname>integer_datetimes</varname> were not reported by releases before 8.0;
-    <varname>standard_conforming_strings</varname> was not reported by releases
-    before 8.1;
-    <varname>IntervalStyle</varname> was not reported by releases before 8.4;
-    <varname>application_name</varname> was not reported by releases before
-    9.0;
-    <varname>default_transaction_read_only</varname> and
+    ParameterStatus will be generated.  They are:
+-->
+現時点では、ParameterStatusを生成するパラメータ群は固定されています。
+それらは次の通りです。
+    <simplelist type="vert" columns="2">
+     <member><varname>application_name</varname></member>
+     <member><varname>client_encoding</varname></member>
+     <member><varname>DateStyle</varname></member>
+     <member><varname>default_transaction_read_only</varname></member>
+     <member><varname>in_hot_standby</varname></member>
+     <member><varname>integer_datetimes</varname></member>
+     <member><varname>IntervalStyle</varname></member>
+     <member><varname>is_superuser</varname></member>
+     <member><varname>scram_iterations</varname></member>
+     <member><varname>server_encoding</varname></member>
+     <member><varname>server_version</varname></member>
+     <member><varname>session_authorization</varname></member>
+     <member><varname>standard_conforming_strings</varname></member>
+     <member><varname>TimeZone</varname></member>
+    </simplelist>
+<!--
+    (<varname>default_transaction_read_only</varname> and
     <varname>in_hot_standby</varname> were not reported by releases before
-    14.)
+    14; <varname>scram_iterations</varname> was not reported by releases
+    before 16.)
     Note that
     <varname>server_version</varname>,
     <varname>server_encoding</varname> and
@@ -2023,16 +2024,11 @@ ParameterStatusメッセージは、任意のパラメータの実際の値が�
     Accordingly, a frontend should simply ignore ParameterStatus for
     parameters that it does not understand or care about.
 -->
-現時点では、ParameterStatusを生成するパラメータ群は固定されています。
-それらは<varname>server_version</varname>、<varname>server_encoding</varname>、<varname>client_encoding</varname>、<varname>application_name</varname>、<varname>default_transaction_read_only</varname>、<varname>in_hot_standby</varname>、<varname>is_superuser</varname>、<varname>session_authorization</varname>、<varname>DateStyle</varname>、<varname>IntervalStyle</varname>、<varname>TimeZone</varname>、<varname>integer_datetimes</varname>、および<varname>standard_conforming_strings</varname>です。
-（8.0より前までのリリースでは、<varname>server_encoding</varname>、<varname>TimeZone</varname>および<varname>integer_datetimes</varname>は送信されませんでした。
-8.1より前までのリリースでは、<varname>standard_conforming_strings</varname>は送信されませんでした。
-8.4より前のリリースでは、<varname>IntervalStyle</varname>は送信されませんでした。
-9.0より前のリリースでは、<varname>application_name</varname>は送信されませんでした。
-14より前のリリースでは、<varname>default_transaction_read_only</varname>と<varname>in_hot_standby</varname>は送信されませんでした。）
-<varname>server_version</varname>、<varname>server_encoding</varname>および<varname>integer_datetimes</varname>は仮想的なパラメータであり、起動後に変更することができないことに注意してください。
-これは今後変更される、あるいは設定変更可能になる可能性があります。
-したがって、フロントエンドは未知または注目していないParameterStatusを単に無視すべきです。
+（<varname>default_transaction_read_only</varname>と<varname>in_hot_standby</varname>は14より前のリリースでは報告されませんでした。
+<varname>scram_iterations</varname>は16より前のリリースでは報告されませんでした。）
+なお、<varname>server_version</varname>、<varname>server_encoding</varname>、<varname>integer_datetimes</varname>は、起動後に変更できない擬似パラメータであることに注意してください。
+この組み合わせは将来変更されるかもしれないし、設定可能にさえなるかもしれません。
+したがって、フロントエンドは、理解していない、あるいは気にかけていないパラメータに関しては、ParameterStatusを単純に無視すべきです。
    </para>
 
    <para>
@@ -2068,7 +2064,7 @@ ParameterStatusメッセージは、任意のパラメータの実際の値が�
 <!--
    <title>Canceling Requests in Progress</title>
 -->
-<title>処理中のリクエストの取り消し</title>
+   <title>処理中のリクエストの取り消し</title>
 
    <para>
 <!--
@@ -2167,7 +2163,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <!--
    <title>Termination</title>
 -->
-<title>終了</title>
+   <title>終了</title>
 
    <para>
 <!--
@@ -2229,7 +2225,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <!--
    <title><acronym>SSL</acronym> Session Encryption</title>
 -->
-<title><acronym>SSL</acronym>セッション暗号化</title>
+   <title><acronym>SSL</acronym>セッション暗号化</title>
 
    <para>
 <!--
@@ -2317,10 +2313,63 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 
    <para>
 <!--
+     Likewise the server expects the client to not begin
+     the <acronym>SSL</acronym> negotiation until it receives the server's
+     single byte response to the <acronym>SSL</acronym> request.  If the
+     client begins the <acronym>SSL</acronym> negotiation immediately without
+     waiting for the server response to be received it can reduce connection
+     latency by one round-trip.  However this comes at the cost of not being
+     able to handle the case where the server sends a negative response to the
+     <acronym>SSL</acronym> request.  In that case instead of continuing with either GSSAPI or an
+     unencrypted connection or a protocol error the server will simply
+     disconnect.
+-->
+同様に、サーバはクライアントが<acronym>SSL</acronym>要求に対するサーバの単一バイト応答を受信するまで、<acronym>SSL</acronym>ネゴシエーションを開始しないことを期待します。
+クライアントがサーバからの応答を待たずに直ちに <acronym>SSL</acronym>ネゴシエーションを開始する場合、接続の待ち時間を1往復分減らすことができます。
+しかし、これは、サーバが<acronym>SSL</acronym>リクエストに対して否定的な応答を送信する場合を処理できないという代償を伴います。
+その場合、GSSAPIや暗号化されていない接続、あるいはプロトコルエラーで接続を続ける代わりに、サーバは単に接続を切断するだけです。
+   </para>
+
+   <para>
+<!--
     An initial SSLRequest can also be used in a connection that is being
     opened to send a CancelRequest message.
 -->
 最初のSSLRequestはCancelRequestメッセージを送信するために開いた接続で使用することもできます。
+   </para>
+
+   <para>
+<!--
+     A second alternate way to initiate <acronym>SSL</acronym> encryption is
+     available.  The server will recognize connections which immediately
+     begin <acronym>SSL</acronym> negotiation without any previous SSLRequest
+     packets.  Once the <acronym>SSL</acronym> connection is established the
+     server will expect a normal startup-request packet and continue
+     negotiation over the encrypted channel.  In this case any other requests
+     for encryption will be refused.  This method is not preferred for general
+     purpose tools as it cannot negotiate the best connection encryption
+     available or handle unencrypted connections.  However it is useful for
+     environments where both the server and client are controlled together.
+     In that case it avoids one round trip of latency and allows the use of
+     network tools that depend on standard <acronym>SSL</acronym> connections.
+     When using <acronym>SSL</acronym> connections in this style the client is
+     required to use the ALPN extension defined
+     by <ulink url="https://tools.ietf.org/html/rfc7301">RFC 7301</ulink> to
+     protect against protocol confusion attacks.
+     The <productname>PostgreSQL</productname> protocol is "postgresql" as
+     registered
+     at <ulink url="https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids">IANA
+     TLS ALPN Protocol IDs</ulink> registry.
+-->
+<acronym>SSL</acronym>暗号化を開始するための2つ目の代替方法があります。
+サーバは、以前のSSLRequestパケットなしで直ちに<acronym>SSL</acronym>ネゴシエーションを開始する接続を認識します。
+<acronym>SSL</acronym>接続が確立されると、サーバは通常の起動要求パケットを期待し、暗号化されたチャネルを介してネゴシエーションを続行します。
+この場合、他の暗号化要求は拒否されます。
+この方法は、利用可能な最良の接続暗号化をネゴシエートできないため、または暗号化されていない接続を処理できないため、汎用ツールには推奨されません。
+ただし、サーバとクライアントの両方が一緒に制御される環境では便利です。
+この場合、一往復の遅延を回避し、標準の<acronym>SSL</acronym>接続に依存するネットワークツールの使用を可能にします。
+このスタイルの<acronym>SSL</acronym>接続を使用する場合、クライアントは<ulink url="https://tools.ietf.org/html/rfc7301">RFC 7301</ulink>で定義されたALPN拡張を使用して、プロトコルの混乱攻撃から保護する必要があります。
+<productname>PostgreSQL</productname>プロトコルは<ulink url="https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids">IANA TLS ALPN Protocol IDs</ulink>レジストリに"postgresql"として登録されています。
    </para>
 
    <para>
@@ -2365,7 +2414,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
     respectively.  The frontend might close the connection at this point
     if it is dissatisfied with the response.  To continue after
     <literal>G</literal>, using the GSSAPI C bindings as discussed in
-    <ulink url="https://tools.ietf.org/html/rfc2744">RFC 2744</ulink>
+    <ulink url="https://datatracker.ietf.org/doc/html/rfc2744">RFC 2744</ulink>
     or equivalent, perform a <acronym>GSSAPI</acronym> initialization by
     calling <function>gss_init_sec_context()</function> in a loop and sending
     the result to the server, starting with an empty input and then with each
@@ -2384,7 +2433,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <acronym>GSSAPI</acronym>暗号化接続を開始するには、フロントエンドは最初にStartupMessageではなく、GSSENCRequestメッセージを送ります。
 次にサーバは、それぞれ<acronym>GSSAPI</acronym>暗号化を希望する、しないを意味する<literal>G</literal>または<literal>N</literal>を含む1バイトを送信します。
 このレスポンスに満足できなければ、この時点でフロントエンドは接続を打ち切って構いません。
-<literal>G</literal>の受信後継続するには、<ulink url="https://tools.ietf.org/html/rfc2744">RFC 2744</ulink>あるいは同様の文書で議論されているGSSAPI Cバインディングを使い、ループの中で<function>gss_init_sec_context()</function>を呼び出して<acronym>GSSAPI</acronym>を初期化し、結果をサーバに送信し、空の入力を受け取ることから始めて、サーバが出力を返さなくなるまでサーバからの出力を受け取ります。
+<literal>G</literal>の受信後継続するには、<ulink url="https://datatracker.ietf.org/doc/html/rfc2744">RFC 2744</ulink>あるいは同様の文書で説明されているGSSAPI Cバインディングを使い、ループの中で<function>gss_init_sec_context()</function>を呼び出して<acronym>GSSAPI</acronym>を初期化し、結果をサーバに送信し、空の入力を受け取ることから始めて、サーバが出力を返さなくなるまでサーバからの出力を受け取ります。
 <function>gss_init_sec_context()</function>の結果をサーバに送る際には、ネットワークバイトオーダーで4バイトの整数にメッセージ長を先頭に付与します。
 <literal>N</literal>の後継続するには、通常のStartupMessageを送信し、暗号化せずに続けてください。
 （他に、<acronym>GSSAPI</acronym>の代わりに<acronym>SSL</acronym>暗号化の使用を試行するために、<literal>N</literal>応答の後にSSLRequestメッセージを送信することが認められています。）
@@ -2473,7 +2522,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <!--
   <title>SASL Authentication</title>
 -->
-<title>SASL認証</title>
+  <title>SASL認証</title>
 
   <para>
 <!--
@@ -2494,7 +2543,7 @@ CancelRequestメッセージは、接続開始段階でフロントエンドに�
 <!--
    <title>SASL Authentication Message Flow</title>
 -->
-<title>SASL認証のメッセージフロー</title>
+   <title>SASL認証のメッセージフロー</title>
 
    <step id="sasl-auth-begin">
     <para>
@@ -2572,11 +2621,11 @@ AuthenticationSASLFinalにはサーバからクライアントへの追加のデ
     The implemented SASL mechanisms at the moment
     are <literal>SCRAM-SHA-256</literal> and its variant with channel
     binding <literal>SCRAM-SHA-256-PLUS</literal>. They are described in
-    detail in <ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>
-    and <ulink url="https://tools.ietf.org/html/rfc5802">RFC 5802</ulink>.
+    detail in <ulink url="https://datatracker.ietf.org/doc/html/rfc7677">RFC 7677</ulink>
+    and <ulink url="https://datatracker.ietf.org/doc/html/rfc5802">RFC 5802</ulink>.
 -->
-今のところ実装されているSASL機構は<literal>SCRAM-SHA-256</literal>とチャンネルバインディングを伴う変種の<literal>SCRAM-SHA-256-PLUS</literal>です。
-詳細は<ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>および<ulink url="https://tools.ietf.org/html/rfc5802">RFC 5802</ulink>で説明されています。
+今のところ実装されているSASL機構は<literal>SCRAM-SHA-256</literal>とチャネルバインディングを伴う変種の<literal>SCRAM-SHA-256-PLUS</literal>です。
+詳細は<ulink url="https://datatracker.ietf.org/doc/html/rfc7677">RFC 7677</ulink>および<ulink url="https://datatracker.ietf.org/doc/html/rfc5802">RFC 5802</ulink>で説明されています。
    </para>
 
    <para>
@@ -2621,9 +2670,9 @@ SCRAMの仕様ではパスワードもUTF-8であり、<firstterm>SASLprep</firs
     <literal>SCRAM-SHA-256-PLUS</literal>.  The channel binding type used by
     PostgreSQL is <literal>tls-server-end-point</literal>.
 -->
-SSLをサポートするPostgreSQLビルドで<firstterm>チャンネルバインディング</firstterm>がサポートされます。
-チャンネルバインディングを伴うSCRAMに対するSASL機構名は<literal>SCRAM-SHA-256-PLUS</literal>です。
-PostgreSQLで使われるチャンネルバインディングのタイプは<literal>tls-server-end-point</literal>です。
+SSLをサポートするPostgreSQLビルドで<firstterm>チャネルバインディング</firstterm>がサポートされます。
+チャネルバインディングを伴うSCRAMに対するSASL機構名は<literal>SCRAM-SHA-256-PLUS</literal>です。
+PostgreSQLで使われるチャネルバインディングのタイプは<literal>tls-server-end-point</literal>です。
    </para>
 
    <para>
@@ -2636,7 +2685,7 @@ PostgreSQLで使われるチャンネルバインディングのタイプは<lit
     server and client from passing through the server's random value
     and successfully authenticating.
 -->
-チャンネルバインディングを伴わない<acronym>SCRAM</acronym>ではサーバは、送信されるパスワードハッシュの中でユーザに応じたパスワードと混合してクライアントに送る乱数を選びます。
+チャネルバインディングを伴わない<acronym>SCRAM</acronym>ではサーバは、送信されるパスワードハッシュの中でユーザに応じたパスワードと混合してクライアントに送る乱数を選びます。
 これはパスワードハッシュが後のセッションで再送信されて認証に成功してしまうことを防止しますが、真のサーバとクライアントの間の偽サーバがサーバのランダム値を中継して認証に成功してしまうことを防止しません。
    </para>
 
@@ -2649,7 +2698,7 @@ PostgreSQLで使われるチャンネルバインディングのタイプは<lit
     private key matching that certificate, and therefore cannot prove it is
     the owner, causing SSL connection failure.
 -->
-チャンネルバインディングを伴う<acronym>SCRAM</acronym>はこのような中間者攻撃をサーバ証明書のシグネチャを送信されるパスワードハッシュと混合することで防止します。
+チャネルバインディングを伴う<acronym>SCRAM</acronym>はこのような中間者攻撃をサーバ証明書のシグネチャを送信されるパスワードハッシュと混合することで防止します。
 偽サーバは真のサーバの証明書を再送信できますが、その証明書に一致する秘密鍵にアクセスできず、それゆえ所有者であることを証明できず、結果としてSSL接続は失敗します。
    </para>
 
@@ -2657,7 +2706,7 @@ PostgreSQLで使われるチャンネルバインディングのタイプは<lit
 <!--
     <title>Example</title>
 -->
-<title>例</title>
+    <title>例</title>
     <step id="scram-begin">
      <para>
 <!--
@@ -2687,9 +2736,9 @@ PostgreSQLで使われるチャンネルバインディングのタイプは<lit
 -->
 クライアントはSASLInitialResponseメッセージを送信することで応答します。
 これは選択した機構、すなわち<literal>SCRAM-SHA-256</literal>または<literal>SCRAM-SHA-256-PLUS</literal>を示します。
-（クライアントは何れかの機構を自由に選びますが、より良いセキュリティのためサポートされているならチャンネルバインディングを伴うものを選ぶべきです。）
+（クライアントは何れかの機構を自由に選びますが、より良いセキュリティのためサポートされているならチャネルバインディングを伴うものを選ぶべきです。）
 Initial Clientの応答フィールドでは、メッセージにSCRAMの<structname>client-first-message</structname>が含まれます。
-<structname>client-first-message</structname>にはクライアントが選んだチャンネルバインディングのタイプも含まれます。
+<structname>client-first-message</structname>にはクライアントが選んだチャネルバインディングのタイプも含まれます。
      </para>
     </step>
 
@@ -2733,7 +2782,7 @@ Initial Clientの応答フィールドでは、メッセージにSCRAMの<struct
 <!--
   <title>Streaming Replication Protocol</title>
 -->
-<title>ストリーミングレプリケーションプロトコル</title>
+  <title>ストリーミングレプリケーションプロトコル</title>
 
   <para>
 <!--
@@ -3086,6 +3135,21 @@ trueの場合、この物理的レプリケーションスロットが直ちに<
          </para>
         </listitem>
        </varlistentry>
+
+       <varlistentry>
+        <term><literal>FAILOVER [ <replaceable class="parameter">boolean</replaceable> ]</literal></term>
+        <listitem>
+         <para>
+<!--
+          If true, the slot is enabled to be synced to the standbys
+          so that logical replication can be resumed after failover.
+          The default is false.
+-->
+trueの場合、スロットはスタンバイに同期化できるようになり、フェイルオーバー後に論理レプリケーションを再開できます。
+デフォルトはfalseです。
+         </para>
+        </listitem>
+       </varlistentry>
       </variablelist>
 
       <para>
@@ -3169,6 +3233,59 @@ trueの場合、この物理的レプリケーションスロットが直ちに<
 -->
 旧リリースとの互換性を保つために、<literal>CREATE_REPLICATION_SLOT</literal>コマンドのこの代替構文は引き続きサポートされています。
       </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry id="protocol-replication-alter-replication-slot" xreflabel="ALTER_REPLICATION_SLOT">
+     <term><literal>ALTER_REPLICATION_SLOT</literal> <replaceable class="parameter">slot_name</replaceable> ( <replaceable class="parameter">option</replaceable> [, ...] )
+      <indexterm><primary>ALTER_REPLICATION_SLOT</primary></indexterm>
+     </term>
+     <listitem>
+      <para>
+<!--
+       Change the definition of a replication slot.
+       See <xref linkend="streaming-replication-slots"/> for more about
+       replication slots. This command is currently only supported for logical
+       replication slots.
+-->
+レプリケーションスロットの定義を変更します。
+レプリケーションスロットについての詳細は<xref linkend="streaming-replication-slots"/>を参照してください。
+このコマンドは現在、論理レプリケーションスロットのみでサポートされています。
+      </para>
+
+      <variablelist>
+       <varlistentry>
+        <term><replaceable class="parameter">slot_name</replaceable></term>
+        <listitem>
+         <para>
+<!--
+          The name of the slot to alter. Must be a valid replication slot
+          name (see <xref linkend="streaming-replication-slots-manipulation"/>).
+-->
+変更するスロットの名前。
+有効なレプリケーションスロット名でなければなりません（<xref linkend="streaming-replication-slots-manipulation"/>を参照）。
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+
+      <para>The following option is supported:</para>
+
+      <variablelist>
+       <varlistentry>
+        <term><literal>FAILOVER [ <replaceable class="parameter">boolean</replaceable> ]</literal></term>
+        <listitem>
+         <para>
+<!--
+          If true, the slot is enabled to be synced to the standbys
+          so that logical replication can be resumed after failover.
+-->
+《機械翻訳》true の場合、スロットはスタンバイに同期化できるようになり、フェイルオーバー後に論理レプリケーションを再開できます。
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+
      </listitem>
     </varlistentry>
 
@@ -3310,13 +3427,16 @@ trueの場合、この物理的レプリケーションスロットが直ちに<
 
       <para>
 <!--
-       WAL data is sent as a series of CopyData messages.  (This allows
-       other information to be intermixed; in particular the server can send
+       WAL data is sent as a series of CopyData messages;
+       see <xref linkend="protocol-message-types"/> and <xref
+       linkend="protocol-message-formats"/> for details.
+       (This allows other information to be intermixed; in particular the server can send
        an ErrorResponse message if it encounters a failure after beginning
        to stream.)  The payload of each CopyData message from server to the
        client contains a message of one of the following formats:
 -->
 WALデータはCopyDataメッセージ群として送信されます。
+詳細は<xref linkend="protocol-message-types"/>と<xref linkend="protocol-message-formats"/>を参照してください。
 （これにより他の情報を混在させることができます。
 具体的にはサーバはストリーム開始後に失敗が起きた場合にErrorResponseメッセージを送信することができます。）
 サーバからクライアントへの各CopyDataメッセージのペイロード、は以下の書式のどれかを含みます。
@@ -3605,14 +3725,15 @@ WALデータストリームの断片。
            <listitem>
             <para>
 <!--
-             The standby's current global xmin, excluding the catalog_xmin from any
-             replication slots. If both this value and the following
-             catalog_xmin are 0 this is treated as a notification that hot standby
-             feedback will no longer be sent on this connection. Later non-zero
-             messages may reinitiate the feedback mechanism.
+             The standby's current global <literal>xmin</literal>, excluding the
+             <literal>catalog_xmin</literal> from any replication slots. If both
+             this value and the following <literal>catalog_xmin</literal>
+             are 0, this is treated as a notification that hot standby feedback
+             will no longer be sent on this connection. Later non-zero messages
+             may reinitiate the feedback mechanism.
 -->
-スタンバイの現在のグローバルのxminですが、すべてのレプリケーションスロットのcatalog_xminは除きます。
-この値と次のcatalog_xminがいずれも0なら、この接続ではホットスタンバイのフィードバックはもう送信されないという通知として扱われます。
+スタンバイの現在のグローバルの<literal>xmin</literal>ですが、すべてのレプリケーションスロットの<literal>catalog_xmin</literal>は除きます。
+この値と次の<literal>catalog_xmin</literal>がいずれも0なら、この接続ではホットスタンバイのフィードバックはもう送信されないという通知として扱われます。
 後でゼロでないメッセージによりフィードバック機構を再開することができます。
             </para>
            </listitem>
@@ -3623,9 +3744,10 @@ WALデータストリームの断片。
            <listitem>
             <para>
 <!--
-             The epoch of the global xmin xid on the standby.
+             The epoch of the global <literal>xmin</literal> xid on the standby.
 -->
-スタンバイのグローバルのxmin xidのエポックです。
+《マッチ度[52.238806]》スタンバイのグローバルのxmin xidのエポックです。
+《機械翻訳》スタンバイ上のグローバル<literal>xmin</literal> xidのエポック。
             </para>
            </listitem>
           </varlistentry>
@@ -3635,12 +3757,13 @@ WALデータストリームの断片。
            <listitem>
             <para>
 <!--
-             The lowest catalog_xmin of any replication slots on the standby. Set to 0
-             if no catalog_xmin exists on the standby or if hot standby feedback is being
+             The lowest <literal>catalog_xmin</literal> of any replication
+             slots on the standby. Set to 0 if no <literal>catalog_xmin</literal>
+             exists on the standby or if hot standby feedback is being
              disabled.
 -->
-スタンバイのすべてのレプリケーションスロットのcatalog_xminの最小値です。
-スタンバイ上にcatalog_xminが存在しない、あるいはホットスタンバイのフィードバックが無効化されている場合は0に設定します。
+スタンバイのすべてのレプリケーションスロットの<literal>catalog_xmin</literal>の最小値です。
+スタンバイ上に<literal>catalog_xmin</literal>が存在しない、あるいはホットスタンバイのフィードバックが無効化されている場合は0に設定します。
             </para>
            </listitem>
           </varlistentry>
@@ -3650,9 +3773,9 @@ WALデータストリームの断片。
            <listitem>
             <para>
 <!--
-             The epoch of the catalog_xmin xid on the standby.
+             The epoch of the <literal>catalog_xmin</literal> xid on the standby.
 -->
-スタンバイのcatalog_xmin xidのエポックです。
+スタンバイの<literal>catalog_xmin xid</literal>のエポックです。
             </para>
            </listitem>
           </varlistentry>
@@ -3747,9 +3870,13 @@ CopyBothResponse内部のメッセージは、2つのCommandCompleteメッセー
         <listitem>
          <para>
 <!--
-          The name of an option passed to the slot's logical decoding plugin.
+          The name of an option passed to the slot's logical decoding output
+          plugin.  See <xref linkend="protocol-logical-replication"/> for
+          options that are accepted by the standard (<literal>pgoutput</literal>)
+          plugin.
 -->
 レプリケーションスロットのロジカルデコーディング出力プラグインに渡すオプション名。
+標準(<literal>pgoutput</literal>)プラグインで受け付けられるオプションについては<xref linkend="protocol-logical-replication"/>を参照してください。
          </para>
         </listitem>
        </varlistentry>
@@ -3818,6 +3945,22 @@ CopyBothResponse内部のメッセージは、2つのCommandCompleteメッセー
      </listitem>
     </varlistentry>
 
+    <varlistentry id="protocol-replication-upload-manifest">
+     <term>
+      <literal>UPLOAD_MANIFEST</literal>
+      <indexterm><primary>UPLOAD_MANIFEST</primary></indexterm>
+     </term>
+     <listitem>
+      <para>
+<!--
+       Uploads a backup manifest in preparation for taking an incremental
+       backup.
+-->
+増分バックアップの取得を準備するために、バックアップマニフェストをアップロードします。
+      </para>
+     </listitem>
+    </varlistentry>
+
     <varlistentry id="protocol-replication-base-backup" xreflabel="BASE_BACKUP">
      <term><literal>BASE_BACKUP</literal> [ ( <replaceable class="parameter">option</replaceable> [, ...] ) ]
       <indexterm><primary>BASE_BACKUP</primary></indexterm>
@@ -3830,7 +3973,7 @@ CopyBothResponse内部のメッセージは、2つのCommandCompleteメッセー
        is started, and taken out of it when the backup is complete. The
        following options are accepted:
 -->
-ベースバックアップのストリーミングを開始するようにサーバーに指示します。
+ベースバックアップのストリーミングを開始するようにサーバに指示します。
 システムは自動的に、バックアップが開始される前にバックアップモードに入り、バックアップが完了するとバックアップモードから出ます。
 次のオプションを使用できます。
 
@@ -3990,8 +4133,8 @@ falseの場合、バックアップは待機も警告もせず、必要なログ
            method. Currently, the supported methods are <literal>gzip</literal>,
            <literal>lz4</literal>, and <literal>zstd</literal>.
 -->
-指定された方法を使用してバックアップを圧縮するようサーバに指示します。
-現在サポートされている方法は、<literal>gzip</literal>、<literal>lz4</literal>および<literal>zstd</literal>です。
+指定された方式を使用してバックアップを圧縮するようサーバに指示します。
+現在サポートされている方式は、<literal>gzip</literal>、<literal>lz4</literal>および<literal>zstd</literal>です。
           </para>
          </listitem>
         </varlistentry>
@@ -4010,7 +4153,7 @@ falseの場合、バックアップは待機も警告もせず、必要なログ
            keywords are <literal>level</literal>, <literal>long</literal> and
            <literal>workers</literal>.
 -->
-選択した圧縮方法の詳細を指定します。
+選択した圧縮方式の詳細を指定します。
 これは<literal>COMPRESSION</literal>オプションと一緒にのみ使用します。
 値が整数の場合は、圧縮レベルを指定します。
 それ以外の場合は、カンマで区切られたアイテムのリストであり、それぞれの形式は<replaceable>keyword</replaceable>または<replaceable>keyword=value</replaceable>です。
@@ -4136,7 +4279,7 @@ falseの場合、スキップされます。
 また、サイズ、最終更新時刻、オプションでファイル毎のチェックサムも格納します。
 <literal>force-encode</literal>の値は、全てのファイル名を強制的に16進数でエンコーディングします。
 それ以外の場合、このタイプのエンコードは、名前が非UTF-8オクテットシーケンスであるファイルに対してのみ実行されます。
-<literal>force-encode</literal>は、主にテスト目的で使用されており、バックアップマニュフェストを読み取るクライアントがこのケースを処理できることを確認するために使用されます。
+<literal>force-encode</literal>は、主にテスト目的で使用されており、バックアップマニフェストを読み取るクライアントがこのケースを処理できることを確認するために使用されます。
 以前のリリースとの互換性を保つため、デフォルトは、<literal>MANIFEST 'no'</literal>です。
           </para>
          </listitem>
@@ -4154,9 +4297,24 @@ falseの場合、スキップされます。
            <literal>SHA384</literal>, and <literal>SHA512</literal>.
            The default is <literal>CRC32C</literal>.
 -->
-バックアップマニュフェストに含まれている各ファイルに適用するチェックサムアルゴリズムを指定します。
+バックアップマニフェストに含まれている各ファイルに適用するチェックサムアルゴリズムを指定します。
 現在使用可能なアルゴリズムは、<literal>NONE</literal>、<literal>CRC32C</literal>、<literal>SHA224</literal>, <literal>SHA256</literal>、<literal>SHA384</literal>、<literal>SHA512</literal>です。
 デフォルトは<literal>CRC32C</literal>です。
+          </para>
+         </listitem>
+        </varlistentry>
+
+        <varlistentry>
+         <term><literal>INCREMENTAL</literal></term>
+         <listitem>
+          <para>
+<!--
+           Requests an incremental backup. The
+           <literal>UPLOAD_MANIFEST</literal> command must be executed
+           before running a base backup with this option.
+-->
+増分バックアップを要求します。
+このオプションでベースバックアップを実行する前に、<literal>UPLOAD_MANIFEST</literal>コマンドを実行する必要があります。
           </para>
          </listitem>
         </varlistentry>
@@ -4262,7 +4420,7 @@ falseの場合、スキップされます。
             in the POSIX 1003.1-2008 standard).
 -->
 新規アーカイブの開始を示すメッセージを識別します。
-メイン・データ・ディレクトリ用に1つのアーカイブがあり、追加表領域ごとに1つのアーカイブがあります。
+メインデータディレクトリ用に1つのアーカイブがあり、追加テーブル空間ごとに1つのアーカイブがあります。
 各アーカイブはtarフォーマットを使用します（POSIX 1003.1-2008標準で規定されている<quote>ustar交換形式</quote>に従う）。
            </para></listitem>
           </varlistentry>
@@ -4286,7 +4444,7 @@ falseの場合、スキップされます。
             archive was created.
 -->
 メインデータディレクトリの場合は空の文字列。
-その他のテーブルスペースの場合は、このアーカイブが作成されたディレクトリへのフルパス。
+その他のテーブル空間の場合は、このアーカイブが作成されたディレクトリへのフルパス。
            </para></listitem>
           </varlistentry>
          </variablelist>
@@ -4359,7 +4517,7 @@ falseの場合、スキップされます。
             The number of bytes from the current tablespace for which
             processing has been completed.
 -->
-処理が完了した現在の表領域のバイト数。
+処理が完了した現在のテーブル空間のバイト数。
            </para></listitem>
           </varlistentry>
          </variablelist>
@@ -4454,10 +4612,10 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
 <!--
           Files other than regular files and directories, such as symbolic
           links (other than for the directories listed above) and special
-          device files, are skipped.  (Symbolic links
+          device and operating system files, are skipped.  (Symbolic links
           in <filename>pg_tblspc</filename> are maintained.)
 -->
-シンボリックリンク（上記で列挙したディレクトリは除きます）や特殊デバイスファイルなど、通常のファイルとディレクトリ以外のものは省略されます。
+シンボリックリンク（上記で列挙したディレクトリは除きます）や特殊デバイスファイル、オペレーティングシステムのファイルなど、通常のファイルとディレクトリ以外のものは省略されます。
 （<filename>pg_tblspc</filename>中のシンボリックリンクは保持されます。）
          </para>
         </listitem>
@@ -4471,6 +4629,16 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
      </listitem>
     </varlistentry>
    </variablelist>
+  </para>
+
+  <para>
+<!--
+   In all the above commands,
+   when specifying a parameter of type <type>boolean</type> the
+   <replaceable class="parameter">value</replaceable> part can be omitted,
+   which is equivalent to specifying <literal>TRUE</literal>.
+-->
+<type>boolean</type>型のパラメータを指定する場合、上記のすべてのコマンドで、<replaceable class="parameter">value</replaceable>部分を省略することができます。これは<literal>TRUE</literal>を指定した場合と同じです。
   </para>
  </sect1>
 
@@ -4499,6 +4667,16 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
 論理ストリーミングレプリケーションのプロトコルは、物理レプリケーションプロトコルの基本要素の上に構築されています。
  </para>
 
+ <para>
+<!--
+  <productname>PostgreSQL</productname> logical decoding supports output
+  plugins.  <literal>pgoutput</literal> is the standard one used for
+  the built-in logical replication.
+-->
+<productname>PostgreSQL</productname>ロジカルデコーディングは出力プラグインをサポートしています。
+組み込み論理レプリケーションに使用される標準のプラグインは<literal>pgoutput</literal>です。
+ </para>
+
  <sect2 id="protocol-logical-replication-params">
 <!--
   <title>Logical Streaming Replication Parameters</title>
@@ -4507,10 +4685,10 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
 
   <para>
 <!--
-   The logical replication <literal>START_REPLICATION</literal> command
-   accepts following parameters:
+   Using the <literal>START_REPLICATION</literal> command,
+   <literal>pgoutput</literal> accepts the following options:
 -->
-論理レプリケーションの<literal>START_REPLICATION</literal>コマンドは以下のパラメータを受け付けます。
+<literal>START_REPLICATION</literal>コマンドを使用する際、<literal>pgoutput</literal>は以下のオプションを受け付けます。
 
    <variablelist>
     <varlistentry>
@@ -4521,9 +4699,11 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
       <para>
 <!--
        Protocol version. Currently versions <literal>1</literal>, <literal>2</literal>,
-       <literal>3</literal>, and <literal>4</literal> are supported.
+       <literal>3</literal>, and <literal>4</literal> are supported.  A valid
+       version is required.
 -->
 プロトコルバージョン。現在<literal>1</literal>、<literal>2</literal>、<literal>3</literal>、および<literal>4</literal>がサポートされています。
+有効なバージョンを指定する必要があります。
       </para>
       <para>
 <!--
@@ -4560,9 +4740,99 @@ PostgreSQLサーバの操作中に作成される種々の一時ファイルお�
        Comma separated list of publication names for which to subscribe
        (receive changes). The individual publication names are treated
        as standard objects names and can be quoted the same as needed.
+       At least one publication name is required.
 -->
 サブスクライブする（変更を受け取る）対象となるパブリケーション名をカンマで区切ったリストです。
 個々のパブリケーション名は標準的なオブジェクト名と扱われ、必要に応じて引用符で括ることができます。
+少なくとも１つのパブリケーション名が必要です。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>
+      binary
+     </term>
+     <listitem>
+      <para>
+<!--
+       Boolean option to use binary transfer mode.  Binary mode is faster
+       than the text mode but slightly less robust.
+-->
+バイナリ転送モードを使用するブールオプションです。
+バイナリモードはテキストモードより高速ですが、堅牢性が少し低くなります。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>
+      messages
+     </term>
+     <listitem>
+      <para>
+<!--
+       Boolean option to enable sending the messages that are written
+       by <function>pg_logical_emit_message</function>.
+-->
+<function>pg_logical_slot_peek_message</function>によって書き込まれたメッセージの送信を有効にするブールオプションです。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>
+      streaming
+     </term>
+     <listitem>
+      <para>
+<!--
+       Boolean option to enable streaming of in-progress transactions.
+       It accepts an additional value "parallel" to enable sending extra
+       information with some messages to be used for parallelisation.
+       Minimum protocol version 2 is required to turn it on.  Minimum protocol
+       version 4 is required for the "parallel" option.
+-->
+進行中のトランザクションのストリーミングを有効にするブールオプションです。
+並列処理に使用される追加情報の送信を有効にするため、追加の値「parallel」を受け付けます。
+本パラメータを有効化するには、プロトコルバージョンが2以上である必要があります。
+「parallel」に指定する場合は、プロトコルバージョンが4以上である必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>
+      two_phase
+     </term>
+     <listitem>
+      <para>
+<!--
+       Boolean option to enable two-phase transactions.   Minimum protocol
+       version 3 is required to turn it on.
+-->
+2相コミットを有効にするブールオプションです。
+本パラメータを有効化するには、プロトコルバージョンが3以上である必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>
+      origin
+     </term>
+     <listitem>
+      <para>
+<!--
+       Option to send changes by their origin.  Possible values are "none"
+       to only send the changes that have no origin associated, or "any"
+       to send the changes regardless of their origin.  This can be used
+       to avoid loops (infinite replication of the same data) among
+       replication nodes.
+-->
+オリジンに応じて変更を送信するオプションです。
+取りうる値はオリジンのない変更のみを送信する「none」か、オリジンに関係なく変更を送信する「any」です。
+本パラメータはレプリケーションノード間でループ（同じデータの無限の複製）を回避するために使用できます。
       </para>
      </listitem>
     </varlistentry>
@@ -4705,7 +4975,7 @@ Originメッセージは必ずトランザクション内のどのDMLよりも�
 <!--
   <title>Message Data Types</title>
 -->
-<title>メッセージのデータ型</title>
+  <title>メッセージのデータ型</title>
 
   <para>
 <!--
@@ -4811,7 +5081,7 @@ NULL終端文字列（C様式文字列）。文字列には長さ制限の指定
 <!--
   <title>Message Formats</title>
 -->
-<title>メッセージの書式</title>
+  <title>メッセージの書式</title>
 
   <para>
 <!--
@@ -8150,7 +8420,7 @@ SASLの機構固有のメッセージデータ
 <!--
   <title>Error and Notice Message Fields</title>
 -->
-<title>エラーおよび警報メッセージフィールド</title>
+  <title>エラーおよび警報メッセージフィールド</title>
 
   <para>
 <!--
@@ -8178,7 +8448,7 @@ SASLの機構固有のメッセージデータ
       or a localized translation of one of these.  Always present.
 -->
 深刻度です。
-フィールドの内容は<literal>ERROR</literal>、<literal>FATAL</literal>、<literal>PANIC</literal>（エラーメッセージ内）、<literal>WARNING</literal>、<literal>NOTICE</literal>、<literal>DEBUG</literal>、<literal>INFO</literal>、<literal>LOG</literal>（警報メッセージ内）、もしくはこれらの1つの地域化された翻訳です。
+フィールドの内容は<literal>ERROR</literal>、<literal>FATAL</literal>、<literal>PANIC</literal>（エラーメッセージ内）、<literal>WARNING</literal>、<literal>NOTICE</literal>、<literal>DEBUG</literal>、<literal>INFO</literal>、<literal>LOG</literal>（警報メッセージ内）、もしくはこれらの1つのローカライズ化された翻訳です。
 常に存在します。
      </para>
     </listitem>
@@ -8499,7 +8769,7 @@ SASLの機構固有のメッセージデータ
 <!--
   <title>Logical Replication Message Formats</title>
 -->
-<title>論理レプリケーションのメッセージ書式</title>
+  <title>論理レプリケーションのメッセージ書式</title>
 
   <para>
 <!--
@@ -9564,7 +9834,7 @@ Deleteメッセージは'K'メッセージ部分と'O'メッセージ部分の�
          Xid of the subtransaction (will be same as xid of the transaction for top-level
          transactions).
 -->
-サブトラクションxid（トップレベルのトランザクションのxidと同じものになるでしょう）。
+サブトランザクションxid（トップレベルのトランザクションのxidと同じものになるでしょう）。
         </para>
        </listitem>
       </varlistentry>
@@ -10210,7 +10480,7 @@ TOAST値が変更されないことを識別します（実際の値は送信さ
 <!--
   <title>Summary of Changes since Protocol 2.0</title>
 -->
-<title>プロトコル2.0からの変更点の要約</title>
+  <title>プロトコル2.0からの変更点の要約</title>
 
   <para>
 <!--

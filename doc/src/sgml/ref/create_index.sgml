@@ -549,9 +549,11 @@ NULLを非NULLより後にソートすることを指定します。
 
 <!--
   <refsect2 id="sql-createindex-storage-parameters" xreflabel="Index Storage Parameters">
-   <title>Index Storage Parameters</title>
 -->
   <refsect2 id="sql-createindex-storage-parameters" xreflabel="インデックス格納パラメータ">
+<!--
+   <title>Index Storage Parameters</title>
+-->
    <title>インデックス格納パラメータ</title>
 
    <para>
@@ -846,7 +848,7 @@ GINインデックスでは以下の異なるパラメータを受け付けま�
      See <xref linkend="brin-operation"/> for more details.
      The default is <literal>off</literal>.
 -->
-次のページへの挿入が検知された時に、いつでも直前のページに対してサマリー処理をキューに入れるかどうかを定義します。
+次のページへの挿入が検知された時に、いつでも直前のページに対してサマリ処理をキューに入れるかどうかを定義します。
 詳細は<xref linkend="brin-operation"/>を参照してください。
 デフォルトは<literal>off</literal>です。
     </para>
@@ -857,9 +859,11 @@ GINインデックスでは以下の異なるパラメータを受け付けま�
 
 <!--
   <refsect2 id="sql-createindex-concurrently" xreflabel="Building Indexes Concurrently">
-   <title>Building Indexes Concurrently</title>
 -->
   <refsect2 id="sql-createindex-concurrently" xreflabel="インデックスの同時作成">
+<!--
+   <title>Building Indexes Concurrently</title>
+-->
    <title>インデックスの同時作成</title>
 
    <indexterm zone="sql-createindex-concurrently">
@@ -1162,6 +1166,15 @@ Indexes:
 システムは定期的にテーブルの列すべての統計情報を集めています。
 新しく作られた、式でないインデックスは、インデックスの有用性を決定するのにその統計情報をすぐに使うことができます。
 新しい式インデックスに対しては、そのインデックスのための統計情報を生成するために、<link linkend="sql-analyze"><command>ANALYZE</command></link>を実行するか、<link linkend="autovacuum">autovacuumデーモン</link>がそのテーブルを解析するのを待つことが必要です。
+  </para>
+
+  <para>
+<!--
+   While <command>CREATE INDEX</command> is running, the <xref
+   linkend="guc-search-path"/> is temporarily changed to <literal>pg_catalog,
+   pg_temp</literal>.
+-->
+<command>CREATE INDEX</command>の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます。
   </para>
 
   <para>

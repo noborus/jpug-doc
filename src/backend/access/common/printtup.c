@@ -5,7 +5,7 @@
  *	  clients and standalone backends are supported here).
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -16,8 +16,8 @@
 #include "postgres.h"
 
 #include "access/printtup.h"
-#include "libpq/libpq.h"
 #include "libpq/pqformat.h"
+#include "libpq/protocol.h"
 #include "tcop/pquery.h"
 #include "utils/lsyscache.h"
 #include "utils/memdebug.h"
@@ -171,7 +171,7 @@ SendRowDescriptionMessage(StringInfo buf, TupleDesc typeinfo,
 	ListCell   *tlist_item = list_head(targetlist);
 
 	/* tuple descriptor message type */
-	pq_beginmessage_reuse(buf, 'T');
+	pq_beginmessage_reuse(buf, PqMsg_RowDescription);
 	/* # of attrs in tuples */
 	pq_sendint16(buf, natts);
 
@@ -295,6 +295,9 @@ printtup_prepare_info(DR_printtup *myState, TupleDesc typeinfo, int numAttrs)
 
 /* ----------------
  *		printtup --- send a tuple to the client
+ *
+ * Note: if you change this function, see also serializeAnalyzeReceive
+ * in explain.c, which is meant to replicate the computations done here.
  * ----------------
  */
 static bool
@@ -318,9 +321,9 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 	oldcontext = MemoryContextSwitchTo(myState->tmpcontext);
 
 	/*
-	 * Prepare a DataRow message (note buffer is in per-row context)
+	 * Prepare a DataRow message (note buffer is in per-query context)
 	 */
-	pq_beginmessage_reuse(buf, 'D');
+	pq_beginmessage_reuse(buf, PqMsg_DataRow);
 
 	pq_sendint16(buf, natts);
 
@@ -355,7 +358,7 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 			char	   *outputstr;
 
 			outputstr = OutputFunctionCall(&thisState->finfo, attr);
-			pq_sendcountedtext(buf, outputstr, strlen(outputstr), false);
+			pq_sendcountedtext(buf, outputstr, strlen(outputstr));
 		}
 		else
 		{

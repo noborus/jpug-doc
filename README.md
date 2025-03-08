@@ -1,20 +1,21 @@
-# Welcome to JPUG-DOC project
+PostgreSQL Database Management System
+=====================================
 
-本リポジトリは[PostgreSQL](http://www.postgresql.org/)の[文書](http://www.postgresql.org/docs/manuals/)を[日本語に翻訳](http://www.postgresql.jp/document/)しているプロジェクトのリポジトリです。
+This directory contains the source code distribution of the PostgreSQL
+database management system.
 
-このプロジェクトは[日本PostgreSQLユーザ会](http://www.postgresql.jp/)の[文書・書籍分科会](http://www.postgresql.jp/wg/jpugdoc/)の活動の一つです。
+PostgreSQL is an advanced object-relational database management system
+that supports an extended subset of the SQL standard, including
+transactions, foreign keys, subqueries, triggers, user-defined types
+and functions.  This distribution also contains C language bindings.
 
-みなさま、奮ってご参加ください。
+Copyright and license information can be found in the file COPYRIGHT.
 
-## 初めて参加される方へ
-初めて参加される方はこちらをご覧ください。
-https://github.com/pgsql-jp/jpug-doc/wiki/JPUG-DOCの翻訳活動への参加方法(初めての方向け)
+General documentation about this version of PostgreSQL can be found at
+<https://www.postgresql.org/docs/17/>.  In particular, information
+about building PostgreSQL from the source code can be found at
+<https://www.postgresql.org/docs/17/installation.html>.
 
-## 本プロジェクトで提供いただいた翻訳物のライセンスの取り扱いについて
-本プロジェクトに提供いただいた翻訳物は[PostgreSQLライセンス](https://www.postgresql.org/about/licence/)として取り扱うことに合意したものとします。
-
-## 関連リポジトリ
-
-### 対訳表
-本プロジェクトの公式対訳表です。
-https://github.com/pgsql-jp/taiyaku
+The latest version of this software, and related software, may be
+obtained at <https://www.postgresql.org/download/>.  For more information
+look at our web site located at <https://www.postgresql.org/>.

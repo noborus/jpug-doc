@@ -128,7 +128,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 -->
 <phrase><literal>EXCLUDE</literal>制約内の<replaceable class="parameter">exclude_element</replaceable>は以下の通りです。</phrase>
 
-{ <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ <replaceable class="parameter">opclass</replaceable> ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ]
+{ <replaceable class="parameter">column_name</replaceable> | ( <replaceable class="parameter">expression</replaceable> ) } [ COLLATE <replaceable class="parameter">collation</replaceable> ] [ <replaceable class="parameter">opclass</replaceable> [ ( <replaceable class="parameter">opclass_parameter</replaceable> = <replaceable class="parameter">value</replaceable> [, ... ] ) ] ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ]
 
 <!--
 <phrase><replaceable class="parameter">referential_action</replaceable> in a <literal>FOREIGN KEY</literal>/<literal>REFERENCES</literal> constraint is:</phrase>
@@ -225,7 +225,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 <!--
   <title>Parameters</title>
 -->
-<title>パラメータ</title>
+  <title>パラメータ</title>
 
   <variablelist>
 
@@ -426,6 +426,10 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       <primary>TOAST</primary>
       <secondary>per-column storage settings</secondary>
      </indexterm>
+     <indexterm>
+      <primary>TOAST</primary>
+      <secondary>列ごとの保管設定</secondary>
+     </indexterm>
     </term>
     <listitem>
      <para>
@@ -446,16 +450,15 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       at the penalty of increased storage space.
       See <xref linkend="storage-toast"/> for more information.
 -->
-《機械翻訳》このフォームは、カラムのストレージモードを設定します。
-これは、このカラムがインラインに保持されるか、二次的な<acronym>TOAST</acronym>テーブルに保持されるか、およびデータを圧縮する必要があるかどうかを制御します。
-<literal>PLAIN</literal>は、<type>整数</type>などの固定長さ値に使用する必要があり、インライン、非圧縮です。
-<literal>メイン</literal>はインライン、圧縮可能なデータです。
-<literal>EXTERNAL</literal>は外部、非圧縮データ、および<literal>拡張</literal>は外部、圧縮されたデータに使用されます。
-<literal>デフォルト</literal>を記述すると、のに対してのが設定されます。
-<literal>cyclonic</literal>は、の非<literal>PLAIN</literal>と比較して、ほとんどののタイプに対してです。
-<literal>EXTERNAL</literal>を使用すると、非常にのほうに部分文字列操作が実行されます<type>alternates</type>および<type>bytea</type>の値は、の増加に伴って高速に実行されます。
+この構文は、列の格納モードを設定します。
+これは、この列をインラインに保持するか、二次的な<acronym>TOAST</acronym>テーブルに保持するか、およびデータを圧縮する必要があるかどうかを制御します。
+<literal>PLAIN</literal>は、<type>integer</type>などの固定長の値に使用することが必要で、インラインで、非圧縮です。
+<literal>MAIN</literal>はインラインで、圧縮可能なデータに対するものです。
+<literal>EXTERNAL</literal>は外部で、非圧縮データであり、<literal>EXTENDED</literal>は外部で、圧縮されたデータに使用されます。
+<literal>DEFAULT</literal>と書くと、列のデータ型に対して格納モードをデフォルトのモードに設定します。
+<literal>EXTENDED</literal>は、<literal>PLAIN</literal>以外の保管をサポートするほとんどのデータ型におけるデフォルトです。
+<literal>EXTERNAL</literal>を使用すると、非常に長い<type>text</type>および<type>bytea</type>列に対する部分文字列操作の処理速度が向上しますが、必要な保管容量が増えるというデメリットがあります。
 詳細は、<xref linkend="storage-toast"/>を参照してください。
-ストレージモードデフォルトモードカラムデータタイプ拡張デフォルトデータサポートストレージmakeラージテキストペナルティストレージスペース
      </para>
     </listitem>
    </varlistentry>
@@ -483,12 +486,12 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       <xref linkend="guc-default-toast-compression"/> setting at the time of
       data insertion to determine the method to use.
 -->
-<literal>COMPRESSION</literal>句は列の圧縮法を設定します。圧縮は可変幅データ型に対してのみサポートされていて、列の保管モードが<literal>main</literal>または<literal>extended</literal>の場合にのみ使われます。
-(列の保管モードについての情報は<xref linkend="sql-altertable"/>を参照してください。)
+<literal>COMPRESSION</literal>句は列の圧縮方式を設定します。圧縮は可変幅データ型に対してのみサポートされていて、列の格納モードが<literal>main</literal>または<literal>extended</literal>の場合にのみ使われます。
+(列の格納モードについての情報は<xref linkend="sql-altertable"/>を参照してください。)
 パーティションテーブルには自身のストレージがありませんので、パーティションテーブルに対してこの属性を設定しても直接の影響はありませんが、設定値は新しく作成されるパーティションに継承されます。
-サポートされている圧縮法は<literal>pglz</literal>と<literal>lz4</literal>です。
+サポートされている圧縮方式は<literal>pglz</literal>と<literal>lz4</literal>です。
 (<literal>lz4</literal>は、<productname>PostgreSQL</productname>構築時に<option>--with-lz4</option>が使われた場合にのみ利用可能です。)
-さらに<replaceable class="parameter">compression_method</replaceable>は、明示的にデフォルトの動作を指定するために<literal>default</literal>とすることもできます。その場合、利用する圧縮法を決定するためにデータ挿入時に<xref linkend="guc-default-toast-compression"/>設定を調べます。
+さらに<replaceable class="parameter">compression_method</replaceable>は、明示的にデフォルトの動作を指定するために<literal>default</literal>とすることもできます。その場合、利用する圧縮方式を決定するためにデータ挿入時に<xref linkend="guc-default-toast-compression"/>設定を調べます。
      </para>
     </listitem>
    </varlistentry>
@@ -515,7 +518,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       scans of the parent(s).
 -->
 <literal>INHERITS</literal>を使用すると、新しい子テーブルとその親テーブル（複数可）との間に永続的な関連が作成されます。
-通常、親へのスキーマ変更は子にも伝播します。また、デフォルトでは、親テーブルの走査結果には子テーブルのデータが含まれます。
+通常、親へのスキーマ変更は子にも伝播します。また、デフォルトでは、親テーブルのスキャン結果には子テーブルのデータが含まれます。
      </para>
 
      <para>
@@ -575,8 +578,8 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
       not inherited.  A column in the child table can be declared identity
       column if desired.
 -->
-親テーブルのある列がIDENTITY列の場合、その属性は継承されません。
-望むなら子テーブルの列をIDENTITY列と宣言することができます。
+親テーブルのある列が識別列の場合、その属性は継承されません。
+望むなら子テーブルの列を識別列と宣言することができます。
      </para>
     </listitem>
    </varlistentry>
@@ -614,7 +617,7 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
       must implement support function 2 (see <xref linkend="xindex-support"/>
       for details).
 -->
-範囲とリストのパーティショニングはBツリー演算子クラスを必要とし、ハッシュパーティションニングはハッシュ演算子クラスを必要とします。
+範囲とリストのパーティショニングはBツリー演算子クラスを必要とし、ハッシュパーティショニングはハッシュ演算子クラスを必要とします。
 演算子クラスが明示的に指定されない場合、適当な型のデフォルトの演算子クラスが使われます。デフォルト演算子クラスがなければエラーが発生します。
 ハッシュパーティショニングが使われているとき、使われる演算子クラスはサポート関数2を実装していなければなりません（詳しくは<xref linkend="xindex-support"/>を参照）。
      </para>
@@ -647,7 +650,7 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
       See <xref linkend="ddl-partitioning"/> for more discussion on table
       partitioning.
 -->
-テーブルパーティショニングに関するより詳しい議論は<xref linkend="ddl-partitioning"/>を参照してください。
+テーブルパーティショニングに関するより詳しい説明は<xref linkend="ddl-partitioning"/>を参照してください。
      </para>
 
     </listitem>
@@ -790,7 +793,7 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
       <literal>FROM ('infinity') TO (MAXVALUE)</literal> is not an empty range; it
       allows precisely one value to be stored &mdash; "infinity".
 -->
-<literal>timestamp</literal>,など一部の要素型では、"infinity"（無限）の概念があり、それも保存できる値であることにも注意してください。
+<literal>timestamp</literal>など一部の要素型では、"infinity"（無限）の概念があり、それも保存できる値であることにも注意してください。
 <literal>MINVALUE</literal>と<literal>MAXVALUE</literal>は保存できる真の値ではなく、値に境界がないということを表現するための方法に過ぎないため、これとは違います。
 <literal>MAXVALUE</literal>は"infinity"も含め、他のすべての値より大きいものと考えることができ、また<literal>MINVALUE</literal>は"minus infinity"も含め、他のすべての値より小さいものと考えることができます。
 従って、境界<literal>FROM ('infinity') TO (MAXVALUE)</literal>は空の範囲ではなく、たった1つの値、つまり"infinity"だけを保存します。
@@ -940,7 +943,7 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
       table.
 -->
 <literal>INHERITS</literal>とは違い、作成した後、新しいテーブルと元のテーブルが完全に分離されます。
-元のテーブルへの変更は新しいテーブルには適用されません。また、元のテーブルを走査しても新しいテーブルのデータは見つかりません。
+元のテーブルへの変更は新しいテーブルには適用されません。また、元のテーブルをスキャンしても新しいテーブルのデータは見つかりません。
      </para>
       <para>
 <!--
@@ -995,8 +998,8 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
           behavior is to exclude compression methods, resulting in columns
           having the default compression method.
 -->
-列の圧縮法をコピーします。
-デフォルトの振る舞いでは圧縮法は除外されて、列にはデフォルトの圧縮法が設定されます。
+列の圧縮方式をコピーします。
+デフォルトの振る舞いでは圧縮方式は除外されて、列にはデフォルトの圧縮方式が設定されます。
          </para>
         </listitem>
        </varlistentry>
@@ -1332,12 +1335,12 @@ TRUEまたはUNKNOWNと評価される式は成功します。
 <!--
       This clause creates the column as an <firstterm>identity
       column</firstterm>.  It will have an implicit sequence attached to it
-      and the column in new rows will automatically have values from the
-      sequence assigned to it.
+      and in newly-inserted rows the column will automatically have values
+      from the sequence assigned to it.
       Such a column is implicitly <literal>NOT NULL</literal>.
 -->
-この句は列を<firstterm>IDENTITY列</firstterm>として作成します。
-それには暗黙のシーケンスが紐付けられ、新しい行のその列には紐付けられたシーケンスから取られた値が自動的に入ります。
+この句は列を<firstterm>識別列</firstterm>として作成します。
+それには暗黙のシーケンスが紐付けられ、新しく挿入された行では、その列には紐付けられたシーケンスから取られた値が自動的に入ります。
 そのような列は暗黙的に<literal>NOT NULL</literal>です。
      </para>
 
@@ -1382,12 +1385,21 @@ TRUEまたはUNKNOWNと評価される式は成功します。
 
      <para>
 <!--
-      The optional <replaceable>sequence_options</replaceable> clause can be
-      used to override the options of the sequence.
-      See <xref linkend="sql-createsequence"/> for details.
+      The optional <replaceable>sequence_options</replaceable> clause can
+      be used to override the parameters of the sequence.  The available
+      options include those shown for <xref linkend="sql-createsequence"/>,
+      plus <literal>SEQUENCE NAME <replaceable>name</replaceable></literal>,
+      <literal>LOGGED</literal>, and <literal>UNLOGGED</literal>, which
+      allow selection of the name and persistence level of the
+      sequence.  Without <literal>SEQUENCE NAME</literal>, the system
+      chooses an unused name for the sequence.
+      Without <literal>LOGGED</literal> or <literal>UNLOGGED</literal>,
+      the sequence will have the same persistence level as the table.
 -->
-オプションで<replaceable>sequence_options</replaceable>句を指定することにより、シーケンスのオプションを変更できます。
-詳しくは<xref linkend="sql-createsequence"/>を参照してください。
+オプションで<replaceable>sequence_options</replaceable>句を指定することにより、シーケンスのパラメータを上書きできます。
+使用可能なオプションは、<xref linkend="sql-createsequence"/>に示されているものと、<literal>SEQUENCE NAME <replaceable>name</replaceable></literal>、<literal>LOGGED</literal>、<literal>UNLOGGED</literal>であり、それぞれ、シーケンスの名前や永続性のレベルを選択できます。
+<literal>SEQUENCE NAME</literal>がなければ、システムはシーケンスに使われていない名前を選択します。
+<literal>LOGGED</literal>または<literal>UNLOGGED</literal>がなければ、シーケンスはテーブルと同じ永続性のレベルになります。
      </para>
     </listitem>
    </varlistentry>
@@ -1452,9 +1464,11 @@ TRUEまたはUNKNOWNと評価される式は成功します。
      <para>
 <!--
       Adding a unique constraint will automatically create a unique btree
-      index on the column or group of columns used in the constraint.
+      index on the column or group of columns used in the constraint.  The
+      created index has the same name as the unique constraint.
 -->
 一意性制約を加えると、制約で使われている列や列のグループに一意性btreeインデックスが自動的に作られます。
+作成されるインデックスは、一意性制約と同じ名前になります。
      </para>
 
      <para>
@@ -1535,10 +1549,12 @@ TRUEまたはUNKNOWNと評価される式は成功します。
      <para>
 <!--
       Adding a <literal>PRIMARY KEY</literal> constraint will automatically
-      create a unique btree index on the column or group of columns used in the
+      create a unique btree index on the column or group of columns used in
+      the constraint.  That index has the same name as the primary key
       constraint.
 -->
 <literal>PRIMARY KEY</literal>制約を追加すると、制約で使用する列や列のグループに一意性のbtreeインデックスが自動的に作られます。
+そのインデックスは、主キー制約と同じ名前になります。
      </para>
 
      <para>
@@ -1578,31 +1594,30 @@ TRUEまたはUNKNOWNと評価される式は成功します。
       no two rows in the table contain overlapping circles
       (see <xref linkend="datatype-geometric"/>) by using the
       <literal>&amp;&amp;</literal> operator.
+      The operator(s) are required to be commutative.
 -->
 <literal>EXCLUDE</literal>句は排他制約を定義し、任意の2行について指定した列(複数可)または式(複数可)を指定した演算子(複数可)を使用して比較した場合、比較結果のすべてが<literal>TRUE</literal>を返さないことを保証します。
 指定した演算子のすべてが等価性を試験するものであれば、これは<literal>UNIQUE</literal>制約と同じですが、通常の一意性制約のほうが高速です。
 しかし、排他制約では単純な等価性よりも一般的な制約を指定することができます。
 例えば、テーブル内の2つの行が重複する円(<xref linkend="datatype-geometric"/>参照)を持たないといった制約を<literal>&amp;&amp;</literal>演算子を使用して指定することができます。
+演算子は可換であることが必要です。
      </para>
 
      <para>
 <!--
       Exclusion constraints are implemented using
-      an index, so each specified operator must be associated with an
-      appropriate operator class
+      an index that has the same name as the constraint, so each specified
+      operator must be associated with an appropriate operator class
       (see <xref linkend="indexes-opclass"/>) for the index access
       method <replaceable>index_method</replaceable>.
-      The operators are required to be commutative.
       Each <replaceable class="parameter">exclude_element</replaceable>
-      can optionally specify an operator class and/or ordering options;
-      these are described fully under
-      <xref linkend="sql-createindex"/>.
+      defines a column of the index, so it can optionally specify a collation,
+      an operator class, operator class parameters, and/or ordering options;
+      these are described fully under <xref linkend="sql-createindex"/>.
 -->
-排他制約はインデックスを使用して実装されています。
+排他制約は制約と同じ名前のインデックスを使用して実装されています。
 このため指定した演算子はそれぞれ適切な演算子クラス(<xref linkend="indexes-opclass"/>参照)で<replaceable>index_method</replaceable>インデックスアクセスメソッドと関連付けされていなければなりません。
-演算子は交換可能でなければなりません。
-オプションで、各<replaceable class="parameter">exclude_element</replaceable>は演算子クラス、順序付けオプション、またはその両方を指定することができます。
-これらについては<xref linkend="sql-createindex"/>で説明します。
+各<replaceable class="parameter">exclude_element</replaceable>はインデックスの列を定義しますので、オプションで、照合順序、演算子クラス、演算子クラスパラメータ、および/または順序付けオプションを指定できます。これらについては<xref linkend="sql-createindex"/>で説明します。
      </para>
 
      <para>
@@ -1660,10 +1675,11 @@ predicateの前後に括弧が必要であることに注意して下さい。
       column(s) of some row of the referenced table.  If the <replaceable
       class="parameter">refcolumn</replaceable> list is omitted, the
       primary key of the <replaceable class="parameter">reftable</replaceable>
-      is used.  The referenced columns must be the columns of a non-deferrable
-      unique or primary key constraint in the referenced table.  The user
-      must have <literal>REFERENCES</literal> permission on the referenced table
-      (either the whole table, or the specific referenced columns).  The
+      is used.  Otherwise, the <replaceable class="parameter">refcolumn</replaceable>
+      list must refer to the columns of a non-deferrable unique or primary key
+      constraint or be the columns of a non-partial unique index.  The user
+      must have <literal>REFERENCES</literal> permission on the referenced
+      table (either the whole table, or the specific referenced columns).  The
       addition of a foreign key constraint requires a
       <literal>SHARE ROW EXCLUSIVE</literal> lock on the referenced table.
       Note that foreign key constraints cannot be defined between temporary
@@ -1672,6 +1688,7 @@ predicateの前後に括弧が必要であることに注意して下さい。
 これらの句は、外部キー制約を指定します。
 外部キー制約は、新しいテーブルの1つまたは複数の列の集合が、被参照テーブルの一部の行の被参照列に一致する値を持たなければならないことを指定するものです。
 <replaceable class="parameter">refcolumn</replaceable>リストが省略された場合、<replaceable class="parameter">reftable</replaceable>の主キーが使用されます。
+そうでない場合、<replaceable class="parameter">refcolumn</replaceable>リストは遅延不可の一意性または主キー制約の列を参照するか、部分インデックスでない一意インデックスの列でなければなりません。
 被参照列は、被参照テーブルにおいて遅延不可の一意性制約もしくは主キー制約を持った列でなければなりません。
 ユーザは被参照テーブル（テーブル全体または特定の被参照列）について<literal>REFERENCES</literal>権限を持っていなければなりません。
 外部キー制約の追加は被参照テーブルに<literal>SHARE ROW EXCLUSIVE</literal>ロックを必要とします。
@@ -1894,6 +1911,13 @@ predicateの前後に括弧が必要であることに注意して下さい。
 より詳しい情報は<xref linkend="tableam"/>を参照してください。
 このオプションが指定されない場合、新しいテーブルにはデフォルトテーブルアクセスメソッドが選択されます。
 より詳しい情報は<xref linkend="guc-default-table-access-method"/>を参照してください。
+     </para>
+     <para>
+<!--
+      When creating a partition, the table access method is the access method
+      of its partitioned table, if set.
+-->
+パーティションを作成するときに、テーブルアクセスメソッドは、もし設定されていれば、そのパーティションテーブルのアクセスメソッドになります。
      </para>
     </listitem>
    </varlistentry>
@@ -2701,7 +2725,7 @@ falseの場合、トランザクションIDの周回問題を回避するため�
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
 
   <para>
 <!--
@@ -3106,9 +3130,11 @@ CREATE TABLE cities_partdef
 
 <!--
  <refsect1 id="sql-createtable-compatibility" xreflabel="Compatibility">
-  <title>Compatibility</title>
 -->
  <refsect1 id="sql-createtable-compatibility" xreflabel="互換性">
+<!--
+  <title>Compatibility</title>
+-->
   <title>互換性</title>
 
   <para>
@@ -3123,7 +3149,7 @@ CREATE TABLE cities_partdef
 <!--
    <title>Temporary Tables</title>
 -->
-<title>一時テーブル</title>
+   <title>一時テーブル</title>
 
    <para>
 <!--
@@ -3264,17 +3290,26 @@ CREATE TABLE cities_partdef
 
   <refsect2>
 <!--
-   <title>Foreign-Key Constraint Actions</title>
+   <title>Foreign Key Constraints</title>
 -->
-   <title>外部キー制約アクション</title>
+   <title>外部キー制約</title>
 
    <para>
 <!--
-    The ability to specify column lists in the foreign-key actions
+    The ability to specify column lists in the foreign key actions
     <literal>SET DEFAULT</literal> and <literal>SET NULL</literal> is a
     <productname>PostgreSQL</productname> extension.
 -->
 外部キーアクション<literal>SET DEFAULT</literal>と<literal>SET NULL</literal>で列のリストを指定する機能は<productname>PostgreSQL</productname>の拡張です。
+   </para>
+
+   <para>
+<!--
+    It is a <productname>PostgreSQL</productname> extension that a
+    foreign key constraint may reference columns of a unique index instead of
+    columns of a primary key or unique constraint.
+-->
+外部キー制約が、主キーまたは一意性制約の列ではなく、一意インデックスの列を参照できるのは<productname>PostgreSQL</productname>の拡張です。
    </para>
   </refsect2>
 
@@ -3325,11 +3360,11 @@ SQL標準ではテーブルとドメインの制約はテーブルやドメイ�
    <para>
 <!--
     Currently, <productname>PostgreSQL</productname> does not record names
-    for <literal>NOT NULL</literal> constraints at all, so they are not
+    for not-null constraints at all, so they are not
     subject to the uniqueness restriction.  This might change in a future
     release.
 -->
-今のところ、<productname>PostgreSQL</productname>は<literal>NOT NULL</literal>制約の名前を全く記録しませんので、これらは一意性の制限の対象ではありません。
+今のところ、<productname>PostgreSQL</productname>は非NULL制約の名前を全く記録しませんので、これらは一意性の制限の対象ではありません。
 これは将来のリリースで変更されるかもしれません。
    </para>
   </refsect2>
@@ -3338,7 +3373,7 @@ SQL標準ではテーブルとドメインの制約はテーブルやドメイ�
 <!--
    <title>Inheritance</title>
 -->
-<title>継承</title>
+   <title>継承</title>
 
    <para>
 <!--
@@ -3383,7 +3418,7 @@ SQL:1999以降では、異なる構文と意味体系による単一継承を定
 <!--
    <title>Multiple Identity Columns</title>
 -->
-   <title>複数のIDENTITY列</title>
+   <title>複数の識別列</title>
 
    <para>
 <!--
@@ -3395,10 +3430,10 @@ SQL:1999以降では、異なる構文と意味体系による単一継承を定
     that applies to the entire statement, so having multiple identity columns
     with different behaviors is not well supported.
 -->
-<productname>PostgreSQL</productname>ではテーブルに2つ以上のIDENTITY列を持つことを許しています。
-標準SQLでは、1つのテーブルは最大で1つのIDENTITY列を持つことができると規定しています。
+<productname>PostgreSQL</productname>ではテーブルに2つ以上の識別列を持つことを許しています。
+標準SQLでは、1つのテーブルは最大で1つの識別列を持つことができると規定しています。
 主にスキーマの変更や移行でより柔軟性を持たせるために、この制約を緩和しています。
-<command>INSERT</command>コマンドはOVERRIDING句を1つだけしかサポートせず、これが文全体に適用されるため、複数のIDENTITY列があり、これらの動作が異なる場合は正しくサポートされないことに注意してください。
+<command>INSERT</command>コマンドはOVERRIDING句を1つだけしかサポートせず、これが文全体に適用されるため、複数の識別列があり、これらの動作が異なる場合は正しくサポートされないことに注意してください。
    </para>
   </refsect2>
 
@@ -3500,7 +3535,7 @@ SQL:1999以降では、異なる構文と意味体系による単一継承を定
     The <literal>PARTITION BY</literal> clause is a
     <productname>PostgreSQL</productname> extension.
 -->
-<literal>PARTITION BY</literal>は<productname>PostgreSQL</productname>の拡張です。
+<literal>PARTITION BY</literal>句は<productname>PostgreSQL</productname>の拡張です。
    </para>
   </refsect2>
 

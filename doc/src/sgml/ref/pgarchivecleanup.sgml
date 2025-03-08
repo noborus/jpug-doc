@@ -133,7 +133,24 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
     <variablelist>
 
      <varlistentry>
+      <term><option>-b</option></term>
+      <term><option>--clean-backup-history</option></term>
+      <listitem>
+       <para>
+<!--
+         Remove backup history files as well.
+         See <xref linkend="backup-base-backup"/> for details about backup
+         history files.
+-->
+バックアップ履歴ファイルも削除します。
+バックアップ履歴ファイルの詳細については<xref linkend="backup-base-backup"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><option>-d</option></term>
+      <term><option>--debug</option></term>
       <listitem>
        <para>
 <!--
@@ -146,6 +163,7 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
 
      <varlistentry>
       <term><option>-n</option></term>
+      <term><option>--dry-run</option></term>
       <listitem>
        <para>
 <!--
@@ -170,7 +188,8 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
      </varlistentry>
 
      <varlistentry>
-      <term><option>-x</option> <replaceable>extension</replaceable></term>
+      <term><option>-x <replaceable class="parameter">extension</replaceable></option></term>
+      <term><option>--strip-extension=<replaceable class="parameter">extension</replaceable></option></term>
       <listitem>
        <para>
 <!--
@@ -220,7 +239,7 @@ pg_archivecleanup:  removing file "archive/00000001000000370000000E"
    <literal>never</literal>.
 -->
 環境変数<envar>PG_COLOR</envar>は診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
   </para>
  </refsect1>
 

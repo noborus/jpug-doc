@@ -45,7 +45,7 @@
  * and we'd like to still refer to them via C struct offsets.
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -61,14 +61,22 @@
 #include "access/sysattr.h"
 #include "access/tupdesc_details.h"
 #include "common/hashfn.h"
-#include "executor/tuptable.h"
 #include "utils/datum.h"
 #include "utils/expandeddatum.h"
 #include "utils/hsearch.h"
 #include "utils/memutils.h"
 
 
-/* Does att's datatype allow packing into the 1-byte-header varlena format? */
+/*
+ * Does att's datatype allow packing into the 1-byte-header varlena format?
+ * While functions that use TupleDescAttr() and assign attstorage =
+ * TYPSTORAGE_PLAIN cannot use packed varlena headers, functions that call
+ * TupleDescInitEntry() use typeForm->typstorage (TYPSTORAGE_EXTENDED) and
+ * can use packed varlena headers, e.g.:
+ *     CREATE TABLE test(a VARCHAR(10000) STORAGE PLAIN);
+ *     INSERT INTO test VALUES (repeat('A',10));
+ * This can be verified with pageinspect.
+ */
 #define ATT_IS_PACKABLE(att) \
 	((att)->attlen == -1 && (att)->attstorage != TYPSTORAGE_PLAIN)
 /* Use this if it's already known varlena */
@@ -76,7 +84,7 @@
 	((att)->attstorage != TYPSTORAGE_PLAIN)
 
 /*
- * Setup for cacheing pass-by-ref missing attributes in a way that survives
+ * Setup for caching pass-by-ref missing attributes in a way that survives
  * tupleDesc destruction.
  */
 
@@ -205,8 +213,8 @@ getmissingattr(TupleDesc tupleDesc,
  */
 Size
 heap_compute_data_size(TupleDesc tupleDesc,
-					   Datum *values,
-					   bool *isnull)
+					   const Datum *values,
+					   const bool *isnull)
 {
 	Size		data_length = 0;
 	int			i;
@@ -390,7 +398,7 @@ fill_val(Form_pg_attribute att,
  */
 void
 heap_fill_tuple(TupleDesc tupleDesc,
-				Datum *values, bool *isnull,
+				const Datum *values, const bool *isnull,
 				char *data, Size data_size,
 				uint16 *infomask, bits8 *bit)
 {
@@ -487,8 +495,8 @@ heap_attisnull(HeapTuple tup, int attnum, TupleDesc tupleDesc)
 /* ----------------
  *		nocachegetattr
  *
- *		This only gets called from fastgetattr() macro, in cases where
- *		we can't use a cacheoffset and the value is not null.
+ *		This only gets called from fastgetattr(), in cases where we
+ *		can't use a cacheoffset and the value is not null.
  *
  *		This caches attribute offsets in the attribute descriptor.
  *
@@ -707,8 +715,8 @@ nocachegetattr(HeapTuple tup,
  *
  *		Fetch the value of a system attribute for a tuple.
  *
- * This is a support routine for the heap_getattr macro.  The macro
- * has already determined that the attnum refers to a system attribute.
+ * This is a support routine for heap_getattr().  The function has already
+ * determined that the attnum refers to a system attribute.
  * ----------------
  */
 Datum
@@ -1106,8 +1114,8 @@ heap_copy_tuple_as_datum(HeapTuple tuple, TupleDesc tupleDesc)
  */
 HeapTuple
 heap_form_tuple(TupleDesc tupleDescriptor,
-				Datum *values,
-				bool *isnull)
+				const Datum *values,
+				const bool *isnull)
 {
 	HeapTuple	tuple;			/* return tuple */
 	HeapTupleHeader td;			/* tuple data */
@@ -1200,9 +1208,9 @@ heap_form_tuple(TupleDesc tupleDescriptor,
 HeapTuple
 heap_modify_tuple(HeapTuple tuple,
 				  TupleDesc tupleDesc,
-				  Datum *replValues,
-				  bool *replIsnull,
-				  bool *doReplace)
+				  const Datum *replValues,
+				  const bool *replIsnull,
+				  const bool *doReplace)
 {
 	int			numberOfAttributes = tupleDesc->natts;
 	int			attoff;
@@ -1269,9 +1277,9 @@ HeapTuple
 heap_modify_tuple_by_cols(HeapTuple tuple,
 						  TupleDesc tupleDesc,
 						  int nCols,
-						  int *replCols,
-						  Datum *replValues,
-						  bool *replIsnull)
+						  const int *replCols,
+						  const Datum *replValues,
+						  const bool *replIsnull)
 {
 	int			numberOfAttributes = tupleDesc->natts;
 	Datum	   *values;
@@ -1442,8 +1450,8 @@ heap_freetuple(HeapTuple htup)
  */
 MinimalTuple
 heap_form_minimal_tuple(TupleDesc tupleDescriptor,
-						Datum *values,
-						bool *isnull)
+						const Datum *values,
+						const bool *isnull)
 {
 	MinimalTuple tuple;			/* return tuple */
 	Size		len,

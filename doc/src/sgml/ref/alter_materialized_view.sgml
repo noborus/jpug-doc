@@ -133,9 +133,9 @@ ALTER MATERIALIZED VIEW ALL IN TABLESPACE <replaceable class="parameter">name</r
      <listitem>
       <para>
 <!--
-       Name of a new or existing column.
+       Name of an existing column.
 -->
-新しいまたは既存の列の名前です。
+既存の列の名前です。
       </para>
      </listitem>
     </varlistentry>

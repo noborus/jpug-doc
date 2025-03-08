@@ -420,22 +420,37 @@ REINDEX [ ( <replaceable class="parameter">option</replaceable> [, ...] ) ] { DA
 
   <para>
 <!--
-   Reindexing a single index or table requires being the owner of that
-   index or table.  Reindexing a schema or database requires being the
-   owner of that schema or database.  Note specifically that it's thus
-   possible for non-superusers to rebuild indexes of tables owned by
-   other users.  However, as a special exception, when
-   <command>REINDEX DATABASE</command>, <command>REINDEX SCHEMA</command>
-   or <command>REINDEX SYSTEM</command> is issued by a non-superuser,
-   indexes on shared catalogs will be skipped unless the user owns the
-   catalog (which typically won't be the case).  Of course, superusers
-   can always reindex anything.
+   While <command>REINDEX</command> is running, the <xref
+   linkend="guc-search-path"/> is temporarily changed to <literal>pg_catalog,
+   pg_temp</literal>.
 -->
-単一インデックスまたは単一テーブルのインデックス再作成を行うには、そのインデックスまたはテーブルの所有者でなければなりません。
-スキーマまたはデータベースに対するインデックス再作成を行うには、そのスキーマまたはデータベースの所有者でなければなりません。
-したがって、非スーパーユーザが他のユーザが所有するテーブルのインデックスを再作成できることに特に注意してください。
-しかし、特別な例外として、<command>REINDEX DATABASE</command>、<command>REINDEX SCHEMA</command>、<command>REINDEX SYSTEM</command>が非スーパーユーザにより発行された時には、そのユーザがカタログを所有している場合(そのようなことは通常はありません)を除いて、共有カタログのインデックスは飛ばされます。
-もちろん、スーパーユーザは常にすべてのインデックス再作成を行うことができます。
+《機械翻訳》<command>REINDEX</command>の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます。
+  </para>
+
+  <para>
+<!--
+   Reindexing a single index or table requires
+   having the <literal>MAINTAIN</literal> privilege on the
+   table.  Note that while <command>REINDEX</command> on a partitioned index or
+   table requires having the <literal>MAINTAIN</literal> privilege on the
+   partitioned table, such commands skip the privilege checks when processing
+   the individual partitions.  Reindexing a schema or database requires being the
+   owner of that schema or database or having privileges of the
+   <link linkend="predefined-roles-table"><literal>pg_maintain</literal></link>
+   role.  Note specifically that it's thus
+   possible for non-superusers to rebuild indexes of tables owned by
+   other users.  However, as a special exception,
+   <command>REINDEX DATABASE</command>, <command>REINDEX SCHEMA</command>,
+   and <command>REINDEX SYSTEM</command> will skip indexes on shared catalogs
+   unless the user has the <literal>MAINTAIN</literal> privilege on the
+   catalog.
+-->
+《機械翻訳》単一のインデックスまたはテーブルを再インデックスするには、テーブルに対する<literal>MAINTAIN</literal>権限が必要です。
+パーティション化されたインデックスまたはテーブルに対する<command>REINDEX</command>には、パーティション化されたテーブルに対する<literal>MAINTAIN</literal>権限が必要であることに注意してください。
+しかし、このようなコマンドは個々のパーティションを処理する際に権限チェックをスキップします。
+スキーマまたはデータベースの再インデックスを実行するには、そのスキーマまたはデータベースの所有者であるか、<link linkend="predefined-roles-table"><literal>pg_maintain</literal></link>ロールの権限が必要です。
+したがって、スーパーユーザ以外のユーザが、他のユーザが所有するテーブルのインデックスを再構築できることに注意してください。
+ただし、特別な例外として、ユーザがカタログに対して<literal>MAINTAIN</literal>権限を持っていない場合、<command>REINDEX DATABASE</command>、<command>REINDEX SCHEMA</command>、および<command>REINDEX SYSTEM</command>は共有カタログ上のインデックスをスキップします。
   </para>
 
   <para>
@@ -512,7 +527,7 @@ TOASTテーブルのインデックスは再構築されますが、新しいテ
     for periods that are unacceptably long for a production system.
 -->
 インデックスの再構築は、通常のデータベース操作を妨げることがあります。
-通常、<productname>PostgreSQL</productname>はインデックスが再構築されるテーブルへの書き込みをロックし、一度のテーブル走査で全インデックスの構築を実行します。
+通常、<productname>PostgreSQL</productname>はインデックスが再構築されるテーブルへの書き込みをロックし、一度のテーブルスキャンで全インデックスの構築を実行します。
 他のトランザクションはテーブルを読み込めますが、そのテーブルで行を挿入、更新、削除しようとするとインデックスの再構築が終わるまでブロックされます。
 実行中の運用状態のデータベースシステムの場合、これは重大な影響を与えるかもしれません。
 非常に大規模なテーブルに対するインデックス作成は何時間もかかることがあり得ます。また小規模なテーブルであっても、インデックス再構築により、運用状態のシステムとしては受け入れられないほど長い時間、書き込みロックがかかる可能性があります。
@@ -536,7 +551,7 @@ TOASTテーブルのインデックスは再構築されますが、新しいテ
 -->
 <productname>PostgreSQL</productname>は最小限の書き込みロックでのインデックス再構築をサポートしています。
 <command>REINDEX</command>に<literal>CONCURRENTLY</literal>オプションをつけることでこの方式が行われます。
-このオプションを使うと、<productname>PostgreSQL</productname>は再構築が必要な各インデックスに関してテーブルを2回走査しなければなりません。さらに、潜在的にそのインデックスを使用する可能性がある、実行中のすべてのトランザクションが終わるまで待機しなければなりません。
+このオプションを使うと、<productname>PostgreSQL</productname>は再構築が必要な各インデックスに関してテーブルを2回スキャンしなければなりません。さらに、潜在的にそのインデックスを使用する可能性がある、実行中のすべてのトランザクションが終わるまで待機しなければなりません。
 したがって、この方式は通常のインデックス再構築よりも総作業時間がかかり、また、インデックスを修正する可能性のある終了していないトランザクションが待つ必要がありますので、完了するまでの時間が非常に長くなります。
 しかし、インデックス再構築中に通常の操作を続けることができますので、この方式は運用環境でのインデックス再構築に有用です。
 もちろん、インデックス再構築によりCPUやメモリ、入出力に余分に負荷がかかりますので、他の操作が低速になる可能性があります。
@@ -720,8 +735,8 @@ Indexes:
 -->
 さらに、排他制約に対するインデックスは同時実行で再インデックスできません。
 このコマンドでそのようなインデックスの名前が直接指定されたら、エラーが起きます。
-排他制約インデックスのあるテーブルやテータベースが同時実行で再インデックスされる場合、そのインデックスは飛ばされます。
-(そのようなインデックスを<command>CONCURRENTLY</command>オプションなしで再インデックスすることは可能です。)
+排他制約インデックスのあるテーブルやデータベースが同時実行で再インデックスされる場合、そのインデックスはスキップされます。
+（そのようなインデックスを<command>CONCURRENTLY</command>オプションなしで再インデックスすることは可能です。）
    </para>
 
   <para>

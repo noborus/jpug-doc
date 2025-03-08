@@ -58,6 +58,31 @@
    </glossdef>
   </glossentry>
 
+  <glossentry id="glossary-am">
+<!--
+   <glossterm>Access Method</glossterm>
+-->
+   <glossterm>Access Method【アクセスメソッド】</glossterm>
+   <glossdef>
+    <para>
+<!--
+     Interfaces which <productname>PostgreSQL</productname> use in order to
+     access data in tables and indexes.  This abstraction allows for adding
+     support for new types of data storage.
+-->
+テーブルとインデックス内のデータにアクセスするために<productname>PostgreSQL</productname>が使用するインタフェース。
+この抽象化により、新しい種類のデータストレージのサポートを追加できます。
+    </para>
+    <para>
+<!--
+     For more information, see <xref linkend="tableam" /> and
+     <xref linkend="indexam" />.
+-->
+詳細については<xref linkend="tableam" />と<xref linkend="indexam" />を参照してください。
+    </para>
+   </glossdef>
+  </glossentry>
+
   <glossentry>
 <!--
    <glossterm>Analytic function</glossterm>
@@ -182,7 +207,7 @@
      <firstterm>autovacuum workers</firstterm>.
 -->
 <glossterm linkend="glossary-vacuum">バキューム</glossterm>及び<glossterm linkend="glossary-analyze">アナライズ</glossterm>操作を定期的に実行する一連のバックグラウンドプロセス。
-作業を調整し、（自動バキュームが無効になっていない限り）常に存在する<glossterm linkend="glossary-auxiliary-proc">補助プロセス</glossterm>は<firstterm>自動バキュームランチャー</firstterm>と呼ばれ、タスクを実行するプロセスは<firstterm>自動バキュームワーカー</firstterm>と呼ばれます。
+作業を調整し、（自動バキュームが無効になっていない限り）常に存在する<glossterm linkend="glossary-auxiliary-proc">補助プロセス</glossterm>は<firstterm>自動バキュームランチャ</firstterm>と呼ばれ、タスクを実行するプロセスは<firstterm>自動バキュームワーカー</firstterm>と呼ばれます。
     </para>
     <para>
 <!--
@@ -227,9 +252,10 @@
      the <glossterm linkend="glossary-wal-archiver">WAL archiver</glossterm>,
      the <glossterm linkend="glossary-wal-receiver">WAL receiver</glossterm>
      (but not the <glossterm linkend="glossary-wal-sender">WAL senders</glossterm>),
+     the <glossterm linkend="glossary-wal-summarizer">WAL summarizer</glossterm>,
      and the <glossterm linkend="glossary-wal-writer">WAL writer</glossterm>.
 -->
-<glossterm linkend="glossary-autovacuum">自動バキュームランチャー</glossterm>（自動バキュームワーカーではありません）、<glossterm linkend="glossary-background-writer">バックグラウンドライタ</glossterm>、<glossterm linkend="glossary-checkpointer">チェックポインター</glossterm>、<glossterm linkend="glossary-logger">ロガー</glossterm>、<glossterm linkend="glossary-startup-process">スタートアッププロセス</glossterm>、<glossterm linkend="glossary-wal-archiver">WALアーカイバ</glossterm>、<glossterm linkend="glossary-wal-receiver">WAL受信</glossterm>（<glossterm linkend="glossary-wal-sender">WAL送信</glossterm>ではありません）、<glossterm linkend="glossary-wal-writer">WALライタ</glossterm>。
+<glossterm linkend="glossary-autovacuum">自動バキュームランチャ</glossterm>（自動バキュームワーカーではありません）、<glossterm linkend="glossary-background-writer">バックグラウンドライタ</glossterm>、<glossterm linkend="glossary-checkpointer">チェックポインタ</glossterm>、<glossterm linkend="glossary-logger">ロガー</glossterm>、<glossterm linkend="glossary-startup-process">スタートアッププロセス</glossterm>、<glossterm linkend="glossary-wal-archiver">WALアーカイバ</glossterm>、<glossterm linkend="glossary-wal-receiver">WAL受信</glossterm>（<glossterm linkend="glossary-wal-sender">WAL送信</glossterm>ではありません）、<glossterm linkend="glossary-wal-summarizer">WAL要約処理</glossterm>、<glossterm linkend="glossary-wal-writer">WALライタ</glossterm>。
     </para>
    </glossdef>
   </glossentry>
@@ -278,7 +304,7 @@
 -->
 システムあるいはユーザが提供するコードを実行する<glossterm linkend="glossary-instance">インスタンス</glossterm>内のプロセス。
 <glossterm linkend="glossary-replication">論理レプリケーション</glossterm>、<glossterm linkend="glossary-parallel-query">パラレルクエリ</glossterm>といった<productname>PostgreSQL</productname>の機能の基盤を供給します。
-更に、<glossterm linkend="glossary-extension">拡張</glossterm>によってカスタムバックエンドワーカープロセスを追加することができます。
+更に、<glossterm linkend="glossary-extension">拡張</glossterm>によってカスタムバックグラウンドワーカープロセスを追加することができます。
    </para>
    <para>
 <!--
@@ -383,9 +409,10 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
     <para>
 <!--
      This role also behaves as a normal
-     <glossterm linkend="glossary-database-superuser">database superuser</glossterm>.
+     <glossterm linkend="glossary-database-superuser">database superuser</glossterm>,
+     and its superuser status cannot be removed.
 -->
-このロールも通常の<glossterm linkend="glossary-database-superuser">データベーススーパーユーザ</glossterm>として動作します。
+このロールも通常の<glossterm linkend="glossary-database-superuser">データベーススーパーユーザ</glossterm>として動作し、そのスーパーユーザ状態は削除できません。
     </para>
    </glossdef>
   </glossentry>
@@ -418,7 +445,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
 -->
 バッファアクセスストラテジは、限られた数の<glossterm linkend="glossary-shared-memory">共有バッファ</glossterm>への参照を設定し、循環的に再利用します。
 操作が新しいページを必要とすると、ストラテジリング内のバッファから犠牲バッファが選択されます。
-これは、ページのダーティデータとフラッシュされていないWALを永続的なストレージにフラッシュする必要がある場合もあります。
+これは、ページのダーティデータとフラッシュされていない<glossterm linkend="glossary-wal">WAL</glossterm>を永続的なストレージにフラッシュする必要がある場合もあります。
     </para>
     <para>
 <!--
@@ -563,7 +590,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
 <!--
    <glossterm>Checkpointer (process)</glossterm>
 -->
-   <glossterm>Checkpointer【チェックポインター】（プロセス）</glossterm>
+   <glossterm>Checkpointer【チェックポインタ】（プロセス）</glossterm>
    <glossdef>
     <para>
 <!--
@@ -914,7 +941,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      The environment variable <literal>PGDATA</literal> is commonly used to
      refer to the data directory.
 -->
-<glossterm linkend="glossary-db-cluster">データベースクラスタ</glossterm>に関連付けられるすべてのデータファイルとサブディレクトリ（<glossterm linkend="glossary-tablespace">テーブルスペース</glossterm>と、オプションで<glossterm linkend="glossary-wal">WAL</glossterm>を除く）を含む<glossterm linkend="glossary-server">サーバ</glossterm>のファイルシステム上のベースディレクトリ。
+<glossterm linkend="glossary-db-cluster">データベースクラスタ</glossterm>に関連付けられるすべてのデータファイルとサブディレクトリ（<glossterm linkend="glossary-tablespace">テーブル空間</glossterm>と、オプションで<glossterm linkend="glossary-wal">WAL</glossterm>を除く）を含む<glossterm linkend="glossary-server">サーバ</glossterm>のファイルシステム上のベースディレクトリ。
 環境変数<literal>PGDATA</literal>は、通常データディレクトリを参照するために使用されます。
     </para>
     <para>
@@ -922,7 +949,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      A <glossterm linkend="glossary-db-cluster">cluster</glossterm>'s storage
      space comprises the data directory plus any additional tablespaces.
 -->
-<glossterm linkend="glossary-db-cluster">クラスタ</glossterm>のストレージ空間は、データディレクトリに加えてすべての追加のテーブルスペースを含みます。
+<glossterm linkend="glossary-db-cluster">クラスタ</glossterm>のストレージ空間は、データディレクトリに加えてすべての追加のテーブル空間を含みます。
     </para>
     <para>
 <!--
@@ -1007,7 +1034,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      It acts the same as the underlying type except for possibly restricting
      the set of allowed values.
 -->
-他の元となるデータ型に基づくユーザー定義のデータ型です。
+他の元となるデータ型に基づくユーザ定義のデータ型です。
 元となる型と同じように動作しますが、使用可能な値のセットが制限される可能性があります。
     </para>
     <para>
@@ -1391,6 +1418,42 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
     </para>
    </glossdef>
   </glossentry>
+  <glossentry id="glossary-incremental-backup">
+<!--
+   <glossterm>Incremental backup</glossterm>
+-->
+   <glossterm>Incremental backup【増分バックアップ】</glossterm>
+   <glossdef>
+    <para>
+<!--
+     A special <glossterm linkend="glossary-basebackup">base backup</glossterm>
+     that for some files may contain only those pages that were modified since
+     a previous backup, as opposed to the full contents of every file. Like
+     base backups, it is generated by the tool <xref linkend="app-pgbasebackup"/>.
+-->
+すべてのベースバックアップの完全な内容ではなく、前のページ以降に変更されたバックアップのみを一部のファイルに含めることができる特別な<glossterm linkend="glossary-basebackup">ベースバックアップ</glossterm>。
+ベースバックアップと同様に、<xref linkend="app-pgbasebackup"/>ツールによって生成される。
+    </para>
+    <para>
+<!--
+     To restore incremental backups the tool <xref linkend="app-pgcombinebackup"/>
+     is used, which combines incremental backups with a base backup.
+     Afterwards, recovery can use
+     <glossterm linkend="glossary-wal">WAL</glossterm> to bring the
+     <glossterm linkend="glossary-db-cluster">database cluster</glossterm> to
+     a consistent state.
+-->
+増分バックアップのリストアには、増分バックアップをベースバックアップと組み合わせるツール<xref linkend="app-pgcombinebackup"/>が使用されます。
+その後、リカバリは<glossterm linkend="glossary-wal">WAL</glossterm>を使用して<glossterm linkend="glossary-db-cluster">データベースクラスタ</glossterm>を一貫した状態にすることができます。
+    </para>
+    <para>
+<!--
+     For more information, see <xref linkend="backup-incremental-backup"/>.
+-->
+詳細については<xref linkend="backup-incremental-backup"/>を参照してください。
+    </para>
+   </glossdef>
+  </glossentry>
 
   <glossentry id="glossary-insert">
    <glossterm>Insert</glossterm>
@@ -1704,11 +1767,11 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      (just like a <glossterm linkend="glossary-view">view</glossterm>),
      but stores data in the same way that a
      <glossterm linkend="glossary-table">table</glossterm> does. It cannot be
-     modified via <command>INSERT</command>, <command>UPDATE</command>, or
-     <command>DELETE</command> operations.
+     modified via <command>INSERT</command>, <command>UPDATE</command>,
+     <command>DELETE</command>, or <command>MERGE</command> operations.
 -->
 <command>SELECT</command>文により定義された<glossterm linkend="glossary-relation">リレーション</glossterm>（<glossterm linkend="glossary-view">ビュー</glossterm>と同様）ですが、<glossterm linkend="glossary-table">テーブル</glossterm>と同じ方法でデータが格納されます。
-<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>の操作では変更できません。
+<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>の操作では変更できません。
     </para>
     <para>
 <!--
@@ -1716,6 +1779,29 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      <xref linkend="sql-creatematerializedview"/>.
 -->
 詳細については<xref linkend="sql-creatematerializedview"/>を参照してください。
+    </para>
+   </glossdef>
+  </glossentry>
+
+  <glossentry id="glossary-merge">
+   <glossterm>Merge</glossterm>
+   <glossdef>
+    <para>
+<!--
+     An <acronym>SQL</acronym> command used to conditionally add, modify,
+     or remove <glossterm linkend="glossary-tuple">rows</glossterm>
+     in a given <glossterm linkend="glossary-table">table</glossterm>,
+     using data from a source
+     <glossterm linkend="glossary-relation">relation</glossterm>.
+-->
+ソース<glossterm linkend="glossary-relation">リレーション</glossterm>からのデータを使用して、指定された<glossterm linkend="glossary-table">テーブル</glossterm>の<glossterm linkend="glossary-tuple">行</glossterm>を条件付きで追加、変更、または削除する<acronym>SQL</acronym>コマンド。
+    </para>
+    <para>
+<!--
+     For more information, see
+     <xref linkend="sql-merge"/>.
+-->
+詳細については<xref linkend="sql-merge"/>を参照してください。
     </para>
    </glossdef>
   </glossentry>
@@ -2137,12 +2223,12 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      to a <glossterm linkend="glossary-client">client</glossterm> upon the
      completion of an <acronym>SQL</acronym> command, usually a
      <command>SELECT</command> but it can be an
-     <command>INSERT</command>, <command>UPDATE</command>, or
-     <command>DELETE</command> command if the <literal>RETURNING</literal>
-     clause is specified.
+     <command>INSERT</command>, <command>UPDATE</command>,
+     <command>DELETE</command>, or <command>MERGE</command> command if the
+     <literal>RETURNING</literal> clause is specified.
 -->
 <acronym>SQL</acronym>コマンドの完了時に<glossterm linkend="glossary-backend">バックエンドプロセス</glossterm>から<glossterm linkend="glossary-client">クライアント</glossterm>に送信される<glossterm linkend="glossary-relation">リレーション</glossterm>。
-<acronym>SQL</acronym>コマンドは通常<command>SELECT</command>ですが、<literal>RETURNING</literal>節が指定されれば<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>も可能です。
+<acronym>SQL</acronym>コマンドは通常<command>SELECT</command>ですが、<literal>RETURNING</literal>句が指定されれば<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>も可能です。
     </para>
     <para>
 <!--
@@ -2573,7 +2659,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
 <!--
      A series of documents that define the <acronym>SQL</acronym> language.
 -->
-<acronym>SQL</acronym>言語を義する一連の文書。
+<acronym>SQL</acronym>言語を定義する一連の文書。
     </para>
    </glossdef>
   </glossentry>
@@ -2655,7 +2741,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
 システムカタログは<literal>pg_catalog</literal>スキーマに存在します。
 これらのテーブルは内部表現のデータを格納しているので、典型的にはユーザが調べる目的には適しません。
 <literal>pg_catalog</literal>スキーマにもユーザによりわかりやすい多くの<glossterm linkend="glossary-view">ビュー</glossterm>が提供されており、一部の情報にはより便利なアクセスを提供しています。
-一方<glossterm linkend="glossary-sql-standard">SQL標準</glossterm>によって管理されているものと同じあるいはさらに追加の情報を提供する<literal>information_schema</literal>スキーマ（<xref linkend="information-schema" />参照）に追加のテーブルとビューがあります。
+一方<glossterm linkend="glossary-sql-standard">標準SQL</glossterm>によって管理されているものと同じあるいはさらに追加の情報を提供する<literal>information_schema</literal>スキーマ（<xref linkend="information-schema" />参照）に追加のテーブルとビューがあります。
     </para>
     <para>
 <!--
@@ -2700,7 +2786,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
 <!--
    <glossterm>Tablespace</glossterm>
 -->
-   <glossterm>Tablespace【テーブルスペース】</glossterm>
+   <glossterm>Tablespace【テーブル空間】</glossterm>
    <glossdef>
     <para>
 <!--
@@ -2713,8 +2799,8 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      used as the default for all SQL objects, called <literal>pg_default</literal>.
 -->
 サーバファイルシステムの名前付き場所。
-すべての<glossterm linkend="glossary-sql-object">SQLオブジェクト</glossterm>は、<glossterm linkend="glossary-system-catalog">システムカタログ</glossterm>内の定義を超えた格納領域が要求され、単一のテーブルスペースに属している必要があります。
-最初にデータベースクラスは、単一で使用可能なテーブルスペースが含まれています。
+すべての<glossterm linkend="glossary-sql-object">SQLオブジェクト</glossterm>は、<glossterm linkend="glossary-system-catalog">システムカタログ</glossterm>内の定義を超えた格納領域が要求され、単一のテーブル空間に属している必要があります。
+最初にデータベースクラスタは、単一で使用可能なテーブル空間が含まれています。
 それは<literal>pg_default</literal>と呼ばれ、全てのSQLオブジェクトでデフォルトとして使用されます。
     </para>
     <para>
@@ -2992,7 +3078,7 @@ WALファイルと組み合わせてリカバリ、ログシッピング、ま�
      that may already exist in a specified <glossterm linkend="glossary-table">table</glossterm>.
      It cannot create or remove rows.
 -->
-指定された<glossterm linkend="glossary-table">テーブル</glossterm>に既にある<glossterm linkend="glossary-tuple">行</glossterm>を修正するために使われる<acronym>SQL</acronym>コマンド。
+指定された<glossterm linkend="glossary-table">テーブル</glossterm>に既にある<glossterm linkend="glossary-tuple">行</glossterm>を変更するために使われる<acronym>SQL</acronym>コマンド。
 行を作成したり削除したりはできません。
     </para>
     <para>
@@ -3291,6 +3377,29 @@ WALレコードは表示できないバイナリフォーマットを使用し�
    </glossdef>
   </glossentry>
 
+  <glossentry id="glossary-wal-summarizer">
+<!--
+   <glossterm>WAL summarizer (process)</glossterm>
+-->
+   <glossterm>WAL summarizer【WAL要約処理】（プロセス）</glossterm>
+   <glossdef>
+    <para>
+<!--
+     An <glossterm linkend="glossary-auxiliary-proc">auxiliary process</glossterm>
+     that summarizes WAL data for
+     <glossterm linkend="glossary-incremental-backup">incremental backups</glossterm>.
+-->
+<glossterm linkend="glossary-incremental-backup">増分バックアップ</glossterm>のためにWALデータを要約する<glossterm linkend="glossary-auxiliary-proc">補助プロセス</glossterm>。
+    </para>
+    <para>
+<!--
+     For more information, see <xref linkend="runtime-config-wal-summarization"/>.
+-->
+詳細については<xref linkend="runtime-config-wal-summarization"/>を参照してください。
+    </para>
+   </glossdef>
+  </glossentry>
+
   <glossentry id="glossary-wal-writer">
 <!--
    <glossterm>WAL writer (process)</glossterm>
@@ -3299,11 +3408,12 @@ WALレコードは表示できないバイナリフォーマットを使用し�
    <glossdef>
     <para>
 <!--
-     A process that writes <glossterm linkend="glossary-wal-record">WAL records</glossterm>
+     An <glossterm linkend="glossary-auxiliary-proc">auxiliary process</glossterm>
+     that writes <glossterm linkend="glossary-wal-record">WAL records</glossterm>
      from <glossterm linkend="glossary-shared-memory">shared memory</glossterm> to
      <glossterm linkend="glossary-wal-file">WAL files</glossterm>.
 -->
-<glossterm linkend="glossary-wal-record">WALレコード</glossterm>を<glossterm linkend="glossary-shared-memory">共有メモリ</glossterm>から<glossterm linkend="glossary-wal-file">WALファイル</glossterm>に書き出すプロセス。
+<glossterm linkend="glossary-wal-record">WALレコード</glossterm>を<glossterm linkend="glossary-shared-memory">共有メモリ</glossterm>から<glossterm linkend="glossary-wal-file">WALファイル</glossterm>に書き出す<glossterm linkend="glossary-auxiliary-proc">補助プロセス</glossterm>。
     </para>
     <para>
 <!--

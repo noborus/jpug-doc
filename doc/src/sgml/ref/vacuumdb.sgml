@@ -42,7 +42,13 @@ PostgreSQL documentation
     </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt">
+    <group choice="plain">
+     <arg choice="plain"><replaceable>dbname</replaceable></arg>
+     <arg choice="plain"><option>-a</option></arg>
+     <arg choice="plain"><option>--all</option></arg>
+    </group>
+   </arg>
   </cmdsynopsis>
 
   <cmdsynopsis>
@@ -53,40 +59,44 @@ PostgreSQL documentation
    <arg choice="plain" rep="repeat">
     <arg choice="opt">
      <group choice="plain">
-       <arg choice="plain">
-        <arg choice="opt">
-         <group choice="plain">
-          <arg choice="plain"><option>-n</option></arg>
-          <arg choice="plain"><option>--schema</option></arg>
-         </group>
-         <replaceable>schema</replaceable>
-        </arg>
-       </arg>
-
-       <arg choice="plain">
-        <arg choice="opt">
-         <group choice="plain">
-          <arg choice="plain"><option>-N</option></arg>
-          <arg choice="plain"><option>--exclude-schema</option></arg>
-         </group>
-         <replaceable>schema</replaceable>
-        </arg>
-       </arg>
+      <arg choice="plain"><option>-n</option></arg>
+      <arg choice="plain"><option>--schema</option></arg>
      </group>
+     <replaceable>schema</replaceable>
     </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt">
+    <group choice="plain">
+     <arg choice="plain"><replaceable>dbname</replaceable></arg>
+     <arg choice="plain"><option>-a</option></arg>
+     <arg choice="plain"><option>--all</option></arg>
+    </group>
+   </arg>
   </cmdsynopsis>
 
   <cmdsynopsis>
    <command>vacuumdb</command>
    <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
    <arg rep="repeat"><replaceable>option</replaceable></arg>
-   <group choice="plain">
-    <arg choice="plain"><option>-a</option></arg>
-    <arg choice="plain"><option>--all</option></arg>
-   </group>
+
+   <arg choice="plain" rep="repeat">
+    <arg choice="opt">
+     <group choice="plain">
+      <arg choice="plain"><option>-N</option></arg>
+      <arg choice="plain"><option>--exclude-schema</option></arg>
+     </group>
+     <replaceable>schema</replaceable>
+    </arg>
+   </arg>
+
+   <arg choice="opt">
+    <group choice="plain">
+     <arg choice="plain"><replaceable>dbname</replaceable></arg>
+     <arg choice="plain"><option>-a</option></arg>
+     <arg choice="plain"><option>--all</option></arg>
+    </group>
+   </arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -126,7 +136,7 @@ PostgreSQL documentation
 <!--
   <title>Options</title>
 -->
-<title>オプション</title>
+  <title>オプション</title>
 
    <para>
 <!--
@@ -395,7 +405,7 @@ PostgreSQL documentation
 <!--
         Skip the main relation.
 -->
-主リレーションを飛ばします。
+主リレーションをスキップします。
        </para>
       </listitem>
      </varlistentry>
@@ -407,7 +417,7 @@ PostgreSQL documentation
 <!--
         Skip the TOAST table associated with the table to vacuum, if any.
 -->
-もし存在するなら、バキュームするテーブルに関連するTOASTテーブルを飛ばします。
+もし存在するなら、バキュームするテーブルに関連するTOASTテーブルをスキップします。
        </para>
       </listitem>
      </varlistentry>
@@ -461,7 +471,7 @@ PostgreSQL documentation
 <!--
         Skip relations that cannot be immediately locked for processing.
 -->
-処理のためにすぐにロックできないリレーションを飛ばします。
+処理のためにすぐにロックできないリレーションをスキップします。
        </para>
       </listitem>
      </varlistentry>
@@ -731,7 +741,7 @@ PostgreSQL documentation
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry>
@@ -760,7 +770,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -772,7 +782,7 @@ PostgreSQL documentation
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>
@@ -801,32 +811,11 @@ PostgreSQL documentation
 
  </refsect1>
 
-
- <refsect1>
-<!--
-  <title>Notes</title>
--->
-  <title>注釈</title>
-
-  <para>
-<!--
-   <application>vacuumdb</application> might need to connect several
-   times to the <productname>PostgreSQL</productname> server, asking
-   for a password each time. It is convenient to have a
-   <filename>~/.pgpass</filename> file in such cases. See <xref
-   linkend="libpq-pgpass"/> for more information.
--->
-<application>vacuumdb</application>の実行中には<productname>PostgreSQL</productname>サーバに何度も接続しなければならないことがありますが、この場合その度にパスワードが必要です。
-そのような場合は<filename>~/.pgpass</filename>ファイルを用意しておくと便利です。
-詳細は<xref linkend="libpq-pgpass"/>を参照してください。
-  </para>
- </refsect1>
-
  <refsect1>
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
 
    <para>
 <!--
@@ -878,7 +867,7 @@ PostgreSQL documentation
 <!--
   <title>See Also</title>
 -->
-<title>関連項目</title>
+  <title>関連項目</title>
 
   <simplelist type="inline">
    <member><xref linkend="sql-vacuum"/></member>

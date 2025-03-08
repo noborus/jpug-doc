@@ -31,10 +31,11 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
     [ WITH ] [ OWNER [=] <replaceable class="parameter">user_name</replaceable> ]
            [ TEMPLATE [=] <replaceable class="parameter">template</replaceable> ]
            [ ENCODING [=] <replaceable class="parameter">encoding</replaceable> ]
-           [ STRATEGY [=] <replaceable class="parameter">strategy</replaceable> ] ]
+           [ STRATEGY [=] <replaceable class="parameter">strategy</replaceable> ]
            [ LOCALE [=] <replaceable class="parameter">locale</replaceable> ]
            [ LC_COLLATE [=] <replaceable class="parameter">lc_collate</replaceable> ]
            [ LC_CTYPE [=] <replaceable class="parameter">lc_ctype</replaceable> ]
+           [ BUILTIN_LOCALE [=] <replaceable class="parameter">builtin_locale</replaceable> ]
            [ ICU_LOCALE [=] <replaceable class="parameter">icu_locale</replaceable> ]
            [ ICU_RULES [=] <replaceable class="parameter">icu_rules</replaceable> ]
            [ LOCALE_PROVIDER [=] <replaceable class="parameter">locale_provider</replaceable> ]
@@ -222,10 +223,20 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
 <!--
         Can be overridden by setting <xref
         linkend="create-database-lc-collate"/>, <xref
-        linkend="create-database-lc-ctype"/>, or <xref
+        linkend="create-database-lc-ctype"/>, <xref
+        linkend="create-database-builtin-locale"/>, or <xref
         linkend="create-database-icu-locale"/> individually.
 -->
-<xref linkend="create-database-lc-collate"/>、<xref linkend="create-database-lc-ctype"/>、または<xref linkend="create-database-icu-locale"/>を個別に設定することで上書きできます。
+<xref linkend="create-database-lc-collate"/>、<xref linkend="create-database-lc-ctype"/>、<xref linkend="create-database-builtin-locale"/>または<xref linkend="create-database-icu-locale"/>を個別に設定することで上書きできます。
+       </para>
+       <para>
+<!--
+        If <xref linkend="create-database-locale-provider"/> is
+        <literal>builtin</literal>, then <replaceable>locale</replaceable> or
+        <replaceable>builtin_locale</replaceable> must be specified and set to
+        either <literal>C</literal> or <literal>C.UTF-8</literal>.
+-->
+<xref linkend="create-database-locale-provider"/>が<literal>builtin</literal>の場合、<replaceable>locale</replaceable>または<replaceable>builtin_locale</replaceable>を指定し、<literal>C</literal>または<literal>C.UTF-8</literal>に設定しなければなりません。
        </para>
        <tip>
         <para>
@@ -296,6 +307,33 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
       </listitem>
      </varlistentry>
 
+     <varlistentry id="create-database-builtin-locale">
+      <term><replaceable class="parameter">builtin_locale</replaceable></term>
+      <listitem>
+       <para>
+<!--
+        Specifies the builtin provider locale for the database default
+        collation order and character classification, overriding the setting
+        <xref linkend="create-database-locale"/>.  The <link
+        linkend="create-database-locale-provider">locale provider</link> must
+        be <literal>builtin</literal>.  The default is the setting of <xref
+        linkend="create-database-locale"/> if specified; otherwise the same
+        setting as the template database.
+-->
+データベースのデフォルトの照合順序と文字分類に対する組み込みプロバイダロケールを指定します。 <xref linkend="create-database-locale"/>の設定を上書きします。
+<link linkend="create-database-locale-provider">ロケールプロバイダ</link>は<literal>builtin</literal>でなければなりません。
+デフォルトは、指定されている場合は<xref linkend="create-database-locale"/>の設定、それ以外の場合はテンプレートデータベースと同じ設定です。
+       </para>
+       <para>
+<!--
+        The locales available for the <literal>builtin</literal> provider are
+        <literal>C</literal> and <literal>C.UTF-8</literal>.
+-->
+<literal>builtin</literal>プロバイダで利用可能なロケールは<literal>C</literal>と<literal>C.UTF-8</literal>です。
+       </para>
+      </listitem>
+     </varlistentry>
+
      <varlistentry id="create-database-icu-locale">
       <term><replaceable class="parameter">icu_locale</replaceable></term>
       <listitem>
@@ -309,7 +347,7 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
         is the setting of <xref linkend="create-database-locale"/> if
         specified; otherwise the same setting as the template database.
 -->
-データベースのデフォルトの照合順序と文字分類に対するICUロケール（<xref linkend="collation-managing-create-icu"/> を参照）を指定します。 <xref linkend="create-database-locale"/> の設定をオーバーライドします。
+データベースのデフォルトの照合順序と文字分類に対するICUロケール（<xref linkend="collation-managing-create-icu"/> を参照）を指定します。 <xref linkend="create-database-locale"/>の設定を上書きします。
 <link linkend="create-database-locale-provider">ロケールプロバイダ</link>はICUでなければなりません。
 デフォルトは、指定されている場合は<xref linkend="create-database-locale"/>の設定、それ以外の場合はテンプレートデータベースと同じ設定です。
        </para>
@@ -339,7 +377,7 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
        <para>
 <!--
         Specifies the provider to use for the default collation in this
-        database.  Possible values are
+        database.  Possible values are <literal>builtin</literal>,
         <literal>icu</literal><indexterm><primary>ICU</primary></indexterm>
         (if the server was built with ICU support) or <literal>libc</literal>.
         By default, the provider is the same as that of the <xref
@@ -347,8 +385,7 @@ CREATE DATABASE <replaceable class="parameter">name</replaceable>
         linkend="locale-providers"/> for details.
 -->
 このデータベースのデフォルトの照合順序に使用するプロバイダを指定します。
-使用可能な値は、（サーバがICUをサポートするよう構築されている場合には）<literal>icu</literal><indexterm><primary>ICU</primary></indexterm>または<literal>libc</literal>です。
-<literal>libc</literal>がデフォルトです。
+使用可能な値は、<literal>builtin</literal>、（サーバがICUをサポートするよう構築されている場合には）<literal>icu</literal><indexterm><primary>ICU</primary></indexterm>または<literal>libc</literal>です。
 デフォルトでは、プロバイダは<xref linkend="create-database-template"/>のプロバイダと同じです。
 詳細は<xref linkend="locale-providers"/>を参照してください。
        </para>
@@ -481,7 +518,7 @@ false（デフォルト）の場合、スーパーユーザまたはデータベ
 <!--
   <title>Notes</title>
 -->
-   <title>注釈</title>
+  <title>注釈</title>
 
    <para>
 <!--

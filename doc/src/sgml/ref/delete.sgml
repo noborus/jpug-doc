@@ -31,7 +31,7 @@ PostgreSQL documentation
 DELETE FROM [ ONLY ] <replaceable class="parameter">table_name</replaceable> [ * ] [ [ AS ] <replaceable class="parameter">alias</replaceable> ]
     [ USING <replaceable class="parameter">from_item</replaceable> [, ...] ]
     [ WHERE <replaceable class="parameter">condition</replaceable> | WHERE CURRENT OF <replaceable class="parameter">cursor_name</replaceable> ]
-    [ RETURNING * | <replaceable class="parameter">output_expression</replaceable> [ [ AS ] <replaceable class="parameter">output_name</replaceable> ] [, ...] ]
+    [ RETURNING { * | <replaceable class="parameter">output_expression</replaceable> [ [ AS ] <replaceable class="parameter">output_name</replaceable> ] } [, ...] ]
 </synopsis>
  </refsynopsisdiv>
 
@@ -71,7 +71,7 @@ DELETE FROM [ ONLY ] <replaceable class="parameter">table_name</replaceable> [ *
    Which technique is more appropriate depends on the specific
    circumstances.
 -->
-データベース内のほかのテーブルに含まれる情報を用いてテーブル内の行を削除する方法には、副問い合わせと<literal>USING</literal>句で追加テーブルを指定する方法の2つがあります。
+データベース内のほかのテーブルに含まれる情報を用いてテーブル内の行を削除する方法には、副SELECTと<literal>USING</literal>句で追加テーブルを指定する方法の2つがあります。
 どちらの技法が適切かはその状況によります。
   </para>
 
@@ -282,7 +282,7 @@ DELETE <replaceable class="parameter">count</replaceable>
 -->
 <replaceable class="parameter">count</replaceable>は削除した行数です。
 この数は、<literal>BEFORE DELETE</literal>トリガによって削除が抑止された場合、<replaceable class="parameter">condition</replaceable>に合致した行より少なくなる可能性があることに注意してください。
-<replaceable class="parameter">count</replaceable>が0の場合、<replaceable class="parameter">condition</replaceable>を満たす行が存在しなかったことを示します
+<replaceable class="parameter">count</replaceable>が0の場合、問い合わせによって削除された行がなかったことを示します
 （これはエラーとはみなされません）。
   </para>
 
@@ -334,7 +334,7 @@ DELETE FROM films
    In some cases the join style is easier to write or faster to
    execute than the sub-select style.
 -->
-副問い合わせ形式より結合形式の方が書き易い、あるいは、実行が速くなることがあります。
+副SELECT形式より結合形式の方が書き易い、あるいは、実行が速くなることがあります。
   </para>
  </refsect1>
 
@@ -374,7 +374,7 @@ DELETE FROM tasks WHERE status = 'DONE' RETURNING *;
 </programlisting>
   </para>
 
-   <para>
+  <para>
 <!--
    Delete the row of <structname>tasks</structname> on which the cursor
    <literal>c_tasks</literal> is currently positioned:
@@ -382,7 +382,30 @@ DELETE FROM tasks WHERE status = 'DONE' RETURNING *;
 <structname>tasks</structname>において<literal>c_tasks</literal>カーソルが現在位置している行を削除します。
 <programlisting>
 DELETE FROM tasks WHERE CURRENT OF c_tasks;
-</programlisting></para>
+</programlisting>
+  </para>
+
+  <para>
+<!--
+   While there is no <literal>LIMIT</literal> clause
+   for <command>DELETE</command>, it is possible to get a similar effect
+   using the same method described in <link linkend="update-limit">the
+   documentation of <command>UPDATE</command></link>:
+-->
+<command>DELETE</command>には<literal>LIMIT</literal>句はありませんが、<link linkend="update-limit"><command>UPDATE</command>の文書</link>で説明したのと同じ方法で同様の効果を得ることができます。
+<programlisting>
+WITH delete_batch AS (
+  SELECT l.ctid FROM user_logs AS l
+    WHERE l.status = 'archived'
+    ORDER BY l.creation_date
+    FOR UPDATE
+    LIMIT 10000
+)
+DELETE FROM user_logs AS dl
+  USING delete_batch AS del
+  WHERE dl.ctid = del.ctid;
+</programlisting>
+  </para>
  </refsect1>
 
  <refsect1>

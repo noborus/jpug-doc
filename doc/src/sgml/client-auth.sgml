@@ -105,11 +105,52 @@ SQL 環境の中では存在するユーザ名でデータベースオブジェ�
    possible to place the authentication configuration file elsewhere,
    however; see the <xref linkend="guc-hba-file"/> configuration parameter.
 -->
-クライアント認証はデータベースクラスタのデータディレクトリ内の、伝統的に<filename>pg_hba.conf</filename>という名前の設定ファイルで管理されています
-（<acronym>HBA</acronym>とは、host-based authentication: ホストベース認証の略です）。
+クライアント認証はデータベースクラスタのデータディレクトリ内の、伝統的に<filename>pg_hba.conf</filename>という名前の設定ファイルで管理されています。
+（<acronym>HBA</acronym>とは、host-based authentication: ホストベース認証の略です。）
 デフォルトの<filename>pg_hba.conf</filename>ファイルは、データディレクトリが<xref linkend="app-initdb"/>で初期化される時にインストールされます。
 しかし、この認証設定ファイルを他の場所に設置することができます。
 <xref linkend="guc-hba-file"/>設定パラメータを参照してください。
+  </para>
+
+  <para>
+<!--
+   The <filename>pg_hba.conf</filename> file is read on start-up and when
+   the main server process receives a
+   <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm>
+   signal. If you edit the file on an
+   active system, you will need to signal the postmaster
+   (using <literal>pg_ctl reload</literal>, calling the SQL function
+   <function>pg_reload_conf()</function>, or using <literal>kill
+   -HUP</literal>) to make it re-read the file.
+-->
+<filename>pg_hba.conf</filename>ファイルは起動時と、主サーバプロセスが<systemitem>SIGHUP</systemitem>シグナルを受け取った時に読み込まれます。<indexterm><primary>SIGHUP</primary></indexterm>
+稼働中のシステムでファイルを編集した場合は、（<literal>pg_ctl reload</literal>の使用、SQL関数の<function>pg_reload_conf()</function>の呼び出し、または<literal>kill -HUP</literal>を使用して）postmasterにファイルをもう一度読み込むようにシグナルを出さなければなりません。
+  </para>
+
+  <note>
+   <para>
+<!--
+    The preceding statement is not true on Microsoft Windows: there, any
+    changes in the <filename>pg_hba.conf</filename> file are immediately
+    applied by subsequent new connections.
+-->
+上記はマイクロソフトWindowsに対して当てはまりません。
+つまり、<filename>pg_hba.conf</filename>に対する変更は、ただちにそれ以降の新しい接続に反映されます。
+   </para>
+  </note>
+
+  <para>
+<!--
+   The system view
+   <link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>
+   can be helpful for pre-testing changes to the <filename>pg_hba.conf</filename>
+   file, or for diagnosing problems if loading of the file did not have the
+   desired effects.  Rows in the view with
+   non-null <structfield>error</structfield> fields indicate problems in the
+   corresponding lines of the file.
+-->
+<filename>pg_hba.conf</filename>に対する変更を事前にテストする際、あるいはそのファイルをロードしても期待していた結果が得られなかった場合には、システムビュー<link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>が役に立ちます。
+そのビューの<structfield>error</structfield>フィールドがNULLでない行は、そのファイルの該当行に問題があることを示しています。
   </para>
 
   <para>
@@ -148,7 +189,7 @@ SQL 環境の中では存在するユーザ名でデータベースオブジェ�
    fails, subsequent records are not considered. If no record matches,
    access is denied.
 -->
-《マッチ度[92.781690]》それぞれのレコードは接続形式、（接続形式に対して意味を持つのであれば）クライアントのIPアドレス範囲、データベースの名前、ユーザ名およびこれらのパラメータに一致する接続で使用される認証方法を指定します。
+それぞれの認証レコードは接続形式、（接続形式に対して意味を持つのであれば）クライアントのIPアドレス範囲、データベースの名前、ユーザ名およびこれらのパラメータに一致する接続で使用される認証方法を指定します。
 接続形式、クライアントアドレス、要求されたデータベース、およびユーザ名に一致する最初のレコードが認証処理に使用されます。
 <quote>失敗時の継続</quote>や、 あるいは<quote>バックアップ</quote>はありません。
 これは、もしあるレコードが選択されて認証に失敗した場合、後続のレコードは考慮されないということです。
@@ -170,14 +211,13 @@ SQL 環境の中では存在するユーザ名でデータベースオブジェ�
    directory are processed in file name order (according to C locale rules,
    i.e., numbers before letters, and uppercase letters before lowercase ones).
 -->
-《機械翻訳》各レコードは、includeディレクティブまたは認証レコードにすることができます。
-インクルード指示子は、追加レコードを含むインクルード可能なファイルを指定します。
-レコードは、インクルード指示子のかわりに挿入されます。
-インクルード指示子には、<literal>include</literal>、<literal>include_if_exists</literal>または<literal>include_dir</literal>ディレクティブと、インクルードするファイルまたはディレクトリの2つのフィールドのみが含まれます。
-ファイルまたはディレクトリは、相対または絶対のパスにすることができ、二重引用符で囲むことができます。
-<literal>include_dir</literal>フォームの場合、<literal>.</literal>で始まり<literal>.conf</literal>で終わるファイル以外のすべてのファイルがインクルードされます。
-インクルードディレクトリ内のマルチプルファイルは、(Cの規則に従って、数字&gt;&gt;文字、大文字&gt;&gt;小文字)で処理されます。
-ファイル名前オーダーロケール前前
+各レコードは、includeディレクティブまたは認証レコードにできます。
+includeディレクティブは、追加レコードを含むインクルード可能なファイルを指定します。
+レコードは、includeディレクティブの代わりに挿入されます。
+includeディレクティブには以下の2つのフィールドのみが含まれます。<literal>include</literal>、<literal>include_if_exists</literal>または<literal>include_dir</literal>ディレクティブと、インクルードするファイルまたはディレクトリです。
+ファイルまたはディレクトリは、相対または絶対パスにでき、二重引用符で囲むことができます。
+<literal>include_dir</literal>形式の場合、<literal>.</literal>で始まらず<literal>.conf</literal>で終わるすべてのファイルがインクルードされます。
+インクルードディレクトリ内の複数のファイルは、ファイル名の順(Cロケールの規則に従って、すなわち、文字より先に数字、小文字より先に大文字)に処理されます。
   </para>
 
   <para>
@@ -361,30 +401,18 @@ include_dir         <replaceable>directory</replaceable>
        Multiple database names and/or regular expressions can be supplied by
        separating them with commas.
 -->
-《マッチ度[77.934272]》このレコードで対応するデータベース名を指定します。
+このレコードで対応するデータベース名を指定します。
 <literal>all</literal> という値は、全てのデータベースと対応することを指定します。
 <literal>sameuser</literal>という値は、要求されたデータベースが要求ユーザと同じ名前を持つ場合にレコードが対応することを指定します。
 <literal>samerole</literal>という値は、要求ユーザが要求されたデータベースと同じ名前のロールのメンバでなければならないことを指定します。
-（以前は<literal>samegroup</literal>と書いていましたが、<literal>samerole</literal>と記述してください）
+（以前は<literal>samegroup</literal>と書いていましたが、<literal>samerole</literal>と記述してください。）
 スーパーユーザは、直接的であれ間接的であれ、明示的にsameroleのメンバでない限りsameroleのメンバとはみなされません。
 また、スーパーユーザであるからといって<literal>samerole</literal>のメンバとはみなされません。
 <literal>replication</literal>という値は、もし物理レプリケーション接続が要求された場合にレコードが一致することを指定します。
 しかし、論理レプリケーションによる接続には一致しません。
 物理レプリケーション接続は特定のデータベースを指定しないのに対し、論理レプリケーション接続は特定のデータベースを指定することに注意してください。
-それ以外の場合には、特定の<productname>PostgreSQL</productname>データベースの名前になります。
-データベースの名前はカンマで区切ることで複数指定できます。
-データベース名を含む別のファイルを、そのファイル名の前に<literal>@</literal>を付けることで指定できます。
-《機械翻訳》この名前が一致するデータベースレコードを指定します。
-値<literal>all</literal>は、すべてのデータベースに一致することを指定します。
-値<literal>sameuser</literal>は、要求されたレコードが要求されたデータベースと同じ名前を持つ場合に、ユーザが一致することを指定します。
-値<literal>samerole</literal>は、要求されたユーザが、要求されたと同じ名前を持つロールのメンバである必要があることを指定します。
-(<literal>samegroup</literal>は旧式ですが、<literal>samerole</literal>のスペルとしてまだ受け入れられています。
-)スーパーユーザは、単にスーパーユーザであるという理由だけではなく、直接的または間接的に明示的にロールのメンバーでない限り、<literal>samerole</literal>の目的でロールのとは見なされません。
-値<literal>レプリケーション</literal>は、であるという理由だけではなく、であるという理由だけではなく、直接的または間接的に明示的にのでない限り、であるとは見なされません。
-であることを指定します。
-それ以外の場合、これは特定の<productname>PostgreSQL</productname>?または?であることを指定します。
-である名前および/または正規表現は、カンマで区切ることで区切ることができます。
-データベースメンバーレコード物理的レプリケーションコネクションマッチロジカルレプリケーションノート物理的レプリケーションデータベースロジカルレプリケーション名前データベース正規表現マルチプルデータベース提供される
+それ以外の場合には、特定の<productname>PostgreSQL</productname>データベースの名前または正規表現になります。
+データベースの名前や正規表現はカンマで区切ることで複数指定できます。
       </para>
       <para>
 <!--
@@ -393,14 +421,15 @@ include_dir         <replaceable>directory</replaceable>
        (See <xref linkend="posix-syntax-details"/> for details of
        <productname>PostgreSQL</productname>'s regular expression syntax.)
 -->
-《機械翻訳》データベース名前がスラッシュ<literal>/</literal>で始まる場合、名前の残りの部分は正規表現として扱われます(<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください)。
+データベース名がスラッシュ(<literal>/</literal>)で始まる場合、名前の残りの部分は正規表現として扱われます。
+（<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください。）
       </para>
       <para>
 <!--
        A separate file containing database names and/or regular expressions
        can be specified by preceding the file name with <literal>@</literal>.
 -->
-《機械翻訳》ファイル名や正規表現を含む別のデータベースを指定するには、ファイル名前の前に<literal>@</literal>を付けます。
+データベース名や正規表現を含む別のファイルを、そのファイル名の前に<literal>@</literal>を付けることで指定できます。
       </para>
      </listitem>
     </varlistentry>
@@ -426,24 +455,15 @@ include_dir         <replaceable>directory</replaceable>
        Multiple user names and/or regular expressions can be supplied by
        separating them with commas.
 -->
-《マッチ度[69.447454]》このレコードで対応するデータベースユーザを指定します。
+このレコードで対応するデータベースユーザ名を指定します。
 <literal>all</literal>という値は、全てのユーザが対応することを指定します。
-それ以外の場合には特定のデータベースユーザの名前もしくは<literal>+</literal>で始まるグループ名のどちらかになります。
+それ以外の場合には特定のデータベースユーザの名前、（スラッシュ(<literal>/</literal>)で始まる場合には）正規表現、もしくは<literal>+</literal>で始まるグループ名のいずれかになります。
 （<productname>PostgreSQL</productname>ではユーザとグループの明確な区別がないことを思い出してください。
-<literal>+</literal>のマークは、<quote>このロールの直接的もしくは間接的なメンバのどちらかに一致していること</quote>を意味しています。
-一方、<literal>+</literal>のマークがない名前は特定のロールにのみ一致します）
+<literal>+</literal>のマークは実のところ、<quote>このロールの直接的もしくは間接的なメンバのどちらかに一致していること</quote>を意味しています。
+一方、<literal>+</literal>のマークがない名前はその特定のロールにのみ一致します。）
 このため、スーパーユーザは、直接的であれ間接的であれ明示的にロールのメンバである場合にのみ、ロールのメンバとみなされます。
 スーパーユーザであるからといってロールのメンバとはみなされません。
-ユーザ名は、カンマで区切ることで複数指定できます。
-ユーザ名を含む別のファイルを、そのファイル名の前に<literal>@</literal>を付けることで指定できます。
-《機械翻訳》この名前が一致するデータベースユーザレコードを指定します。
-値<literal>all</literal>は、すべてのユーザに一致することを指定します。
-それ以外の場合は、特定のデータベースユーザの名前、正規表現(スラッシュ(<literal>/</literal>で始まる場合)、または<literal>+</literal>で始まるグループ名前のいずれかになります。
-<productname>PostgreSQL</productname>;a<literal>+</literal>マークのユーザとグループの間に実際の区別がないことを思い出してください<quote>マッチは、このロールの直接的または間接的なメンバーである役割のいずれかを意味します</quote>。
-一方、<literal>+</literal>マークのない名前は、その特定のロールにのみ一致します。
-)この目的のために、スーパーユーザは、単にであるという理由だけではなく、直接的または間接的に明示的にのである場合にのみ、ロールのであると見なされます。
-名前および/または正規表現は、カンマで区切ることによって再度表示できます。
-メンバメンバロールスーパーユーザマルチプルユーザ提供される
+ユーザ名や正規表現は、カンマで区切ることで複数指定できます。
       </para>
       <para>
 <!--
@@ -452,14 +472,15 @@ include_dir         <replaceable>directory</replaceable>
        (See <xref linkend="posix-syntax-details"/> for details of
        <productname>PostgreSQL</productname>'s regular expression syntax.)
 -->
-《機械翻訳》ユーザ名前がスラッシュ<literal>/</literal>で始まる場合、名前の残りの部分は正規表現として扱われます(<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください)。
+ユーザ名がスラッシュ(<literal>/</literal>)で始まる場合、名前の残りの部分は正規表現として扱われます。
+（<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください。）
       </para>
       <para>
 <!--
        A separate file containing user names and/or regular expressions can
        be specified by preceding the file name with <literal>@</literal>.
 -->
-《機械翻訳》ファイル名や正規表現を含む別のユーザを指定するには、ファイル名前の前に<literal>@</literal>を付けます。
+ユーザ名や正規表現を含む別のファイルを、そのファイル名の前に<literal>@</literal>を付けることで指定できます。
       </para>
      </listitem>
     </varlistentry>
@@ -523,7 +544,7 @@ IPv6アドレスの範囲は、単一のホストでは<literal>::1/128</literal
        and an entry given in IPv6 format will match only IPv6 connections,
        even if the represented address is in the IPv4-in-IPv6 range.
 -->
-《機械翻訳》IPv4エントリで与えられたフォーマットはIPv4接続だけをマッチし、IPv6エントリで与えられたフォーマットは、たとえ表現されたアドレスがIPv4-in-IPv6レンジであっても、IPv6接続だけをマッチします。
+IPv4書式で与えられたエントリは、IPv4接続のみに対応し、IPv6書式で与えられた項目は、たとえそのアドレスがIPv6内のIPv4の範囲内であったとしてもIPv6接続のみに対応します。
       </para>
 
       <para>
@@ -962,7 +983,7 @@ SSLクライアント証明書を使用して認証します。
 -->
 以下に示された方式特定のオプションに加えて、方式に依存しないのひとつの認証オプション<literal>clientcert</literal>があり、<literal>hostssl</literal>レコードで指定できます。
 このオプションは、<literal>verify-ca</literal>または<literal>verify-full</literal>に設定できます。
-どちらのオプションも、クライアントに有効な（信頼された）SSL証明書の提出を要求し、<literal>verify full</literal>は、証明書の<literal>cn</literal>（Common Name）がユーザー名または適用可能なマッピングと一致することをさらに強制します。
+どちらのオプションも、クライアントに有効な（信頼された）SSL証明書の提出を要求し、<literal>verify full</literal>は、証明書の<literal>cn</literal>（Common Name）がユーザ名または適用可能なマッピングと一致することをさらに強制します。
 この動作は<literal>cert</literal>認証方式（詳細は<xref linkend="auth-cert"/>を参照してください）に似ていますが、クライアント証明書の検証を<literal>hostssl</literal>エントリをサポートする任意の認証方式と組み合わせることができます。
       </para>
       <para>
@@ -979,7 +1000,7 @@ SSLクライアント証明書を使用して認証します。
        entire <literal>Distinguished Name (DN)</literal> of the certificate.
        This option is probably best used in conjunction with a username map.
        The comparison is done with the <literal>DN</literal> in
-       <ulink url="https://tools.ietf.org/html/rfc2253">RFC 2253</ulink>
+       <ulink url="https://datatracker.ietf.org/doc/html/rfc2253">RFC 2253</ulink>
        format. To see the <literal>DN</literal> of a client certificate
        in this format, do
 -->
@@ -988,10 +1009,10 @@ SSLクライアント証明書を使用して認証します。
 デフォルトである<literal>clientname=CN</literal>を指定すると、ユーザ名は証明書の<literal>Common Name (CN)</literal>と照合されます。
 その代わりに<literal>clientname=DN</literal>を指定すると、ユーザ名は証明書の<literal>Distinguished Name (DN)</literal>全体と照合されます。
 このオプションはおそらくユーザ名マップとともに使うのが最善です。
-<ulink url="https://tools.ietf.org/html/rfc2253">RFC 2253</ulink>の<literal>DN</literal>と比較されます。
+<ulink url="https://datatracker.ietf.org/doc/html/rfc2253">RFC 2253</ulink>の<literal>DN</literal>と比較されます。
 この形式のクライアント証明書の<literal>DN</literal>を参照するには以下のようにしてください。
 <programlisting>
-openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subject=//"
+openssl x509 -in myclient.crt -noout -subject -nameopt RFC2253 | sed "s/^subject=//"
 </programlisting>
 <!--
         Care needs to be taken when using this option, especially when using
@@ -1009,7 +1030,7 @@ openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subjec
 <!--
        This line will be replaced by the contents of the given file.
 -->
-《機械翻訳》この直線は、指定したファイルの内容に置き換えられます。
+この行は、指定したファイルの内容に置き換えられます。
       </para>
      </listitem>
     </varlistentry>
@@ -1023,8 +1044,8 @@ openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subjec
        file exists. Otherwise, a message is logged to indicate that the file
        has been skipped.
 -->
-《機械翻訳》直線が存在する場合、このコンテンツは指定したファイルのファイルに置き換えられます。
-存在しない場合は、メッセージが記録され、ファイルがスキップされたであったことが示されます。
+ファイルが存在する場合、この行は指定したファイルの内容に置き換えられます。
+存在しない場合は、ファイルがスキップされたことを示すメッセージが記録されます。
       </para>
      </listitem>
     </varlistentry>
@@ -1040,7 +1061,7 @@ openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subjec
        to C locale rules, i.e., numbers before letters, and uppercase letters
        before lowercase ones).
 -->
-《機械翻訳》<literal>.</literal>で直線せず、<literal>.conf</literal>で終わる場合、このディレクトリは、そのスタートで見つかったすべてのファイルの内容に置き換えられ、ファイル名前オーダーで処理されます(Cロケールルールに従って、数字は前文字、大文字は前小文字になります)。
+ファイル名が<literal>.</literal>で始まらず、<literal>.conf</literal>で終わる場合、この行は、そのディレクトリで見つかったすべてのファイルの内容に置き換えられ、ファイル名の順(Cロケールの規則に従って、すなわち、文字より先に数字、小文字より先に大文字)に処理されます。
       </para>
      </listitem>
     </varlistentry>
@@ -1083,47 +1104,6 @@ openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subjec
 この場合、広範囲にわたって許可されるクライアントのIPアドレスに対するパスワード認証を指定するレコードの前に127.0.0.1からの接続に対する<literal>trust</literal>認証指定のレコードが置かれなければなりません。
   </para>
 
-  <para>
-<!--
-   The <filename>pg_hba.conf</filename> file is read on start-up and when
-   the main server process receives a
-   <systemitem>SIGHUP</systemitem><indexterm><primary>SIGHUP</primary></indexterm>
-   signal. If you edit the file on an
-   active system, you will need to signal the postmaster
-   (using <literal>pg_ctl reload</literal>, calling the SQL function
-   <function>pg_reload_conf()</function>, or using <literal>kill
-   -HUP</literal>) to make it re-read the file.
--->
-<filename>pg_hba.conf</filename>ファイルは起動時と、主サーバプロセスが<systemitem>SIGHUP</systemitem>シグナルを受け取った時に読み込まれます。<indexterm><primary>SIGHUP</primary></indexterm>
-稼働中のシステムでファイルを編集した場合は、（<literal>pg_ctl reload</literal>の使用、SQL関数の<function>pg_reload_conf()</function>の呼び出し、または<literal>kill -HUP</literal>を使用して）postmasterにファイルをもう一度読み込むようにシグナルを出さなければなりません。
-  </para>
-
-  <note>
-   <para>
-<!--
-    The preceding statement is not true on Microsoft Windows: there, any
-    changes in the <filename>pg_hba.conf</filename> file are immediately
-    applied by subsequent new connections.
--->
-上記はマイクロソフトWindowsに対して当てはまりません。
-つまり、<filename>pg_hba.conf</filename>に対する変更は、ただちにそれ以降の新しい接続に反映されます。
-   </para>
-  </note>
-
-  <para>
-<!--
-   The system view
-   <link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>
-   can be helpful for pre-testing changes to the <filename>pg_hba.conf</filename>
-   file, or for diagnosing problems if loading of the file did not have the
-   desired effects.  Rows in the view with
-   non-null <structfield>error</structfield> fields indicate problems in the
-   corresponding lines of the file.
--->
-<filename>pg_hba.conf</filename>に対する変更を事前にテストする際、あるいはそのファイルをロードしても期待していた結果が得られなかった場合には、システムビュー<link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>が役に立ちます。
-そのビューの<structfield>error</structfield>フィールドがNULLでない行は、そのファイルの該当行に問題があることを示しています。
-  </para>
-
   <tip>
    <para>
 <!--
@@ -1146,7 +1126,7 @@ openssl x509 -in myclient.crt -noout --subject -nameopt RFC2253 | sed "s/^subjec
    different authentication methods.
 -->
 <filename>pg_hba.conf</filename>ファイルの例をいくつか<xref linkend="example-pg-hba.conf"/>に示します。
-各種認証方式の詳細についてはその後で説明します。
+各種認証方式の詳細については次節で説明します。
   </para>
 
    <example id="example-pg-hba.conf">
@@ -1199,13 +1179,16 @@ host    all             all             ::1/128                 trust
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 host    all             all             localhost               trust
 
+<!--
 # The same using a regular expression for DATABASE, that allows connection
-# to the database db1, db2 and any databases with a name beginning with "db"
-# and finishing with a number using two to four digits (like "db1234" or
-# "db12").
+# to any databases with a name beginning with "db" and finishing with a
+# number using two to four digits (like "db1234" or "db12").
+-->
+# DATABASEに対して正規表現を使って同じことを行う。（「db1234」や「db12」のような）
+# 「db」で始まり、2から4個の数字を使った番号で終わるデータベースへ接続することを許可。
 #
-# TYPE  DATABASE                   USER            ADDRESS          METHOD
-local   db1,"/^db\d{2,4}$",db2     all             localhost        trust
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+host    "/^db\d{2,4}$"  all             localhost               trust
 
 <!--
 # Allow any user from any host with IP address 192.168.93.x to connect
@@ -1290,10 +1273,10 @@ host    all             all             192.168.0.0/16          ident map=omicro
 # who can connect to all databases.  The file $PGDATA/admins contains a
 # list of names of administrators.  Passwords are required in all cases.
 -->
-# ローカル接続に対して、以下のたった3行しか記載がない場合、ローカルユーザは
+# ローカル接続に対して、以下のたった4行しか記載がない場合、ローカルユーザは
 # 自分のデータベース（データベースユーザ名と同じ名前のデータベース）にのみ接続許可。
-# ただし管理者とロール「support」のメンバは全てのデータベースに接続可能。
-# $PGDATA/adminsファイルは管理者のリストを含む。
+# ただし、名前が「helpdesk」で終わるユーザ、管理者、ロール「support」のメンバは
+# 全てのデータベースに接続可能。$PGDATA/adminsファイルは管理者のリストを含む。
 # 全ての場合にパスワードが必要。
 #
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
@@ -1361,12 +1344,9 @@ identやGSSAPIといった外部の認証システムを使用する場合は、
    configuration parameter.)
    The ident map file contains lines of the general forms:
 -->
-《マッチ度[]》ユーザ名マップはidentマップファイルに定義されています。デフォルトではファイル名は<filename>pg_ident.conf</filename><indexterm><primary>pg_ident.conf</primary></indexterm>で
-クラスタのデータディレクトリに保存されています。（他の場所にも保存できますが、詳細は<xref linkend="guc-ident-file"/>設定パラメータを参照してください。）
-identマップファイルは一般的な形式の行を含んでいます。
-《機械翻訳》ユーザ名マップは、デフォルトでは<filename>pg_ident.conf</filename><indexterm><primary>pg_ident.conf</primary></indexterm>という名前のidentマップファイルに定義されており、クラスタのデータディレクトリに格納されます。
-（マップファイルは他の場所に配置することもできますが、<xref linkend="guc-ident-file"/>構成パラメータを参照してください。）
- identマップファイルには、次のような形式の行が含まれています。
+ユーザ名マップはidentマップファイルに定義されています。デフォルトではファイル名は<filename>pg_ident.conf</filename><indexterm><primary>pg_ident.conf</primary></indexterm>で、クラスタのデータディレクトリに保存されています。
+（マップファイルを他の場所にも保存できますが、詳細は<xref linkend="guc-ident-file"/>設定パラメータを参照してください。）
+identマップファイルは以下のような一般的な形式の行を含んでいます。
 <synopsis>
 <replaceable>map-name</replaceable> <replaceable>system-username</replaceable> <replaceable>database-username</replaceable>
 <replaceable>include</replaceable> <replaceable>file</replaceable>
@@ -1392,111 +1372,8 @@ identマップファイルは一般的な形式の行を含んでいます。
    As for <filename>pg_hba.conf</filename>, the lines in this file can
    be include directives, following the same rules.
 -->
-《機械翻訳》<filename>pg_hba.conf</filename>に関しては、同じルールに従って、このファイルの行に指示子を含めることができます。
+<filename>pg_hba.conf</filename>に関しては、同じ規則に従って、このファイルの行にincludeディレクティブを書くことができます。
   </para>
-  <para>
-<!--
-   There is no restriction regarding how many database users a given
-   operating system user can correspond to, nor vice versa.  Thus, entries
-   in a map should be thought of as meaning <quote>this operating system
-   user is allowed to connect as this database user</quote>, rather than
-   implying that they are equivalent.  The connection will be allowed if
-   there is any map entry that pairs the user name obtained from the
-   external authentication system with the database user name that the
-   user has requested to connect as. The value <literal>all</literal>
-   can be used as the <replaceable>database-username</replaceable> to specify
-   that if the <replaceable>system-user</replaceable> matches, then this user
-   is allowed to log in as any of the existing database users. Quoting
-   <literal>all</literal> makes the keyword lose its special meaning.
--->
-《マッチ度[58.724428]》どれだけのデータベースユーザがオペレーティングシステムのユーザに対して一致しているか、またその逆に対しても制限はありません。
-よってマップ内のエントリは、それらが等しいというよりもむしろ
-<quote>このオペレーティングシステムのユーザはこのデータベースユーザとして接続する</quote>という意味になります。
-もし外部の認証システムから得られたユーザ名と接続要求を行ったデータベースユーザ名が対となるエントリがマップ内にある場合は、接続は許可されます。
-《機械翻訳》特定のデータベースが対応できるオペレーティングシステムユーザユーザの数に関する制限はなく、その逆もありません。
-したがって、マップ内のエントリは、同等であることを意味するのではなく、意味として考える必要があります<quote>このオペレーティングシステムユーザはこのデータベースユーザとして接続することが許可されます</quote>。
-外部認証システムから取得したユーザ名前と、ユーザが接続を要求したデータベースユーザ名前をペアにするマップエントリがある場合、コネクションは許可されます。
-値<literal>all</literal>を<replaceable>データベース-username</replaceable>として使用して、<replaceable>システム-ユーザ</replaceable>が一致する場合、このユーザは既存のユーザのいずれかとしてアドバタイズできるように指定できます。
-<literal>all</literal>を引用符で囲むと、キーワードの特別な意味が失われます。
-ログデータベース
-  </para>
-  <para>
-<!--
-   If the <replaceable>database-username</replaceable> begins with a
-   <literal>+</literal> character, then the operating system user can login as
-   any user belonging to that role, similarly to how user names beginning with
-   <literal>+</literal> are treated in <literal>pg_hba.conf</literal>.
-   Thus, a <literal>+</literal> mark means <quote>match any of the roles that
-   are directly or indirectly members of this role</quote>, while a name
-   without a <literal>+</literal> mark matches only that specific role. Quoting
-   a username starting with a <literal>+</literal> makes the
-   <literal>+</literal> lose its special meaning.
--->
-《機械翻訳》<replaceable>データベース-ユーザ名</replaceable>が<literal>+</literal>文字で始まる場合、<literal>+</literal>で始まるオペレーティングシステムユーザ名が<literal>pg_hba.conf</literal>でどのように扱われるかと同様に、そのログインはそのユーザに属するすべてのユーザとして登録できます。
-したがって、<literal>+</literal>マークは<quote>マッチ、このロールの直接的または間接的なメンバーである役割のいずれか</quote>を意味し、<literal>+</literal>マークのない名前はその特定のロールにのみ一致します。
-<literal>+</literal>で始まるユーザ名を引用すると、<literal>+</literal>はその特別な意味を失います。
-ロール
-  </para>
-  <para>
-<!--
-   If the <replaceable>system-username</replaceable> field starts with a slash (<literal>/</literal>),
-   the remainder of the field is treated as a regular expression.
-   (See <xref linkend="posix-syntax-details"/> for details of
-   <productname>PostgreSQL</productname>'s regular expression syntax.)  The regular
-   expression can include a single capture, or parenthesized subexpression,
-   which can then be referenced in the <replaceable>database-username</replaceable>
-   field as <literal>\1</literal> (backslash-one).  This allows the mapping of
-   multiple user names in a single line, which is particularly useful for
-   simple syntax substitutions.  For example, these entries
--->
-もし<replaceable>system-username</replaceable>フィールドがスラッシュ（<literal>/</literal>）で始まっている場合は、
-このフィールドの残りは正規表現として扱われます。
-（<productname>PostgreSQL</productname>の正規表現構文の詳細については<xref linkend="posix-syntax-details"/>を参照してください。）
-正規表現は単一検索や括弧を使用した表現、<replaceable>database-username</replaceable>フィールドで<literal>\1</literal>（バックスラッシュ-1）で参照されるような表現を含みます。
-これにより、1行で複数のユーザ名のマップが可能となり、簡単な構文で特に使いやすくなります。例を以下に示します。
-<programlisting>
-mymap   /^(.*)@mydomain\.com$      \1
-mymap   /^(.*)@otherdomain\.com$   guest
-</programlisting>
-<!--
-   will remove the domain part for users with system user names that end with
-   <literal>@mydomain.com</literal>, and allow any user whose system name ends with
-   <literal>@otherdomain.com</literal> to log in as <literal>guest</literal>.
--->
-上記のエントリでは、<literal>@mydomain.com</literal>で終わるシステムユーザ名のドメイン部分を削除して、
-<literal>@otherdomain.com</literal>で終わるシステムユーザ名が<literal>guest</literal>としてログインすることを許可します。
-   Quoting a <replaceable>database-username</replaceable> containing
-   <literal>\1</literal> <emphasis>does not</emphasis> make
-   <literal>\1</literal> lose its special meaning.
-  </para>
-  <para>
-<!--
-   If the <replaceable>database-username</replaceable> field starts with
-   a slash (<literal>/</literal>), the remainder of the field is treated
-   as a regular expression (see <xref linkend="posix-syntax-details"/>
-   for details of <productname>PostgreSQL</productname>'s regular
-   expression syntax. It is not possible to use <literal>\1</literal>
-   to use a capture from regular expression on
-   <replaceable>system-username</replaceable> for a regular expression
-   on <replaceable>database-username</replaceable>.
--->
-《機械翻訳》<replaceable>データベース-ユーザ名</replaceable>フィールドがスラッシュ(<literal>/</literal>)で始まる場合、フィールドの残りは正規表現として扱われます。
-<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください。
-<replaceable>システム-ユーザ名</replaceable>の正規表現に対して、<replaceable>データベース-ユーザ名</replaceable>の正規表現からのキャプチャを使用するために<literal>\1</literal>を使用することはできません。
-  </para>
-
-  <tip>
-   <para>
-<!--
-    Keep in mind that by default, a regular expression can match just part of
-    a string.  It's usually wise to use <literal>^</literal> and <literal>$</literal>, as
-    shown in the above example, to force the match to be to the entire
-    system user name.
--->
-デフォルトでは正規表現は、文字列の一部を一致させることに注意してください。
-上記の例で示したように、システムユーザ名全体を強制的に一致させるために<literal>^</literal>や<literal>$</literal>を使用すると有用です。
-   </para>
-  </tip>
 
   <para>
 <!--
@@ -1527,6 +1404,103 @@ mymap   /^(.*)@otherdomain\.com$   guest
 <filename>pg_ident.conf</filename>に対する変更を事前にテストする際、あるいはそのファイルをロードしても期待していた結果が得られなかった場合には、システムビュー<link linkend="view-pg-ident-file-mappings"><structname>pg_ident_file_mappings</structname></link>が役に立ちます。
 そのビューの<structfield>error</structfield>フィールドがNULLでない行は、そのファイルの該当行に問題があることを示しています。
   </para>
+
+  <para>
+<!--
+   There is no restriction regarding how many database users a given
+   operating system user can correspond to, nor vice versa.  Thus, entries
+   in a map should be thought of as meaning <quote>this operating system
+   user is allowed to connect as this database user</quote>, rather than
+   implying that they are equivalent.  The connection will be allowed if
+   there is any map entry that pairs the user name obtained from the
+   external authentication system with the database user name that the
+   user has requested to connect as. The value <literal>all</literal>
+   can be used as the <replaceable>database-username</replaceable> to specify
+   that if the <replaceable>system-username</replaceable> matches, then this
+   user is allowed to log in as any of the existing database users. Quoting
+   <literal>all</literal> makes the keyword lose its special meaning.
+-->
+どれだけのデータベースユーザがオペレーティングシステムのユーザに対して一致しているか、またその逆に対しても制限はありません。
+よってマップ内のエントリは、それらが等しいというよりもむしろ<quote>このオペレーティングシステムのユーザはこのデータベースユーザとして接続する</quote>という意味になります。
+もし外部の認証システムから得られたユーザ名と接続要求を行ったデータベースユーザ名が対となるエントリがマップ内にある場合は、接続は許可されます。
+値<literal>all</literal>を<replaceable>database-username</replaceable>として使用して、<replaceable>system-username</replaceable>が一致する場合、このユーザは既存のデータベースユーザのいずれかとしてログインできるように指定できます。
+<literal>all</literal>を引用符で囲むと、キーワードはその特別な意味を失います。
+  </para>
+  <para>
+<!--
+   If the <replaceable>database-username</replaceable> begins with a
+   <literal>+</literal> character, then the operating system user can login as
+   any user belonging to that role, similarly to how user names beginning with
+   <literal>+</literal> are treated in <literal>pg_hba.conf</literal>.
+   Thus, a <literal>+</literal> mark means <quote>match any of the roles that
+   are directly or indirectly members of this role</quote>, while a name
+   without a <literal>+</literal> mark matches only that specific role. Quoting
+   a username starting with a <literal>+</literal> makes the
+   <literal>+</literal> lose its special meaning.
+-->
+<replaceable>database-username</replaceable>が<literal>+</literal>文字で始まる場合、オペレーティングシステムユーザはそのロールに属するユーザとしてログインできます。これは<literal>+</literal>で始まるユーザ名の<literal>pg_hba.conf</literal>での扱い方と同様です。
+したがって、<literal>+</literal>マークは<quote>このロールの直接または間接的なメンバであるロールのいずれかに一致した</quote>ことを意味し、<literal>+</literal>マークのない名前はその特定のロールにのみ一致します。
+<literal>+</literal>で始まるユーザ名を引用符で囲むと、<literal>+</literal>はその特別な意味を失います。
+  </para>
+  <para>
+<!--
+   If the <replaceable>system-username</replaceable> field starts with a slash (<literal>/</literal>),
+   the remainder of the field is treated as a regular expression.
+   (See <xref linkend="posix-syntax-details"/> for details of
+   <productname>PostgreSQL</productname>'s regular expression syntax.)  The regular
+   expression can include a single capture, or parenthesized subexpression,
+   which can then be referenced in the <replaceable>database-username</replaceable>
+   field as <literal>\1</literal> (backslash-one).  This allows the mapping of
+   multiple user names in a single line, which is particularly useful for
+   simple syntax substitutions.  For example, these entries
+-->
+もし<replaceable>system-username</replaceable>フィールドがスラッシュ（<literal>/</literal>）で始まっている場合は、
+このフィールドの残りは正規表現として扱われます。
+（<productname>PostgreSQL</productname>の正規表現構文の詳細については<xref linkend="posix-syntax-details"/>を参照してください。）
+正規表現は単一検索や括弧を使用した表現、<replaceable>database-username</replaceable>フィールドで<literal>\1</literal>（バックスラッシュ-1）で参照されるような表現を含みます。
+これにより、1行で複数のユーザ名のマップが可能となり、簡単な構文で特に使いやすくなります。例を以下に示します。
+<programlisting>
+mymap   /^(.*)@mydomain\.com$      \1
+mymap   /^(.*)@otherdomain\.com$   guest
+</programlisting>
+<!--
+   will remove the domain part for users with system user names that end with
+   <literal>@mydomain.com</literal>, and allow any user whose system name ends with
+   <literal>@otherdomain.com</literal> to log in as <literal>guest</literal>.
+   Quoting a <replaceable>database-username</replaceable> containing
+   <literal>\1</literal> <emphasis>does not</emphasis> make
+   <literal>\1</literal> lose its special meaning.
+-->
+上記のエントリでは、<literal>@mydomain.com</literal>で終わるシステムユーザ名のドメイン部分を削除して、<literal>@otherdomain.com</literal>で終わるシステムユーザ名のユーザが<literal>guest</literal>としてログインすることを許可します。
+<literal>\1</literal>を含む<replaceable>database-username</replaceable>を引用符で括っても、<literal>\1</literal>はその特別な意味を失い<emphasis>ません</emphasis>。
+  </para>
+  <para>
+<!--
+   If the <replaceable>database-username</replaceable> field starts with
+   a slash (<literal>/</literal>), the remainder of the field is treated
+   as a regular expression (see <xref linkend="posix-syntax-details"/>
+   for details of <productname>PostgreSQL</productname>'s regular
+   expression syntax). It is not possible to use <literal>\1</literal>
+   to use a capture from regular expression on
+   <replaceable>system-username</replaceable> for a regular expression
+   on <replaceable>database-username</replaceable>.
+-->
+<replaceable>database-username</replaceable>フィールドがスラッシュ(<literal>/</literal>)で始まる場合、フィールドの残りは正規表現として扱われます(<productname>PostgreSQL</productname>の正規表現構文の詳細については、<xref linkend="posix-syntax-details"/>を参照してください)。
+<replaceable>system-username</replaceable>の正規表現からのキャプチャを使用するために<replaceable>database-username</replaceable>での正規表現に対して<literal>\1</literal>を使用することはできません。
+  </para>
+
+  <tip>
+   <para>
+<!--
+    Keep in mind that by default, a regular expression can match just part of
+    a string.  It's usually wise to use <literal>^</literal> and <literal>$</literal>, as
+    shown in the above example, to force the match to be to the entire
+    system user name.
+-->
+デフォルトでは正規表現は、文字列の一部を一致させることに注意してください。
+上記の例で示したように、システムユーザ名全体を強制的に一致させるために<literal>^</literal>や<literal>$</literal>を使用すると有用です。
+   </para>
+  </tip>
 
   <para>
 <!--
@@ -1598,7 +1572,7 @@ omicron         bryanh                  guest1
       <link linkend="auth-trust">Trust authentication</link>, which
       simply trusts that users are who they say they are.
 -->
-<link linkend="auth-trust">trust認証</link>は、ユーザーが本人であることを単純に信頼します。
+<link linkend="auth-trust">trust認証</link>は、ユーザが本人であることを単純に信頼します。
      </para>
     </listitem>
     <listitem>
@@ -1635,12 +1609,12 @@ omicron         bryanh                  guest1
 <!--
       <link linkend="auth-ident">Ident authentication</link>, which
       relies on an <quote>Identification Protocol</quote>
-      (<ulink url="https://tools.ietf.org/html/rfc1413">RFC 1413</ulink>)
+      (<ulink url="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</ulink>)
       service on the client's machine.  (On local Unix-socket connections,
       this is treated as peer authentication.)
 -->
-<link linkend="auth-ident">ident認証</link>は、クライアントのマシン上の<quote>Identification Protocol</quote> (<ulink url="https://tools.ietf.org/html/rfc1413">RFC 1413</ulink>)サービスに依存します。
-（ローカルのUnixドメインソケット接続では、これはpeer認証として扱われます）。
+<link linkend="auth-ident">ident認証</link>は、クライアントのマシン上の<quote>Identification Protocol</quote> (<ulink url="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</ulink>)サービスに依存します。
+（ローカルのUnixドメインソケット接続では、これはpeer認証として扱われます。）
      </para>
     </listitem>
     <listitem>
@@ -1842,12 +1816,12 @@ TCP/IP接続における<literal>trust</literal>認証は、<literal>trust</lite
 <!--
        The method <literal>scram-sha-256</literal> performs SCRAM-SHA-256
        authentication, as described in
-       <ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>.  It
+       <ulink url="https://datatracker.ietf.org/doc/html/rfc7677">RFC 7677</ulink>.  It
        is a challenge-response scheme that prevents password sniffing on
        untrusted connections and supports storing passwords on the server in a
        cryptographically hashed form that is thought to be secure.
 -->
-<literal>scram-sha-256</literal>方式は、<ulink url="https://tools.ietf.org/html/rfc7677">RFC 7677</ulink>に記述された方法でSCRAM-SHA-256認証を実行します。
+<literal>scram-sha-256</literal>方式は、<ulink url="https://datatracker.ietf.org/doc/html/rfc7677">RFC 7677</ulink>に記述された方法でSCRAM-SHA-256認証を実行します。
 これはチャレンジ／レスポンス方式のひとつであり、信頼できない接続におけるパスワードの漏洩を防ぎ、安全だと見なされる暗号学的ハッシュ形式でパスワードをサーバに格納するのを支援します。
       </para>
 
@@ -1876,14 +1850,6 @@ TCP/IP接続における<literal>trust</literal>認証は、<literal>trust</lite
 <literal>md5</literal>方式は、独自のより安全性の低いチャレンジ／レスポンス機構を使います。
 パスワードの漏洩を防ぎ、平文でパスワードをサーバに格納するのを避けることができますが、攻撃者がサーバからパスワードハッシュを盗むことを防ぐことはできません。
 また、MD5ハッシュアルゴリズムは、昨今では強い意志をもった攻撃に対して安全ではないと考えられています。
-      </para>
-
-      <para>
-<!--
-       The <literal>md5</literal> method cannot be used with
-       the <xref linkend="guc-db-user-namespace"/> feature.
--->
-<literal>md5</literal>は、<xref linkend="guc-db-user-namespace"/>機能と一緒に使用することはできません。
       </para>
 
       <para>
@@ -2003,7 +1969,7 @@ TCP/IP接続における<literal>trust</literal>認証は、<literal>trust</lite
 <!--
     <productname>GSSAPI</productname> is an industry-standard protocol
     for secure authentication defined in
-    <ulink url="https://tools.ietf.org/html/rfc2743">RFC 2743</ulink>.
+    <ulink url="https://datatracker.ietf.org/doc/html/rfc2743">RFC 2743</ulink>.
     <productname>PostgreSQL</productname>
     supports <productname>GSSAPI</productname> for authentication,
     communications encryption, or both.
@@ -2014,9 +1980,9 @@ TCP/IP接続における<literal>trust</literal>認証は、<literal>trust</lite
     used, the data sent along the database connection will be encrypted;
     otherwise, it will not.
 -->
-<productname>GSSAPI</productname>は、<ulink url="https://tools.ietf.org/html/rfc2743">RFC 2743</ulink>で定義されている安全な認証のための業界標準のプロトコルです。
+<productname>GSSAPI</productname>は、<ulink url="https://datatracker.ietf.org/doc/html/rfc2743">RFC 2743</ulink>で定義されている安全な認証のための業界標準のプロトコルです。
 <productname>PostgreSQL</productname>は、<productname>GSSAPI</productname>を認証、通信の暗号化、あるいはその両方のためにサポートしています。
-<productname>GSSAPI</productname>は、GSSAPIをサポートするシステムに自動認証(シングルサインオン)を提供します。
+<productname>GSSAPI</productname>は、GSSAPIをサポートするシステムに自動認証（シングルサインオン）を提供します。
 認証自体は安全です。
 <productname>GSSAPI</productname>暗号化、または<acronym>SSL</acronym>暗号化を使用すると、データベース接続に沿って送信されるデータは暗号化されますが、それ以外の場合は暗号化されません。
    </para>
@@ -2135,11 +2101,8 @@ realm名はクライアントがアクセスできるKerberos設定ファイル�
     doing this using the <application>kadmin</application> tool of
     MIT Kerberos:
 -->
-《マッチ度[]》keytabファイルはKerberosのソフトウェアを使って作成されます。詳細はKerberosのドキュメントを参照してください。
-MIT互換のKerberos5実装の<application>kadmin</application>ツールを使って行う例を以下に示します。
-《機械翻訳》キータブファイルは、Kerberosソフトを使用して生成されます。
-詳細については、Kerberos文書を参照してください。
-次の例は、MIT Kerberosの<application>kadmin</application>ツールを使用してこれを行う方法を示しています:
+keytabファイルはKerberosのソフトウェアを使って作成されます。詳細はKerberosのドキュメントを参照してください。
+MIT Kerberosの<application>kadmin</application>ツールを使って行う例を以下に示します。
 <screen>
 <prompt>kadmin% </prompt><userinput>addprinc -randkey postgres/server.my.domain.org</userinput>
 <prompt>kadmin% </prompt><userinput>ktadd -k krb5.keytab postgres/server.my.domain.org</userinput>
@@ -2251,15 +2214,18 @@ realmをユーザプリンシパル名に一致するように設定します。
     <literal>negotiate</literal> mode, which will use
     <productname>Kerberos</productname> when possible and automatically
     fall back to <productname>NTLM</productname> in other cases.
-    <productname>SSPI</productname> authentication only works when both
-    server and client are running <productname>Windows</productname>,
-    or, on non-Windows platforms, when <productname>GSSAPI</productname>
-    is available.
+    <productname>SSPI</productname> and <productname>GSSAPI</productname>
+    interoperate as clients and servers, e.g., an
+    <productname>SSPI</productname> client can authenticate to an
+    <productname>GSSAPI</productname> server.  It is recommended to use
+    <productname>SSPI</productname> on Windows clients and servers and
+    <productname>GSSAPI</productname> on non-Windows platforms.
 -->
 <productname>SSPI</productname>は、シングルサインオンで安全な認証を行うための<productname>Windows</productname>の技術です。
 <productname>PostgreSQL</productname>は、<literal>negotiate</literal>モードにおいてSSPIを使用します。
 これは、可能な場合は<productname>Kerberos</productname>を使用し、他の場合については自動的に<productname>NTLM</productname>を使用することを意味しています。
-<productname>SSPI</productname>認証は、サーバ、クライアントが共に<productname>Windows</productname>上もしくは<productname>GSSAPI</productname>が利用可能な場合はWindowsではないプラットフォームで稼働しているときにのみ動作します。
+<productname>SSPI</productname>と<productname>GSSAPI</productname>は、サーバ、クライアントとして相互運用します。例えば、<productname>SSPI</productname>クライアントは<productname>GSSAPI</productname>サーバに対して認証できます。
+Windowsクライアントとサーバでは<productname>SSPI</productname>を、Windowsでないプラットフォームでは<productname>GSSAPI</productname>を使うことを勧めます。
    </para>
 
    <para>
@@ -2324,7 +2290,7 @@ realmをユーザプリンシパル名に一致するように設定します。
         system) and all clients authenticating through SSPI are also using
         domain accounts, or authentication will fail.
 -->
-ドメインアカウント（これはドメインメンバーシステムの仮想サービスアカウントを含みます）にて実行されているサーバで、SSPIで認証されているすべてのクライアントがドメインアカウントを使用している場合を除き、このオプションを無効にしないでください。
+ドメインアカウント（これはドメインメンバシステムの仮想サービスアカウントを含みます）にて実行されているサーバで、SSPIで認証されているすべてのクライアントがドメインアカウントを使用している場合を除き、このオプションを無効にしないでください。
 さもなくば認証は失敗します。
        </para>
       </listitem>
@@ -2460,7 +2426,7 @@ peer認証（<xref linkend="auth-peer"/>を参照してください）が代わ�
    <para>
 <!--
     The <quote>Identification Protocol</quote> is described in
-    <ulink url="https://tools.ietf.org/html/rfc1413">RFC 1413</ulink>.
+    <ulink url="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</ulink>.
     Virtually every Unix-like
     operating system ships with an ident server that listens on TCP
     port 113 by default. The basic functionality of an ident server
@@ -2473,7 +2439,7 @@ peer認証（<xref linkend="auth-peer"/>を参照してください）が代わ�
     client and can theoretically determine the operating system user
     for any given connection.
 -->
-<quote>身元特定（Identification）プロトコル</quote>については<ulink url="https://tools.ietf.org/html/rfc1413">RFC 1413</ulink>で説明されています。
+<quote>身元特定（Identification）プロトコル</quote>については<ulink url="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</ulink>で説明されています。
 事実上全てのUnix系のオペレーティングシステムの配布には、デフォルトでTCPポート113を監視するidentサーバが付属しています。
 identサーバの基本的な機能は<quote>どのユーザがポート<replaceable>X</replaceable>からの接続を開始し、自分のポート<replaceable>Y</replaceable>への接続を初期化したのか？</quote>というような質問に答えることです。
 <productname>PostgreSQL</productname>は物理的な接続が確立された時に<replaceable>X</replaceable>と<replaceable>Y</replaceable>の両方を認識するので、接続するクライアントのホスト上のidentサーバに応答指令信号を送ることができ、理論的には与えられたどの接続にもオペレーティングシステムユーザを決定できます。
@@ -2633,23 +2599,23 @@ LDAP認証は2つのモードで動作します。1つ目のモードでは、�
     do an exact match of the attribute specified in
     <replaceable>ldapsearchattribute</replaceable>.
     Once the user has been found in
-    this search, the server disconnects and re-binds to the directory as
+    this search, the server re-binds to the directory as
     this user, using the password specified by the client, to verify that the
     login is correct. This mode is the same as that used by LDAP authentication
     schemes in other software, such as Apache <literal>mod_authnz_ldap</literal> and <literal>pam_ldap</literal>.
     This method allows for significantly more flexibility
     in where the user objects are located in the directory, but will cause
-    two separate connections to the LDAP server to be made.
+    two additional requests to the LDAP server to be made.
 -->
-2つ目のモードでは、それはsearch+bindモードを呼び出すもので、サーバは最初に<replaceable>ldapbinddn</replaceable>と<replaceable>ldapbindpasswd</replaceable>で指定された、
-固定されたユーザ名とパスワードを使用してLDAPディレクトリにバインドします。
+2つ目のモードでは、それはsearch+bindモードを呼び出すもので、サーバは最初に<replaceable>ldapbinddn</replaceable>と<replaceable>ldapbindpasswd</replaceable>で指定された、固定されたユーザ名とパスワードを使用してLDAPディレクトリにバインドします。
 それからデータベースにログインしようとしているユーザを検索します。
 もしユーザとパスワードが指定されていなかった場合は、ディレクトリに対して匿名でバインドします。
 検索は<replaceable>ldapbasedn</replaceable>のサブツリーまで行われ、<replaceable>ldapsearchattribute</replaceable>で指定された属性に正確に一致するかどうかまで行われます。
-この検索において、一度ユーザが見つかるとサーバは切断して、クライアントで指定されたパスワードを使用してこのユーザとして再度ディレクトリにバインドします。これはそのログインが正しいかどうかを検証するためです。
+この検索において、一度ユーザが見つかるとサーバはクライアントで指定されたパスワードを使用してこのユーザとして再度ディレクトリにバインドします。
+これはそのログインが正しいかどうかを検証するためです。
 このモードはApache <literal>mod_authnz_ldap</literal>および<literal>pam_ldap</literal>などの他のソフトウェアと同じように、LDAP認証の仕組みで使用されるものと同じです。
 この方法は、ユーザオブジェクトがディレクトリに配置されている場合に、かなりの柔軟性があります。
-しかし、LDAPサーバへの2つの分離した接続が作成されます。
+しかし、2つの追加のリクエストがLDAPサーバに対して行われることになります。
    </para>
 
    <para>
@@ -2694,7 +2660,7 @@ LDAPライブラリ内のデフォルトポート設定が使用されます。
         an alternative.
 -->
 <literal>ldaps</literal>に設定するとLDAPSを使用します。
-これはいくつかのLDAPサーバーの実装でサポートされている、SSL経由のLDAPを使用する非標準の方法です。
+これはいくつかのLDAPサーバの実装でサポートされている、SSL経由のLDAPを使用する非標準の方法です。
 代替方法については、<literal>ldaptls</literal>オプションを参照してください。
        </para>
       </listitem>
@@ -2706,11 +2672,11 @@ LDAPライブラリ内のデフォルトポート設定が使用されます。
 <!--
         Set to 1 to make the connection between PostgreSQL and the LDAP server
         use TLS encryption.  This uses the <literal>StartTLS</literal>
-        operation per <ulink url="https://tools.ietf.org/html/rfc4513">RFC 4513</ulink>.
+        operation per <ulink url="https://datatracker.ietf.org/doc/html/rfc4513">RFC 4513</ulink>.
         See also the <literal>ldapscheme</literal> option for an alternative.
 -->
 1に設定すると、PostgreSQLとLDAPサーバ間の接続にTLSによる暗号化を使用します。
-これは<ulink url="https://tools.ietf.org/html/rfc4513">RFC 4513</ulink>の<literal>StartTLS</literal>操作を使用します。
+これは<ulink url="https://datatracker.ietf.org/doc/html/rfc4513">RFC 4513</ulink>の<literal>StartTLS</literal>操作を使用します。
 代替方法については、<literal>ldapscheme</literal>オプションも参照してください。
        </para>
       </listitem>
@@ -2840,11 +2806,11 @@ search+bind認証を行うときに使用する検索フィルタです。
        <listitem>
         <para>
 <!--
-         An <ulink url="https://tools.ietf.org/html/rfc4516">RFC 4516</ulink>
+         An <ulink url="https://datatracker.ietf.org/doc/html/rfc4516">RFC 4516</ulink>
          LDAP URL.  This is an alternative way to write some of the
          other LDAP options in a more compact and standard form.  The format is
 -->
-<ulink url="https://tools.ietf.org/html/rfc4516">RFC 4516</ulink>LDAP URL。
+<ulink url="https://datatracker.ietf.org/doc/html/rfc4516">RFC 4516</ulink>LDAP URL。
 これはその他いくつかのLDAPオプションをより簡潔、かつ一般的な形式で記述する別の方法です。
 フォーマットは以下のようになっています。
 <synopsis>
@@ -2921,7 +2887,7 @@ search+bindオプションと単純バインドに対するオプションの設
     option is specified the default is
     <literal>ldapsearchattribute=uid</literal>.
 -->
-search+bindモードを使用するときは、<literal>ldapsearchattribute</literal>で指定される単一の属性を使って、あるいは<literal>ldapsearchfilter</literal>で指定されるカスタム検索フィルターを使って、検索を実行できます。
+search+bindモードを使用するときは、<literal>ldapsearchattribute</literal>で指定される単一の属性を使って、あるいは<literal>ldapsearchfilter</literal>で指定されるカスタム検索フィルタを使って、検索を実行できます。
 <literal>ldapsearchattribute=foo</literal>の指定は、<literal>ldapsearchfilter="(foo=$username)"</literal>と同等です。
 どちらのオプションもない場合は、<literal>ldapsearchattribute=uid</literal>がデフォルトです。
    </para>
@@ -2932,12 +2898,12 @@ search+bindモードを使用するときは、<literal>ldapsearchattribute</lit
      <productname>OpenLDAP</productname> as the LDAP client library, the
      <literal>ldapserver</literal> setting may be omitted.  In that case, a
      list of host names and ports is looked up via
-     <ulink url="https://tools.ietf.org/html/rfc2782">RFC 2782</ulink> DNS SRV records.
+     <ulink url="https://datatracker.ietf.org/doc/html/rfc2782">RFC 2782</ulink> DNS SRV records.
      The name <literal>_ldap._tcp.DOMAIN</literal> is looked up, where
      <literal>DOMAIN</literal> is extracted from <literal>ldapbasedn</literal>.
 -->
 <productname>PostgreSQL</productname>が、LDAPクライアントライブラリとして<productname>OpenLDAP</productname>を使用するようにコンパイルされていた場合、<literal>ldapserver</literal>の設定は省略出来ます。
-その場合、ホスト名とポート番号のリストは、<ulink url="https://tools.ietf.org/html/rfc2782">RFC 2782</ulink> DNS SRVレコードを使用して検索されます。
+その場合、ホスト名とポート番号のリストは、<ulink url="https://datatracker.ietf.org/doc/html/rfc2782">RFC 2782</ulink> DNS SRVレコードを使用して検索されます。
 <literal>_ldap._tcp.DOMAIN</literal>という名前が検索され、<literal>ldapbasedn</literal>から<literal>DOMAIN</literal>が抽出されます。
    </para>
 
@@ -2975,9 +2941,11 @@ host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapse
     the LDAP server, perform a search for <literal>(uid=someuser)</literal>
     under the specified base DN.  If an entry is found, it will then attempt to
     bind using that found information and the password supplied by the client.
-    If that second connection succeeds, the database access is granted.
+    If that second bind succeeds, the database access is granted.
 -->
-データベースユーザ<literal>someuser</literal>としてデータベースに接続するとき、PostgreSQLは（<literal>ldapbinddn</literal>が指定されていないので）匿名的にバインドを試み、指定されたベースDNの基で<literal>(uid=someuser)</literal>の検索を行います。あるエントリが見つかると、見つかった情報とクライアントから与えられたパスワードを用いて、その結果バインドを試みます。その二番目の接続が成功するとデータベースアクセスを認められます。
+データベースユーザ<literal>someuser</literal>としてデータベースに接続するとき、PostgreSQLは（<literal>ldapbinddn</literal>が指定されていないので）匿名的にバインドを試み、指定されたベースDNの基で<literal>(uid=someuser)</literal>の検索を行います。
+あるエントリが見つかると、見つかった情報とクライアントから与えられたパスワードを用いて、バインドを試みます。
+その二番目のバインドが成功するとデータベースアクセスが認められます。
    </para>
 
    <para>
@@ -3003,7 +2971,7 @@ LDAPに対し認証をサポートするいくつかの他のソフトウェア�
     <literal>ldapsearchattribute</literal> to allow authentication by
     user ID or email address:
 -->
-<literal>ldapsearchattribute</literal>の代わりに<literal>ldapsearchfilter</literal>を使用してユーザーIDまたは電子メールアドレスによる認証を可能にするsearch+bind設定の例です。
+<literal>ldapsearchattribute</literal>の代わりに<literal>ldapsearchfilter</literal>を使用してユーザIDまたは電子メールアドレスによる認証を可能にするsearch+bind設定の例です。
 <programlisting>
 host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapsearchfilter="(|(uid=$username)(mail=$username))"
 </programlisting>
@@ -3028,7 +2996,7 @@ host ... ldap ldapbasedn="dc=example,dc=net"
      parts of a DN, it is often necessary to use double-quoted parameter
      values when configuring LDAP options, as shown in the examples.
 -->
-LDAPはDNの異なる構成要素を区切るために往々にしてコンマとスペースを使用します。
+LDAPはDNの異なる構成要素を区切るために往々にしてカンマとスペースを使用します。
 例で示されたように、LDAPオプションを設定する場合、二重引用符で括られたパラメータ値を使用することがしばしば必須となります。
     </para>
    </tip>
@@ -3140,7 +3108,7 @@ RADIUSサーバと安全なやり取りに使用される共有の秘密デー�
           RADIUS server should only be considered obfuscated, not secured, and
           external security measures should be applied if necessary.
 -->
-使用されている暗号化ベクターは<productname>PostgreSQL</productname>が<productname>OpenSSL</productname>をサポートするよう構築している場合にのみ暗号論的に強力です。
+使用されている暗号化ベクトルは<productname>PostgreSQL</productname>が<productname>OpenSSL</productname>をサポートするよう構築している場合にのみ暗号論的に強力です。
 他の場合にはRADIUSサーバへの伝送は難読化されているだけで安全ではなく、必要ならば外部のセキュリティ方法を適用すべきです。
          </para>
          </note>
@@ -3193,7 +3161,7 @@ RADIUSリクエスト内で<literal>NAS Identifier</literal>として使用さ�
     it is tedious because two layers of double-quoting are now required.
     An example of putting whitespace into RADIUS secret strings is:
 -->
-RADIUSパラメータ値にカンマまたは空白を含める必要がある場合は、値を二重引用符で囲むことで実行できますが、二重引用符の2つのレイヤーが必要になるため面倒なことになります。
+RADIUSパラメータ値にカンマまたは空白を含める必要がある場合は、値を二重引用符で囲むことで実行できますが、二重引用符の2つのレイヤが必要になるため面倒なことになります。
 RADIUSシークレット文字列に空白を入れる例を次に示します。
 <programlisting>
 host ... radius radiusservers="server1,server2" radiussecrets="""secret one"",""secret two"""
@@ -3217,7 +3185,8 @@ host ... radius radiusservers="server1,server2" radiussecrets="""secret one"",""
    <para>
 <!--
     This authentication method uses SSL client certificates to perform
-    authentication. It is therefore only available for SSL connections.
+    authentication. It is therefore only available for SSL connections;
+    see <xref linkend="ssl-openssl-config"/> for SSL configuration instructions.
     When using this authentication method, the server will require that
     the client provide a valid, trusted certificate.  No password prompt
     will be sent to the client.  The <literal>cn</literal> (Common Name)
@@ -3227,7 +3196,7 @@ host ... radius radiusservers="server1,server2" radiussecrets="""secret one"",""
     <literal>cn</literal> to be different from the database user name.
 -->
 この認証方法は、認証のためにSSLクライアント証明書を使用します。
-よってこの方法は、SSL接続を使用します。
+よってこの方法は、SSL接続を使用します。SSLの構成の手順については<xref linkend="ssl-openssl-config"/>を参照してください。
 この認証方法を使用する際は、サーバはクライアントが有効かつ信頼された証明書を提供することを要求します。
 パスワードのプロンプトはクライアントに送信されません。
 証明書の<literal>cn</literal>（Common Name）属性は、要求されたデータベースユーザ名と比較されます。
@@ -3296,6 +3265,7 @@ host ... radius radiusservers="server1,server2" radiussecrets="""secret one"",""
 この認証方式は認証機構としてPAM（Pluggable Authentication Modules）を使用することを除いて<literal>password</literal>のように動作します。
 デフォルトのPAMサービス名は<literal>postgresql</literal>です。
 PAMはユーザ名/パスワードの組の確認と接続されたリモートホスト名またはIPアドレスを任意に確認するためだけに使用されます。
+それゆえ、ユーザはPAMが認証に使用される以前にデータベースに存在していなければいけません。
 PAMについての詳細は<ulink url="https://www.kernel.org/pub/linux/libs/pam/"><productname>Linux-PAM</productname>ページ</ulink>を読んでください。
    </para>
 
@@ -3469,10 +3439,8 @@ FATAL:  database "testdb" does not exist
     if you do not specify a database name, it defaults to the database
     user name.
 -->
-《マッチ度[]》-接続しようとしているデータベースは存在しません。
-データベース名を指定しなければ、それが望むと望まざるとにかかわらず、データベースユーザ名がデフォルトとなることに注意してください。
-《機械翻訳》接続しようとしているデータベースが存在しません。
-データベース名を指定しない場合、デフォルトではデータベースユーザ名になります。
+接続しようとしているデータベースは存在しません。
+データベース名を指定しなければ、データベースユーザ名がデフォルトとなることに注意してください。
    </para>
 
    <tip>

@@ -21,7 +21,7 @@
    event triggers are global to a particular database and are capable of
    capturing DDL events.
 -->
-<xref linkend="triggers"/>で議論されたトリガの機能を補完するために、<productname>PostgreSQL</productname>はイベントトリガを提供します。
+<xref linkend="triggers"/>で説明されたトリガの機能を補完するために、<productname>PostgreSQL</productname>はイベントトリガを提供します。
 一つのテーブルに付与され、DMLイベントのみ対象にしたこれまでのトリガと違い、イベントトリガは特定のデータベースに大域的であり、DDLイベントを対象に実行できます。
   </para>
 
@@ -45,15 +45,48 @@
      An event trigger fires whenever the event with which it is associated
      occurs in the database in which it is defined. Currently, the only
      supported events are
+     <literal>login</literal>,
      <literal>ddl_command_start</literal>,
      <literal>ddl_command_end</literal>,
      <literal>table_rewrite</literal>
      and <literal>sql_drop</literal>.
      Support for additional events may be added in future releases.
 -->
-イベントトリガは、関連づけられたイベントが、定義されたデータベースで起こるたびに実行されます。
+《マッチ度[84.196891]》イベントトリガは、関連づけられたイベントが、定義されたデータベースで起こるたびに実行されます。
 現在の所サポートされているイベントは、<literal>ddl_command_start</literal>、<literal>ddl_command_end</literal>、<literal>table_rewrite</literal>、<literal>sql_drop</literal>です。
 今後のリリースで新たなイベントが追加されるかもしれません。
+《機械翻訳》イベントトリガは、関連付けられているイベントが定義されているデータベースで発生したときに発生します。
+現在サポートされているイベントは、<literal>login</literal>、<literal>ddl_command_start</literal>、<literal>ddl_command_end</literal>、<literal>table_rewrite</literal>、および<literal>sql_drop</literal>のみです。
+サポートの追加イベントは、将来のリリースで追加される可能性があります。
+   </para>
+
+   <para>
+<!--
+     The <literal>login</literal> event occurs when an authenticated user logs
+     into the system. Any bug in a trigger procedure for this event may
+     prevent successful login to the system. Such bugs may be worked around by
+     setting <xref linkend="guc-event-triggers"/> to <literal>false</literal>
+     either in a connection string or configuration file. Alternatively, you can
+     restart the system in single-user mode (as event triggers are
+     disabled in this mode). See the <xref linkend="app-postgres"/> reference
+     page for details about using single-user mode.
+     The <literal>login</literal> event will also fire on standby servers.
+     To prevent servers from becoming inaccessible, such triggers must avoid
+     writing anything to the database when running on a standby.
+     Also, it's recommended to avoid long-running queries in
+     <literal>login</literal> event triggers.  Note that, for instance,
+     canceling a connection in <application>psql</application> will not cancel
+     the in-progress <literal>login</literal> trigger.
+-->
+《機械翻訳》<literal>login</literal>イベントは、認証されたユーザがシステムに流れ込むときに発生します。
+このイベントのトリガプロシージャのバグは、システムへのログインの成功を妨げる可能性があります。
+このようなバグは、コネクション文字列または構成ファイルで<xref linkend="guc-event-triggers"/>を<literal>false</literal>に設定することで回避できます。
+または、シングルユーザモードでシステムをリスタートすることもできます（このモードではイベントトリガーが無効になっているため）。
+シングルユーザモードの使用方法の詳細については、<xref linkend="app-postgres"/>リファレンスページを参照してください。
+<literal>login</literal>イベントはスタンバイサーバにも発砲するだろう。
+サーバがアクセスできなくなるのを防ぐために、このようなトリガーは、データベースで実行されているときにスタンバイに何も書き込まないようにする必要があります。
+また、<literal>login</literal>イベントトリガーでの長時間実行クエリを避けることをお勧めします。
+ノート、インスタンス、キャンセル、<application>psql</application>のコネクションは、進行中の<literal>login</literal>トリガをキャンセルしない。
    </para>
 
    <para>
@@ -74,7 +107,7 @@
 -->
 <literal>ddl_command_start</literal>イベントは、<literal>CREATE</literal>、<literal>ALTER</literal>、<literal>DROP</literal>、<literal>SECURITY LABEL</literal>、<literal>COMMENT</literal>、<literal>GRANT</literal>、<literal>REVOKE</literal>コマンドの実行の直前に発生します。
 影響するオブジェクトが存在するかどうかのチェックはイベントトリガが実行されるまで行われません。
-しかしながら例外として、共有オブジェクト &mdash; データベース、ロール、テーブルスペース &mdash; を対象としているDDLコマンド、もしくは、イベントトリガ自体をターゲットにしたコマンドに対してのイベントは起こりません。
+しかしながら例外として、共有オブジェクト &mdash; データベース、ロール、テーブル空間 &mdash; を対象としているDDLコマンド、もしくは、イベントトリガ自体をターゲットにしたコマンドに対してのイベントは起こりません。
 <literal>ddl_command_start</literal>はまた、<literal>SELECT INTO</literal>コマンドの実行直前にも発生します。このコマンドは<literal>CREATE TABLE AS</literal>コマンドと同等だからです。
    </para>
 
@@ -1097,6 +1130,14 @@
         <entry align="left"></entry>
        </row>
        <row>
+        <entry align="left"><literal>REINDEX</literal></entry>
+        <entry align="center"><literal>X</literal></entry>
+        <entry align="center"><literal>X</literal></entry>
+        <entry align="center"><literal>-</literal></entry>
+        <entry align="center"><literal>-</literal></entry>
+        <entry align="left"></entry>
+       </row>
+       <row>
         <entry align="left"><literal>REVOKE</literal></entry>
         <entry align="center"><literal>X</literal></entry>
         <entry align="center"><literal>X</literal></entry>
@@ -1249,13 +1290,16 @@ typedef struct EventTriggerData
        <para>
 <!--
         Describes the event for which the function is called, one of
-        <literal>"ddl_command_start"</literal>, <literal>"ddl_command_end"</literal>,
-        <literal>"sql_drop"</literal>, <literal>"table_rewrite"</literal>.
+        <literal>"login"</literal>, <literal>"ddl_command_start"</literal>,
+        <literal>"ddl_command_end"</literal>, <literal>"sql_drop"</literal>,
+        <literal>"table_rewrite"</literal>.
         See <xref linkend="event-trigger-definition"/> for the meaning of these
         events.
 -->
-その関数が呼び出されたイベント、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のうちの１つを記述します。
+《マッチ度[80.830671]》その関数が呼び出されたイベント、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のうちの１つを記述します。
 これらのイベントの内容は、<xref linkend="event-trigger-definition"/>を参照してください。
+《機械翻訳》関数が呼び出されるイベントを、<literal>"login"</literal>、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のいずれかで記述します。
+これらのイベントの意味については<xref linkend="event-trigger-definition"/>を参照してください。
        </para>
       </listitem>
      </varlistentry>
@@ -1336,8 +1380,9 @@ C言語で作成したイベントトリガ関数に関するとても簡単な�
 以下がトリガ関数のソースコードです。
 <programlisting><![CDATA[
 #include "postgres.h"
-#include "commands/event_trigger.h"
 
+#include "commands/event_trigger.h"
+#include "fmgr.h"
 
 PG_MODULE_MAGIC;
 
@@ -1491,4 +1536,87 @@ CREATE EVENT TRIGGER no_rewrite_allowed
 </programlisting>
    </para>
  </sect1>
+
+  <sect1 id="event-trigger-database-login-example">
+    <title>A Database Login Event Trigger Example</title>
+
+    <para>
+<!--
+      The event trigger on the <literal>login</literal> event can be
+      useful for logging user logins, for verifying the connection and
+      assigning roles according to current circumstances, or for session
+      data initialization. It is very important that any event trigger using
+      the <literal>login</literal> event checks whether or not the database is
+      in recovery before performing any writes. Writing to a standby server
+      will make it inaccessible.
+-->
+《機械翻訳》<literal>login</literal>イベントのイベントトリガは、ロギングユーザへのログイン、コネクションの確認と現在の状況に応じた役割の割り当て、またはセッションデータの初期設定に役立ちます。
+<literal>login</literal>イベントを使用するイベントトリガは、データベースがリカバリ前で書き込みを実行しているかどうかを確認することが非常に重要です。
+スタンバイサーバに書き込むと、にアクセスできなくなります。
+    </para>
+
+    <para>
+<!--
+      The following example demonstrates these options.
+-->
+《機械翻訳》次の例は、これらのオプションを示しています。
+<programlisting>
+-- create test tables and roles
+CREATE TABLE user_login_log (
+  "user" text,
+  "session_start" timestamp with time zone
+);
+CREATE ROLE day_worker;
+CREATE ROLE night_worker;
+
+-- the example trigger function
+CREATE OR REPLACE FUNCTION init_session()
+  RETURNS event_trigger SECURITY DEFINER
+  LANGUAGE plpgsql AS
+$$
+DECLARE
+  hour integer = EXTRACT('hour' FROM current_time at time zone 'utc');
+  rec boolean;
+BEGIN
+-- 1. Forbid logging in between 2AM and 4AM.
+IF hour BETWEEN 2 AND 4 THEN
+  RAISE EXCEPTION 'Login forbidden';
+END IF;
+
+-- The checks below cannot be performed on standby servers so
+-- ensure the database is not in recovery before we perform any
+-- operations.
+SELECT pg_is_in_recovery() INTO rec;
+IF rec THEN
+  RETURN;
+END IF;
+
+-- 2. Assign some roles. At daytime, grant the day_worker role, else the
+-- night_worker role.
+IF hour BETWEEN 8 AND 20 THEN
+  EXECUTE 'REVOKE night_worker FROM ' || quote_ident(session_user);
+  EXECUTE 'GRANT day_worker TO ' || quote_ident(session_user);
+ELSE
+  EXECUTE 'REVOKE day_worker FROM ' || quote_ident(session_user);
+  EXECUTE 'GRANT night_worker TO ' || quote_ident(session_user);
+END IF;
+
+-- 3. Initialize user session data
+CREATE TEMP TABLE session_storage (x float, y integer);
+ALTER TABLE session_storage OWNER TO session_user;
+
+-- 4. Log the connection time
+INSERT INTO public.user_login_log VALUES (session_user, current_timestamp);
+
+END;
+$$;
+
+-- trigger definition
+CREATE EVENT TRIGGER init_session
+  ON login
+  EXECUTE FUNCTION init_session();
+ALTER EVENT TRIGGER init_session ENABLE ALWAYS;
+</programlisting>
+    </para>
+  </sect1>
 </chapter>

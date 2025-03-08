@@ -3,7 +3,7 @@
  * nodeHashjoin.c
  *	  Routines to handle hash join nodes
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -169,9 +169,8 @@
 #include "executor/nodeHash.h"
 #include "executor/nodeHashjoin.h"
 #include "miscadmin.h"
-#include "pgstat.h"
-#include "utils/memutils.h"
 #include "utils/sharedtuplestore.h"
+#include "utils/wait_event.h"
 
 
 /*
@@ -566,20 +565,21 @@ ExecHashJoinImpl(PlanState *pstate, bool parallel)
 					}
 
 					/*
-					 * In a right-antijoin, we never return a matched tuple.
-					 * And we need to stay on the current outer tuple to
-					 * continue scanning the inner side for matches.
-					 */
-					if (node->js.jointype == JOIN_RIGHT_ANTI)
-						continue;
-
-					/*
-					 * If we only need to join to the first matching inner
-					 * tuple, then consider returning this one, but after that
-					 * continue with next outer tuple.
+					 * If we only need to consider the first matching inner
+					 * tuple, then advance to next outer tuple after we've
+					 * processed this one.
 					 */
 					if (node->js.single_match)
 						node->hj_JoinState = HJ_NEED_NEW_OUTER;
+
+					/*
+					 * In a right-antijoin, we never return a matched tuple.
+					 * If it's not an inner_unique join, we need to stay on
+					 * the current outer tuple to continue scanning the inner
+					 * side for matches.
+					 */
+					if (node->js.jointype == JOIN_RIGHT_ANTI)
+						continue;
 
 					if (otherqual == NULL || ExecQual(otherqual, econtext))
 						return ExecProject(node->js.ps.ps_ProjInfo);
@@ -866,18 +866,6 @@ ExecEndHashJoin(HashJoinState *node)
 		ExecHashTableDestroy(node->hj_HashTable);
 		node->hj_HashTable = NULL;
 	}
-
-	/*
-	 * Free the exprcontext
-	 */
-	ExecFreeExprContext(&node->js.ps);
-
-	/*
-	 * clean out the tuple table
-	 */
-	ExecClearTuple(node->js.ps.ps_ResultTupleSlot);
-	ExecClearTuple(node->hj_OuterTupleSlot);
-	ExecClearTuple(node->hj_HashTupleSlot);
 
 	/*
 	 * clean up subtrees
@@ -1318,7 +1306,7 @@ ExecParallelHashJoinNewBatch(HashJoinState *hjstate)
  * The data recorded in the file for each tuple is its hash value,
  * then the tuple in MinimalTuple format.
  *
- * fileptr points to a batch file in one of the the hashtable arrays.
+ * fileptr points to a batch file in one of the hashtable arrays.
  *
  * The batch files (and their buffers) are allocated in the spill context
  * created for the hashtable.

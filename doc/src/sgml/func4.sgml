@@ -7,6 +7,112 @@
 6. func.sgmlの変更がなければ、pull requestをマージして終了です。お疲れ様でした！
 -->
 <!-- split-func4-start -->
+ <sect1 id="functions-merge-support">
+<!--
+  <title>Merge Support Functions</title>
+-->
+  <title>マージサポート関数</title>
+
+  <indexterm>
+   <primary>MERGE</primary>
+   <secondary>RETURNING</secondary>
+  </indexterm>
+
+  <para>
+<!--
+   <productname>PostgreSQL</productname> includes one merge support function
+   that may be used in the <literal>RETURNING</literal> list of a
+   <xref linkend="sql-merge"/> command to identify the action taken for each
+   row; see <xref linkend="functions-merge-support-table"/>.
+-->
+<productname>PostgreSQL</productname>には、各行に対して行われたアクションを識別するために<xref linkend="sql-merge"/>コマンドの<literal>RETURNING</literal>リストで使用されるマージサポート関数が1つ含まれています。
+詳細は<xref linkend="functions-merge-support-table"/>を参照してください。
+  </para>
+
+  <table id="functions-merge-support-table">
+<!--
+   <title>Merge Support Functions</title>
+-->
+   <title>マージサポート関数</title>
+
+   <tgroup cols="1">
+    <thead>
+     <row>
+      <entry role="func_table_entry"><para role="func_signature">
+<!--
+       Function
+-->
+関数
+      </para>
+      <para>
+<!--
+       Description
+-->
+説明
+      </para></entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row>
+      <entry id="merge-action" role="func_table_entry"><para role="func_signature">
+       <indexterm>
+        <primary>merge_action</primary>
+       </indexterm>
+       <function>merge_action</function> ( )
+       <returnvalue>text</returnvalue>
+      </para>
+      <para>
+<!--
+       Returns the merge action command executed for the current row.  This
+       will be <literal>'INSERT'</literal>, <literal>'UPDATE'</literal>, or
+       <literal>'DELETE'</literal>.
+-->
+現在の行に対して実行されたマージアクションコマンドを返します。
+これは<literal>'INSERT'</literal>、<literal>'UPDATE'</literal>、または<literal>'DELETE'</literal>になります。
+      </para></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+<!--
+   Example:
+-->
+例：
+<screen><![CDATA[
+MERGE INTO products p
+  USING stock s ON p.product_id = s.product_id
+  WHEN MATCHED AND s.quantity > 0 THEN
+    UPDATE SET in_stock = true, quantity = s.quantity
+  WHEN MATCHED THEN
+    UPDATE SET in_stock = false, quantity = 0
+  WHEN NOT MATCHED THEN
+    INSERT (product_id, in_stock, quantity)
+      VALUES (s.product_id, true, s.quantity)
+  RETURNING merge_action(), p.*;
+
+ merge_action | product_id | in_stock | quantity
+--------------+------------+----------+----------
+ UPDATE       |       1001 | t        |       50
+ UPDATE       |       1002 | f        |        0
+ INSERT       |       1003 | t        |       10
+]]></screen>
+  </para>
+
+  <para>
+<!--
+   Note that this function can only be used in the <literal>RETURNING</literal>
+   list of a <command>MERGE</command> command.  It is an error to use it in any
+   other part of a query.
+-->
+この関数は<command>MERGE</command>コマンドの<literal>RETURNING</literal>リストでのみ使用可能であることに注意してください。
+問い合わせの他の部分で使用するとエラーになります。
+  </para>
+
+ </sect1>
+
  <sect1 id="functions-subquery">
 <!--
   <title>Subquery Expressions</title>
@@ -1379,7 +1485,10 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
    </para>
 
   <sect2 id="functions-info-session">
+<!--
    <title>Session Information Functions</title>
+-->
+   <title>セッション情報関数</title>
 
   <para>
 <!--
@@ -1393,11 +1502,11 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
 <!--
    In addition to the functions listed in this section, there are a number of
    functions related to the statistics system that also provide system
-   information. See <xref linkend="monitoring-stats-views"/> for more
+   information. See <xref linkend="monitoring-stats-functions"/> for more
    information.
 -->
 本節で列挙されている関数のほかに、同様にシステム情報を提供する統計システムに関連した数多くの関数があります。
-<xref linkend="monitoring-stats-views"/>にさらに情報があります。
+<xref linkend="monitoring-stats-functions"/>にさらに情報があります。
   </para>
 
    <table id="functions-info-session-table">
@@ -1447,7 +1556,7 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
         spelling.)
 -->
 現在のデータベースの名前を返します。
-（データベースはSQL標準では<quote>カタログ</quote>と呼ばれています。ですから標準での記述は<function>current_catalog</function>となります。）
+（データベースは標準SQLでは<quote>カタログ</quote>と呼ばれています。ですから標準での記述は<function>current_catalog</function>となります。）
        </para></entry>
       </row>
 
@@ -1507,7 +1616,7 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
         be used for any tables or other named objects that are created without
         specifying a target schema.
 -->
-サーチパスの先頭にあるスキーマの名前を返します。（サーチパスが空ならNULL値を返します。）
+検索パスの先頭にあるスキーマの名前を返します。（検索パスが空ならNULL値を返します。）
 これはターゲットスキーマを指定せずに作成されるすべてのテーブルあるいは名前付きのオブジェクトで使われるスキーマです。
        </para></entry>
       </row>
@@ -1780,6 +1889,14 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
 特定のファイル形式を要求するには、オプションパラメータの値として<literal>csvlog</literal>、<literal>jsonlog</literal>、または<literal>stderr</literal>をオプション引数の値として渡してください。
 指定のログ形式が<xref linkend="guc-log-destination"/>で設定されていない場合は、戻り値が<literal>NULL</literal>となります。
 結果は<filename>current_logfiles</filename>ファイルの内容を反映します。
+       </para>
+       <para>
+<!--
+        This function is restricted to superusers and roles with privileges of
+        the <literal>pg_monitor</literal> role by default, but other users can
+        be granted EXECUTE to run the function.
+-->
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールの権限を持つロールに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -2003,31 +2120,6 @@ SELECT * FROM pg_ls_dir('.') WITH ORDINALITY AS t(ls,n);
 <function>current_user</function>と等価です。
        </para></entry>
       </row>
-
-      <row>
-       <entry role="func_table_entry"><para role="func_signature">
-        <indexterm>
-         <primary>version</primary>
-        </indexterm>
-        <function>version</function> ()
-        <returnvalue>text</returnvalue>
-       </para>
-       <para>
-<!--
-        Returns a string describing the <productname>PostgreSQL</productname>
-        server's version.  You can also get this information from
-        <xref linkend="guc-server-version"/>, or for a machine-readable
-        version use <xref linkend="guc-server-version-num"/>.  Software
-        developers should use <varname>server_version_num</varname> (available
-        since 8.2) or <xref linkend="libpq-PQserverVersion"/> instead of
-        parsing the text version.
--->
-<productname>PostgreSQL</productname>サーバのバージョンを説明する文字列を返します。
-情報は<xref linkend="guc-server-version"/>からも得られます。
-機械読み取り可能なバージョンは<xref linkend="guc-server-version-num"/>を使ってください。
-ソフトウェア開発者は文字列バージョンを解析するのではなく、<varname>server_version_num</varname> (8.2以降で利用可能)か<xref linkend="libpq-PQserverVersion"/>を使うべきです。
-       </para></entry>
-      </row>
      </tbody>
     </tgroup>
    </table>
@@ -2081,7 +2173,10 @@ Unix用語で言うと、セッションユーザは<quote>実ユーザ</quote>�
   </sect2>
 
   <sect2 id="functions-info-access">
+<!--
    <title>Access Privilege Inquiry Functions</title>
+-->
+   <title>アクセス権限照会関数</title>
 
   <indexterm>
    <primary>privilege</primary>
@@ -2337,7 +2432,7 @@ SELECT has_function_privilege('joeuser', 'myfunc(int, text)', 'execute');
         Allowable privilege types are <literal>SET</literal>
         and <literal>ALTER SYSTEM</literal>.
 -->
-ユーザーに構成パラメータに対する権限があるか?
+ユーザに構成パラメータに対する権限があるか?
 パラメータ名では大文字と小文字が区別されません。
 使用可能な権限タイプは<literal>SET</literal>および<literal>ALTER SYSTEM</literal>です。
        </para></entry>
@@ -2429,10 +2524,10 @@ SELECT has_function_privilege('joeuser', 'myfunc(int, text)', 'execute');
         are <literal>SELECT</literal>, <literal>INSERT</literal>,
         <literal>UPDATE</literal>, <literal>DELETE</literal>,
         <literal>TRUNCATE</literal>, <literal>REFERENCES</literal>,
-        and <literal>TRIGGER</literal>.
+        <literal>TRIGGER</literal>, and <literal>MAINTAIN</literal>.
 -->
 ユーザはテーブルに対する権限があるか？
-可能な権限型は<literal>SELECT</literal>、<literal>INSERT</literal>、<literal>UPDATE</literal>、<literal>DELETE</literal>、<literal>TRUNCATE</literal>、<literal>REFERENCES</literal>、<literal>TRIGGER</literal>です。
+可能な権限型は<literal>SELECT</literal>、<literal>INSERT</literal>、<literal>UPDATE</literal>、<literal>DELETE</literal>、<literal>TRUNCATE</literal>、<literal>REFERENCES</literal>、<literal>TRIGGER</literal>、<literal>MAINTAIN</literal>です。
        </para></entry>
       </row>
 
@@ -2505,6 +2600,10 @@ OIDではなく名前で型を指定する際は、可能な入力は<type>regty
         are immediately available without doing <command>SET ROLE</command>,
         while <literal>SET</literal> denotes whether it is possible to change
         to the role using the <literal>SET ROLE</literal> command.
+        <literal>WITH ADMIN OPTION</literal> or <literal>WITH GRANT
+        OPTION</literal> can be added to any of these privilege types to
+        test whether the <literal>ADMIN</literal> privilege is held (all
+        six spellings test the same thing).
         This function does not allow the special case of
         setting <parameter>user</parameter> to <literal>public</literal>,
         because the PUBLIC pseudo-role can never be a member of real roles.
@@ -2513,6 +2612,7 @@ OIDではなく名前で型を指定する際は、可能な入力は<type>regty
 可能な権限型は<literal>MEMBER</literal>、<literal>USAGE</literal>と<literal>SET</literal>です。
 特定の権限が与えられているかどうかにかかわらず、<literal>MEMBER</literal>は直接あるいは間接的にそのロールのメンバであることを示します。（すなわち、<command>SET ROLE</command>を実行する権限です）
 <literal>SET</literal>が<literal>SET ROLE</literal>コマンドを用いてロールに変更を加えることができるかどうかを示すのに対し、<literal>USAGE</literal>は、そのロールの権限が<command>SET ROLE</command>を実行することなく、直ちに利用可能であることを示します。
+<literal>WITH ADMIN OPTION</literal>または<literal>WITH GRANT OPTION</literal>は、<literal>ADMIN</literal>権限が保持されているかどうかに関係なく、これらのいずれの権限にもテストのために追加できます（これら6つの綴りはすべて同じテストを行います）。
 この関数は<parameter>user</parameter>を<literal>public</literal>に設定する特別なケースを許可しません。
 PUBLIC仮想ロールは実在するロールのメンバには決してなれないからです。
        </para></entry>
@@ -2946,7 +3046,7 @@ SELECT relname FROM pg_class WHERE pg_table_is_visible(oid);
 <!--
         Is operator family visible in search path?
 -->
-演算子族が可視か？
+演算子族が検索パスにおいて可視か？
        </para></entry>
       </row>
 
@@ -3131,7 +3231,7 @@ SELECT pg_type_is_visible('myschema.widget'::regtype);
 
      <tbody>
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="format-type" xreflabel="format_type" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>format_type</primary>
         </indexterm>
@@ -3146,6 +3246,39 @@ SELECT pg_type_is_visible('myschema.widget'::regtype);
 -->
 型OIDと型修飾子で決まるデータ型のSQL名を返します。
 型修飾子が不明な場合はNULLを型修飾子に渡してください。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_basetype</primary>
+        </indexterm>
+        <function>pg_basetype</function> ( <type>regtype</type> )
+        <returnvalue>regtype</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns the OID of the base type of a domain identified by its
+        type OID.  If the argument is the OID of a non-domain type,
+        returns the argument as-is.  Returns NULL if the argument is
+        not a valid type OID.  If there's a chain of domain dependencies,
+        it will recurse until finding the base type.
+-->
+型OIDで識別されるドメイン型の基本型のOIDを返します。
+引数がドメイン以外の型のOIDの場合、引数をそのまま返します。
+引数が有効な型OIDでない場合、NULLを返します。
+ドメイン依存の連鎖がある場合、基本型が見つかるまで再帰します。
+       </para>
+       <para>
+<!--
+        Assuming <literal>CREATE DOMAIN mytext AS text</literal>:
+-->
+<literal>CREATE DOMAIN mytext AS text</literal>と仮定します。
+       </para>
+       <para>
+        <literal>pg_basetype('mytext'::regtype)</literal>
+        <returnvalue>text</returnvalue>
        </para></entry>
       </row>
 
@@ -3400,9 +3533,9 @@ SELECT pg_type_is_visible('myschema.widget'::regtype);
 -->
 サーバが認識するSQLキーワードを記述するレコードの集合を返します。
 <parameter>word</parameter>列にはキーワードが含まれます。
-<parameter>catcode</parameter>列にはカテゴリーコードが含まれます。<literal>U</literal>は非予約キーワード、<literal>C</literal>は列名になり得るキーワード、<literal>T</literal>は型あるいは関数名になり得るキーワード、<literal>R</literal>は完全な予約キーワードです。
+<parameter>catcode</parameter>列にはカテゴリコードが含まれます。<literal>U</literal>は非予約キーワード、<literal>C</literal>は列名になり得るキーワード、<literal>T</literal>は型あるいは関数名になり得るキーワード、<literal>R</literal>は完全な予約キーワードです。
 <parameter>barelabel</parameter>列は、キーワードが<quote>bare</quote>列ラベルとして<command>SELECT</command>リスト中で使えるなら<literal>true</literal>で、<literal>AS</literal>の後にのみ使えるのなら<literal>false</literal>です。
-<parameter>catdesc</parameter>列にはキーワードカテゴリーを記述する、ローカライズ化されることもある文字列が含まれます。
+<parameter>catdesc</parameter>列にはキーワードカテゴリを記述する、ローカライズ化されることもある文字列が含まれます。
 <parameter>baredesc</parameter>列にはキーワードの列ラベル状態を記述する、ローカライズ化されることもある文字列が含まれます。
        </para></entry>
       </row>
@@ -3480,7 +3613,7 @@ SELECT pg_type_is_visible('myschema.widget'::regtype);
 -->
 列に関連するシーケンスの名前を返します。
 列に関連するシーケンスが存在しなければ、NULLを返します。
-列がIDENTITY列の場合、関連するシーケンスはIDENTITY列に対して内部的に作成されたシーケンスとなります。
+列が識別列の場合、関連するシーケンスは識別列に対して内部的に作成されたシーケンスとなります。
 SERIAL型（<type>serial</type>、<type>smallserial</type>、<type>bigserial</type>）の一つを使って作られた列については、そのSERIAL列の定義に対して作られたシーケンスとなります。
 後者の場合、この関連付けは<command>ALTER SEQUENCE OWNED BY</command>で修正または削除することができます。
 （この関数はおそらく<function>pg_get_owned_sequence</function>と呼ばれるべきだったのでしょうが、現在の名前はそれが主に<type>serial</type>列または<type>bigserial</type>列と一緒に使われていたという事実によります。）
@@ -3496,7 +3629,7 @@ SERIAL型（<type>serial</type>、<type>smallserial</type>、<type>bigserial</ty
         A typical use is in reading the current value of the sequence for an
         identity or serial column, for example:
 -->
-典型的な使用法はIDENTITY列またはSERIAL列のシーケンスの現在値を読み取ることです。例を示します。
+典型的な使用法は識別列またはSERIAL列のシーケンスの現在値を読み取ることです。例を示します。
 <programlisting>
 SELECT currval(pg_get_serial_sequence('sometable', 'id'));
 </programlisting>
@@ -3791,21 +3924,8 @@ GUCが存在しても表示するフラグがない場合、結果は空の配�
 この関数は、OIDの別名型である<type>regtype</type>を返すものとして宣言されます（<xref linkend="datatype-oid"/>を参照）。つまり、比較目的のOIDと同一ですが、型名として表示されます。
        </para>
        <para>
-<!--
-        For example:
--->
-以下に例をあげます。
-<programlisting>
-SELECT pg_typeof(33);
- pg_typeof
------------
- integer
-
-SELECT typlen FROM pg_type WHERE oid = pg_typeof(33);
- typlen
---------
-      4
-</programlisting>
+        <literal>pg_typeof(33)</literal>
+        <returnvalue>integer</returnvalue>
        </para></entry>
       </row>
 
@@ -3831,21 +3951,12 @@ SELECT typlen FROM pg_type WHERE oid = pg_typeof(33);
 引数が照合可能なデータ型でなければ、エラーが生じます。
        </para>
        <para>
-<!--
-        For example:
--->
-例を挙げます。
-<programlisting>
-SELECT collation for (description) FROM pg_description LIMIT 1;
- pg_collation_for
-------------------
- "default"
-
-SELECT collation for ('foo' COLLATE "de_DE");
- pg_collation_for
-------------------
- "de_DE"
-</programlisting>
+        <literal>collation for ('foo'::text)</literal>
+        <returnvalue>"default"</returnvalue>
+       </para>
+       <para>
+        <literal>collation for ('foo' COLLATE "de_DE")</literal>
+        <returnvalue>"de_DE"</returnvalue>
        </para></entry>
       </row>
 
@@ -4026,7 +4137,7 @@ SELECT collation for ('foo' COLLATE "de_DE");
       </row>
 
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="to-regtype" xreflabel="to_regtype" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>to_regtype</primary>
         </indexterm>
@@ -4035,15 +4146,55 @@ SELECT collation for ('foo' COLLATE "de_DE");
        </para>
        <para>
 <!--
-        Translates a textual type name to its OID.  A similar result is
-        obtained by casting the string to type <type>regtype</type> (see
-        <xref linkend="datatype-oid"/>); however, this function will return
-        <literal>NULL</literal> rather than throwing an error if the name is
-        not found.
+        Parses a string of text, extracts a potential type name from it,
+        and translates that name into a type OID.  A syntax error in the
+        string will result in an error; but if the string is a
+        syntactically valid type name that happens not to be found in the
+        catalogs, the result is <literal>NULL</literal>.  A similar result
+        is obtained by casting the string to type <type>regtype</type>
+        (see <xref linkend="datatype-oid"/>), except that that will throw
+        error for name not found.
 -->
-テキスト形式の型名をOIDに変換します。
-同様の結果はその文字列を<type>regtype</type>型にキャストすることによっても得られます。（<xref linkend="datatype-oid"/>参照。）
-しかしこの関数は名前が見つからない場合にエラーを起こすのではなく、<literal>NULL</literal>を返します。
+文字列を解析し、可能性のある型名を抽出し、その名前を型OIDに変換します。
+文字列の構文エラーはエラーになりますが、文字列がカタログにない構文的に有効な型名である場合、結果は<literal>NULL</literal>になります。
+文字列を<type>regtype</type>（<xref linkend="datatype-oid"/>参照）にキャストすることで同様の結果が得られますが、名前が見つからない場合はエラーになります。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>to_regtypemod</primary>
+        </indexterm>
+        <function>to_regtypemod</function> ( <type>text</type> )
+        <returnvalue>integer</returnvalue>
+       </para>
+       <para>
+<!--
+        Parses a string of text, extracts a potential type name from it,
+        and translates its type modifier, if any.  A syntax error in the
+        string will result in an error; but if the string is a
+        syntactically valid type name that happens not to be found in the
+        catalogs, the result is <literal>NULL</literal>.  The result is
+        <literal>-1</literal> if no type modifier is present.
+-->
+テキスト文字列を構文解析し、可能性のある型名を抽出し、型修飾子があればそれを変換します。
+文字列内に構文エラーがあるとエラーになりますが、文字列がカタログにない構文的に有効な型名である場合は、結果は<literal>NULL</literal>になります。
+型修飾子が存在しない場合は、結果は<literal>-1</literal>です。
+       </para>
+       <para>
+<!--
+        <function>to_regtypemod</function> can be combined with
+        <xref linkend="to-regtype"/> to produce appropriate inputs for
+        <xref linkend="format-type"/>, allowing a string representing a
+        type name to be canonicalized.
+-->
+<function>to_regtypemod</function>は<xref linkend="to-regtype"/>と組み合わせて、<xref linkend="format-type"/>に適切な入力を生成することができます。
+これにより、型名を表す文字列を正規化することができます。
+       </para>
+       <para>
+        <literal>format_type(to_regtype('varchar(32)'), to_regtypemod('varchar(32)'))</literal>
+        <returnvalue>character varying(32)</returnvalue>
        </para></entry>
       </row>
      </tbody>
@@ -4530,7 +4681,10 @@ SELECT collation for ('foo' COLLATE "de_DE");
   </sect2>
 
   <sect2 id="functions-info-comment">
+<!--
    <title>Comment Information Functions</title>
+-->
+   <title>コメント情報関数</title>
 
    <indexterm>
     <primary>comment</primary>
@@ -4553,7 +4707,10 @@ SELECT collation for ('foo' COLLATE "de_DE");
    </para>
 
    <table id="functions-info-comment-table">
+<!--
     <title>Comment Information Functions</title>
+-->
+    <title>コメント情報関数</title>
     <tgroup cols="1">
      <thead>
       <row>
@@ -4785,21 +4942,12 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
 そうでない場合、無効な入力は、文字列が直接その型にキャストされたかのように、トランザクションを中断します。
        </para>
        <para>
-        <literal>select * from pg_input_error_info('42000000000', 'integer')</literal>
+        <literal>SELECT * FROM pg_input_error_info('42000000000', 'integer')</literal>
         <returnvalue></returnvalue>
 <programlisting>
                        message                        | detail | hint | sql_error_code
 ------------------------------------------------------+--------+------+----------------
  value "42000000000" is out of range for type integer |        |      | 22003
-</programlisting>
-       </para>
-       <para>
-        <literal>select message, detail from pg_input_error_info('1234.567', 'numeric(7,4)')</literal>
-        <returnvalue></returnvalue>
-<programlisting>
-        message         |                                      detail
-------------------------+----------------------------------&zwsp;-------------------------------------------------
- numeric field overflow | A field with precision 7, scale 4 must round to an absolute value less than 10^3.
 </programlisting>
        </para></entry>
       </row>
@@ -5161,6 +5309,40 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
       <row>
        <entry role="func_table_entry"><para role="func_signature">
         <indexterm>
+         <primary>age</primary>
+        </indexterm>
+        <function>age</function>  ( <type>xid</type> )
+        <returnvalue>integer</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns the number of transactions between the supplied
+        transaction id and the current transaction counter.
+-->
+指定されたトランザクションIDと現在のトランザクションカウンタの間のトランザクション数を返します。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>mxid_age</primary>
+        </indexterm>
+        <function>mxid_age</function>  ( <type>xid</type> )
+        <returnvalue>integer</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns the number of multixacts IDs between the supplied
+        multixact ID and the current multixacts counter.
+-->
+指定されたマルチトランザクションIDと現在のマルチトランザクションカウンタの間のマルチトランザクションIDの数を返します。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
          <primary>txid_current</primary>
         </indexterm>
         <function>txid_current</function> ()
@@ -5304,10 +5486,12 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
     They only provide useful data when the
     <xref linkend="guc-track-commit-timestamp"/> configuration option is
     enabled, and only for transactions that were committed after it was
-    enabled.
+    enabled.  Commit timestamp information is routinely removed during
+    vacuum.
 -->
 <xref linkend="functions-commit-timestamp"/>に示す関数はいつ過去のトランザクションがコミットされたかの情報を提供します。
 <xref linkend="guc-track-commit-timestamp"/>設定オプションが有効のときにだけ、かつそれが有効になった後にコミットされたトランザクションについてのみ意味のある情報を提供します。
+コミット時刻情報は通常、バキューム時に削除されます。
    </para>
 
    <table id="functions-commit-timestamp">
@@ -5791,6 +5975,260 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
 
   </sect2>
 
+  <sect2 id="functions-info-version">
+   <title>Version Information Functions</title>
+
+   <para>
+<!--
+    The functions shown in <xref linkend="functions-version"/>
+    print version information.
+-->
+<xref linkend="functions-version"/>に示す関数は、バージョン情報を出力します。
+   </para>
+
+   <table id="functions-version">
+    <title>Version Information Functions</title>
+    <tgroup cols="1">
+     <thead>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+<!--
+        Function
+-->
+関数
+       </para>
+       <para>
+<!--
+        Description
+-->
+説明
+       </para></entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>version</primary>
+        </indexterm>
+        <function>version</function> ()
+        <returnvalue>text</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns a string describing the <productname>PostgreSQL</productname>
+        server's version.  You can also get this information from
+        <xref linkend="guc-server-version"/>, or for a machine-readable
+        version use <xref linkend="guc-server-version-num"/>.  Software
+        developers should use <varname>server_version_num</varname> (available
+        since 8.2) or <xref linkend="libpq-PQserverVersion"/> instead of
+        parsing the text version.
+-->
+<productname>PostgreSQL</productname>サーバのバージョンを説明する文字列を返します。
+情報は<xref linkend="guc-server-version"/>からも得られます。
+機械読み取り可能なバージョンは<xref linkend="guc-server-version-num"/>を使ってください。
+ソフトウェア開発者は文字列バージョンを解析するのではなく、<varname>server_version_num</varname> (8.2以降で利用可能)か<xref linkend="libpq-PQserverVersion"/>を使うべきです。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>unicode_version</primary>
+        </indexterm>
+        <function>unicode_version</function> ()
+        <returnvalue>text</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns a string representing the version of Unicode used by
+        <productname>PostgreSQL</productname>.
+-->
+<productname>PostgreSQL</productname>が使用するUnicodeのバージョンを表す文字列を返します。
+       </para></entry>
+      </row>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>icu_unicode_version</primary>
+        </indexterm>
+        <function>icu_unicode_version</function> ()
+        <returnvalue>text</returnvalue>
+       </para>
+       <para>
+<!--
+        Returns a string representing the version of Unicode used by ICU, if
+        the server was built with ICU support; otherwise returns
+        <literal>NULL</literal> </para></entry>
+-->
+サーバが ICU サポート付きで構築された場合はICUが使用するUnicodeのバージョンを表す文字列を返し、そうでない場合は<literal>NULL</literal>を返します。
+       </para></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+  </sect2>
+
+  <sect2 id="functions-info-wal-summary">
+<!--
+   <title>WAL Summarization Information Functions</title>
+-->
+   <title>WAL要約情報関数</title>
+
+   <para>
+<!--
+    The functions shown in <xref linkend="functions-wal-summary"/>
+    print information about the status of WAL summarization.
+    See <xref linkend="guc-summarize-wal" />.
+-->
+<xref linkend="functions-wal-summary"/>に示す関数は、WAL要約の状態に関する情報を出力します。
+<xref linkend="guc-summarize-wal" />を参照してください。
+   </para>
+
+   <table id="functions-wal-summary">
+<!--
+    <title>WAL Summarization Information Functions</title>
+-->
+    <title>WAL要約情報関数</title>
+    <tgroup cols="1">
+     <thead>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+<!--
+        Function
+-->
+関数
+       </para>
+       <para>
+<!--
+        Description
+-->
+説明
+       </para></entry>
+      </row>
+     </thead>
+
+     <tbody>
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_available_wal_summaries</primary>
+        </indexterm>
+        <function>pg_available_wal_summaries</function> ()
+        <returnvalue>setof record</returnvalue>
+        ( <parameter>tli</parameter> <type>bigint</type>,
+        <parameter>start_lsn</parameter> <type>pg_lsn</type>,
+        <parameter>end_lsn</parameter> <type>pg_lsn</type> )
+       </para>
+       <para>
+<!--
+        Returns information about the WAL summary files present in the
+        data directory, under <literal>pg_wal/summaries</literal>.
+        One row will be returned per WAL summary file. Each file summarizes
+        WAL on the indicated TLI within the indicated LSN range. This function
+        might be useful to determine whether enough WAL summaries are present
+        on the server to take an incremental backup based on some prior
+        backup whose start LSN is known.
+-->
+<literal>pg_wal/summaries</literal>の下にあるデータディレクトリ内のWAL要約ファイルに関する情報を返します。
+1行に1つのWAL要約ファイルを出力します。
+各ファイルは、指定されたLSN範囲内の指定されたTLIに関するWALを要約します。
+この関数は、開始LSNが既知の先行バックアップに基づいて増分バックアップを実行するために、サーバ上に十分なWAL要約があるかどうかを判断するのに役立つかもしれません。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_wal_summary_contents</primary>
+        </indexterm>
+        <function>pg_wal_summary_contents</function> ( <parameter>tli</parameter> <type>bigint</type>, <parameter>start_lsn</parameter> <type>pg_lsn</type>, <parameter>end_lsn</parameter> <type>pg_lsn</type> )
+        <returnvalue>setof record</returnvalue>
+        ( <parameter>relfilenode</parameter> <type>oid</type>,
+        <parameter>reltablespace</parameter> <type>oid</type>,
+        <parameter>reldatabase</parameter> <type>oid</type>,
+        <parameter>relforknumber</parameter> <type>smallint</type>,
+        <parameter>relblocknumber</parameter> <type>bigint</type>,
+        <parameter>is_limit_block</parameter> <type>boolean</type> )
+       </para>
+       <para>
+<!--
+        Returns one information about the contents of a single WAL summary file
+        identified by TLI and starting and ending LSNs. Each row with
+        <literal>is_limit_block</literal> false indicates that the block
+        identified by the remaining output columns was modified by at least
+        one WAL record within the range of records summarized by this file.
+        Each row with <literal>is_limit_block</literal> true indicates either
+        that (a) the relation fork was truncated to the length given by
+        <literal>relblocknumber</literal> within the relevant range of WAL
+        records or (b) that the relation fork was created or dropped within
+        the relevant range of WAL records; in such cases,
+        <literal>relblocknumber</literal> will be zero.
+-->
+TLIで識別され、開始LSNと終了LSNの範囲の単一のWAL要約ファイルの内容に関する情報を返します。
+<literal>is_limit_block</literal>が偽の場合の各行は、残りの出力列で識別されるブロックが、このファイルによって要約されたレコードの範囲内で少なくとも1つのWALレコードによって変更されたことを示します。
+<literal>is_limit_block</literal>が真である各行は、(a) リレーションフォークがWALレコードの関連する範囲内で<literal>relblocknumber</literal>で指定された長さに切り詰められたか、(b) リレーションフォークがWALレコードの関連する範囲内で作成または削除されたことを示します。
+この場合、<literal>relblocknumber</literal>は0になります。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_get_wal_summarizer_state</primary>
+        </indexterm>
+        <function>pg_get_wal_summarizer_state</function> ()
+        <returnvalue>record</returnvalue>
+        ( <parameter>summarized_tli</parameter> <type>bigint</type>,
+        <parameter>summarized_lsn</parameter> <type>pg_lsn</type>,
+        <parameter>pending_lsn</parameter> <type>pg_lsn</type>,
+        <parameter>summarizer_pid</parameter> <type>int</type> )
+       </para>
+       <para>
+<!--
+        Returns information about the progress of the WAL summarizer. If the
+        WAL summarizer has never run since the instance was started, then
+        <literal>summarized_tli</literal> and <literal>summarized_lsn</literal>
+        will be <literal>0</literal> and <literal>0/0</literal> respectively;
+        otherwise, they will be the TLI and ending LSN of the last WAL summary
+        file written to disk. If the WAL summarizer is currently running,
+        <literal>pending_lsn</literal> will be the ending LSN of the last
+        record that it has consumed, which must always be greater than or
+        equal to <literal>summarized_lsn</literal>; if the WAL summarizer is
+        not running, it will be equal to <literal>summarized_lsn</literal>.
+        <literal>summarizer_pid</literal> is the PID of the WAL summarizer
+        process, if it is running, and otherwise NULL.
+-->
+WAL要約処理の進捗に関する情報を返します。
+インスタンスが開始されてからWAL要約処理が一度も実行されていない場合、<literal>summarized_tli</literal>と<literal>summarized_lsn</literal>はそれぞれ<literal>0</literal>と<literal>0/0</literal>になります。それ以外の場合は、ディスクに書き込まれた最後のWAL要約ファイルのTLIと終了LSNになります。
+WAL要約処理が現在動作している場合、<literal>pending_lsn</literal>は消費した最後のレコードの終了LSNで、必ず<literal>summarized_lsn</literal>の以上になり、WAL要約処理が動作していない場合、<literal>summarized_lsn</literal>と等しくなります。
+<literal>summarizer_pid</literal>はWAL要約処理が動作している場合はプロセスのPIDです。動作していない場合のPIDはNULLです。
+       </para>
+       <para>
+<!--
+        As a special exception, the WAL summarizer will refuse to generate
+        WAL summary files if run on WAL generated under
+        <literal>wal_level=minimal</literal>, since such summaries would be
+        unsafe to use as the basis for an incremental backup. In this case,
+        the fields above will continue to advance as if summaries were being
+        generated, but nothing will be written to disk. Once the summarizer
+        reaches WAL generated while <literal>wal_level</literal> was set
+        to <literal>replica</literal> or higher, it will resume writing
+        summaries to disk.
+-->
+特別な例外として、<literal>wal_level=minimal</literal>で生成されたWALで実行された場合、WAL要約処理はWALレベルファイルの生成を拒否します。これは、このような要約をインクリメンタルバックアップの基礎として使用するのは安全ではないためです。
+このケースでは、要約が生成されているかのように上記のフィールドが進み続けますが、ディスクには何も書き込まれません。
+<literal>wal_level</literal>が<literal>replica</literal>以上に設定されている間に生成されたWALに要約処理が到達すると、ディスクへの要約の書き込みを再開します。
+       </para></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+  </sect2>
+
   </sect1>
 
   <sect1 id="functions-admin">
@@ -6012,7 +6450,7 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
         however only superusers can cancel superuser backends.
 -->
 指定したプロセスIDを持つバックエンドプロセスの現在のセッションの問い合わせを取り消します。
-呼び出し側のロールがキャンセルされるバックエンドのロールのメンバーであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
+呼び出し側のロールがキャンセルされるバックエンドのロールのメンバであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
 ただし、スーパーユーザのバックエンドはスーパーユーザのみが取り消せます。
        </para></entry>
       </row>
@@ -6061,12 +6499,12 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
         of its children.) You can use the
         <link linkend="view-pg-file-settings"><structname>pg_file_settings</structname></link>,
         <link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link> and
-        <link linkend="view-pg-hba-file-rules"><structname>pg_ident_file_mappings</structname></link> views
+        <link linkend="view-pg-ident-file-mappings"><structname>pg_ident_file_mappings</structname></link> views
         to check the configuration files for possible errors, before reloading.
 -->
 <productname>PostgreSQL</productname>のすべてのサーバプロセスに構成ファイルの再読み込みをさせます。
 （これは<systemitem>SIGHUP</systemitem>シグナルをpostmasterプロセスに送ることによって始まり、postmasterは続いて<systemitem>SIGHUP</systemitem>を子に送ります。）
-再ロードする前に、設定ファイルにエラーの可能性があるかどうかをチェックするために<link linkend="view-pg-file-settings"><structname>pg_file_settings</structname></link>、<link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>、<link linkend="view-pg-hba-file-rules"><structname>pg_ident_file_mappings</structname></link>ビューを利用できます。
+再ロードする前に、<link linkend="view-pg-file-settings"><structname>pg_file_settings</structname></link>、<link linkend="view-pg-hba-file-rules"><structname>pg_hba_file_rules</structname></link>、<link linkend="view-pg-ident-file-mappings"><structname>pg_ident_file_mappings</structname></link>ビューを使用して、構成ファイルにエラーがないか確認することができます。
        </para></entry>
       </row>
 
@@ -6106,7 +6544,7 @@ OIDとそれを含むシステム型で指定されるデータベース共有�
         however only superusers can terminate superuser backends.
 -->
 バックエンドが指定したプロセスIDを持つセッションを終了させます。
-呼び出し側のロールが終了されるバックエンドのロールのメンバーであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
+呼び出し側のロールが終了されるバックエンドのロールのメンバであるか、<literal>pg_signal_backend</literal>の権限を与えられている場合に実行できます。
 ただし、スーパーユーザのバックエンドはスーパーユーザのみが終了できます。
        </para>
        <para>
@@ -6416,7 +6854,7 @@ LOG:  Grand total: 1651920 bytes in 201 blocks; 622360 free (88 chunks); 1029560
 falseの場合、この関数はバックアップの完了後、WALがアーカイブされるのを待たずに、即座に戻ります。
 この動作はWALのアーカイブを独立して監視するバックアップソフトウェアに対してのみ有用です。
 それ以外の場合、バックアップを一貫性のあるものにするために必要なWALが欠けるためにバックアップが役立たなくなるかもしれません。
-省略時あるいはこのパラメータがtrueのとき、アーカイブが有効なら、<function>pg_backup_stop</function>はWALがアーカイブされるまで待機します。
+デフォルトあるいはこのパラメータがtrueのとき、アーカイブが有効なら、<function>pg_backup_stop</function>はWALがアーカイブされるまで待機します。
 （スタンバイでは、これはつまり<varname>archive_mode</varname> = <literal>always</literal>のときのみ待機するということです。
 プライマリでの書き込み活動が少ないときは、セグメントの変更を即座に起こさせるためにプライマリで<function>pg_switch_wal</function>を実行するのが有効かもしれません。）
        </para>
@@ -6617,16 +7055,8 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
 </programlisting>
 <!--
     Similarly, <function>pg_walfile_name</function> extracts just the write-ahead log file name.
-    When the given write-ahead log location is exactly at a write-ahead log file boundary, both
-    these functions return the name of the preceding write-ahead log file.
-    This is usually the desired behavior for managing write-ahead log archiving
-    behavior, since the preceding file is the last one that currently
-    needs to be archived.
 -->
-同様に、<function>pg_walfile_name</function>は、先行書き込みログファイル名のみを取り出します。
-指定した先行書き込みログの位置が正確に先行書き込みログファイルの境界であった場合、これらの両関数は前の先行書き込みログファイルの名前を返します。
-通常これは、先行書き込みログファイルのアーカイブ動作では好まれる動作です。
-前のファイルが現在のアーカイブで必要とする最後のファイルであるからです。
+同様に、<function>pg_walfile_name</function>は先行書き込みログファイル名のみを抽出します。
    </para>
 
    <para>
@@ -6635,7 +7065,6 @@ postgres=# SELECT * FROM pg_walfile_name_offset((pg_backup_stop()).lsn);
     <acronym>LSN</acronym> from a file offset and WAL file name, for example:
 -->
 <function>pg_split_walfile_name</function>は、ファイルオフセットとWALファイル名から<acronym>LSN</acronym>を計算するのに有用です。例を示します。
-
 <programlisting>
 postgres=# \set file_name '000000010000000100C000AB'
 postgres=# \set offset 256
@@ -7271,11 +7700,11 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
       </row>
 
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="pg-create-logical-replication-slot" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>pg_create_logical_replication_slot</primary>
         </indexterm>
-        <function>pg_create_logical_replication_slot</function> ( <parameter>slot_name</parameter> <type>name</type>, <parameter>plugin</parameter> <type>name</type> <optional>, <parameter>temporary</parameter> <type>boolean</type>, <parameter>twophase</parameter> <type>boolean</type> </optional> )
+        <function>pg_create_logical_replication_slot</function> ( <parameter>slot_name</parameter> <type>name</type>, <parameter>plugin</parameter> <type>name</type> <optional>, <parameter>temporary</parameter> <type>boolean</type>, <parameter>twophase</parameter> <type>boolean</type>, <parameter>failover</parameter> <type>boolean</type> </optional> )
         <returnvalue>record</returnvalue>
         ( <parameter>slot_name</parameter> <type>name</type>,
         <parameter>lsn</parameter> <type>pg_lsn</type> )
@@ -7291,13 +7720,19 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
         released upon any error. The optional fourth parameter,
         <parameter>twophase</parameter>, when set to true, specifies
         that the decoding of prepared transactions is enabled for this
-        slot. A call to this function has the same effect as the replication
-        protocol command <literal>CREATE_REPLICATION_SLOT ... LOGICAL</literal>.
+        slot. The optional fifth parameter,
+        <parameter>failover</parameter>, when set to true,
+        specifies that this slot is enabled to be synced to the
+        standbys so that logical replication can be resumed after
+        failover. A call to this function has the same effect as
+        the replication protocol command
+        <literal>CREATE_REPLICATION_SLOT ... LOGICAL</literal>.
 -->
 出力プラグイン<parameter>plugin</parameter>を使って<parameter>slot_name</parameter>という名前の新しい論理（デコーディング）レプリケーションスロットを作ります。
 3番目のオプションパラメータ<parameter>temporary</parameter>をtrueに設定すると、このスロットを永続的にディスクに保存するべきではなく、現在のセッションでのみ使われることを意図します。
 また、一時スロットはエラーが起きると解放されます。
 オプションの4つ目の引数<parameter>twophase</parameter>がtrueならば、準備されたトランザクションのデコードがこのスロットで可能になります。
+オプションの5番目の引数<parameter>failover</parameter>がtrueならば、このスロットがスタンバイに同期化できるようになり、フェイルオーバー後に論理的な複製を再開できるようになります。
 この関数の呼び出しはレプリケーションプロトコルコマンドの<literal>CREATE_REPLICATION_SLOT ... LOGICAL</literal>と同じ効果があります。
        </para></entry>
       </row>
@@ -7356,7 +7791,7 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
       </row>
 
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="pg-logical-slot-get-changes" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>pg_logical_slot_get_changes</primary>
         </indexterm>
@@ -7380,17 +7815,22 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
         the specified value.  Note, however, that the actual number of
         rows returned may be larger, since this limit is only checked after
         adding the rows produced when decoding each new transaction commit.
+        If the specified slot is a logical failover slot then the function will
+        not return until all physical slots specified in
+        <link linkend="guc-synchronized-standby-slots"><varname>synchronized_standby_slots</varname></link>
+        have confirmed WAL receipt.
 -->
 変更が最後に消費された時点から開始して、スロット<parameter>slot_name</parameter>の変更を返します。
 <parameter>upto_lsn</parameter>と<parameter>upto_nchanges</parameter>がNULLならば論理デコードはWALの最後まで続きます。
 <parameter>upto_lsn</parameter>が非NULLであれば、デコードは指定されたLSNより前にコミットされたトランザクションのみを含みます。
 <parameter>upto_nchanges</parameter>が非NULLであれば、デコードにより生成された行の数が指定された値を越えたときに、デコードは止まります。
 しかしながら、新しいトランザクションの各コミットをデコードして生成された行を追加した後でしかこの制限は確認されませんので、実際に返される行の数は大きいかもしれないことに注意してください。
+指定されたスロットがロジカルフェイルオーバースロットである場合、関数は<link linkend="guc-synchronized-standby-slots"><varname>synchronized_standby_slots</varname></link>で指定された全ての物理的スロットがWAL受信を確認するまで結果しません。
        </para></entry>
       </row>
 
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="pg-logical-slot-peek-changes" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>pg_logical_slot_peek_changes</primary>
         </indexterm>
@@ -7454,7 +7894,7 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
       </row>
 
       <row>
-       <entry role="func_table_entry"><para role="func_signature">
+       <entry id="pg-replication-slot-advance" role="func_table_entry"><para role="func_signature">
         <indexterm>
          <primary>pg_replication_slot_advance</primary>
         </indexterm>
@@ -7471,13 +7911,18 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
         the name of the slot and the actual position that it was advanced to.
         The updated slot position information is written out at the next
         checkpoint if any advancing is done. So in the event of a crash, the
-        slot may return to an earlier position.
+        slot may return to an earlier position. If the specified slot is a
+        logical failover slot then the function will not return until all
+        physical slots specified in
+        <link linkend="guc-synchronized-standby-slots"><varname>synchronized_standby_slots</varname></link>
+        have confirmed WAL receipt.
 -->
 <parameter>slot_name</parameter>という名前のレプリケーションスロットの現在の確認された位置を進めます。
 スロットは後方には動きませんし、現在の挿入位置を超えて進むこともありません。
 スロットの名前と前に進んだ実際の位置を返します。
 前に進んだ場合は更新されたスロットに関する情報がこの後のチェックポイントで書き出されます。
 クラッシュが発生すると、そのスロットは以前の位置に戻るかもしれません。
+指定されたスロットがロジカルフェイルオーバースロットである場合、関数は<link linkend="guc-synchronized-standby-slots"><varname>synchronized_standby_slots</varname></link>で指定された全ての物理的スロットがWAL受信を確認するまで結果を返しません。
        </para></entry>
       </row>
 
@@ -7693,11 +8138,11 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
         <indexterm>
          <primary>pg_logical_emit_message</primary>
         </indexterm>
-        <function>pg_logical_emit_message</function> ( <parameter>transactional</parameter> <type>boolean</type>, <parameter>prefix</parameter> <type>text</type>, <parameter>content</parameter> <type>text</type> )
+        <function>pg_logical_emit_message</function> ( <parameter>transactional</parameter> <type>boolean</type>, <parameter>prefix</parameter> <type>text</type>, <parameter>content</parameter> <type>text</type> [, <parameter>flush</parameter> <type>boolean</type> <literal>DEFAULT</literal> <literal>false</literal>] )
         <returnvalue>pg_lsn</returnvalue>
        </para>
        <para role="func_signature">
-        <function>pg_logical_emit_message</function> ( <parameter>transactional</parameter> <type>boolean</type>, <parameter>prefix</parameter> <type>text</type>, <parameter>content</parameter> <type>bytea</type> )
+        <function>pg_logical_emit_message</function> ( <parameter>transactional</parameter> <type>boolean</type>, <parameter>prefix</parameter> <type>text</type>, <parameter>content</parameter> <type>bytea</type> [, <parameter>flush</parameter> <type>boolean</type> <literal>DEFAULT</literal> <literal>false</literal>] )
         <returnvalue>pg_lsn</returnvalue>
        </para>
        <para>
@@ -7712,14 +8157,69 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
         recognize messages that are interesting for them.
         The <parameter>content</parameter> parameter is the content of the
         message, given either in text or binary form.
+        The <parameter>flush</parameter> parameter (default set to
+        <literal>false</literal>) controls if the message is immediately
+        flushed to WAL or not. <parameter>flush</parameter> has no effect
+        with <parameter>transactional</parameter>, as the message's WAL
+        record is flushed along with its transaction.
+
 -->
 論理デコードのメッセージを送出します
 これは汎用的なメッセージをWALを通して論理デコードのプラグインに渡すのに使うことができます。
 パラメータ<parameter>transactional</parameter>は、メッセージが現在のトランザクションの一部なのか、あるいはすぐに書き込み、論理デコードがレコードを読んだらすぐにデコードされるべきものなのかを指定します。
 <parameter>prefix</parameter>パラメータは文字通りの接頭辞で、論理デコードのプラグインが、自分にとって関心のあるメッセージを容易に認識できるように使われます。
 <parameter>content</parameter>パラメータはメッセージの内容で、テキストまたはバイナリ形式で与えられます。
+<parameter>flush</parameter>（デフォルトは<literal>false</literal>）は、メッセージを即座にWALに吐き出すかどうかを制御します。
+<parameter>flush</parameter>は<parameter>transactional</parameter>では効果がありません。メッセージのWALレコードはトランザクションと共に吐き出されるからです。
        </para></entry>
       </row>
+
+      <row>
+       <entry id="pg-sync-replication-slots" role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_sync_replication_slots</primary>
+        </indexterm>
+        <function>pg_sync_replication_slots</function> ()
+        <returnvalue>void</returnvalue>
+       </para>
+       <para>
+<!--
+        Synchronize the logical failover replication slots from the primary
+        server to the standby server. This function can only be executed on the
+        standby server. Temporary synced slots, if any, cannot be used for
+        logical decoding and must be dropped after promotion. See
+        <xref linkend="logicaldecoding-replication-slots-synchronization"/> for details.
+        Note that this function cannot be executed if
+        <link linkend="guc-sync-replication-slots"><varname>
+        sync_replication_slots</varname></link> is enabled and the slotsync
+        worker is already running to perform the synchronization of slots.
+-->
+プライマリサーバからスタンバイサーバへの論理フェイルオーバーレプリケーションスロットを同期します。
+この機能は、スタンバイサーバでのみ実行できます。
+一時的に同期されたスロットは、ロジカルでコーディングに使用できず、昇格後に破棄する必要があります。
+詳細は<xref linkend="logicaldecoding-replication-slots-synchronization"/>を参照してください。
+<link linkend="guc-sync-replication-slots"><varname> sync_replication_slots</varname></link>が有効で、スロットの同期を実行するためにスロット同期ワーカーがすでに実行中の場合、この関数は実行できないことに注意してください。
+       </para>
+
+       <caution>
+        <para>
+<!--
+          If, after executing the function,
+          <link linkend="guc-hot-standby-feedback">
+          <varname>hot_standby_feedback</varname></link> is disabled on
+          the standby or the physical slot configured in
+          <link linkend="guc-primary-slot-name">
+          <varname>primary_slot_name</varname></link> is
+          removed, then it is possible that the necessary rows of the
+          synchronized slot will be removed by the VACUUM process on the primary
+          server, resulting in the synchronized slot becoming invalidated.
+-->
+関数の実行後に、スタンバイ側で<link linkend="guc-hot-standby-feedback"><varname>hot_standby_feedback</varname></link>が無効になったり、<link linkend="guc-primary-slot-name"><varname>primary_slot_name</varname></link>に設定された物理スロットが削除されたりすると、同期スロットの必要な行がプライマリサーバのVACUUM処理によって削除され、同期スロットが無効になる可能性があります。
+        </para>
+       </caution>
+      </entry>
+      </row>
+
      </tbody>
     </tgroup>
    </table>
@@ -7805,6 +8305,28 @@ bgwriterやcheckpointerがログするのを待たずに、実行中のトラン
 -->
 個々の可変長値で使われた圧縮アルゴリズムを表示します。
 値が圧縮されていなければ、<literal>NULL</literal>を返します。
+       </para></entry>
+      </row>
+
+      <row>
+       <entry role="func_table_entry"><para role="func_signature">
+        <indexterm>
+         <primary>pg_column_toast_chunk_id</primary>
+        </indexterm>
+        <function>pg_column_toast_chunk_id</function> ( <type>"any"</type> )
+        <returnvalue>oid</returnvalue>
+       </para>
+       <para>
+<!--
+        Shows the <structfield>chunk_id</structfield> of an on-disk
+        <acronym>TOAST</acronym>ed value.  Returns <literal>NULL</literal>
+        if the value is un-<acronym>TOAST</acronym>ed or not on-disk.  See
+        <xref linkend="storage-toast"/> for more information about
+        <acronym>TOAST</acronym>.
+-->
+ディスク上の<acronym>TOAST</acronym>化された値の<structfield>chunk_id</structfield>を表示します。
+値が非<acronym>TOAST</acronym>化されていたり、あるいはディスク上にない場合は<literal>NULL</literal>を返します。
+<acronym>TOAST</acronym>についてのより詳しい情報は<xref linkend="storage-toast"/>を参照してください。
        </para></entry>
       </row>
 
@@ -8536,7 +9058,7 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
     configuration setting for log files.
 -->
 <xref linkend="functions-admin-genfile-table"/>で示されている関数はサーバをホスティングしているマシン上のファイルに対し、ネイティブのアクセスを提供します。
-ユーザが<literal>pg_read_server_files</literal>ロールを与えられていない限り、データベースクラスタディレクトリと<varname>log_directory</varname>に存在するファイルのみがアクセス可能です。
+ユーザがスーパーユーザか、<literal>pg_read_server_files</literal>ロールを与えられていない限り、データベースクラスタディレクトリと<varname>log_directory</varname>に存在するファイルのみがアクセス可能です。
 クラスタディレクトリ内のファイルに対して相対パスを、そしてログファイルに対しては<varname>log_directory</varname>構成設定に一致するパスを使用してください。
    </para>
 
@@ -8584,7 +9106,6 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
 これらの関数の一部はオプションで<parameter>missing_ok</parameter>パラメータをとり、ファイルまたはディレクトリが存在しない場合の動作を指定できます。
 <literal>true</literal>の場合、関数は<literal>NULL</literal>を返すか、適切な場合には空の結果集合を返します。
 <literal>false</literal>の場合はエラーが発生します。
-デフォルトは<literal>false</literal>です。
 （<quote>ファイルが見つかりません</quote>以外の失敗条件は、どのケースでもエラーとして報告されます。）
 デフォルトは<literal>false</literal>です。
    </para>
@@ -8733,7 +9254,7 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -8764,7 +9285,7 @@ SELECT pg_size_pretty(sum(pg_relation_size(relid))) AS total_size
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -8828,7 +9349,7 @@ WALアーカイブステータスディレクトリ(<filename>pg_wal/archive_sta
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -8864,7 +9385,7 @@ WALアーカイブステータスディレクトリ(<filename>pg_wal/archive_sta
         the <literal>pg_monitor</literal> role by default, but other users can
         be granted EXECUTE to run the function.
 -->
-デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバーに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
+デフォルトではこの関数の実行はスーパーユーザと<literal>pg_monitor</literal>ロールのメンバに限定されますが、他のユーザに関数を実行するEXECUTE権限を与えることができます。
        </para></entry>
       </row>
 
@@ -9467,7 +9988,7 @@ do-nothing更新操作を抑止します。
 しかし、こうした状況をクライアント側で判定することは常に簡単ではありません。
 また、可能であったとしても、それを検知するための式の記述はエラーを招きがちです。
 他の方法として、<function>suppress_redundant_updates_trigger</function>を使用することがあります。
-これはデータを変更しない更新を飛ばします。
+これはデータを変更しない更新をスキップします。
 しかしこの関数は注意して使用しなければなりません。
 このトリガはレコードごとに小さな、しかし僅かではない時間がかかります。
 このため、更新が影響するレコードのほとんどが実際に変更された場合、このトリガは平均すると更新の実行を低速にします。
@@ -9546,7 +10067,7 @@ FOR EACH ROW EXECUTE FUNCTION suppress_redundant_updates_trigger();
     may return more than one row.  This function returns the following
     columns:
 -->
-<function>pg_event_trigger_ddl_commands</function>が<literal>ddl_command_end</literal>イベントトリガーに付与された関数から起動されると、各ユーザの操作によって実行された<acronym>DDL</acronym>コマンドの一覧を返します。
+<function>pg_event_trigger_ddl_commands</function>が<literal>ddl_command_end</literal>イベントトリガに付与された関数から起動されると、各ユーザの操作によって実行された<acronym>DDL</acronym>コマンドの一覧を返します。
 それ以外の環境から呼び出された場合はエラーが発生します。
 <function>pg_event_trigger_ddl_commands</function>は、実行された基となるコマンドのそれぞれについて1行を返します。
 1つのSQL文として実行されるいくつかのコマンドに対して、複数の行が返されることもあります。

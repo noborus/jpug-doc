@@ -717,7 +717,7 @@ FOLLOWED BYの中ではマッチの正確な位置が重要ですので、AND/OR
    simple constant strings.  This section shows how to search table data,
    optionally using indexes.
 -->
-前の節の例では、単純な文字列定数を使った全文検索照合を説明しました。この節では、テーブルのデータを検索する方法、そしてインデックスを使う方法を示します。
+前節の例では、単純な文字列定数を使った全文検索照合を説明しました。この節では、テーブルのデータを検索する方法、そしてインデックスを使う方法を示します。
   </para>
 
   <sect2 id="textsearch-tables-search">
@@ -1779,7 +1779,9 @@ LIMIT 10;
     provides a function <function>ts_headline</function> that
     implements this functionality.
 -->
-検索結果を表示する際には、文書の該当部分を表示し、どの程度問い合わせと関連しているかを示すのが望ましいです。<productname>PostgreSQL</productname>はこの機能を実装した<function>ts_headline</function>関数を提供しています。
+検索結果を表示する際には、文書の該当部分を表示し、どの程度問い合わせと関連しているかを示すのが望ましいです。
+通常、検索エンジンは、強調表示された検索語を含む文書の断片を表示します。
+<productname>PostgreSQL</productname>はこの機能を実装した<function>ts_headline</function>関数を提供しています。
    </para>
 
    <indexterm>
@@ -1794,13 +1796,18 @@ ts_headline(<optional> <replaceable class="parameter">config</replaceable> <type
 <!--
     <function>ts_headline</function> accepts a document along
     with a query, and returns an excerpt from
-    the document in which terms from the query are highlighted.  The
+    the document in which terms from the query are highlighted.
+    Specifically, the function will use the query to select relevant
+    text fragments, and then highlight all words that appear in the query,
+    even if those word positions do not match the query's restrictions.  The
     configuration to be used to parse the document can be specified by
     <replaceable>config</replaceable>; if <replaceable>config</replaceable>
     is omitted, the
     <varname>default_text_search_config</varname> configuration is used.
 -->
-<function>ts_headline</function>は、問い合わせと一緒に文書を受け取り、問い合わせが注目した文書中の語句を抜粋して返します。文書をパースするのに使われる設定を<replaceable>config</replaceable>で指定することができます。<replaceable>config</replaceable>が省略された場合は、<varname>default_text_search_config</varname>設定が使われます。
+<function>ts_headline</function>は、問い合わせと一緒に文書を受け取り、問い合わせが注目した文書中の語句を抜粋して返します。
+具体的には、関数は問い合わせを使用して関連するテキスト断片を選択し、単語の位置が問い合わせの制限に合わない場合であっても、問い合わせ内に出現するすべての単語を強調表示します。
+文書をパースするのに使われる設定を<replaceable>config</replaceable>で指定できます。<replaceable>config</replaceable>が省略された場合は、<varname>default_text_search_config</varname>設定が使われます。
    </para>
 
    <para>
@@ -2385,7 +2392,7 @@ SELECT querytree(to_tsquery('!defined'));
      reindexing, whereas updating a thesaurus requires reindexing to be
      effective.
 -->
-<function>ts_rewrite</function>ファミリー関数は、与えられた<type>tsquery</type>から目的の副問い合わせ部分を探し、それを代わりの副問い合わせに置き換えます。
+<function>ts_rewrite</function>関連の関数は、与えられた<type>tsquery</type>から目的の副問い合わせ部分を探し、それを代わりの副問い合わせに置き換えます。
 本質的には、この操作は、部分文字列置き換えの<type>tsquery</type>版です。
 置き換え候補と置き換え内容の組は、<firstterm>問い合わせ書き換えルール</firstterm>であると考えることができます。
 そのような書き換えルールの集合は、強力な検索ツールとなり得ます。
@@ -2922,7 +2929,7 @@ LIMIT 10;
 <!--
       <entry>Protocol head</entry>
 -->
-      <entry>プロトコルヘッダー</entry>
+      <entry>プロトコルヘッダ</entry>
       <entry><literal>http://</literal></entry>
      </row>
      <row>
@@ -3043,11 +3050,11 @@ LIMIT 10;
    <para>
 <!--
     <literal>email</literal> does not support all valid email characters as
-    defined by <ulink url="https://tools.ietf.org/html/rfc5322">RFC 5322</ulink>.
+    defined by <ulink url="https://datatracker.ietf.org/doc/html/rfc5322">RFC 5322</ulink>.
     Specifically, the only non-alphanumeric characters supported for
     email user names are period, dash, and underscore.
 -->
-<literal>email</literal>は<ulink url="https://tools.ietf.org/html/rfc5322">RFC 5322</ulink>で定義されたすべての有効なメールアドレス文字をサポートしません。
+<literal>email</literal>は<ulink url="https://datatracker.ietf.org/doc/html/rfc5322">RFC 5322</ulink>で定義された有効なメールアドレス文字をすべてサポートしている訳ではありません。
 特に、メールアドレスのユーザ名としてサポートされる英数字以外の文字はピリオド、ダッシュ、アンダースコアのみです。
    </para>
   </note>
@@ -5061,7 +5068,7 @@ GiSTインデックスが非可逆なのは、インデックス中の各文書�
 署名は、各々の単語をハッシュして単一なビットにして、これらのビットをnビットの文書署名にORし、nビットの列中のビットにすることで実現されています。
 2つの単語が同じビット位置を生成すると、間違った一致が起こります。
 問い合わせ対象のすべての単語が照合すると(それが正しいか間違っているかは別として)、その照合が正しいものかどうかテーブルの行を取得して調べなければなりません。
-長い署名では、インデックスはより大きくなってしまいますが、(インデックスのより小さな部分とより少ないヒープページを走査することで)検索がより正確になります。
+長い署名では、インデックスはより大きくなってしまいますが、(インデックスのより小さな部分とより少ないヒープページをスキャンすることで)検索がより正確になります。
   </para>
 
   <para>

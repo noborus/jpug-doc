@@ -7,98 +7,6 @@
 6. config.sgmlの変更がなければ、pull requestをマージして終了です。お疲れ様でした！
 -->
 <!-- split-config1-start -->
-      <varlistentry id="guc-old-snapshot-threshold" xreflabel="old_snapshot_threshold">
-       <term><varname>old_snapshot_threshold</varname> (<type>integer</type>)
-       <indexterm>
-        <primary><varname>old_snapshot_threshold</varname> configuration parameter</primary>
-       </indexterm>
-       <indexterm>
-        <primary><varname>old_snapshot_threshold</varname> 設定パラメータ</primary>
-       </indexterm>
-       </term>
-       <listitem>
-        <para>
-<!--
-         Sets the minimum amount of time that a query snapshot can be used
-         without risk of a <quote>snapshot too old</quote> error occurring
-         when using the snapshot.  Data that has been dead for longer than
-         this threshold is allowed to be vacuumed away.  This can help
-         prevent bloat in the face of snapshots which remain in use for a
-         long time.  To prevent incorrect results due to cleanup of data which
-         would otherwise be visible to the snapshot, an error is generated
-         when the snapshot is older than this threshold and the snapshot is
-         used to read a page which has been modified since the snapshot was
-         built.
--->
-スナップショットを使用する際に、<quote>snapshot too old</quote>エラーが起こるリスク無しに問い合わせスナップショットが利用できる最小の期間を設定します。
-この制限値を越えてデッド状態のままになったデータはバキュームしてしまうことが許可されます。
-これにより、長い間残っていたスナップショットによりデータが溢れてしまうのを防ぐことができます。
-スナップショットから見えるデータが消えることによる不正な結果を防ぐため、スナップショットがこの制限値よりも古く、かつこのスナップショットが作られた以降に変更されたページを読むためにスナップショットが使用されるときはエラーが発生します。
-        </para>
-
-        <para>
-<!--
-         If this value is specified without units, it is taken as minutes.
-         A value of <literal>-1</literal> (the default) disables this feature,
-         effectively setting the snapshot age limit to infinity.
-         This parameter can only be set at server start.
--->
-この値が単位なしで指定された場合は、分単位であるとみなします。
-<literal>-1</literal>（デフォルトです）を設定するとこの機能が無効になり、実質的にスナップショットの寿命を無限にします。
-このパラメータはサーバ起動時にのみ設定可能です。
-        </para>
-
-        <para>
-<!--
-         Useful values for production work probably range from a small number
-         of hours to a few days.  Small values (such as <literal>0</literal> or
-         <literal>1min</literal>) are only allowed because they may sometimes be
-         useful for testing.  While a setting as high as <literal>60d</literal> is
-         allowed, please note that in many workloads extreme bloat or
-         transaction ID wraparound may occur in much shorter time frames.
--->
-実際の環境でのおすすめの値はおそらく数時間から2, 3日の間となるでしょう。
-小さな値(たとえば<literal>0</literal>や<literal>1min</literal>)は、テストの際に有用だということで許可されています。
-<literal>60d</literal>のような大きな値の設定もできますが、多くのワークロードにおいて、大きなデータ溢れやトランザクションIDの周回がそれよりはずっと短い期間で起こる可能性があることに注意してください。
-        </para>
-
-        <para>
-<!--
-         When this feature is enabled, freed space at the end of a relation
-         cannot be released to the operating system, since that could remove
-         information needed to detect the <quote>snapshot too old</quote>
-         condition.  All space allocated to a relation remains associated with
-         that relation for reuse only within that relation unless explicitly
-         freed (for example, with <command>VACUUM FULL</command>).
--->
-この機能が有効であると、リレーションの終端部にあるフリースペースはオペレーティングシステムには返却されません。
-そうしないと、<quote>snapshot too old</quote>の条件の検出に必要な情報を削除してしまうことになるからです。
-明示的に解放されない限り（たとえば<command>VACUUM FULL</command>によって）、リレーションに割り当てられた領域は、そのリレーションの中での再利用に限定して紐付けられます。
-        </para>
-
-        <para>
-<!--
-         This setting does not attempt to guarantee that an error will be
-         generated under any particular circumstances.  In fact, if the
-         correct results can be generated from (for example) a cursor which
-         has materialized a result set, no error will be generated even if the
-         underlying rows in the referenced table have been vacuumed away.
-         Some tables cannot safely be vacuumed early, and so will not be
-         affected by this setting, such as system catalogs.  For such tables
-         this setting will neither reduce bloat nor create a possibility
-         of a <quote>snapshot too old</quote> error on scanning.
--->
-この設定は、どのような状況でもエラーが検出されることを保証するものではありません。
-（たとえば）マテリアライズされた結果集合を持つカーソルから正しい結果を得ることができるのであれば、たとえ参照している元のテーブルからVACUUMによって行が削除されたとしてもエラーにはなりません。
-ある種のテーブルでは、早期にVACUUMできないので、この設定の影響を受けません。
-例としては、システムカタログが挙げられます。
-このようなテーブルにおいては、この設定によってデータ溢れを防ぐことも、スキャンの際に<quote>snapshot too old</quote>エラーを起こす可能性を作り出すこともできません。
-        </para>
-       </listitem>
-      </varlistentry>
-     </variablelist>
-    </sect2>
-   </sect1>
 
    <sect1 id="runtime-config-wal">
 <!--
@@ -594,7 +502,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
 デフォルトは必ずしも理想的なものではありません。
 クラッシュに適応した構成にする、あるいはアーカイブの最適性能を導くためには、この設定あるいはシステム構成の他の部分を変更することが必要かもしれません。
 これらの側面は <xref linkend="wal-reliability"/>で解説されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -662,7 +570,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
         file or on the server command line.
         The default is <literal>on</literal>.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -736,7 +644,7 @@ WALの更新をディスクへ強制するのに使用される方法です。
         Only superusers and users with the appropriate <literal>SET</literal>
         privilege can change this setting.
 -->
-このパラメータは、指定された圧縮方法を使用したWALの圧縮を有効にします。
+このパラメータは、指定された圧縮方式を使用したWALの圧縮を有効にします。
 有効にすると、<productname>PostgreSQL</productname>サーバは<xref linkend="guc-full-page-writes"/>がオンの時またはベースバックアップ中にWALに書き込まれた全ページイメージを圧縮します。
 圧縮されたページイメージはWAL再生中に伸長されます。
 サポートされている方法は<literal>pglz</literal>、<literal>lz4</literal>(<productname>PostgreSQL</productname>が<option>--with-lz4</option>でコンパイルされた場合)および<literal>zstd</literal>(<productname>PostgreSQL</productname>が<option>--with-zstd</option>でコンパイルされた場合)です。
@@ -882,7 +790,7 @@ WALバッファの内容はトランザクションのコミット毎にディ�
         flushed to disk.
         If this value is specified without units, it is taken as milliseconds.
         The default value is 200 milliseconds (<literal>200ms</literal>).  Note that
-        on many systems, the effective resolution of sleep delays is 10
+        on some systems, the effective resolution of sleep delays is 10
         milliseconds; setting <varname>wal_writer_delay</varname> to a value that is
         not a multiple of 10 might have the same results as setting it to the
         next higher multiple of 10. This parameter can only be set in the
@@ -890,12 +798,12 @@ WALバッファの内容はトランザクションのコミット毎にディ�
 -->
 WALライタがWALをフラッシュする頻度を時間で指定します。
 WALをフラッシュしたあと、非同期コミットしているトランザクションに起こされない限り、<varname>wal_writer_delay</varname>ミリ秒待機します。
-最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されている場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
+最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されていない場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は200ミリ秒（<literal>200ms</literal>）です。
-多くのシステムでは、待機間隔の実質的な分解能は10ミリ秒です。
+ある種のシステムでは、待機間隔の実質的な分解能は10ミリ秒です。
 10の倍数以外の値を<varname>wal_writer_delay</varname>に設定しても、その次に大きい10の倍数を設定した場合と同じ結果となります。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -926,11 +834,11 @@ WALをフラッシュしたあと、非同期コミットしているトラン�
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
 WALライタがWALをフラッシュする頻度を量で指定します。
-最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に起こなわれ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されている場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
+最後のフラッシュが過去<varname>wal_writer_delay</varname>以内に行われ、かつそれ以降<varname>wal_writer_flush_after</varname>相当のWALが生成されていない場合は、WALはオペレーティングシステムに書き込まれますが、ディスクにはフラッシュされません。
 <varname>wal_writer_flush_after</varname>が<literal>0</literal>に設定されている場合は、WALデータが書かれるたびにWALが即時にフラッシュされます。
 この値が単位なしで指定された場合は、WALブロック単位であるとみなします。すなわち、<symbol>XLOG_BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルト値は<literal>1MB</literal>です。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1082,7 +990,7 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 有効な範囲は、30秒から1日の間です。
 デフォルトは5分（<literal>5min</literal>）です。
 このパラメータを増やすと、クラッシュリカバリで必要となる時間が増加します。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1114,7 +1022,7 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 デフォルトは0.9で、可能な限りの間隔のほとんどにチェックポイントを拡散し、かなり一定のI/O負荷をもたらしますが、チェックポイントが完了するにあたってオーバーヘッドをもたらします。
 チェックポイントの完了を早くするので、このパラメータを小さくするのはお勧めできません。
 これにより、チェックポイント中はI/Oの割合が大きくなり、チェックポイントの完了から次のチェックポイントまでの間はより少ないI/Oとなります。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1159,8 +1067,8 @@ WALライタがWALをフラッシュする頻度を量で指定します。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は、Linuxでは<literal>256kB</literal>で、それ以外は<literal>0</literal>です。
-(<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+（<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1195,7 +1103,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 デフォルトは30秒（<literal>30s</literal>）です。
 零の場合は警告を出しません。
 <varname>checkpoint_timeout</varname>が<varname>checkpoint_warning</varname>より小さい場合は警告を出しません。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1229,7 +1137,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 この値が単位なしで指定された場合は、メガバイト単位であるとみなします。
 デフォルトは1GBです。
 このパラメータを大きくすると、クラッシュリカバリに必要な時間が長くなります。
-このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1260,7 +1168,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
 この設定は、たとえば大きなバッチジョブを走らせる際のWALの利用スパイクを取り扱うために、十分なWALのスペースが予約されていることを保証するために使用できます。
 この値が単位なしで指定された場合は、メガバイト単位であるとみなします。
 デフォルトは80MBです。
-このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1372,7 +1280,7 @@ WALセグメントファイルが溢れることが原因で起きるチェッ�
         archiving, but also breaks the chain of WAL files needed for
         archive recovery, so it should only be used in unusual circumstances.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 サーバ起動時に<varname>archive_mode</varname>が有効で、<varname>archive_library</varname>が空文字の時にのみ使用されます。
 <varname>archive_command</varname>と<varname>archive_library</varname>の両方が有効ならばエラーが発生します。
 <varname>archive_mode</varname>が有効であるにもかかわらず、<varname>archive_command</varname>が空文字列（デフォルト）、（そして<varname>archive_library</varname>が空文字列）である場合、WALアーカイブ処理は一時的に無効になりますが、コマンドが後で提供されることを見越して、サーバはWALセグメントの蓄積を続けます。
@@ -1412,7 +1320,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
         This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1460,7 +1368,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
 したがって、非常に短い<varname>archive_timeout</varname>を使用することは賢明ではなく、アーカイブストレージを膨張させます。
 通常は1分程度の<varname>archive_timeout</varname>設定が妥当です。
 プライマリサーバからデータをより迅速にコピーしたい場合は、アーカイブではなくストリーミングレプリケーションを使用することを検討してください。この値が単位なしで指定された場合、秒として取得されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1492,7 +1400,7 @@ WALアーカイバプロセスは、このパラメータが変更されたと�
      affecting crash recovery, streaming replication and archive-based
      replication.
 -->
-このセクションでは、クラッシュリカバリ、ストリーミングレプリケーション、およびアーカイブベースのレプリケーションに影響する一般的なリカバリに適用される設定について説明します。
+この節では、クラッシュリカバリ、ストリーミングレプリケーション、およびアーカイブベースのレプリケーションに影響する一般的なリカバリに適用される設定について説明します。
     </para>
 
 
@@ -1713,7 +1621,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは <filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1745,7 +1653,15 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         The <xref linkend="pgarchivecleanup"/> module
         is often used in <varname>archive_cleanup_command</varname> for
         single-standby configurations, for example:
+-->
+オプションのパラメータは、すべてのリスタートポイントで実行されるシェルコマンドを指定します。
+<varname>archive_cleanup_command</varname>の目的は、スタンバイサーバにとって必要とされない古いアーカイブWALファイルをクリーンアップする仕組みを提供することです。
+<literal>%r</literal>は最後の有効なリスタートポイントを含むファイル名に置換されます。
+これはリストアが再開可能であるために<emphasis>保持</emphasis>しなければならない最古のファイルで、<literal>%r</literal>よりも前のすべてのファイルは安全に削除できます。
+これは現在のリストアからの再開をサポートするのに最小限必要なアーカイブを残して切り詰めるのに必要な情報として利用できます。
+単一のスタンバイ構成用の<varname>archive_cleanup_command</varname>で、たとえば以下のように、しばしば<xref linkend="pgarchivecleanup"/>モジュールが使われます。
 <programlisting>archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</programlisting>
+<!--
         Note however that if multiple standby servers are restoring from the
         same archive directory, you will need to ensure that you do not delete
         WAL files until they are no longer needed by any of the servers.
@@ -1754,12 +1670,6 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         Write <literal>%%</literal> to embed an actual <literal>%</literal> character in the
         command.
 -->
-オプションのパラメータは、すべてのリスタートポイントで実行されるシェルコマンドを指定します。
-<varname>archive_cleanup_command</varname>の目的は、スタンバイサーバにとって必要とされない古いアーカイブWALファイルをクリーンアップする仕組みを提供することです。
-<literal>%r</literal>は最後の有効なリスタートポイントを含むファイル名に置換されます。
-これはリストアが再開可能であるために<emphasis>保持</emphasis>しなければならない最古のファイルで、<literal>%r</literal>よりも前のすべてのファイルは安全に削除できます。
-これは現在のリストアからの再開をサポートするのに最小限必要なアーカイブを残して切り詰めるのに必要な情報として利用できます。
-単一のスタンバイ構成用の<varname>archive_cleanup_command</varname>で、たとえば<programlisting>archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</programlisting>のようにして、しばしば<xref linkend="pgarchivecleanup"/>モジュールが使われます。
 だたし、複数のスタンバイサーバが同じアーカイブディレクトリからリストアしている場合は、どのサーバにおいてももはや必要がなくなるまでWALファイルが削除されることのないようにする必要があることに留意してください。
 <varname>archive_cleanup_command</varname>は通常ウォームスタンバイ構成で使用されます。
 （<xref linkend="warm-standby"/>参照。）
@@ -1780,7 +1690,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1825,7 +1735,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2186,6 +2096,105 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
     </variablelist>
    </sect2>
 
+   <sect2 id="runtime-config-wal-summarization">
+<!--
+    <title>WAL Summarization</title>
+-->
+    <title>WAL要約</title>
+
+    <para>
+<!--
+     These settings control WAL summarization, a feature which must be
+     enabled in order to perform an
+     <link linkend="backup-incremental-backup">incremental backup</link>.
+-->
+これらの設定は、WAL要約を制御します。この機能は、<link linkend="backup-incremental-backup">インクリメンタルバックアップ</link>を実行するために有効にする必要があります。
+    </para>
+
+    <variablelist>
+     <varlistentry id="guc-summarize-wal" xreflabel="summarize_wal">
+      <term><varname>summarize_wal</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>summarize_wal</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>summarize_wal</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+     <listitem>
+      <para>
+<!--
+       Enables the WAL summarizer process. Note that WAL summarization can
+       be enabled either on a primary or on a standby.  This parameter can only
+       be set in the <filename>postgresql.conf</filename> file or on the server
+       command line.  The default is <literal>off</literal>.
+-->
+WAL要約プロセスを有効にします。
+WAL要約はプライマリまたはスタンバイのいずれかで有効にできることに注意してください
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+デフォルトは<literal>off</literal>です。
+      </para>
+      <para>
+<!--
+       The server cannot be started with <literal>summarize_wal=on</literal>
+       if <literal>wal_level</literal> is set to <literal>minimal</literal>. If
+       <literal>summarize_wal=on</literal> is configured after server startup
+       while <literal>wal_level=minimal</literal>, the summarizer will run
+       but refuse to generate summary files for any WAL generated with
+       <literal>wal_level=minimal</literal>.
+-->
+<literal>wal_level</literal>が<literal>minimal</literal>に設定されている場合、サーバを<literal>summarize_wal=on</literal>で起動することはできません。
+<literal>wal_level=minimal</literal>の状態でサーバを起動し、その後<literal>summarize_wal=on</literal>に設定した場合、要約処理は動作しますが、<literal>wal_level=minimal</literal>で生成されたWALの要約ファイルの生成は拒否します。
+      </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-wal-summary-keep-time" xreflabel="wal_summary_keep_time">
+      <term><varname>wal_summary_keep_time</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>wal_summary_keep_time</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>wal_summary_keep_time</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+     <listitem>
+      <para>
+<!--
+       Configures the amount of time after which the WAL summarizer
+       automatically removes old WAL summaries. The file timestamp is used to
+       determine which files are old enough to remove. Typically, you should set
+       this comfortably higher than the time that could pass between a backup
+       and a later incremental backup that depends on it.  WAL summaries must
+       be available for the entire range of WAL records between the preceding
+       backup and the new one being taken; if not, the incremental backup will
+       fail. If this parameter is set to zero, WAL summaries will not be
+       automatically deleted, but it is safe to manually remove files that you
+       know will not be required for future incremental backups.
+       This parameter can only be set in the
+       <filename>postgresql.conf</filename> file or on the server command line.
+       If this value is specified without units, it is taken as minutes.
+       The default is 10 days. If <literal>summarize_wal = off</literal>,
+       existing WAL summaries will not be removed regardless of the value of
+       this parameter, because the WAL summarizer will not run.
+-->
+WAL要約処理が自動的に古いWAL要約を削除するまでの時間を設定します。
+ファイルタイムスタンプは、どのファイルが削除するのに十分な古さであるかを判断するために使用されます。
+通常、この値は、バックアップとそれに依存する後のインクリメンタルバックアップとの間で経過する時間よりも余裕を持って高く設定する必要があります。
+WAL要約は、先行するバックアップと新しいバックアップの間のWALレコードの全範囲に対して利用可能でなければなりません。そうでない場合、インクリメンタルバックアップは失敗します。
+このパラメータがゼロに設定されている場合、WAL要約は自動的には削除されませんが、将来の増分バックアップに必要でないことが分かっているファイルは手動で安全に削除できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+この値が単位なしで指定されると、分として解釈されます。
+デフォルトは10日間です。
+<literal>summarize_wal = off</literal>の場合、WAL要約処理が動作しないため、このパラメータの値に関わらず、既存のWAL要約は削除されません。
+      </para>
+      </listitem>
+     </varlistentry>
+
+    </variablelist>
+
+   </sect2>
+
    </sect1>
 
    <sect1 id="runtime-config-replication">
@@ -2237,7 +2246,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 -->
 <emphasis>ロジカルレプリケーション</emphasis>の場合、<firstterm>パブリッシャー（</firstterm><link linkend="sql-createpublication"><command>CREATE PUBLICATION</command></link>を実行するサーバ）は、データを<firstterm>サブスクライバー</firstterm>（<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>を実行するサーバ）に複製します。
 サーバは、パブリッシャーとサブスクライバーを同時に兼ねることもできます。
-次の項でパブリッシャーを「送信者」と呼ぶことに注意してください。
+以降の節でパブリッシャーを「送信者」と呼ぶことに注意してください。
 ロジカルレプリケーション設定設定の詳細は、<xref linkend="logical-replication-config"/>を参照してください。
     </para>
 
@@ -2393,7 +2402,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 もし<varname>wal_keep_size</varname>が（デフォルトの）ゼロの場合、システムはスタンバイサーバのために追加セグメントを保持することはしません。
 従って、スタンバイサーバが使用できる古いWALセグメントの数は、直前のチェックポイントの場所とWALアーカイブの状況によって算出されます。
 この値が単位無しで指定されると、メガバイトであると見なします。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        </listitem>
       </varlistentry>
@@ -2431,7 +2440,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 そうでなければ、レプリケーションスロットのrestart_lsnが現在のLSNよりも与えられたサイズ分遅れると、そのスロットを使っているスタンバイは必要なWALファイルが削除されたためにレプリケーションを継続できなくなります。
 レプリケーションスロットのWALが存在するかどうかは<link linkend="view-pg-replication-slots">pg_replication_slots</link>を見て確認できます。
 この値が単位無しで指定されると、メガバイトであると見なします。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        </listitem>
       </varlistentry>
@@ -2495,8 +2504,64 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
         command line. The default value is <literal>off</literal>.
 -->
 トランザクションのコミットタイムを記録します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 デフォルトは<literal>off</literal>です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-synchronized-standby-slots" xreflabel="synchronized_standby_slots">
+      <term><varname>synchronized_standby_slots</varname> (<type>string</type>)
+      <indexterm>
+       <primary><varname>synchronized_standby_slots</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>synchronized_standby_slots</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        A comma-separated list of streaming replication standby server slot names
+        that logical WAL sender processes will wait for. Logical WAL sender processes
+        will send decoded changes to plugins only after the specified replication
+        slots confirm receiving WAL. This guarantees that logical replication
+        failover slots do not consume changes until those changes are received
+        and flushed to corresponding physical standbys. If a
+        logical replication connection is meant to switch to a physical standby
+        after the standby is promoted, the physical replication slot for the
+        standby should be listed here. Note that logical replication will not
+        proceed if the slots specified in the
+        <varname>synchronized_standby_slots</varname> do not exist or are invalidated.
+        Additionally, the replication management functions
+-->
+ロジカルWAL送信プロセスが待機する、カンマで区切られたストリーミングレプリケーションのスタンバイサーバのスロット名です。
+ロジカルWAL送信プロセスは、指定されたレプリケーションスロットがWALの受信を確認した後にのみ、デコードされた変更をプラグインに送信します。
+これにより、ロジカルレプリケーションフェイルオーバースロットは、変更が受信され、対応する物理的スタンバイに吐き出されるまで、変更を消費しないことが保証されます。
+物理スタンバイが昇格した後、ロジカルレプリケーションコネクションがその物理スタンバイに移動した場合は、スタンバイの物理レプリケーションスロットがここに表示されます。
+<varname>synchronized_standby_slots</varname>で指定されたスロットが存在しないか、無効になっている場合、ロジカルレプリケーションが続行しないことに注意してください。
+また、レプリケーション管理関数である
+<!--
+        <link linkend="pg-replication-slot-advance">
+        <function>pg_replication_slot_advance</function></link>,
+        <link linkend="pg-logical-slot-get-changes">
+        <function>pg_logical_slot_get_changes</function></link>, and
+        <link linkend="pg-logical-slot-peek-changes">
+        <function>pg_logical_slot_peek_changes</function></link>,
+        when used with logical failover slots, will block until all
+        physical slots specified in <varname>synchronized_standby_slots</varname> have
+        confirmed WAL receipt.
+-->
+<link linkend="pg-replication-slot-advance">、<function>pg_replication_slot_advance</function></link>、<link linkend="pg-logical-slot-get-changes">、<function>pg_logical_slot_get_changes</function></link>、<link linkend="pg-logical-slot-peek-changes">、<function>pg_logical_slot_peek_changes</function></link>がロジカルフェイルオーバースロットに使用されると、<varname>synchronized_standby_slots</varname>で指定されたすべての物理スロットでWAL受信が確認されるまでブロックします。
+       </para>
+       <para>
+<!--
+        The standbys corresponding to the physical replication slots in
+        <varname>synchronized_standby_slots</varname> must configure
+        <literal>sync_replication_slots = true</literal> so they can receive
+        logical failover slot changes from the primary.
+-->
+<varname>synchronized_standby_slots</varname>内の物理的レプリケーションスロットに対応するスタンバイは、<literal>sync_replication_slots = true</literal>を設定して、プライマリからロジカルフェイルオーバースロットの変更を受信できるようにする必要があります。
        </para>
       </listitem>
      </varlistentry>
@@ -2580,7 +2645,7 @@ restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows
 物理レプリケーションスタンバイでは、<varname>primary_conninfo</varname>設定です。
 デフォルトは<xref linkend="guc-cluster-name"/>の設定で、さもなければ<literal>walreceiver</literal>です。
 論理レプリケーションでは、サブスクリプションの接続情報で設定でき、デフォルトはサブスクリプション名です。
-それ以外のレプリケーションストリームコンシューマーについては、それぞれのドキュメントをご覧ください。
+それ以外のレプリケーションストリームの消費者については、それぞれのドキュメントをご覧ください。
        </para>
        <para>
 <!--
@@ -2604,7 +2669,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
 -->
 ここで、<replaceable class="parameter">num_sync</replaceable>は、トランザクションが応答を待機する必要のある同期スタンバイの数です。
 <replaceable class="parameter">standby_name</replaceable>は、スタンバイサーバの名前です。
-<literal>FIRST</literal>と<literal>ANY</literal>は、リスト中のサーバーから同期スタンバイを選ぶ方法を指定します。
+<literal>FIRST</literal>と<literal>ANY</literal>は、リスト中のサーバから同期スタンバイを選ぶ方法を指定します。
        </para>
        <para>
 <!--
@@ -2627,7 +2692,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
 キーワード<literal>FIRST</literal>を<replaceable class="parameter">num_sync</replaceable>と組み合わせると、優先度に基づく同期レプリケーションを指定し、優先度に基づいて選ばれた<replaceable class="parameter">num_sync</replaceable>個の同期スタンバイにWALレコードがレプリケーションされるまで、トランザクションのコミットは待機します。
 たとえば<literal>FIRST 3 (s1, s2, s3, s4)</literal>とすると、<literal>s1</literal>、<literal>s2</literal>、<literal>s3</literal>、<literal>s4</literal>の中から選ばれた優先順位の高い3つのスタンバイサーバが応答を返すまでコミットは待機します。
 リストの中で前の方に名前が出現するスタンバイには高い優先度が与えられ、同期と見なされます。
-それ以外のリストの中で後の方に名前が上がっているスタンバイサーバーは、潜在的な同期スタンバイであることを表しています。
+それ以外のリストの中で後の方に名前が上がっているスタンバイサーバは、潜在的な同期スタンバイであることを表しています。
 どんな理由であれ、現在の同期スタンバイが切断されると、次に高い優先度を持つスタンバイに直ちに取って代わられます。
 キーワード<literal>FIRST</literal>はオプションです。
        </para>
@@ -2718,7 +2783,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2784,14 +2849,23 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
           <varname>primary_conninfo</varname> string, or in a separate
           <filename>~/.pgpass</filename> file on the standby server (use
           <literal>replication</literal> as the database name).
-          Do not specify a database name in the
-          <varname>primary_conninfo</varname> string.
 -->
 接続文字列では、プライマリサーバのホスト名（またはアドレス）、スタンバイサーバのデフォルトと異なるのであればポート番号も指定する必要があります。
 また、送信サーバ上で適切な権限を保有するロールのユーザを指定しなければなりません (<xref linkend="streaming-replication-authentication"/> 参照)。
-送信サーバが要求するのであれば、パスワードも記述される必要があります。
+送信サーバがパスワード認証を要求するのであれば、パスワードも記述される必要があります。
 パスワードは <varname>primary_conninfo</varname>に記述することもできますし、スタンバイサーバ上の分離されたファイル<filename>~/.pgpass</filename>に記述することもできます (データベース名には <literal>replication</literal> を使います)。
-<varname>primary_conninfo</varname>文字列の中には、データベース名を指定しないでください。
+         </para>
+         <para>
+<!--
+          For replication slot synchronization (see
+          <xref linkend="logicaldecoding-replication-slots-synchronization"/>),
+          it is also necessary to specify a valid <literal>dbname</literal>
+          in the <varname>primary_conninfo</varname> string. This will only be
+          used for slot synchronization. It is ignored for streaming.
+-->
+レプリケーションスロットを同期（<xref linkend="logicaldecoding-replication-slots-synchronization"/>を参照）するために、<varname>primary_conninfo</varname>文字列に有効な<literal>dbname</literal>を指定する必要もあります。
+これはスロットの同期にのみ使用されます。
+ストリーミングでは無視されます。
          </para>
          <para>
 <!--
@@ -2803,7 +2877,7 @@ ANY <replaceable class="parameter">num_sync</replaceable> ( <replaceable class="
           is an empty string).
           This setting has no effect if the server is not in standby mode.
 -->
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します（<varname>primary_conninfo</varname>が空文字の場合を除きます。）
 サーバがスタンバイモードでなければこの設定は無効となります。
          </para>
@@ -2834,7 +2908,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
           set or the server is not in standby mode.
 -->
 上流ノードのリソース削除を制御するためにストリーミングレプリケーション経由でプライマリに接続した場合、既存のレプリケーションスロットを使うように、必要に応じて指定します（<xref linkend="streaming-replication-slots"/>を参照）。
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します。
 <varname>primary_conninfo</varname>が設定されていない場合、この設定は無効です。
          </para>
@@ -2860,7 +2934,8 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         during archive recovery or in standby mode.
 -->
 <xref linkend="hot-standby"/>に記載されている通り、リカバリの最中に接続し、そして問い合わせを実行できるか否かを設定します。デフォルト値は<literal>on</literal>です。
-このパラメータはサーバ起動時のみ設定可能です。これは、アーカイブリカバリ期間、又はスタンバイモードにある場合にのみ効果をもたらします。
+このパラメータはサーバ起動時のみ設定可能です。
+これは、アーカイブリカバリ期間、又はスタンバイモードにある場合にのみ効果をもたらします。
        </para>
       </listitem>
      </varlistentry>
@@ -2895,7 +2970,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合、ミリ秒単位で取得されます。
 デフォルトは30秒です。
 値-1を指定すると、スタンバイは競合するクエリが完了するまで永遠に待機します。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバコマンドラインからのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -2943,7 +3018,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合、ミリ秒単位で取得されます。
 デフォルトは30秒です。
 値-1を指定すると、スタンバイは競合するクエリが完了するまで永久に待機します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定されます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -2984,7 +3059,8 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         the new setting.
 -->
 永続レプリケーションスロットが(<xref linkend="guc-primary-slot-name"/>を使って)作成されない設定になっている時に、WAL受信プロセスがリモートインスタンス上に一時レプリケーションスロットを作るかどうかを指定します。
-このパラメータは<filename>postgresql.conf</filename>か、サーバのコマンドラインでのみ設定可能です。
+デフォルトはoffです。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 WAL受信プロセスが実行中にこのパラメータが変更されると、そのプロセスにシグナルが送られ、新しい設定で再起動するために停止します。
        </para>
       </listitem>
@@ -3023,7 +3099,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
        the <filename>postgresql.conf</filename> file or on the server
        command line.
 -->
-スタンバイサーバ上のWAL受信プロセスがプライマリー、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
+スタンバイサーバ上のWAL受信プロセスがプライマリ、または上位サーバに対してレプリケーションの進捗情報を送信する最小頻度を指定します。
 送信された進捗情報は<link linkend="monitoring-pg-stat-replication-view"><structname>pg_stat_replication</structname></link>ビューにより確認することが可能です。
 スタンバイサーバは書き込みがされた直近の先行書き込みログ位置、ディスクにフラッシュされた直近のログ位置、およびリカバリ適用された直近のログ位置を報告します。
 このパラメータの値がそれぞれの報告間における最大の時間間隔です。
@@ -3033,7 +3109,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 従って、適用位置は真の位置よりも少し後ろにずれることがあります。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 デフォルトの値は10秒です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
       </para>
       </listitem>
      </varlistentry>
@@ -3060,12 +3136,12 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         <literal>off</literal>. This parameter can only be set in the
         <filename>postgresql.conf</filename> file or on the server command line.
 -->
-ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリーまたは上位サーバにフィードバックを送るか否かを指定します。
+ホットスタンバイがスタンバイサーバ上で現在処理を行っている問い合わせについて、プライマリまたは上位サーバにフィードバックを送るか否かを指定します。
 このパラメータはレコードの回収に起因する問い合わせの取り消しを排除するために使用することができます。
-しかし、いくつかのワークロードに対してはプライマリーサーバ上でのデータベース肥大の原因となります。
+しかし、いくつかのワークロードに対してはプライマリサーバ上でのデータベース肥大の原因となります。
 フィードバックメッセージは<varname>wal_receiver_status_interval</varname>毎に、2回以上送信されません。
 デフォルトの値は<literal>off</literal>です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
        <para>
 <!--
@@ -3073,23 +3149,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         until it eventually reaches the primary.  Standbys make no other use
         of feedback they receive other than to pass upstream.
 -->
-カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリーに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
-       </para>
-       <para>
-<!--
-        This setting does not override the behavior of
-        <varname>old_snapshot_threshold</varname> on the primary; a snapshot on the
-        standby which exceeds the primary's age threshold can become invalid,
-        resulting in cancellation of transactions on the standby.  This is
-        because <varname>old_snapshot_threshold</varname> is intended to provide an
-        absolute limit on the time which dead rows can contribute to bloat,
-        which would otherwise be violated because of the configuration of a
-        standby.
--->
-この設定は、プライマリの<varname>old_snapshot_threshold</varname>の挙動を上書きしません。
-プライマリの年齢上限を超えたスタンバイ上のスナップショットは無効となる可能性があり、その場合スタンバイにおいてトランザクションのキャンセルを引き起こします。
-これは、<varname>old_snapshot_threshold</varname>が、無効行によってデータ溢れが起こる時刻の絶対的な制限を提供することを意図しているからです。
-そうでなければ、スタンバイの設定によってこの目的は成立しなくなってしまいます。
+カスケードレプリケーションが使用されている場合、フィードバックは最終的にプライマリに到達するまで上位サーバに転送されます。スタンバイは上位に転送する以外、受け取ったフィードバックを他に使用しません。
        </para>
       </listitem>
      </varlistentry>
@@ -3122,7 +3182,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は60秒です。
 値ゼロは時間切れメカニズムを無効にします。
-このパラメータは<filename>postgresql.conf</filename>ファイルまたはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3150,7 +3210,7 @@ WAL受信プロセスが実行中にこのパラメータが変更されると�
         command line.
 -->
 WALデータがソース(ストリーミングレプリケーション、ローカルの<filename>pg_wal</filename>、またはWALアーカイブ)から取得できない時に、スタンバイサーバがWALデータ受信をリトライするまでにどの位の時間待つべきかを指定します。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルト値は5秒です。
 このパラメータは、<filename>postgresql.conf</filename>ファイルで設定するか、サーバのコマンドラインでのみ指定できます。
@@ -3248,7 +3308,7 @@ WALの生成頻度が少ないシステムでは、この値を大きくする�
         state, until the standby is promoted or triggered. After that the standby
         will end recovery without further waiting.
 -->
-ひとたびリカバリ中のデータベースが整合性のとれた状態になれば、スタンバイサーバが昇格またはトリガーになるまで、遅延が発生します。
+ひとたびリカバリ中のデータベースが整合性のとれた状態になれば、スタンバイサーバが昇格またはトリガになるまで、遅延が発生します。
 その後、スタンバイサーバはそれ以上待たずにリカバリを終了します。
        </para>
        <para>
@@ -3294,6 +3354,34 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-sync-replication-slots" xreflabel="sync_replication_slots">
+      <term><varname>sync_replication_slots</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>sync_replication_slots</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>sync_replication_slots</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        It enables a physical standby to synchronize logical failover slots
+        from the primary server so that logical subscribers can resume
+        replication from the new primary server after failover.
+-->
+これにより、物理スタンバイはプライマリサーバからのロジカルフェイルオーバースロットの同期が可能となり、ロジカルサブスクライバーはフェイルオーバー後に新しいプライマリサーバからレプリケーションを再開できます。
+       </para>
+       <para>
+<!--
+        It is disabled by default. This parameter can only be set in the
+        <filename>postgresql.conf</filename> file or on the server command line.
+-->
+このパラメータはデフォルトで無効です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
      </variablelist>
     </sect2>
 
@@ -3429,7 +3517,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         line.
 -->
 デフォルト値は2です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3468,7 +3556,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         line.
 -->
 デフォルト値は2です。
-このパラメータは、<filename>postgresql.conf</filename>ファイル、もしくはサーバコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3582,6 +3670,34 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-enable-groupby-reordering" xreflabel="enable_group_by_reordering">
+      <term><varname>enable_group_by_reordering</varname> (<type>boolean</type>)
+      <indexterm>
+       <primary><varname>enable_group_by_reordering</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>enable_group_by_reordering</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Controls if the query planner will produce a plan which will provide
+        <literal>GROUP BY</literal> keys sorted in the order of keys of
+        a child node of the plan, such as an index scan.  When disabled, the
+        query planner will produce a plan with <literal>GROUP BY</literal>
+        keys only sorted to match the <literal>ORDER BY</literal> clause,
+        if any. When enabled, the planner will try to produce a more
+        efficient plan. The default value is <literal>on</literal>.
+-->
+問い合わせプランナが、インデックススキャンのようなプランの子ノードのキーの順でソートされた<literal>GROUP BY</literal>キーを提供するプランを生成するかどうかを制御します。
+無効にすると、問い合わせプランナは、<literal>GROUP BY</literal>句があれば、それに合わせたソート順の<literal>ORDER BY</literal>キーを持つプランを生成します。
+有効にすると、プランナはより効率的プランの生成を試みます。
+デフォルト値は<literal>on</literal>です。
+       </para>
+      </listitem>
+     </varlistentry>
+
      <varlistentry id="guc-enable-hashagg" xreflabel="enable_hashagg">
       <term><varname>enable_hashagg</varname> (<type>boolean</type>)
       <indexterm>
@@ -3665,7 +3781,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         Enables or disables the query planner's use of index-scan plan
         types. The default is <literal>on</literal>.
 -->
-問い合わせプランナがインデックス走査計画型を選択することを有効もしくは無効にします。デフォルトは<literal>on</literal>です。
+問い合わせプランナがインデックススキャン計画型を選択することを有効もしくは無効にします。デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -3687,7 +3803,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         The default is <literal>on</literal>.
 -->
 問い合わせプランナがインデックスオンリースキャン計画型を選択することを有効もしくは無効にします。
-(<xref linkend="indexes-index-only-scans"/>を参照してください)
+（<xref linkend="indexes-index-only-scans"/>を参照してください）。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -3737,7 +3853,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         space is required for new entries. The default is
         <literal>on</literal>.
 -->
-問い合わせプランナが、ネステッドループ結合の中のパラメータ付き走査の結果をキャッシュするメモ化計画を使用するのを有効あるいは無効にします。
+問い合わせプランナが、ネステッドループ結合の中のパラメータ付きスキャンの結果をキャッシュするメモ化計画を使用するのを有効あるいは無効にします。
 この計画型は、キャッシュ中に現在のパラメータに対応する結果があれば、配下の計画をスキップすることを可能にします。
 新しい項目のためにより多くのスペースが必要な場合は、あまり参照されていない結果は削除されるかもしれません。
 デフォルトは<literal>on</literal>です。
@@ -3827,7 +3943,8 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         types with parallel hash. Has no effect if hash-join plans are not
         also enabled. The default is <literal>on</literal>.
 -->
-問い合わせプランナによる、パラレルハッシュを使ったハッシュジョイン計画型の利用を有効あるいは無効にします。
+問い合わせプランナによる、パラレルハッシュを使ったハッシュ結合計画型の利用を有効あるいは無効にします。
+ハッシュ結合計画が有効でない場合は無効です。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -3877,14 +3994,21 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         joining the matching partitions.  Partitionwise join currently applies
         only when the join conditions include all the partition keys, which
         must be of the same data type and have one-to-one matching sets of
-        child partitions.  Because partitionwise join planning can use
-        significantly more CPU time and memory during planning, the default is
-        <literal>off</literal>.
+        child partitions.  With this setting enabled, the number of nodes
+        whose memory usage is restricted by <varname>work_mem</varname>
+        appearing in the final plan can increase linearly according to the
+        number of partitions being scanned.  This can result in a large
+        increase in overall memory consumption during the execution of the
+        query.  Query planning also becomes significantly more expensive in
+        terms of memory and CPU.  The default value is <literal>off</literal>.
 -->
 パーティション同士の結合(partitionwise join)を問い合わせプランナが使用するのを有効あるいは無効にします。
 パーティション同士の結合は、適合するパーティションを結合することによって実行される、パーティション化テーブルにまたがる結合を可能にします。
 今の所、パーティション同士の結合は、すべてのパーティションキーを含んでいて、かつパーティションキーの型が同じで、一対一で一致する子パーティションの集合を持つ結合条件のときだけに適用されます。
-パーティション同士の結合のプランニングには大量のCPU時間とメモリが使用されることがあるので、デフォルトは<literal>off</literal>です。
+この設定を有効にすると、最終プランに表示され、<varname>work_mem</varname>によってメモリ使用が制限されるノードの数は、スキャンされるパーティションの数に応じて直線的に増加します。
+これにより、問い合わせの実行中の全体的なメモリ消費の大きな増加をもたらす可能性があります。
+また、問い合わせ計画の作成が、メモリとCPU使用率の点でも非常に高価になります。
+デフォルト値は<literal>off</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -3902,18 +4026,25 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
        <para>
 <!--
         Enables or disables the query planner's use of partitionwise grouping
-        or aggregation, which allows grouping or aggregation on a partitioned
-        tables performed separately for each partition.  If the <literal>GROUP
-        BY</literal> clause does not include the partition keys, only partial
-        aggregation can be performed on a per-partition basis, and
-        finalization must be performed later.  Because partitionwise grouping
-        or aggregation can use significantly more CPU time and memory during
-        planning, the default is <literal>off</literal>.
+        or aggregation, which allows grouping or aggregation on partitioned
+        tables to be performed separately for each partition.  If the
+        <literal>GROUP BY</literal> clause does not include the partition
+        keys, only partial aggregation can be performed on a per-partition
+        basis, and finalization must be performed later.  With this setting
+        enabled, the number of nodes whose memory usage is restricted by
+        <varname>work_mem</varname> appearing in the final plan can increase
+        linearly according to the number of partitions being scanned.  This
+        can result in a large increase in overall memory consumption during
+        the execution of the query.  Query planning also becomes significantly
+        more expensive in terms of memory and CPU.  The default value is
+        <literal>off</literal>.
 -->
-パーティション同士（partitionwise）のグループ化、あるいは集約を、問い合わせプランナが使用するのを有効あるいは無効にします。
-パーティション同士のグループ化、あるいは集約は、個々のパーティション毎にパーティション化されたテーブルに対して、グループ化あるいは集約を実行するのを可能にします。
+パーティション化されたテーブルに対してグループ化または集約を個別に実行できるように、問い合わせプランナのパーティションごと（partitionwise）のグループ化または集約の使用を有効または無効にします。
 <literal>GROUP BY</literal>句がパーティションキーを含まない場合は、パーティション単位で部分集約だけが実行でき、最終結果の算出は後で行われます。
-パーティション同士のグループ化あるいは集約には大量のCPU時間とメモリが使用されることがあるので、デフォルトは<literal>off</literal>です。
+この設定を有効にすると、最終プランに表示され、<varname>work_mem</varname>によってメモリ使用が制限されるノードの数は、スキャンされるパーティションの数に応じて直線的に増加します。
+これにより、問い合わせの実行中の全体的なメモリ消費の大きな増加をもたらす可能性があります。
+また、問い合わせ計画の作成が、メモリとCPU使用率の点でも非常に高価になります。
+デフォルト値は<literal>off</literal>です。
        </para>
       </listitem>
      </varlistentry>
@@ -3974,8 +4105,8 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         from using one if there are other methods available. The
         default is <literal>on</literal>.
 -->
-問い合わせプランナがシーケンシャル走査計画型を選択することを有効もしくは無効にします。
-シーケンシャル走査を完全に禁止することは不可能ですが、この変数をオフにすると、もし他の方法が利用できるのであれば、プランナはその使用を行わないようになります。
+問い合わせプランナがシーケンシャルスキャン計画型を選択することを有効もしくは無効にします。
+シーケンシャルスキャンを完全に禁止することは不可能ですが、この変数をオフにすると、もし他の方法が利用できるのであれば、プランナはその使用を行わないようになります。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -4021,7 +4152,7 @@ WALレコードは、適用される準備が整うまでスタンバイに保�
         Enables or disables the query planner's use of <acronym>TID</acronym>
         scan plan types. The default is <literal>on</literal>.
 -->
-問い合わせプランナが<acronym>TID</acronym>走査計画型を選択することを有効もしくは無効にします。
+問い合わせプランナが<acronym>TID</acronym>スキャン計画型を選択することを有効もしくは無効にします。
 デフォルトは<literal>on</literal>です。
        </para>
       </listitem>
@@ -4225,7 +4356,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
         each index entry during an index scan.
         The default is 0.005.
 -->
-インデックス走査時のそれぞれのインデックス行の処理コストに対するプランナの推測を設定します。
+インデックススキャン時のそれぞれのインデックス行の処理コストに対するプランナの推測を設定します。
 デフォルトは0.005です。
        </para>
       </listitem>
@@ -4318,7 +4449,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
         The default is 8 megabytes (<literal>8MB</literal>).
 -->
 パラレルスキャンを考慮する最小のテーブルデータのサイズを指定します。
-パラレル順スキャンでは、スキャンされるテーブルのデータ量は、常にテーブルのサイズと同じです。
+パラレルシーケンシャルスキャンでは、スキャンされるテーブルのデータ量は、常にテーブルのサイズと同じです。
 しかし、インデックスが使われる場合は、スキャンされるテーブルの量は通常少なくなるでしょう。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルトは8メガバイト（ <literal>8MB</literal>）です。
@@ -4405,7 +4536,7 @@ RAM内に存在するページの取り出しコストは通常よりもかな�
 同時に、システムは問い合わせの間のディスクキャッシュ内のデータの残滓を想定していません。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 デフォルトは4ギガバイト（<literal>4GB</literal>）です。
-(<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
+（<symbol>BLCKSZ</symbol>が8kbでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
        </para>
       </listitem>
      </varlistentry>
@@ -4489,7 +4620,7 @@ JITが有効な場合（<xref linkend="jit"/>参照）、それ以上ならJIT�
 それ以上ならJITコンパイルが高価な最適化を実行する問い合わせコストを設定します。
 そうした最適化にはプラン時間がかかりますが、問い合わせの実行速度を改善できます。
 これを<varname>jit_above_cost</varname>よりも小さくするのは意味がなく、また<varname>jit_inline_above_cost</varname>よりも大きくしても利益はないでしょう。
-これを<literal>-1</literal>にすると、高価な最適化は無効になります
+これを<literal>-1</literal>にすると、高価な最適化は無効になります。
 デフォルトは<literal>500000</literal>です。
        </para>
       </listitem>
@@ -4801,7 +4932,7 @@ GEQOで使用される淘汰の偏りを管理します。
         constraints, and omits scanning tables for which the conditions
         contradict the constraints.  For example:
 -->
-このパラメータが特定のテーブルに対して許される時、プランナはそのテーブルの<literal>CHECK</literal>制約で問い合わせ条件を比較し、制約と矛盾する条件のテーブルの走査を省きます。
+このパラメータが特定のテーブルに対して許される時、プランナはそのテーブルの<literal>CHECK</literal>制約で問い合わせ条件を比較し、制約と矛盾する条件のテーブルのスキャンを省きます。
 例えば以下のようになります。
 
 <programlisting>
@@ -4816,7 +4947,7 @@ SELECT * FROM parent WHERE key = 2400;
         With constraint exclusion enabled, this <command>SELECT</command>
         will not scan <structname>child1000</structname> at all, improving performance.
 -->
-制約排除が有効であると、この<command>SELECT</command>は全く<structname>child1000</structname>を走査せず、性能を向上させます。
+制約排除が有効であると、この<command>SELECT</command>は全く<structname>child1000</structname>をスキャンせず、性能を向上させます。
        </para>
 
        <para>

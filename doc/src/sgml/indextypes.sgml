@@ -1,0 +1,16 @@
+ <!-- doc/src/sgml/indextypes.sgml -->
+
+<chapter id="indextypes">
+<!--
+<title>Built-in Index Access Methods</title>
+-->
+<title>組み込みインデックスアクセスメソッド</title>
+
+&btree;
+&gist;
+&spgist;
+&gin;
+&brin;
+&hash;
+
+</chapter>

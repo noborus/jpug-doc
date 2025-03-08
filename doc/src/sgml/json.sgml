@@ -17,14 +17,14 @@
  <para>
 <!--
   JSON data types are for storing JSON (JavaScript Object Notation)
-  data, as specified in <ulink url="https://tools.ietf.org/html/rfc7159">RFC
+  data, as specified in <ulink url="https://datatracker.ietf.org/doc/html/rfc7159">RFC
   7159</ulink>. Such data can also be stored as <type>text</type>, but
   the JSON data types have the advantage of enforcing that each
   stored value is valid according to the JSON rules.  There are also
   assorted JSON-specific functions and operators available for data stored
   in these data types; see <xref linkend="functions-json"/>.
 -->
-JSONデータ型はJSON(JavaScript Object Notation)データを格納するためのものです。JSONの仕様は<ulink url="https://tools.ietf.org/html/rfc7159">RFC 7159</ulink>に定義されています。
+JSONデータ型はJSON(JavaScript Object Notation)データを格納するためのものです。JSONの仕様は<ulink url="https://datatracker.ietf.org/doc/html/rfc7159">RFC 7159</ulink>に定義されています。
 このようなデータは、<type>text</type>型として格納することもできますが、JSONデータ型は、それぞれ格納された値がJSONルールに従って有効に施行されるという利点があります。
 これらのデータ型に格納されたデータのために利用可能な各種JSON固有の関数と演算子もあります。
 <xref linkend="functions-json"/>を参照してください。
@@ -820,7 +820,7 @@ SELECT jdoc->'guid', jdoc->'name' FROM api WHERE jdoc @@ '$.tags[*] == "qui"';
 <!--
     For these operators, a GIN index extracts clauses of the form
     <literal><replaceable>accessors_chain</replaceable>
-    = <replaceable>constant</replaceable></literal> out of
+    == <replaceable>constant</replaceable></literal> out of
     the <type>jsonpath</type> pattern, and does the index search based on
     the keys and values mentioned in these clauses.  The accessors chain
     may include <literal>.<replaceable>key</replaceable></literal>,
@@ -830,7 +830,7 @@ SELECT jdoc->'guid', jdoc->'name' FROM api WHERE jdoc @@ '$.tags[*] == "qui"';
     supports <literal>.*</literal> and <literal>.**</literal> accessors,
     but the <literal>jsonb_path_ops</literal> operator class does not.
 -->
-これらの演算子に対して、GINインデックスは、<type>jsonpath</type>パターンから<literal><replaceable>accessors_chain</replaceable> = <replaceable>constant</replaceable></literal>の形式の句を抽出し、句内で使われているキーと値に基づいてインデックスサーチをします。
+これらの演算子に対して、GINインデックスは、<type>jsonpath</type>パターンから<literal><replaceable>accessors_chain</replaceable> == <replaceable>constant</replaceable></literal>の形式の句を抽出し、句内で使われているキーと値に基づいてインデックスサーチをします。
 アクセサチェーン(accessors chain)は<literal>.<replaceable>key</replaceable></literal>、<literal>[*]</literal>、<literal>[<replaceable>index</replaceable>]</literal>アクセサを含みます。
 <literal>jsonb_ops</literal>演算子クラスは<literal>.*</literal>と<literal>.**</literal>アクセサもサポートしますが、<literal>jsonb_path_ops</literal>演算子クラスはサポートしません。
   </para>
@@ -961,7 +961,7 @@ GINインデックスは、かなり効率的に検索することができま�
       <productname>PostgreSQL</productname> data type.  Strings are
       compared using the default database collation.
 -->
-JSONプリミティブ値は基本的に<productname>PostgreSQL</productname>データ型と同じルールで比較されます。文字列は、デフォルトのデータベース照合を使用して比較されます
+JSONプリミティブ値は基本的に<productname>PostgreSQL</productname>データ型と同じルールで比較されます。文字列は、デフォルトのデータベース照合を使用して比較されます。
   </para>
  </sect2>
 
@@ -1209,7 +1209,7 @@ PL/Python向けの拡張は、<literal>jsonb_plpython3u</literal>と呼ばれま
    At the same time, to provide a natural way of working with JSON data,
    SQL/JSON path syntax uses some JavaScript conventions:
 -->
-SQL/JSONパス述部および演算子のセマンティクスは、SQLに準拠しています。
+SQL/JSONパス述部および演算子のセマンティクスは、SQLに従います。
 同時に、JSONデータを処理する自然な方法を提供するために、SQL/JSONのパス構文ではいくつかのJavaScript規則を使用します。
   </para>
 
@@ -1271,31 +1271,27 @@ SQL/JSONパス式では（およびJavaScriptでは、しかし本来のSQLで�
    In particular, the way to write a double quote within an embedded string
    literal is <literal>\"</literal>, and to write a backslash itself, you
    must write <literal>\\</literal>.  Other special backslash sequences
-   include those recognized in JSON strings:
+   include those recognized in JavaScript strings:
    <literal>\b</literal>,
    <literal>\f</literal>,
    <literal>\n</literal>,
    <literal>\r</literal>,
    <literal>\t</literal>,
    <literal>\v</literal>
-   for various ASCII control characters, and
-   <literal>\u<replaceable>NNNN</replaceable></literal> for a Unicode
-   character identified by its 4-hex-digit code point.  The backslash
-   syntax also includes two cases not allowed by JSON:
+   for various ASCII control characters,
    <literal>\x<replaceable>NN</replaceable></literal> for a character code
-   written with only two hex digits, and
-   <literal>\u{<replaceable>N...</replaceable>}</literal> for a character
-   code written with 1 to 6 hex digits.
+   written with only two hex digits,
+   <literal>\u<replaceable>NNNN</replaceable></literal> for a Unicode
+   character identified by its 4-hex-digit code point, and
+   <literal>\u{<replaceable>N...</replaceable>}</literal> for a Unicode
+   character code point written with 1 to 6 hex digits.
 -->
-SQL/JSONパス式は通常、SQL問い合わせでSQL文字列リテラルとして記述されるため、一重引用符で囲む必要があり、値内で必要な一重引用符は二重にする必要があります
-(<xref linkend="sql-syntax-strings"/>を参照)。
+SQL/JSONパス式は通常、SQL問い合わせでSQL文字列リテラルとして記述されるため、一重引用符で囲む必要があり、値内で必要な一重引用符は二重にする必要があります(<xref linkend="sql-syntax-strings"/>を参照)。
 一部の形式のパス式では、文字列リテラルを含める必要があります。
-これらの埋め込み文字列リテラルは二重引用符で囲む必要があり、バックスラッシュエスケープを使用してハード・タイプ文字を表すことができます。
+これらの埋め込み文字列リテラルは JavaScript/ECMAScript規則に従います。二重引用符で囲む必要があり、その中でバックスラッシュエスケープを使用してタイプしにくい文字を表すことができます。
 特に、埋め込み文字列リテラル内で二重引用符を記述する方法は<literal>\"</literal>であり、バックスラッシュを記述する必要がある場合は<literal>\\</literal>と書く必要があります。
-その他の特別なバックスラッシュ構文には、以下のJSON文字列で認識されるものが含まれます。
-さまざまなASCII制御用文字の<literal>\b</literal>、<literal>\f</literal>、<literal>\n</literal>、<literal>\r</literal>、<literal>\t</literal>、<literal>\v</literal>、および4つの16進数のコードポイントで識別されるUnicode文字用の<literal>\u<replaceable>NNNN</replaceable></literal>です。
-バックスラッシュ構文には、JSONでは許されない2つのケースも含まれています。
-<literal>\x<replaceable>NN</replaceable></literal>は2桁の16進数だけで記述された文字コードの場合で、<literal>\u{<replaceable>N...</replaceable>}</literal>は、1～6桁の16進数で記述された文字コードの場合です。
+その他の特別なバックスラッシュ構文には、以下のJavaScript文字列で認識されるものが含まれます。
+さまざまなASCII制御用文字の<literal>\b</literal>、<literal>\f</literal>、<literal>\n</literal>、<literal>\r</literal>、<literal>\t</literal>、<literal>\v</literal>、2桁の16進数だけで記述された文字コード用の<literal>\x<replaceable>NN</replaceable></literal>、4つの16進数のコードポイントで識別されるUnicode文字用の<literal>\u<replaceable>NNNN</replaceable></literal>および1～6桁の16進数で記述されたUnicode文字コードポイント用の<literal>\u{<replaceable>N...</replaceable>}</literal>です。
   </para>
 
   <para>
@@ -1399,7 +1395,7 @@ JSONプリミティブ型のパスリテラル。
         see <xref linkend="functions-json-processing-table"/> for details.
 -->
 名前付き変数。
-その値はいくつかのJSON処理関数のパラメーター<parameter>vars</parameter>で設定できます。
+その値はいくつかのJSON処理関数のパラメータ<parameter>vars</parameter>で設定できます。
 詳細は<xref linkend="functions-json-processing-table"/>を参照してください。
         <!-- TODO: describe PASSING clause once implemented !-->
       </entry>
@@ -1411,7 +1407,7 @@ JSONプリミティブ型のパスリテラル。
       in filter expressions.
       </entry>
 -->
-      <entry>フィルター式のパス評価の結果を表す変数。
+      <entry>フィルタ式のパス評価の結果を表す変数。
       </entry>
      </row>
     </tbody>

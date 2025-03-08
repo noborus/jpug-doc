@@ -28,7 +28,6 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 ANALYZE [ ( <replaceable class="parameter">option</replaceable> [, ...] ) ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
-ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
 
 <!--
 <phrase>where <replaceable class="parameter">option</replaceable> can be one of:</phrase>
@@ -37,7 +36,7 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 
     VERBOSE [ <replaceable class="parameter">boolean</replaceable> ]
     SKIP_LOCKED [ <replaceable class="parameter">boolean</replaceable> ]
-    BUFFER_USAGE_LIMIT [ <replaceable class="parameter">size</replaceable> ]
+    BUFFER_USAGE_LIMIT <replaceable class="parameter">size</replaceable>
 
 <!--
 <phrase>and <replaceable class="parameter">table_and_columns</replaceable> is:</phrase>
@@ -80,18 +79,6 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 リストがある場合、<command>ANALYZE</command>は指定されたテーブルのみを処理します。
 さらにテーブルの列名のリストを与え、その列の統計情報のみを収集することも可能です。
   </para>
-
-  <para>
-<!--
-   When the option list is surrounded by parentheses, the options can be
-   written in any order.  The parenthesized syntax was added in
-   <productname>PostgreSQL</productname> 11;  the unparenthesized syntax
-   is deprecated.
--->
-オプションリストが括弧で括られていた場合、オプションは任意の順序で書けます。
-括弧付きの構文は<productname>PostgreSQL</productname> 11で追加されました。
-括弧のない構文は廃止予定です。
-  </para>
  </refsect1>
 
  <refsect1>
@@ -131,7 +118,7 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 -->
 リレーション上で動作を開始する時に、<command>ANALYZE</command>は衝突しているロックが解放されるのを待たないことを指定します。リレーションを待つことなく即時にロックできない場合、そのリレーションは飛ばされます。
 このオプションを指定しても、リレーションのインデックスを開く時、パーティションやテーブル継承の子、ある種類の外部テーブルからサンプル行を取得する時には、<command>ANALYZE</command>がブロックするかもしれないことに注意してください。
-また、通常<command>ANALYZE</command>は指定されたパーティションテーブルのパーティションをすべて処理しますが、このオプションにより<command>ANALYZE</command>は、パーティションテーブル上に衝突するロックがあれば、パーティションをすべて飛ばします。
+また、通常<command>ANALYZE</command>は指定されたパーティションテーブルのパーティションをすべて処理しますが、このオプションにより<command>ANALYZE</command>は、パーティションテーブル上に衝突するロックがあれば、パーティションをすべてスキップします。
      </para>
     </listitem>
    </varlistentry>
@@ -190,12 +177,12 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 <!--
       Specifies an amount of memory in kilobytes.  Sizes may also be specified
       as a string containing the numerical size followed by any one of the
-      following memory units: <literal>kB</literal> (kilobytes),
-      <literal>MB</literal> (megabytes), <literal>GB</literal> (gigabytes), or
-      <literal>TB</literal> (terabytes).
+      following memory units: <literal>B</literal> (bytes),
+      <literal>kB</literal> (kilobytes), <literal>MB</literal> (megabytes),
+      <literal>GB</literal> (gigabytes), or <literal>TB</literal> (terabytes).
 -->
 メモリの量をキロバイト単位で指定します。
-サイズは、数値のサイズに続いて、<literal>kB</literal>(キロバイト)、<literal>MB</literal>(メガバイト)、<literal>GB</literal>(ギガバイト)または<literal>TB</literal>(テラバイト)のいずれか1つのメモリ単位を含む文字列として指定することもできます。
+サイズは、数値のサイズに続いて、<literal>B</literal>(バイト)、<literal>kB</literal>(キロバイト)、<literal>MB</literal>(メガバイト)、<literal>GB</literal>(ギガバイト)または<literal>TB</literal>(テラバイト)のいずれか1つのメモリ単位を含む文字列として指定することもできます。
      </para>
     </listitem>
    </varlistentry>
@@ -259,18 +246,15 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 
   <para>
 <!--
-   To analyze a table, one must ordinarily be the table's owner or a
-   superuser.  However, database owners are allowed to
+   To analyze a table, one must ordinarily have the <literal>MAINTAIN</literal>
+   privilege on the table.  However, database owners are allowed to
    analyze all tables in their databases, except shared catalogs.
-   (The restriction for shared catalogs means that a true database-wide
-   <command>ANALYZE</command> can only be performed by a superuser.)
    <command>ANALYZE</command> will skip over any tables that the calling user
    does not have permission to analyze.
 -->
-テーブルを解析するためには、通常そのテーブルの所有者であるかスーパーユーザでなければなりません。
+テーブルを解析するためには、通常そのテーブルに対する<literal>MAINTAIN</literal>権限が必要です。
 しかしながら、データベースの所有者は、共有カタログを除いて、そのデータベースのテーブルをすべて解析できます。
-(共有カタログの制限は、データベース全体の<command>ANALYZE</command>はスーパーユーザだけが実施できるということを意味します。)
-<command>ANALYZE</command>は呼び出したユーザが解析する権限のないテーブルを飛ばします。
+<command>ANALYZE</command>は呼び出したユーザが解析する権限のないテーブルをスキップします。
   </para>
 
   <para>
@@ -310,12 +294,20 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
 
   <para>
 <!--
+   While <command>ANALYZE</command> is running, the <xref
+   linkend="guc-search-path"/> is temporarily changed to <literal>pg_catalog,
+   pg_temp</literal>.
+-->
+<command>ANALYZE</command>の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます。
+  </para>
+
+  <para>
+<!--
    <command>ANALYZE</command>
    requires only a read lock on the target table, so it can run in
-   parallel with other activity on the table.
+   parallel with other non-DDL activity on the table.
 -->
-<command>ANALYZE</command>は、対象とするテーブルの読み取りロックのみを必要とします。
-したがって、そのテーブルに対する他の操作と並行して実行することができます。
+<command>ANALYZE</command>は、対象とするテーブルの読み取りロックのみを必要とします。したがって、そのテーブルに対する他の非DDL操作と並行して実行できます。
   </para>
 
   <para>
@@ -501,6 +493,17 @@ ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replacea
    There is no <command>ANALYZE</command> statement in the SQL standard.
 -->
 標準SQLには<command>ANALYZE</command>文はありません。
+  </para>
+
+  <para>
+<!--
+   The following syntax was used before <productname>PostgreSQL</productname>
+   version 11 and is still supported:
+-->
+<productname>PostgreSQL</productname>バージョン11より前では次の構文が使われていましたが、今でもサポートされています。
+<synopsis>
+ANALYZE [ VERBOSE ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
+</synopsis>
   </para>
  </refsect1>
 

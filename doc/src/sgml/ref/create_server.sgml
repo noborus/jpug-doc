@@ -185,6 +185,14 @@ CREATE SERVER [ IF NOT EXISTS ] <replaceable class="parameter">server_name</repl
 <xref linkend="dblink"/>モジュールを使用している場合、接続パラメータを表すために、外部サーバ名を<xref linkend="contrib-dblink-connect"/>関数の引数として使用することができます。
 この方法で利用できるようにするためには外部サーバ上に<literal>USAGE</literal>権限が必要です。
   </para>
+
+  <para>
+<!--
+   If the foreign server supports sort pushdown, it is necessary for it
+   to have the same sort ordering as the local server.
+-->
+外部サーバがソートのプッシュダウンをサポートする場合、ローカルサーバと同じソート順序を持つことが必要です。
+  </para>
  </refsect1>
 
  <refsect1>
@@ -219,7 +227,7 @@ CREATE SERVER myserver FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host 'foo', db
 <!--
    <command>CREATE SERVER</command> conforms to ISO/IEC 9075-9 (SQL/MED).
 -->
-<command>CREATE SERVER</command>はISO/IEC 9075-9 (SQL/MED)に従います。
+<command>CREATE SERVER</command>はISO/IEC 9075-9 (SQL/MED)に準拠しています。
   </para>
  </refsect1>
 

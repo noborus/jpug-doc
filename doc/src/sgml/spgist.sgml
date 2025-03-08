@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/spgist.sgml -->
 
-<chapter id="spgist">
+<sect1 id="spgist">
 <!--
 <title>SP-GiST Indexes</title>
 -->
@@ -15,7 +15,7 @@
     <secondary>SP-GiST</secondary>
    </indexterm>
 
-<sect1 id="spgist-intro">
+<sect2 id="spgist-intro">
 <!--
  <title>Introduction</title>
 -->
@@ -81,9 +81,9 @@
 <productname>PostgreSQL</productname>での<acronym>SP-GiST</acronym>の実装は、おもにTeodor SigaevとOleg Bartunovによって保守されており、詳しい情報は彼らの<ulink url="http://www.sai.msu.su/~megera/wiki/spgist_dev">WEBサイト</ulink>にあります。
  </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="spgist-builtin-opclasses">
+<sect2 id="spgist-builtin-opclasses">
 <!--
  <title>Built-in Operator Classes</title>
 -->
@@ -242,9 +242,9 @@
 <literal>quad_point_ops</literal>、<literal>kd_point_ops</literal>、<literal>poly_ops</literal>演算子クラスは<literal>&lt;-&gt;</literal>順序付け演算子をサポートしますので、インデックス付けされた点や多角形のデータ集合に対してk近傍(<literal>k-NN</literal>)探索が可能です。
  </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="spgist-extensibility">
+<sect2 id="spgist-extensibility">
 <!--
  <title>Extensibility</title>
 -->
@@ -289,7 +289,7 @@
   not discussed further here.
 -->
 <acronym>SP-GiST</acronym>インデックスが<literal>INCLUDE</literal>列を付けて作成された場合には、その列の値もリーフタプルに格納されます。
-<literal>INCLUDE</literal>列は<acronym>SP-GiST</acronym>演算子クラスとは関係ありませんので、ここではこれ以上議論しません。
+<literal>INCLUDE</literal>列は<acronym>SP-GiST</acronym>演算子クラスとは関係ありませんので、ここではこれ以上説明しません。
  </para>
 
  <para>
@@ -320,7 +320,7 @@
 例えば、基数木では、ノードのラベルは文字列の値の次の文字にすることができます。
 （あるいは、すべての内部タプルについて、決まったノードの集合しか扱わないのであれば、演算子クラスはノードのラベルを省略することができます。
 <xref linkend="spgist-null-labels"/>を参照してください。）
-省略可能ですが、内部タプルはそのすべてのメンバーを記述する<firstterm>接頭辞</firstterm>の値を持つことができます。
+省略可能ですが、内部タプルはそのすべてのメンバを記述する<firstterm>接頭辞</firstterm>の値を持つことができます。
 基数木では、これは表現される文字列に共通の接頭辞とすることができます。
 接頭辞の値は、必ずしも本当の接頭辞である必要はなく、演算子クラスが必要とする任意の値で良いです。
 例えば四分木では、その中心点を保持し、4つの象限をそこから相対的に測るようにできます。
@@ -354,7 +354,7 @@
 <acronym>SP-GiST</acronym>のコアのコードはnullエントリについても対応しています。
 <acronym>SP-GiST</acronym>のインデックスはインデックス列がnullのエントリについても格納しますが、これはインデックスの演算子クラスのコードからは隠されているので、nullのインデックスエントリや検索条件が演算子クラスのメソッドに渡されることはありません。
 (<acronym>SP-GiST</acronym>の演算子は厳格なのでNULL値について成功を返すことはできないと想定されています。)
-従って、ここではこれ以上、NULLについて議論しません。
+従って、ここではこれ以上、NULLについて説明しません。
   </para>
  </note>
 
@@ -407,7 +407,7 @@
 <!--
       The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_config(internal, internal) RETURNS void ...
 </programlisting>
@@ -525,7 +525,7 @@ typedef struct spgConfigOut
 <!--
       The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_choose(internal, internal) RETURNS void ...
 </programlisting>
@@ -795,7 +795,7 @@ typedef struct spgChooseOut
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_picksplit(internal, internal) RETURNS void ...
 </programlisting>
@@ -941,7 +941,7 @@ typedef struct spgPickSplitOut
 <!--
        The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_inner_consistent(internal, internal) RETURNS void ...
 </programlisting>
@@ -1143,11 +1143,8 @@ typedef struct spgInnerConsistentOut
       <para>
 <!--
        The <acronym>SQL</acronym> declaration of the function must look like this:
-<programlisting>
-CREATE FUNCTION my_leaf_consistent(internal, internal) RETURNS bool ...
-</programlisting>
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_leaf_consistent(internal, internal) RETURNS bool ...
 </programlisting>
@@ -1332,7 +1329,7 @@ typedef struct spgLeafConsistentOut
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 
 <programlisting>
 CREATE OR REPLACE FUNCTION my_options(internal)
@@ -1390,9 +1387,9 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 インデックス付けされた列が照合可能なデータ型の場合、インデックスの照合は、標準的な<function>PG_GET_COLLATION()</function>の仕組みを使ってすべてのサポートメソッドに渡されます。
   </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="spgist-implementation">
+<sect2 id="spgist-implementation">
 <!--
  <title>Implementation</title>
 -->
@@ -1407,7 +1404,7 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 この節では、<acronym>SP-GiST</acronym>の演算子クラスを実装する人にとって知っていると役に立つ、実装についての詳細とその他の秘訣について説明します。
   </para>
 
- <sect2 id="spgist-limits">
+ <sect3 id="spgist-limits">
 <!--
   <title>SP-GiST Limits</title>
 -->
@@ -1478,9 +1475,9 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 <structfield>longValuesOK</structfield>が真であれば、<acronym>SP-GiST</acronym>ツリーの後続のレベルは、より多くの情報を接頭辞と内部タプルのノードラベルへと吸収し、要求されるリーフデータより小さくして、最終的には1ページに収まるようになることが期待されます。
 演算子クラスのバグが無限の挿入ループを引き起こすのを防ぐために、<function>choose</function>メソッドの呼び出しの10サイクル以内でリーフデータが少しも小さくならなければ、<acronym>SP-GiST</acronym>コアはエラーを発生します。
   </para>
- </sect2>
+ </sect3>
 
- <sect2 id="spgist-null-labels">
+ <sect3 id="spgist-null-labels">
 <!--
   <title>SP-GiST Without Node Labels</title>
 -->
@@ -1519,9 +1516,9 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 -->
 ラベルのないノードを持つ内部タプルを処理するときに、<function>choose</function>が<literal>spgAddNode</literal>を返すのはエラーです。というのは、この場合、ノードの集合は固定されていると想定されるからです。
   </para>
- </sect2>
+ </sect3>
 
- <sect2 id="spgist-all-the-same">
+ <sect3 id="spgist-all-the-same">
 <!--
   <title><quote>All-the-Same</quote> Inner Tuples</title>
 -->
@@ -1575,11 +1572,11 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 <literal>allTheSame</literal>のタプルの処理において、すべてのノードは等価なので、<function>inner_consistent</function>関数は、インデックス検索を続けるためのターゲットとして、すべてのノードを返すか、ノードを1つも返さないかのいずれかであるべきです。
 このために、特殊ケースを扱うコードが必要になるかもしれませんし、必要ないかもしれません。それは、<function>inner_consistent</function>関数が、通常、ノードの意味についてどの程度のことを仮定しているかに依存します。
   </para>
- </sect2>
+ </sect3>
 
-</sect1>
+</sect2>
 
-<sect1 id="spgist-examples">
+<sect2 id="spgist-examples">
 <!--
  <title>Examples</title>
 -->
@@ -1597,6 +1594,6 @@ SP-GiSTのすべてのサポートメソッドは、通常は短期間有効な�
 コードを見るには<filename>src/backend/access/spgist/</filename>と<filename>src/backend/utils/adt/</filename>を調べてみてください。
  </para>
 
-</sect1>
+</sect2>
 
-</chapter>
+</sect1>

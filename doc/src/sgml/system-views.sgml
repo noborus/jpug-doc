@@ -55,12 +55,14 @@
   <title>概要</title>
 
   <para>
+<!--
    <xref linkend="view-table"/> lists the system views.
    More detailed documentation of each catalog follows below.
-<!--
    Except where noted, all the views described here are read-only.
 -->
-注意書きがない限り、ここでのすべてのビューは読み取り専用です。
+<xref linkend="view-table"/>はシステムビューの一覧です。
+それぞれのカタログのさらに詳細な説明は、これより後に述べられています。
+注意書きがない限り、ここでのすべてのビューは読み取り専用です
   </para>
 
   <table id="view-table">
@@ -352,6 +354,11 @@
       <entry>views</entry>
 -->
       <entry>ビュー</entry>
+     </row>
+
+     <row>
+      <entry><link linkend="view-pg-wait-events"><structname>pg_wait_events</structname></link></entry>
+      <entry>wait events</entry>
      </row>
 
     </tbody>
@@ -1697,7 +1704,7 @@ NULLでないなら、この行がなぜ処理できなかったかを示すエ�
 <!--
        Detected user name of the client
 -->
-検出されたクライアントのユーザー名
+検出されたクライアントのユーザ名
       </para></entry>
      </row>
 
@@ -2144,7 +2151,7 @@ NULLでないなら、この行がなぜ処理できなかったかを示すエ�
        lock, or null if the lock is held by a prepared transaction
 -->
 ロックを保持、もしくは待っているサーバプロセスのプロセスID。
-ただしプリペアードトランザクションによりロックが保持されている場合はNULL
+ただしプリペアドトランザクションによりロックが保持されている場合はNULL
       </para></entry>
      </row>
 
@@ -2297,7 +2304,7 @@ falseの場合は、このロックを獲得するため現在プロセスが待
   <para>
 <!--
    Apply transaction locks are used in parallel mode to apply the transaction
-   in logical replication. The remote transaction id is displayed in the
+   in logical replication. The remote transaction ID is displayed in the
    <structfield>transactionid</structfield> column. The <structfield>objsubid</structfield>
    displays the lock subtype which is 0 for the lock used to synchronize the
    set of changes, and 1 for the lock used to wait for the transaction to
@@ -2349,8 +2356,8 @@ SELECT * FROM pg_locks pl LEFT JOIN pg_stat_activity psa
    but it continues to hold the locks it acquired while running.)
    For example:
 -->
-また、プリペアードトランザクションを使用している場合には、ロックを保持しているプリペアードトランザクションに関してより多くの情報を得るため、<structfield>virtualtransaction</structfield>列は、<link linkend="view-pg-prepared-xacts"><structname>pg_prepared_xacts</structname></link>ビューの<structfield>transaction</structfield>列と結合できます。
-（プリペアードトランザクションはロックを待つことはありませんが、実行時に獲得したロックを保持し続けます。）
+また、プリペアドトランザクションを使用している場合には、ロックを保持しているプリペアドトランザクションに関してより多くの情報を得るため、<structfield>virtualtransaction</structfield>列は、<link linkend="view-pg-prepared-xacts"><structname>pg_prepared_xacts</structname></link>ビューの<structfield>transaction</structfield>列と結合できます。
+（プリペアドトランザクションはロックを待つことはありませんが、実行時に獲得したロックを保持し続けます。）
 例えば、このような感じです。
 <programlisting>
 SELECT * FROM pg_locks pl LEFT JOIN pg_prepared_xacts ppx
@@ -2927,7 +2934,7 @@ SQL経由で作成された準備済み文では、これはクライアント�
    information about transactions that are currently prepared for two-phase
    commit (see <xref linkend="sql-prepare-transaction"/> for details).
 -->
-<structname>pg_prepared_xacts</structname>ビューは、現状で2相コミットのためにプリペアードトランザクションについての情報を表示します（詳細は<xref linkend="sql-prepare-transaction"/>を参照してください）。
+<structname>pg_prepared_xacts</structname>ビューは、現状で2相コミットのためにプリペアドトランザクションについての情報を表示します（詳細は<xref linkend="sql-prepare-transaction"/>を参照してください）。
   </para>
 
   <para>
@@ -2936,7 +2943,7 @@ SQL経由で作成された準備済み文では、これはクライアント�
    transaction.  An entry is removed when the transaction is committed or
    rolled back.
 -->
-<structname>pg_prepared_xacts</structname>は、プリペアードトランザクション毎に1つの行を含みます。
+<structname>pg_prepared_xacts</structname>は、プリペアドトランザクション毎に1つの行を含みます。
 この項目はトランザクションがコミットもしくはロールバックされたときに削除されます。
   </para>
 
@@ -2972,7 +2979,7 @@ SQL経由で作成された準備済み文では、これはクライアント�
 <!--
        Numeric transaction identifier of the prepared transaction
 -->
-プリペアードトランザクションに対する数値のトランザクション識別子
+プリペアドトランザクションに対する数値のトランザクション識別子
       </para></entry>
      </row>
 
@@ -3067,12 +3074,12 @@ SQL経由で作成された準備済み文では、これはクライアント�
    tables they contain.  Unlike the underlying catalog
    <link linkend="catalog-pg-publication-rel"><structname>pg_publication_rel</structname></link>,
    this view expands publications defined as
-   <link linkend="sql-createpublication-for-all-tables"><literal>FOR ALL TABLES</literal></link>
-   and <link linkend="sql-createpublication-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>,
+   <link linkend="sql-createpublication-params-for-all-tables"><literal>FOR ALL TABLES</literal></link>
+   and <link linkend="sql-createpublication-params-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>,
    so for such publications there will be a row for each eligible table.
 -->
-<structname>pg_publication_tables</structname>ビューはパブリケーションとそれに含まれるテーブルの間のマッピングに関する情報を提供します。
-その元となるカタログ<link linkend="catalog-pg-publication-rel"><structname>pg_publication_rel</structname></link>とは異なり、このビューは<link linkend="sql-createpublication-for-all-tables"><literal>FOR ALL TABLES</literal></link>と<link linkend="sql-createpublication-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>で定義されたパブリケーションを展開するため、そのようなパブリケーションについては対象となる各テーブルについて1行があります。
+《マッチ度[93.617021]》<structname>pg_publication_tables</structname>ビューはパブリケーションとそれに含まれるテーブルの間のマッピングに関する情報を提供します。
+その元となるカタログ<link linkend="catalog-pg-publication-rel"><structname>pg_publication_rel</structname></link>とは異なり、このビューは<link linkend="sql-createpublication-params-for-all-tables"><literal>FOR ALL TABLES</literal></link>と<link linkend="sql-createpublication-params-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>で定義されたパブリケーションを展開するため、そのようなパブリケーションについては対象となる各テーブルについて1行があります。
   </para>
 
   <table>
@@ -3162,7 +3169,7 @@ SQL経由で作成された準備済み文では、これはクライアント�
        for the table.
 -->
 パブリケーションに含まれるテーブル列の名前。
-ユーザーがテーブルの列リストを指定しなかった場合に、テーブルのすべての列が含まれます。
+ユーザがテーブルの列リストを指定しなかった場合に、テーブルのすべての列が含まれます。
       </para></entry>
      </row>
 
@@ -3605,17 +3612,127 @@ trueの場合は、準備されたトランザクションのデコーディン�
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>inactive_since</structfield> <type>timestamptz</type>
+      </para>
+      <para>
+<!--
+        The time since the slot has become inactive.
+        <literal>NULL</literal> if the slot is currently being used.
+        Note that for slots on the standby that are being synced from a
+        primary server (whose <structfield>synced</structfield> field is
+        <literal>true</literal>), the
+        <structfield>inactive_since</structfield> indicates the last
+        synchronization (see
+        <xref linkend="logicaldecoding-replication-slots-synchronization"/>)
+        time.
+-->
+《機械翻訳》スロットが非アクティブになってからの時間。
+スロットが現在使用中の場合は<literal>NULL</literal>。
+スタンバイ側のスロットがプライマリサーバから同期されている場合（その<structfield>synced</structfield>フィールドが<literal>true</literal>である）、<structfield>inactive_since</structfield>は最後の同期時間を示します（<xref linkend="logicaldecoding-replication-slots-synchronization"/>を参照）。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>conflicting</structfield> <type>bool</type>
       </para>
       <para>
 <!--
        True if this logical slot conflicted with recovery (and so is now
-       invalidated). Always NULL for physical slots.
+       invalidated). When this column is true, check
+       <structfield>invalidation_reason</structfield> column for the conflict
+       reason. Always NULL for physical slots.
 -->
-trueの場合は、この論理スロットがリカバリと競合している（したため、無効になっている）。
-物理スロットでは常にNULL。
+《機械翻訳》この論理スロットがリカバリと競合した場合は真(true)です（したがって、無効になりました）。
+この列が真の場合、競合理由を<structfield>invalidation_reason</structfield>列で確認します。
+物理スロットの場合は常にNULLです。
       </para></entry>
      </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>invalidation_reason</structfield> <type>text</type>
+      </para>
+      <para>
+<!--
+       The reason for the slot's invalidation. It is set for both logical and
+       physical slots. <literal>NULL</literal> if the slot is not invalidated.
+       Possible values are:
+-->
+《機械翻訳》スロットが無効化された理由。
+論理スロットと物理スロットの両方に設定されます。
+スロットが無効化されない場合は<literal>NULL</literal>。
+指定可能な値は以下のとおりです。
+       <itemizedlist spacing="compact">
+        <listitem>
+         <para>
+<!--
+          <literal>wal_removed</literal> means that the required WAL has been
+          removed.
+-->
+《機械翻訳》<literal>wal_removed</literal>は、必要なWALが削除されたことを意味します。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>rows_removed</literal> means that the required rows have
+          been removed. It is set only for logical slots.
+-->
+《機械翻訳》<literal>rows_removed</literal>は、必要な行が削除されたことを意味します。
+これは論理スロットに対してのみ設定されます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>wal_level_insufficient</literal> means that the
+          primary doesn't have a <xref linkend="guc-wal-level"/> sufficient to
+          perform logical decoding.  It is set only for logical slots.
+-->
+《機械翻訳》<literal>wal_level_insufficient</literal>は、プライマリが論理デコードを実行するのに十分な<xref linkend="guc-wal-level"/>を持っていないことを意味します。
+これは論理スロットに対してのみ設定されます。
+         </para>
+        </listitem>
+       </itemizedlist>
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>failover</structfield> <type>bool</type>
+      </para>
+      <para>
+<!--
+       True if this is a logical slot enabled to be synced to the standbys
+       so that logical replication can be resumed from the new primary
+       after failover. Always false for physical slots.
+-->
+《機械翻訳》これが、フェイルオーバー後に新しいプライマリからの論理レプリケーションを再開できるように、スタンバイと同期できるように有効化された論理スロットである場合は、true。
+物理スロットの場合は、常にfalse。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>synced</structfield> <type>bool</type>
+      </para>
+      <para>
+<!--
+       True if this is a logical slot that was synced from a primary server.
+       On a hot standby, the slots with the synced column marked as true can
+       neither be used for logical decoding nor dropped manually. The value
+       of this column has no meaning on the primary server; the column value on
+       the primary is default false for all slots but may (if leftover from a
+       promoted standby) also be true.
+-->
+《機械翻訳》これがプライマリ サーバから同期された論理スロットである場合は true。
+ホットスタンバイでは、同期されたカラムが true とマークされているスロットは、論理デコードにも手動でドロップすることもできません。
+このカラムの値はプライマリ サーバでは意味を持ちません。
+プライマリのカラム値は、すべてのスロットに対して false ですが、（昇格したスタンバイから残っている場合）true になる場合もあります。
+      </para></entry>
+     </row>
+
     </tbody>
    </tgroup>
   </table>
@@ -4301,20 +4418,51 @@ NULLの場合には満了時間はありません。
 <!--
        The last sequence value written to disk.  If caching is used,
        this value can be greater than the last value handed out from the
-       sequence.  Null if the sequence has not been read from yet.  Also, if
-       the current user does not have <literal>USAGE</literal>
-       or <literal>SELECT</literal> privilege on the sequence, the value is
-       null.
+       sequence.
 -->
 ディスクに書き込まれた最後のシーケンス値。
 キャッシュが使用されている場合、この値はシーケンスから最後に取り出された値より大きくなることがあります。
-シーケンスからまだ読み取られていないときはNULLになります。
-また、現在のユーザがシーケンスについて<literal>USAGE</literal>あるいは<literal>SELECT</literal>権限がない場合も値はNULLになります。
       </para></entry>
      </row>
     </tbody>
    </tgroup>
   </table>
+
+  <para>
+<!--
+   The <structfield>last_value</structfield> column will read as null if any of
+   the following are true:
+-->
+<structfield>last_value</structfield>列は以下のいずれかがtrueである場合、NULLとして読み込みます。
+   <itemizedlist>
+    <listitem>
+     <para>
+<!--
+      The sequence has not been read from yet.
+-->
+シーケンスからまだ読み取られていない。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+<!--
+      The current user does not have <literal>USAGE</literal> or
+      <literal>SELECT</literal> privilege on the sequence.
+-->
+現在のユーザがシーケンスについて<literal>USAGE</literal>あるいは<literal>SELECT</literal>権限を持っていない。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+<!--
+      The sequence is unlogged and the server is a standby.
+-->
+ログを取らないシーケンスで、サーバはスタンバイ。
+     </para>
+    </listitem>
+   </itemizedlist>
+  </para>
+
  </sect1>
 
  <sect1 id="view-pg-settings">
@@ -5391,6 +5539,63 @@ NULLとなっている列項目の割合
 列の値でNULLではない要素値の個別数のヒストグラム。これは個別のNULLではない平均値が後に続きます。（スカラ型の場合はNULLです。）
       </para></entry>
      </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>range_length_histogram</structfield> <type>anyarray</type>
+      </para>
+      <para>
+<!--
+       A histogram of the lengths of non-empty and non-null range values of a
+       range type column. (Null for non-range types.)
+-->
+《機械翻訳》範囲型の列の空でない範囲値と空でない範囲値の長さのヒストグラム。
+（範囲型以外の場合はNULL）。
+      </para>
+      <para>
+<!--
+       This histogram is calculated using the <literal>subtype_diff</literal>
+       range function regardless of whether range bounds are inclusive.
+-->
+《機械翻訳》このヒストグラムは、範囲の境界が包括的であるかどうかに関係なく、<literal>subtype_diff</literal>範囲関数を使用して計算されます。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>range_empty_frac</structfield> <type>float4</type>
+      </para>
+      <para>
+<!--
+       Fraction of column entries whose values are empty ranges.
+       (Null for non-range types.)
+-->
+《機械翻訳》値が空の列エントリの割合。
+範囲以外のタイプではNULL。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>range_bounds_histogram</structfield> <type>anyarray</type>
+      </para>
+      <para>
+<!--
+       A histogram of lower and upper bounds of non-empty and non-null range
+       values. (Null for non-range types.)
+-->
+《機械翻訳》空でない範囲値と空でない範囲値の上限と下限のヒストグラム。
+（範囲以外の型の場合はNULL）。
+      </para>
+      <para>
+<!--
+       These two histograms are represented as a single array of ranges, whose
+       lower bounds represent the histogram of lower bounds, and upper bounds
+       represent the histogram of upper bounds.
+-->
+《機械翻訳》これら2つのヒストグラムは、範囲の単一の配列として表され、その下限は下限のヒストグラムを表し、上限は上限のヒストグラムを表す。
+      </para></entry>
+     </row>
     </tbody>
    </tgroup>
   </table>
@@ -5424,11 +5629,11 @@ NULLとなっている列項目の割合
    and <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>
    catalogs.  This view allows access only to rows of
    <link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link> and <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>
-   that correspond to tables the user has permission to read, and therefore
+   that correspond to tables the user owns, and therefore
    it is safe to allow public read access to this view.
 -->
 <structname>pg_stats_ext</structname>ビューは<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>カタログに格納されている情報へのアクセスを提供します。
-このビューは、ユーザが読み込み権限を持つテーブルに一致する<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>の行に対してのみアクセスを許可しています。
+このビューは、ユーザが所有するテーブルに対応する<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>の行に対してのみアクセスを許可しています。
 よって、このビューに対して一般に読み込みを許可しても安全です。
   </para>
 
@@ -5590,7 +5795,10 @@ NULLとなっている列項目の割合
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>inherited</structfield> <type>bool</type>
+<!--
        (references <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>.<structfield>stxdinherit</structfield>)
+-->
+（参照先 <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>.<structfield>stxdinherit</structfield>）
       </para>
       <para>
 <!--
@@ -5727,11 +5935,11 @@ trueの場合は、統計情報には指定されたリレーションの値だ�
    and <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>
    catalogs.  This view allows access only to rows of
    <link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link> and <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>
-   that correspond to tables the user has permission to read, and therefore
+   that correspond to tables the user owns, and therefore
    it is safe to allow public read access to this view.
 -->
 <structname>pg_stats_ext_exprs</structname>ビューは、<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>カタログと組み合わせて拡張統計オブジェクトに含まれるすべての式に関する情報へのアクセスを提供します。
-このビューは、ユーザが読み込み権限を持つテーブルに一致する<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>の行に対してのみアクセスを許可しています。
+このビューは、ユーザが所有するテーブルに対応する<link linkend="catalog-pg-statistic-ext"><structname>pg_statistic_ext</structname></link>と<link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>の行に対してのみアクセスを許可しています。
 よって、このビューに対して一般に読み込みを許可しても安全です。
   </para>
 
@@ -5862,7 +6070,10 @@ trueの場合は、統計情報には指定されたリレーションの値だ�
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>inherited</structfield> <type>bool</type>
+<!--
        (references <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>.<structfield>stxdinherit</structfield>)
+-->
+（参照先 <link linkend="catalog-pg-statistic-ext-data"><structname>pg_statistic_ext_data</structname></link>.<structfield>stxdinherit</structfield>）
       </para>
       <para>
 <!--
@@ -6853,6 +7064,83 @@ trueの場合は、現在夏時間である
        View definition (a reconstructed <xref linkend="sql-select"/> query)
 -->
 ビュー定義（再構築された<xref linkend="sql-select"/>問い合わせ）
+      </para></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect1>
+
+
+ <sect1 id="view-pg-wait-events">
+  <title><structname>pg_wait_events</structname></title>
+
+  <indexterm zone="view-pg-wait-events">
+   <primary>pg_wait_events</primary>
+  </indexterm>
+
+  <para>
+<!--
+   The view <structname>pg_wait_events</structname> provides description about the
+   wait events.
+-->
+《機械翻訳》ビュー<structname>pg_wait_events</structname>は、待機イベントについての説明を提供します。
+  </para>
+
+  <table>
+   <title><structname>pg_wait_events</structname> Columns</title>
+   <tgroup cols="1">
+    <thead>
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+<!--
+       Column Type
+-->
+列 型
+      </para>
+      <para>
+<!--
+       Description
+-->
+説明
+      </para></entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>type</structfield> <type>text</type>
+      </para>
+      <para>
+<!--
+       Wait event type
+-->
+《機械翻訳》待機イベントのタイプ。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>name</structfield> <type>text</type>
+      </para>
+      <para>
+<!--
+       Wait event name
+-->
+《機械翻訳》待機イベント名。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>description</structfield> <type>text</type>
+      </para>
+      <para>
+<!--
+       Wait event description
+-->
+《機械翻訳》待機イベントの説明。
       </para></entry>
      </row>
     </tbody>

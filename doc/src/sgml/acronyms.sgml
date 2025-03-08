@@ -16,6 +16,18 @@
   <variablelist>
 
    <varlistentry>
+    <term><acronym>AM</acronym></term>
+    <listitem>
+     <para>
+<!--
+      <link linkend="glossary-am">Access Method</link>
+-->
+      <link linkend="glossary-am">Access Method（アクセスメソッド）</link>
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><acronym>ANSI</acronym></term>
     <listitem>
      <para>
@@ -134,7 +146,7 @@
 -->
       <ulink
       url="https://en.wikipedia.org/wiki/Comma-separated_values">Comma
-      Separated Values（コンマ区切り値）</ulink>
+      Separated Values（カンマ区切り値）</ulink>
      </para>
     </listitem>
    </varlistentry>
@@ -820,11 +832,12 @@ Most Common Value（最頻値）、特定のテーブル列で最も頻繁に現
       <ulink
       url="https://en.wikipedia.org/wiki/Server_Name_Indication">
        Server Name Indication</ulink>,
+      <ulink url="https://datatracker.ietf.org/doc/html/rfc6066#section-3">RFC 6066</ulink>
 -->
       <ulink
       url="https://en.wikipedia.org/wiki/Server_Name_Indication">
        Server Name Indication（サーバ名表示）</ulink>,
-      <ulink url="https://tools.ietf.org/html/rfc6066#section-3">RFC 6066</ulink>
+      <ulink url="https://datatracker.ietf.org/doc/html/rfc6066#section-3">RFC 6066</ulink>
      </para>
     </listitem>
    </varlistentry>

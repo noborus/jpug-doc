@@ -3,7 +3,7 @@
  * nodeMergejoin.c
  *	  routines supporting merge joins
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -97,7 +97,6 @@
 #include "executor/nodeMergejoin.h"
 #include "miscadmin.h"
 #include "utils/lsyscache.h"
-#include "utils/memutils.h"
 
 
 /*
@@ -145,7 +144,7 @@ typedef enum
 {
 	MJEVAL_MATCHABLE,			/* normal, potentially matchable tuple */
 	MJEVAL_NONMATCHABLE,		/* tuple cannot join because it has a null */
-	MJEVAL_ENDOFJOIN			/* end of input (physical or effective) */
+	MJEVAL_ENDOFJOIN,			/* end of input (physical or effective) */
 } MJEvalResult;
 
 
@@ -806,20 +805,21 @@ ExecMergeJoin(PlanState *pstate)
 					}
 
 					/*
-					 * In a right-antijoin, we never return a matched tuple.
-					 * And we need to stay on the current outer tuple to
-					 * continue scanning the inner side for matches.
-					 */
-					if (node->js.jointype == JOIN_RIGHT_ANTI)
-						break;
-
-					/*
-					 * If we only need to join to the first matching inner
-					 * tuple, then consider returning this one, but after that
-					 * continue with next outer tuple.
+					 * If we only need to consider the first matching inner
+					 * tuple, then advance to next outer tuple after we've
+					 * processed this one.
 					 */
 					if (node->js.single_match)
 						node->mj_JoinState = EXEC_MJ_NEXTOUTER;
+
+					/*
+					 * In a right-antijoin, we never return a matched tuple.
+					 * If it's not an inner_unique join, we need to stay on
+					 * the current outer tuple to continue scanning the inner
+					 * side for matches.
+					 */
+					if (node->js.jointype == JOIN_RIGHT_ANTI)
+						break;
 
 					qualResult = (otherqual == NULL ||
 								  ExecQual(otherqual, econtext));
@@ -1642,17 +1642,6 @@ ExecEndMergeJoin(MergeJoinState *node)
 {
 	MJ1_printf("ExecEndMergeJoin: %s\n",
 			   "ending node processing");
-
-	/*
-	 * Free the exprcontext
-	 */
-	ExecFreeExprContext(&node->js.ps);
-
-	/*
-	 * clean out the tuple table
-	 */
-	ExecClearTuple(node->js.ps.ps_ResultTupleSlot);
-	ExecClearTuple(node->mj_MarkedTupleSlot);
 
 	/*
 	 * shut down the subplans

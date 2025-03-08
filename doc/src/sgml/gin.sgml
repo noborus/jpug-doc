@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/gin.sgml -->
 
-<chapter id="gin">
+<sect1 id="gin">
 <!--
 <title>GIN Indexes</title>
 -->
@@ -15,7 +15,7 @@
     <secondary>GIN</secondary>
    </indexterm>
 
-<sect1 id="gin-intro">
+<sect2 id="gin-intro">
 <!--
  <title>Introduction</title>
 -->
@@ -99,9 +99,9 @@
 <productname>PostgreSQL</productname>における<acronym>GIN</acronym>の実装は、主にTeodor SigaevとOleg Bartunovにより保守されています。
 <acronym>GIN</acronym>に関する情報は彼らの<ulink url="http://www.sai.msu.su/~megera/wiki/Gin">webサイト</ulink>により多く記載されています。
  </para>
-</sect1>
+</sect2>
 
-<sect1 id="gin-builtin-opclasses">
+<sect2 id="gin-builtin-opclasses">
 <!--
  <title>Built-in Operator Classes</title>
 -->
@@ -179,11 +179,8 @@
       <entry><literal>@@ (jsonb,jsonpath)</literal></entry>
      </row>
      <row>
-      <entry morerows="1" valign="middle"><literal>tsvector_ops</literal></entry>
+      <entry valign="middle"><literal>tsvector_ops</literal></entry>
       <entry><literal>@@ (tsvector,tsquery)</literal></entry>
-     </row>
-     <row>
-      <entry><literal>@@@ (tsvector,tsquery)</literal></entry>
      </row>
     </tbody>
    </tgroup>
@@ -201,9 +198,9 @@
 詳細は<xref linkend="json-indexing"/>を参照してください。
  </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="gin-extensibility">
+<sect2 id="gin-extensibility">
 <!--
  <title>Extensibility</title>
 -->
@@ -496,7 +493,7 @@ trueの戻り値で、<literal>*recheck</literal>がtrueに設定された場合
        the match cannot be confirmed or refuted based on the known query keys,
        the function must return <literal>GIN_MAYBE</literal>.
 -->
-<function>triConsistent</function>は<function>consistent</function>と似ていますが、<literal>check</literal>ベクターの論理値の代わりに、各キーに対して3つの可能な値があります。<literal>GIN_TRUE</literal>、<literal>GIN_FALSE</literal>、<literal>GIN_MAYBE</literal>です。
+<function>triConsistent</function>は<function>consistent</function>と似ていますが、<literal>check</literal>ベクトルの論理値の代わりに、各キーに対して3つの可能な値があります。<literal>GIN_TRUE</literal>、<literal>GIN_FALSE</literal>、<literal>GIN_MAYBE</literal>です。
 <literal>GIN_FALSE</literal>と<literal>GIN_TRUE</literal>は通常の論理値と同じ意味であり、<literal>GIN_MAYBE</literal>はそのキーの存在が分からないこと意味します。
 <literal>GIN_MAYBE</literal>値があれば、インデックス項目が対応する問い合わせキーを含むかどうかに関わらず、項目が確実に一致する場合にのみ関数は<literal>GIN_TRUE</literal>を返すべきです。
 同様に、<literal>GIN_MAYBE</literal>を含むかどうかに関わらず項目が確実に一致しない場合にのみ関数は<literal>GIN_FALSE</literal>を返さなければなりません。
@@ -509,7 +506,7 @@ trueの戻り値で、<literal>*recheck</literal>がtrueに設定された場合
        setting the <literal>recheck</literal> flag in the
        Boolean <function>consistent</function> function.
 -->
-<literal>check</literal>ベクターに<literal>GIN_MAYBE</literal>値がなければ、<literal>GIN_MAYBE</literal>戻り値は論理値の<function>consistent</function>関数で<literal>recheck</literal>フラグを設定することと同じです。
+<literal>check</literal>ベクトルに<literal>GIN_MAYBE</literal>値がなければ、<literal>GIN_MAYBE</literal>戻り値は論理値の<function>consistent</function>関数で<literal>recheck</literal>フラグを設定することと同じです。
       </para>
      </listitem>
     </varlistentry>
@@ -668,9 +665,9 @@ NULLキーがこの関数に渡されることはありません。
 しかしながら、この3つのサポート関数のSQL宣言では、実際の型は演算子に依存して何か他のものであるとしても、<literal>query</literal>引数には演算子クラスのインデックス付けされたデータ型を使うことを勧めます。
  </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="gin-implementation">
+<sect2 id="gin-implementation">
 <!--
  <title>Implementation</title>
 -->
@@ -727,7 +724,7 @@ NULLキーがこの関数に渡されることはありません。
   </mediaobject>
  </figure>
 
- <sect2 id="gin-fast-update">
+ <sect3 id="gin-fast-update">
 <!--
   <title>GIN Fast Update Technique</title>
 -->
@@ -786,9 +783,9 @@ NULLキーがこの関数に渡されることはありません。
 一貫した応答時間が更新速度より重要な場合、<acronym>GIN</acronym>インデックスに対する<literal>fastupdate</literal>格納パラメータを無効にすることにより、待機中の項目の使用を無効にすることができます。
 詳細は<xref linkend="sql-createindex"/>を参照してください。
   </para>
- </sect2>
+ </sect3>
 
- <sect2 id="gin-partial-match">
+ <sect3 id="gin-partial-match">
 <!--
   <title>Partial Match Algorithm</title>
 -->
@@ -815,11 +812,11 @@ GINは<quote>部分一致</quote>問い合わせをサポートすることが�
 そしてキー範囲を<function>comparePartial</function>メソッドを使用して検索します。
 <function>comparePartial</function>は一致するインデックスキーではゼロを、一致しないが検索すべき範囲内にあればゼロ未満の値を、インデックスキーが一致可能な範囲を超えた場合はゼロより大きな値を返さなければなりません。
   </para>
- </sect2>
+ </sect3>
 
-</sect1>
+</sect2>
 
-<sect1 id="gin-tips">
+<sect2 id="gin-tips">
 <!--
 <title>GIN Tips and Tricks</title>
 -->
@@ -961,9 +958,9 @@ GINは<quote>部分一致</quote>問い合わせをサポートすることが�
   </varlistentry>
  </variablelist>
 
-</sect1>
+</sect2>
 
-<sect1 id="gin-limit">
+<sect2 id="gin-limit">
 <!--
  <title>Limitations</title>
 -->
@@ -983,9 +980,9 @@ GINは<quote>部分一致</quote>問い合わせをサポートすることが�
 これは<function>extractValue</function>はNULL項目値についてはまったく呼び出されない（代わりにインデックス項目のプレースホルダが自動的に生成される）こと、および、<function>extractQuery</function>は問い合わせの値がNULLの場合に呼び出されない（代わりに問い合わせは不一致であるとみなされる）ことを意味します。
 しかし非NULLの複合型項目内または問い合わせ値内のNULLキー値はサポートされます。
  </para>
-</sect1>
+</sect2>
 
-<sect1 id="gin-examples">
+<sect2 id="gin-examples">
 <!--
  <title>Examples</title>
 -->
@@ -1044,6 +1041,6 @@ GINは<quote>部分一致</quote>問い合わせをサポートすることが�
   </varlistentry>
  </variablelist>
  </para>
-</sect1>
+</sect2>
 
-</chapter>
+</sect1>

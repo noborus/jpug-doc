@@ -226,63 +226,7 @@ SELECT (a + b) AS c FROM test_complex;
 オプティマイザは、この句を<literal>tab2.y = tab1.x</literal>という形にひっくり返す方法を知らない限り、インデックススキャンを生成できません。
 インデックススキャン機構は演算子の左側にインデックス付けされた列があることを想定しているためです。
 <productname>PostgreSQL</productname>は簡単にこの変形が有効であると前提<emphasis>しません</emphasis>。
-<literal>=</literal>演算子の作成者がこれが有効であることを、交換演算子情報を持つ演算子であると印付けて指定しなければなりません。
-    </para>
-
-    <para>
-<!--
-     When you are defining a self-commutative operator, you just do it.
-     When you are defining a pair of commutative operators, things are
-     a little trickier: how can the first one to be defined refer to the
-     other one, which you haven't defined yet?  There are two solutions
-     to this problem:
--->
-自己交代演算子を定義する場合は、単にそれを指定するだけです。
-交代演算子の対を定義する場合は少し複雑になります。
-最初に他の未定義のものを参照するものをどう定義するのかということが問題となります。
-この問題には下記の2つの解決方法があります。
-
-     <itemizedlist>
-      <listitem>
-       <para>
-<!--
-        One way is to omit the <literal>COMMUTATOR</literal> clause in the first operator that
-        you define, and then provide one in the second operator's definition.
-        Since <productname>PostgreSQL</productname> knows that commutative
-        operators come in pairs, when it sees the second definition it will
-        automatically go back and fill in the missing <literal>COMMUTATOR</literal> clause in
-        the first definition.
--->
-1つ目の方法は、最初の演算子を定義する際に<literal>COMMUTATOR</literal>句を省略し、2番目の演算子の定義では、<literal>COMMUTATOR</literal>句に最初の演算子を与えるという方法です。
-<productname>PostgreSQL</productname>は交代演算子が対になっていることがわかっていますので、2番目の定義を見た時に、自動的に最初の定義に戻ってその未定義になっている<literal>COMMUTATOR</literal>句を設定します。
-       </para>
-      </listitem>
-
-      <listitem>
-       <para>
-<!--
-        The other, more straightforward way is just to include <literal>COMMUTATOR</literal> clauses
-        in both definitions.  When <productname>PostgreSQL</productname> processes
-        the first definition and realizes that <literal>COMMUTATOR</literal> refers to a nonexistent
-        operator, the system will make a dummy entry for that operator in the
-        system catalog.  This dummy entry will have valid data only
-        for the operator name, left and right operand types, and result type,
-        since that's all that <productname>PostgreSQL</productname> can deduce
-        at this point.  The first operator's catalog entry will link to this
-        dummy entry.  Later, when you define the second operator, the system
-        updates the dummy entry with the additional information from the second
-        definition.  If you try to use the dummy operator before it's been filled
-        in, you'll just get an error message.
--->
-もう1つの方法は、両方の定義に<literal>COMMUTATOR</literal>句を含めるというもっと素直な方法です。
-<productname>PostgreSQL</productname>は最初の定義を処理する際に、<literal>COMMUTATOR</literal>が存在しない演算子を参照していることがわかると、システムはその演算子用の仮のエントリをシステムカタログに作成します。
-この仮エントリには、<productname>PostgreSQL</productname>がこの時点で推定できる、演算子名、左オペランドの型、右オペランドの型、および結果の型についてのみの有効なデータが入ります。
-最初の演算子のカタログエントリはこの仮エントリに結び付きます。
-この後、2番目の演算子が定義されたら、システムはその仮エントリに2番目の定義から得られる追加情報を更新します。
-更新される前に仮の演算子を使用すると、エラーメッセージが出力されます。
-       </para>
-      </listitem>
-     </itemizedlist>
+<literal>=</literal>演算子の作成者がこれが有効であることを、交代演算子情報を持つ演算子であると印付けて指定しなければなりません。
     </para>
    </sect2>
 
@@ -336,15 +280,6 @@ SELECT (a + b) AS c FROM test_complex;
 <literal>NOT (x = y)</literal>という式を<literal>x &lt;&gt; y</literal>という形に単純化させることが可能なので、否定子があると問い合わせオプティマイザにとって非常に役に立ちます。
 他の再配置の結果として<literal>NOT</literal>操作が挿入されることがありますので、この現象は思ったより頻繁に起こります。
    </para>
-
-   <para>
-<!--
-    Pairs of negator operators can be defined using the same methods
-    explained above for commutator pairs.
--->
-否定子の対は、上記の交代演算子のペアで説明した方法と同じ方法で定義することができます。
-   </para>
-
   </sect2>
 
   <sect2 id="xoper-restrict">

@@ -146,7 +146,7 @@ SELECT sum(a) FROM test_complex;
 -->
 もう1つの<quote>strict</quote>な状態遷移関数のデフォルト動作としては、NULL入力値が現れると前の状態値が変わらずに維持されるということがあります。
 したがって、NULL値は無視されます。
-もしNULL入力に対し他の動作が必要な場合は、状態遷移関数をstrict宣言しないようにします。その代わりにNULL入力の検査をおこなようにコーディングし、必要なことをすればよいのです。
+もしNULL入力に対し他の動作が必要な場合は、状態遷移関数をstrict宣言しないようにします。その代わりにNULL入力の検査をおこなうようにコーディングし、必要なことをすればよいのです。
   </para>
 
   <para>
@@ -368,7 +368,8 @@ CREATE AGGREGATE unsafe_sum (float8)
    This aggregate, however, can give wildly different results than it would
    have without the inverse transition function. For example, consider
 -->
-この集約は、逆遷移関数を持たない場合よりも激しく異なる結果になります。例を考えます。
+しかし、この集約は、逆遷移関数を持たない場合と比較すると著しく異なる結果になります。
+例を考えます。
 
 <programlisting>
 SELECT
@@ -575,7 +576,7 @@ SELECT myaggregate(a ORDER BY a, b, c) FROM ...
     three sort keys.  However, the user might have intended
 -->
 パーサには集約関数の引数１つと３つのソートキーと見えます。
-しかし、これは以下のようにユーザーが意図している可能性があります。
+しかし、これは以下のようにユーザが意図している可能性があります。
 <programlisting>
 SELECT myaggregate(a, b, c ORDER BY a) FROM ...
 </programlisting>

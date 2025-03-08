@@ -27,7 +27,7 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
+GRANT { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER | MAINTAIN }
     [, ...] | ALL [ PRIVILEGES ] }
     ON { [ TABLE ] <replaceable class="parameter">table_name</replaceable> [, ...]
          | ALL TABLES IN SCHEMA <replaceable class="parameter">schema_name</replaceable> [, ...] }
@@ -203,8 +203,8 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
    as the owner has all privileges by default.  (The owner could,
    however, choose to revoke some of their own privileges for safety.)
 -->
-所有者（通常はオブジェクトを作成したユーザ）はデフォルトで全ての権限を保持しているため、オブジェクトの所有者に権限を許可する必要はありません
-（ただし、オブジェクトの作成者が、安全性のために自らの権限を取り消すことは可能です）。
+所有者（通常はオブジェクトを作成したユーザ）はデフォルトで全ての権限を保持しているため、オブジェクトの所有者に権限を許可する必要はありません。
+（ただし、オブジェクトの作成者が、安全性のために自らの権限を取り消すことは可能です。）
   </para>
 
   <para>
@@ -245,6 +245,7 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
      <term><literal>USAGE</literal></term>
      <term><literal>SET</literal></term>
      <term><literal>ALTER SYSTEM</literal></term>
+     <term><literal>MAINTAIN</literal></term>
      <listitem>
       <para>
 <!--
@@ -326,15 +327,21 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
   <para>
 <!--
    This variant of the <command>GRANT</command> command grants membership
-   in a role to one or more other roles.  Membership in a role is significant
+   in a role to one or more other roles, and the modification of
+   membership options <literal>SET</literal>, <literal>INHERIT</literal>,
+   and <literal>ADMIN</literal>;  see <xref linkend="role-membership"/>
+   for details.  Membership in a role is significant
    because it potentially allows access to the privileges granted to a role
    to each of its members, and potentially also the ability to make changes
    to the role itself. However, the actual permissions conferred depend on
-   the options associated with the grant.
+   the options associated with the grant.  To modify that options of
+   an existing membership, simply specify the membership with updated
+   option values.
 -->
-この種類の<command>GRANT</command>コマンドは、ロール内のメンバ資格を1つ以上の他のロールに付与します。
+この種類の<command>GRANT</command>コマンドは、ロール内のメンバ資格を1つ以上の他のロールに付与し、メンバ資格のオプション<literal>SET</literal>、<literal>INHERIT</literal>、<literal>ADMIN</literal>を変更します。詳しくは<xref linkend="role-membership"/>を参照してください。
 これにより各メンバがロールに付与された権限にアクセスできるようになる可能性があり、またロール自身を変更する能力が与えられる可能性があるので、ロール内のメンバ資格は重要です。
 ただし、付与される実際の権限は、付与に関連付けられたオプションによって異なります。
+既存のメンバ資格のオプションを変更するには、更新するオプションの値を付けてメンバ資格を指定するだけです。
   </para>
 
   <para>
@@ -343,10 +350,13 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
    <literal>TRUE</literal> or <literal>FALSE</literal>. The keyword
    <literal>OPTION</literal> is accepted as a synonym for
    <literal>TRUE</literal>, so that <literal>WITH ADMIN OPTION</literal>
-   is a synonym for <literal>WITH ADMIN TRUE</literal>.
+   is a synonym for <literal>WITH ADMIN TRUE</literal>.  When altering
+   an existing membership the omission of an option results in the current
+   value being retained.
 -->
 以下の各オプションは、<literal>TRUE</literal>または<literal>FALSE</literal>のいずれかに設定できます。
 キーワード<literal>OPTION</literal>は<literal>TRUE</literal>の同義語として受け入れられますので、<literal>WITH ADMIN OPTION</literal>は<literal>WITH ADMIN TRUE</literal>の同義語です。
+既存のメンバ資格を変更するとき、オプションを省略すると現在の値が保持されます。
   </para>
 
   <para>
@@ -368,21 +378,18 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
 
   <para>
 <!--
-   The <literal>INHERIT</literal> option, if it is set to
-   <literal>TRUE</literal>, causes the member to inherit the privileges of
-   the granted role. That is, it can automatically use whatever database
-   privileges have been granted to that role. If set to
-   <literal>FALSE</literal>, the member does not inherit the privileges
-   of the granted role. If this clause is not specified, it defaults to
-   true if the member role is set to <literal>INHERIT</literal> and to false
-   if the member role is set to <literal>NOINHERIT</literal>.
-   See <link linkend="sql-createrole"><command>CREATE ROLE</command></link>.
+   The <literal>INHERIT</literal> option controls the inheritance status
+   of the new membership;  see <xref linkend="role-membership"/> for
+   details on inheritance.  If it is set to <literal>TRUE</literal>,
+   it causes the new member to inherit from the granted role. If
+   set to <literal>FALSE</literal>, the new member does not inherit.
+   If unspecified when creating a new role membership, this defaults to the
+   inheritance attribute of the new member.
 -->
-<literal>INHERIT</literal>オプションが<literal>TRUE</literal>に設定されている場合、メンバは付与されたロールの権限を継承します。
-つまり、そのロールに付与されているデータベース権限は何でも自動的に使用できます。
-<literal>FALSE</literal>に設定されている場合、メンバは付与されたロールの権限を継承しません。
-この句が指定されていない場合、メンバロールが<literal>INHERIT</literal>に設定されていれば真がデフォルトになり、メンバロールが<literal>NOINHERIT</literal>に設定されていれば偽がデフォルトになります。
-<link linkend="sql-createrole"><command>CREATE ROLE</command></link>を参照してください。
+<literal>INHERIT</literal>オプションは新しいメンバ資格の継承状態を制御します。継承の詳細については<xref linkend="role-membership"/>を参照してください。
+<literal>TRUE</literal>に設定すると、新しいメンバは付与されたロールから継承します。
+<literal>FALSE</literal>に設定すると、新しいメンバは継承しません。
+新しいロールメンバ資格の作成時に指定しない場合、これが新しいメンバの継承属性のデフォルトです。
   </para>
 
   <para>
@@ -417,7 +424,7 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
 -->
 別のロールが所有するオブジェクトを作成する場合、または既存のオブジェクトの所有権を別のロールに付与する場合は、そのロールに対して<literal>SET ROLE</literal>を実行できることが必要です。
 そうでない場合、<literal>ALTER ... OWNER TO</literal>や<literal>CREATE DATABASE ... OWNER</literal>などのコマンドは失敗します。
-ただし、ロールの権限を継承しているものの、そのロールに対して<literal>SET ROLE</literal>を実行できないユーザは、そのロールが所有する既存のオブジェクトを操作することで、そのロールに対して完全なアクセスを取得できるかもしれません(たとえば、既存の関数を再定義してトロイの木馬として機能させることができます)。
+ただし、ロールの権限を継承しているものの、そのロールに対して<literal>SET ROLE</literal>を実行できないユーザは、そのロールが所有する既存のオブジェクトを操作することで、そのロールに対して完全なアクセスを取得できるかもしれません（たとえば、既存の関数を再定義してトロイの木馬として機能させることができます）。
 したがって、ロールの権限を継承するものの、<literal>SET ROLE</literal>を介してアクセスできないようにする場合は、いかなるSQLオブジェクトも所有すべきではありません。
   </para>
 
@@ -457,7 +464,7 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
 <!--
   <title>Notes</title>
 -->
-<title>注釈</title>
+  <title>注釈</title>
 
    <para>
 <!--
@@ -510,8 +517,8 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
 オブジェクトの所有者でもなく、そのオブジェクトに何の権限も持たないユーザが、そのオブジェクトの権限を<command>GRANT</command>しようとしても、コマンドの実行は直ちに失敗します。
 何らかの権限を持っている限り、コマンドの実行は進行しますが、与えることのできる権限は、そのユーザがグラントオプションを持つ権限のみです。
 グラントオプションを持っていない場合、<command>GRANT ALL PRIVILEGES</command>構文は警告メッセージを発します。
-一方、その他の構文では、コマンドで名前を指定した権限に関するグラントオプションを持っていない場合に警告メッセージを発します
-（原理上、ここまでの説明はオブジェクトの所有者に対しても当てはまりますが、所有者は常に全てのグラントオプションを保持しているものとして扱われるため、こうした状態は決して起こりません）。
+一方、その他の構文では、コマンドで名前を指定した権限に関するグラントオプションを持っていない場合に警告メッセージを発します。
+（原理上、ここまでの説明はオブジェクトの所有者に対しても当てはまりますが、所有者は常に全てのグラントオプションを保持しているものとして扱われるため、こうした状態は決して起こりません。）
    </para>
 
    <para>
@@ -602,7 +609,7 @@ GRANT <replaceable class="parameter">role_name</replaceable> [, ...] TO <replace
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
 
   <para>
 <!--
@@ -650,7 +657,7 @@ GRANT admins TO joe;
 <!--
   <title>Compatibility</title>
 -->
-<title>互換性</title>
+  <title>互換性</title>
 
    <para>
 <!--
@@ -729,7 +736,7 @@ PostgreSQLではグラントオプションはロールに対して与えるこ�
 標準SQLでは、シーケンスは<literal>USAGE</literal>権限のみを持ちます。
 これはPostgreSQLにおける<function>nextval</function>関数と等価な<literal>NEXT VALUE FOR</literal>式の使用を制御するものです。
 シーケンスに関する<literal>SELECT</literal>権限と<literal>UPDATE</literal>権限はPostgreSQLの拡張です。
-シーケンスに関する<literal>USAGE</literal>権限が<literal>currval</literal>関数にも適用される点もPostgreSQLの拡張です(この関数自体が拡張です)。
+シーケンスに関する<literal>USAGE</literal>権限が<literal>currval</literal>関数にも適用される点もPostgreSQLの拡張です（この関数自体が拡張です）。
    </para>
 
    <para>

@@ -47,20 +47,26 @@ RESET ROLE
    written as either an identifier or a string literal.
    After <command>SET ROLE</command>, permissions checking for SQL commands
    is carried out as though the named role were the one that had logged
-   in originally.
+   in originally.  Note that <command>SET ROLE</command> and
+   <command>SET SESSION AUTHORIZATION</command> are exceptions; permissions
+   checks for those continue to use the current session user and the initial
+   session user (the <firstterm>authenticated user</firstterm>), respectively.
 -->
 このコマンドは現在のSQLセッションにおける現在のユーザ識別子を<replaceable class="parameter">role_name</replaceable>に設定します。
 ロール名は識別子あるいは文字列リテラルのどちらを使用しても記述することができます。
 <command>SET ROLE</command>の後、SQLコマンドに対する権限検査は、指定されたロールで普通にログインした場合と同様に行われます。
+<command>SET ROLE</command>と<command>SET SESSION AUTHORIZATION</command>は例外であることに注意してください。これらに対する権限検査は、それぞれ現在のセッションユーザと初期セッションユーザ(<firstterm>認証されたユーザ</firstterm>)を使い続けます。
   </para>
 
   <para>
 <!--
-   The specified <replaceable class="parameter">role_name</replaceable>
-   must be a role that the current session user is a member of.
+   The current session user must have the <literal>SET</literal> option for the
+   specified <replaceable class="parameter">role_name</replaceable>, either
+   directly or indirectly via a chain of memberships with the
+   <literal>SET</literal> option.
    (If the session user is a superuser, any role can be selected.)
 -->
-指定する<replaceable class="parameter">role_name</replaceable>は、現在のセッションユーザがメンバとして属するロールでなければなりません。
+現在のセッションユーザは、直接的にまたは<literal>SET</literal>オプションを使用したメンバシップの連鎖を介して間接的に、指定する<replaceable class="parameter">role_name</replaceable>に対して<literal>SET</literal>オプションを持つことが必要です。
 （セッションユーザがスーパーユーザであった場合、任意のロールを選択することができます。）
   </para>
 
@@ -122,14 +128,6 @@ RESET ROLE
 一方、セッションユーザのロールに<literal>WITH INHERIT FALSE</literal>メンバ資格が付与されている場合、デフォルトでは付与されたロールの権限にアクセスできません。
 ただし、ロールに<literal>WITH SET TRUE</literal>が付与されている場合、セッションユーザは<command>SET ROLE</command>を使用して、セッションユーザに直接権限を付与する権限を削除し、代わりに指定されたロールに対して使用可能な権限を取得できます。
 ロールに<literal>WITH INHERIT FALSE, SET FALSE</literal>が付与されている場合、<literal>SET ROLE</literal>の有無にかかわらず、その権限を行使できません。
-  </para>
-
-  <para>
-<!--
-   Note that when a superuser chooses to <command>SET ROLE</command> to a
-   non-superuser role, they lose their superuser privileges.
--->
-スーパーユーザが非特権ユーザへの<command>SET ROLE</command>を行うと、スーパーユーザ権限を失うことに注意してください。
   </para>
 
   <para>

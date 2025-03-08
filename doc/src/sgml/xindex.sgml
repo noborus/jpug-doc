@@ -51,19 +51,15 @@
 
   <para>
 <!--
-   The <classname>pg_am</classname> table contains one row for every
-   index method (internally known as access method).  Support for
-   regular access to tables is built into
-   <productname>PostgreSQL</productname>, but all index methods are
-   described in <classname>pg_am</classname>.  It is possible to add a
-   new index access method by writing the necessary code and
-   then creating an entry in <classname>pg_am</classname> &mdash; but that is
-   beyond the scope of this chapter (see <xref linkend="indexam"/>).
+   Operator classes are associated with an index access method, such
+   as <link linkend="btree">B-Tree</link>
+   or <link linkend="gin">GIN</link>. Custom index access method may be
+   defined with <xref linkend="sql-create-access-method"/>. See
+   <xref linkend="indexam"/> for details.
 -->
-<classname>pg_am</classname>テーブルには各インデックスメソッド（内部ではアクセスメソッドとして知られています）に対して1つの行が含まれています。
-テーブルへの通常のアクセスのサポートは<productname>PostgreSQL</productname>に組み込まれていますが、すべてのインデックスメソッドは、<classname>pg_am</classname>で記述されています。
-必要なコードを書いた後、<classname>pg_am</classname>にエントリを作成することによって、新しいインデックスアクセスメソッドを追加することができます。
-しかし、この方法についての説明は本章での範囲を超えています（<xref linkend="indexam"/>を参照してください）。
+《機械翻訳》演算子区分は、<link linkend="btree">B-Tree</link>や<link linkend="gin">GIN</link>などのツリーメソッドに関連付けられています。
+カスタムインデックスアクセスメソッドは<xref linkend="sql-create-access-method"/>で定義できます。
+詳細は<xref linkend="indexam"/>を参照してください。
   </para>
 
   <para>
@@ -127,7 +123,7 @@
 <!--
   <title>Index Method Strategies</title>
 -->
-<title>インデックスメソッドのストラテジ</title>
+  <title>インデックスメソッドのストラテジ</title>
 
   <para>
 <!--
@@ -169,7 +165,7 @@
 <!--
     <title>B-Tree Strategies</title>
 -->
-<title>B-treeストラテジ</title>
+    <title>B-treeストラテジ</title>
     <tgroup cols="2">
      <thead>
       <row>
@@ -606,7 +602,7 @@ BRINインデックスは、いずれも固定のストラテジ群を持たな�
    in <xref linkend="xindex-ordering-ops"/>.)
 -->
 上記の演算子はすべて論理値を返すことに注意してください。
-実際、インデックスで使用されるために<literal>WHERE</literal>の最上位レベルで現れなければなりませんので、インデックスメソッド検索演算子として定義された、すべての演算子の戻り値の型は<type>boolean</type>でなければなりません。
+実際、インデックスで使用されるために<literal>WHERE</literal>句の最上位レベルで現れなければなりませんので、インデックスメソッド検索演算子として定義された、すべての演算子の戻り値の型は<type>boolean</type>でなければなりません。
 （一部のインデックスアクセスメソッドは、通常論理型の値を返さない<firstterm>順序付け演算子</firstterm>もサポートします。
 この機能については<xref linkend="xindex-ordering-ops"/>で説明します。）
   </para>
@@ -1193,7 +1189,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
 <!--
        <entry>add a new value to an existing summary index tuple</entry>
 -->
-       <entry>既存のサマリーインデックスタプルに新しい値を足します</entry>
+       <entry>既存のサマリインデックスタプルに新しい値を足します</entry>
        <entry>2</entry>
       </row>
       <row>
@@ -1210,7 +1206,7 @@ C言語から呼び出し可能なソートサポート関数のアドレスを�
 <!--
         compute union of two summary tuples
 -->
-2つのサマリータプルの結合を計算します
+2つのサマリタプルの結合を計算します
        </entry>
        <entry>4</entry>
       </row>
@@ -1575,13 +1571,13 @@ SQL問い合わせを最適化する際にプランナを補助することが�
 -->
 演算子族内の演算子と関数はすべて、意味的な互換性を持たなければなりません。
 この互換性についての必要条件はインデックスメソッドによって設定されます。
-このため、演算子族の特定の部分集合を演算子クラスとして選び出す方法に疑問を持つかもしれません。
-実際多くの目的では、クラスの分類は不適切で、演算子族が唯一の興味深いグループ化です。
-演算子クラスを定義する理由は、どれだけ多くの演算子族が何らかのインデックスをサポートするために必要かを指定することです。
-ある演算子クラスを使用するインデックスが存在する場合、演算子クラスはそのインデックスを削除しない限り削除することができません。
-しかし、演算子族の他の部分、すなわち、他の演算子クラスや自由な演算子を削除することができます。
-したがって、演算子クラスは、特定のデータ型に対するインデックスを操作する上で理論上必要となる最少の演算子と関数の集合を含むように指定すべきです。
-そして、関連するが基本的なものではない演算子を演算子族の自由なメンバとして追加することができます。
+このため、なぜ演算子族の特定の部分集合をわざわざ演算子クラスとして選び出しているのか疑問を持つかもしれません。
+実際多くの目的では、演算子クラスの分類は重要ではなく、演算子族が唯一の興味のあるグループ化です。
+演算子クラスを定義する理由は、演算子族のどれだけの部分が何らかのインデックスをサポートするために必要かを指定することです。
+ある演算子クラスを使用するインデックスが存在する場合、その演算子クラスはそのインデックスを削除しない限り削除できません。
+しかし、演算子族の他の部分、すなわち、他の演算子クラスや自由な演算子は削除できます。
+したがって、演算子クラスは、特定のデータ型に対するインデックスを使う上で適度に必要とされる最少の演算子と関数の集合を含むように指定すべきです。
+そしてその後で、関連するが基本的なものではない演算子を演算子族の自由なメンバとして追加できます。
   </para>
 
   <para>
@@ -1607,9 +1603,7 @@ CREATE OPERATOR FAMILY integer_ops USING btree;
 
 CREATE OPERATOR CLASS int8_ops
 DEFAULT FOR TYPE int8 USING btree FAMILY integer_ops AS
-]]><!--
-  &#45;- standard int8 comparisons
---><![CDATA[
+  -- standard int8 comparisons
   -- 標準int8比較
   OPERATOR 1 < ,
   OPERATOR 2 <= ,
@@ -1623,9 +1617,7 @@ DEFAULT FOR TYPE int8 USING btree FAMILY integer_ops AS
 
 CREATE OPERATOR CLASS int4_ops
 DEFAULT FOR TYPE int4 USING btree FAMILY integer_ops AS
-]]><!--
-  &#45;- standard int4 comparisons
---><![CDATA[
+  -- standard int4 comparisons
   -- 標準int4比較
   OPERATOR 1 < ,
   OPERATOR 2 <= ,
@@ -1639,9 +1631,7 @@ DEFAULT FOR TYPE int4 USING btree FAMILY integer_ops AS
 
 CREATE OPERATOR CLASS int2_ops
 DEFAULT FOR TYPE int2 USING btree FAMILY integer_ops AS
-]]><!--
-  &#45;- standard int2 comparisons
---><![CDATA[
+  -- standard int2 comparisons
   -- 標準int2比較
   OPERATOR 1 < ,
   OPERATOR 2 <= ,
@@ -1654,9 +1644,7 @@ DEFAULT FOR TYPE int2 USING btree FAMILY integer_ops AS
   FUNCTION 4 btequalimage(oid) ;
 
 ALTER OPERATOR FAMILY integer_ops USING btree ADD
-]]><!--
-  &#45;- cross-type comparisons int8 vs int2
---><![CDATA[
+  -- cross-type comparisons int8 vs int2
   -- 型を跨ぐ比較 int8対int2
   OPERATOR 1 < (int8, int2) ,
   OPERATOR 2 <= (int8, int2) ,
@@ -1665,9 +1653,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
   OPERATOR 5 > (int8, int2) ,
   FUNCTION 1 btint82cmp(int8, int2) ,
 
-]]><!--
-  &#45;- cross-type comparisons int8 vs int4
---><![CDATA[
+  -- cross-type comparisons int8 vs int4
   -- 型を跨ぐ比較 int8対int4
   OPERATOR 1 < (int8, int4) ,
   OPERATOR 2 <= (int8, int4) ,
@@ -1676,9 +1662,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
   OPERATOR 5 > (int8, int4) ,
   FUNCTION 1 btint84cmp(int8, int4) ,
 
-]]><!--
-  &#45;- cross-type comparisons int4 vs int2
---><![CDATA[
+  -- cross-type comparisons int4 vs int2
   -- 型を跨ぐ比較 int4対int2
   OPERATOR 1 < (int4, int2) ,
   OPERATOR 2 <= (int4, int2) ,
@@ -1687,9 +1671,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
   OPERATOR 5 > (int4, int2) ,
   FUNCTION 1 btint42cmp(int4, int2) ,
 
-]]><!--
-  &#45;- cross-type comparisons int4 vs int8
---><![CDATA[
+  -- cross-type comparisons int4 vs int8
   -- 型を跨ぐ比較 int4対int8
   OPERATOR 1 < (int4, int8) ,
   OPERATOR 2 <= (int4, int8) ,
@@ -1698,9 +1680,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
   OPERATOR 5 > (int4, int8) ,
   FUNCTION 1 btint48cmp(int4, int8) ,
 
-]]><!--
-  &#45;- cross-type comparisons int2 vs int8
---><![CDATA[
+  -- cross-type comparisons int2 vs int8
   -- 型を跨ぐ比較 int2対int8
   OPERATOR 1 < (int2, int8) ,
   OPERATOR 2 <= (int2, int8) ,
@@ -1709,9 +1689,7 @@ ALTER OPERATOR FAMILY integer_ops USING btree ADD
   OPERATOR 5 > (int2, int8) ,
   FUNCTION 1 btint28cmp(int2, int8) ,
 
-]]><!--
-  &#45;- cross-type comparisons int2 vs int4
---><![CDATA[
+  -- cross-type comparisons int2 vs int4
   -- 型を跨ぐ比較 int2対int4
   OPERATOR 1 < (int2, int4) ,
   OPERATOR 2 <= (int2, int4) ,

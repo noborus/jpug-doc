@@ -175,8 +175,8 @@ BEGIN;
 値4を挿入しようとする文がエラーになると、同じロールバックされたセーブポイントにあるため、2と4の挿入は失われます。値3は同じトランザクションコンテキストにあります。
 他のコマンドはすべて無視されるため、アプリケーションは今や以下の2つのコマンドのうち1つのみを選択できます。
 <programlisting>
-   ROLLBACK;
-   ROLLBACK TO SAVEPOINT sp1;
+ROLLBACK;
+ROLLBACK TO SAVEPOINT sp1;
 </programlisting>
 <!--
    Choosing <command>ROLLBACK</command> will abort everything, including

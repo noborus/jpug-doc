@@ -51,7 +51,7 @@
 <!--
     <title>Data Types</title>
 -->
-<title>データ型</title>
+    <title>データ型</title>
     <tgroup cols="3">
      <colspec colname="col1" colwidth="2*"/>
      <colspec colname="col2" colwidth="1*"/>
@@ -466,7 +466,7 @@
 <!--
    <title>Compatibility</title>
 -->
-<title>互換性</title>
+   <title>互換性</title>
    <para>
 <!--
     The following types (or spellings thereof) are specified by
@@ -513,7 +513,7 @@
 <!--
    <title>Numeric Types</title>
 -->
-<title>数値データ型</title>
+   <title>数値データ型</title>
 
    <indexterm zone="datatype-numeric">
     <primary>data type</primary>
@@ -539,7 +539,7 @@
 <!--
      <title>Numeric Types</title>
 -->
-<title>数値データ型</title>
+     <title>数値データ型</title>
      <tgroup cols="4">
       <colspec colname="col1" colwidth="2*"/>
       <colspec colname="col2" colwidth="1*"/>
@@ -698,7 +698,7 @@
 <!--
     <title>Integer Types</title>
 -->
-<title>整数データ型</title>
+    <title>整数データ型</title>
 
     <indexterm zone="datatype-int">
      <primary>integer</primary>
@@ -770,7 +770,7 @@
 <!--
     <title>Arbitrary Precision Numbers</title>
 -->
-<title>任意の精度を持つ数</title>
+    <title>任意の精度を持つ数</title>
 
     <indexterm>
      <primary>numeric (data type)</primary>
@@ -1133,7 +1133,7 @@ FROM generate_series(-3.5, 3.5, 1) as x;
 <!--
     <title>Floating-Point Types</title>
 -->
-<title>浮動小数点データ型</title>
+    <title>浮動小数点データ型</title>
 
     <indexterm zone="datatype-float">
      <primary>real</primary>
@@ -1445,10 +1445,10 @@ IEEE 754では、<literal>NaN</literal>は（<literal>NaN</literal>を含む）�
 <!--
       This section describes a PostgreSQL-specific way to create an
       autoincrementing column.  Another way is to use the SQL-standard
-      identity column feature, described at <xref linkend="sql-createtable"/>.
+      identity column feature, described at <xref linkend="ddl-identity-columns"/>.
 -->
 このセクションではPostgreSQL固有の自動増分列の作成方法について記述します。
-SQL標準の識別列を作成する方法は、<xref linkend="sql-createtable"/>に記述されています。
+標準SQLの識別列機能を使用する方法は、<xref linkend="ddl-identity-columns"/>に記述されています。
      </para>
     </note>
 
@@ -1570,7 +1570,7 @@ ALTER SEQUENCE <replaceable class="parameter">tablename</replaceable>_<replaceab
 <!--
    <title>Monetary Types</title>
 -->
-<title>通貨型</title>
+   <title>通貨型</title>
 
    <para>
 <!--
@@ -1595,7 +1595,7 @@ ALTER SEQUENCE <replaceable class="parameter">tablename</replaceable>_<replaceab
 <!--
      <title>Monetary Types</title>
 -->
-<title>通貨型</title>
+     <title>通貨型</title>
      <tgroup cols="4">
       <colspec colname="col1" colwidth="2*"/>
       <colspec colname="col2" colwidth="1*"/>
@@ -1699,7 +1699,7 @@ SELECT '52093.89'::money::numeric::float8;
 <!--
    <title>Character Types</title>
 -->
-<title>文字型</title>
+   <title>文字型</title>
 
    <indexterm zone="datatype-character">
     <primary>character string</primary>
@@ -1747,7 +1747,7 @@ SELECT '52093.89'::money::numeric::float8;
 <!--
      <title>Character Types</title>
 -->
-<title>文字型</title>
+     <title>文字型</title>
      <tgroup cols="2">
       <thead>
        <row>
@@ -1770,9 +1770,13 @@ SELECT '52093.89'::money::numeric::float8;
        <row>
         <entry><type>character(<replaceable>n</replaceable>)</type>, <type>char(<replaceable>n</replaceable>)</type>, <type>bpchar(<replaceable>n</replaceable>)</type></entry>
 <!--
-        <entry>fixed-length, blank padded</entry>
+        <entry>fixed-length, blank-padded</entry>
 -->
         <entry>空白で埋められた固定長</entry>
+       </row>
+       <row>
+        <entry><type>bpchar</type></entry>
+        <entry>variable unlimited length, blank-trimmed</entry>
        </row>
        <row>
         <entry><type>text</type></entry>
@@ -1853,27 +1857,31 @@ SELECT '52093.89'::money::numeric::float8;
    <para>
 <!--
     The type name <type>varchar</type> is an alias for <type>character
-    varying</type>, while <type>char</type> and <type>bpchar</type> are
-    aliases for <type>character</type>.
-    The <type>varchar</type> and <type>char</type> aliases are defined in
-    the <acronym>SQL</acronym> standard, but <type>bpchar</type> is
-    a <productname>PostgreSQL</productname> extension.
+    varying</type>, while <type>bpchar</type> (with length specifier) and
+    <type>char</type> are aliases for <type>character</type>.  The
+    <type>varchar</type> and <type>char</type> aliases are defined in the
+    <acronym>SQL</acronym> standard;  <type>bpchar</type> is a
+    <productname>PostgreSQL</productname> extension.
 -->
-型名<type>varchar</type>は<type>character varying</type>の別名で、<type>char</type>と<type>bpchar</type>は<type>character</type>の別名です。
-<type>varchar</type>と<type>char</type>の別名は標準<acronym>SQL</acronym>で定義されていますが、<type>bpchar</type>は<productname>PostgreSQL</productname>の拡張です。
+型名<type>varchar</type>は<type>character varying</type>の別名で、（長さ指定子がある）<type>bpchar</type>と<type>char</type>は<type>character</type>の別名です。
+<type>varchar</type>と<type>char</type>の別名は標準<acronym>SQL</acronym>で定義されています。<type>bpchar</type>は<productname>PostgreSQL</productname>の拡張です。
    </para>
 
    <para>
 <!--
     If specified, the length <replaceable>n</replaceable> must be greater
-    than zero and cannot exceed 10485760.
-    <type>character</type> without length specifier is equivalent to
-    <type>character(1)</type>. If <type>character varying</type> is used
-    without length specifier, the type accepts strings of any size.
+    than zero and cannot exceed 10,485,760.  If <type>character
+    varying</type> (or <type>varchar</type>) is used without
+    length specifier, the type accepts strings of any length. If
+    <type>bpchar</type> lacks a length specifier, it also accepts strings
+    of any length, but trailing spaces are semantically insignificant.
+    If <type>character</type> (or <type>char</type>) lacks a specifier,
+    it is equivalent to <type>character(1)</type>.
 -->
-指定する場合、長さ<replaceable>n</replaceable>はゼロより大きな値でなければならず、10485760を超えることはできません。
-長さ指定子なしの<type>character</type>は<type>character(1)</type>と同じです。
-長さ指定子なしで<type>character varying</type>が使用された場合、型は任意のサイズの文字列を受け入れます。
+長さを指定する場合、<replaceable>n</replaceable>はゼロより大きな値でなければならず、10,485,760を超えることはできません。
+長さ指定子なしで<type>character varying</type> （または<type>varchar</type>）が使用された場合、この型は任意の長さの文字列を受け入れます。
+<type>bpchar</type>に長さ指定子がない場合、この型は任意の長さの文字列も受け付けますが、末尾の空白は意味的に重要ではありません。
+<type>character</type>（または<type>char</type>）に指定子がない場合、この型は<type>character(1)</type>と同じです。
    </para>
 
    <para>
@@ -1895,7 +1903,7 @@ SELECT '52093.89'::money::numeric::float8;
     regular expressions.
 -->
 <type>character</type>型の値は、指定長<replaceable>n</replaceable>になるまで物理的に空白で埋められ、そのまま格納、表示されます。
-しかし、最後の空白は、重要ではないものとして扱われ、2つの<type>character</type>型の値を比べる際には無視されます。
+しかし、最後の空白は、意味的に重要ではないものとして扱われ、2つの<type>character</type>型の値を比べる際には無視されます。
 空白が重要な照合順序では、この挙動は予期しない結果を返す可能性があります。例えば、<command>SELECT 'a '::CHAR(2) collate "C" &lt; E'a\n'::CHAR(2)</command>は<literal>C</literal>ロケールでスペースが改行よりも大きいにも関わらず真を返します。
 <type>character</type>値を他の文字列型に変換する際は、文字列の終わりの空白は除去されます。
 <type>character varying</type>型と<type>text</type>型の値の中や、パターンマッチを行なう際、すなわち<literal>LIKE</literal>や正規表現では、最後の空白は意味的に重要なもの<emphasis>です</emphasis>ので、注意してください。
@@ -1978,7 +1986,7 @@ SELECT '52093.89'::money::numeric::float8;
 <!--
     <title>Using the Character Types</title>
 -->
-<title>文字データ型の使用</title>
+    <title>文字データ型の使用</title>
 
 <programlisting>
 CREATE TABLE test1 (a character(4));
@@ -2097,7 +2105,7 @@ SELECT b, char_length(b) FROM test2;
 <!--
   <title>Binary Data Types</title>
 -->
-<title>バイナリ列データ型</title>
+  <title>バイナリ列データ型</title>
 
   <indexterm zone="datatype-binary">
    <primary>binary data</primary>
@@ -2123,7 +2131,7 @@ SELECT b, char_length(b) FROM test2;
 <!--
     <title>Binary Data Types</title>
 -->
-<title>バイナリ列データ型</title>
+    <title>バイナリ列データ型</title>
     <tgroup cols="3">
      <colspec colname="col1" colwidth="1*"/>
      <colspec colname="col2" colwidth="3*"/>
@@ -2571,7 +2579,7 @@ SELECT 'abc \153\154\155 \052\251\124'::bytea;
 <!--
    <title>Date/Time Types</title>
 -->
-<title>日付/時刻データ型</title>
+   <title>日付/時刻データ型</title>
 
    <indexterm zone="datatype-datetime">
     <primary>date</primary>
@@ -2627,7 +2635,7 @@ SELECT 'abc \153\154\155 \052\251\124'::bytea;
 <!--
      <title>Date/Time Types</title>
 -->
-<title>日付/時刻データ型</title>
+     <title>日付/時刻データ型</title>
      <tgroup cols="6">
       <thead>
        <row>
@@ -2821,7 +2829,7 @@ MINUTE TO SECOND
 <!--
     <title>Date/Time Input</title>
 -->
-<title>日付/時刻の入力</title>
+    <title>日付/時刻の入力</title>
 
     <para>
 <!--
@@ -2906,7 +2914,7 @@ MINUTE TO SECOND
 <!--
       <title>Date Input</title>
 -->
-<title>日付入力</title>
+      <title>日付入力</title>
       <tgroup cols="2">
        <colspec colname="col1" colwidth="1*"/>
        <colspec colname="col2" colwidth="2*"/>
@@ -3086,14 +3094,15 @@ MINUTE TO SECOND
       <literal>America/New_York</literal>. In this case specifying the date
       is required in order to determine whether standard or daylight-savings
       time applies.  The appropriate time zone offset is recorded in the
-      <type>time with time zone</type> value.
+      <type>time with time zone</type> value and is output as stored;
+      it is not adjusted to the active time zone.
 -->
 これらの型への有効な入力は、時刻、その後にオプションで時間帯からなります。
 （<xref linkend="datatype-datetime-time-table"/>と<xref linkend="datatype-timezone-table"/>を参照してください。）
 <type>time without time zone</type>への入力に時間帯が指定された場合、時間帯は警告なく無視されます。
 また、日付を指定することもできますが、<literal>America/New_York</literal>のような夏時間規則を含む時間帯名を使用しているのでなければ、それは無視されます。
 夏時間規則のある時間帯名の場合は、標準と夏時間のどちらを適用するかを決定できるように、日付の指定が必要です。
-適切な時間帯オフセットは<type>time with time zone</type>型の値に記録されています。
+適切な時間帯オフセットは<type>time with time zone</type>型の値に記録され格納された通りに出力されます。アクティブなタイムゾーンに調整されることはありません。
      </para>
 
       <table id="datatype-datetime-time-table">
@@ -3362,47 +3371,48 @@ January 8 04:05:06 1999 PST
       and <type>timestamp with time zone</type> literals by the presence of a
       <quote>+</quote> or <quote>-</quote> symbol and time zone offset after
       the time.  Hence, according to the standard,
+-->
+標準<acronym>SQL</acronym>では、<type>timestamp without time zone</type>のリテラルと<type>timestamp with time zone</type>のリテラルを、時刻の後の<quote>+</quote>もしくは<quote>-</quote>記号と時間帯補正の有無により区別します。
+そのため、標準に従うと、
 
 <programlisting>
 TIMESTAMP '2004-10-19 10:23:54'
 </programlisting>
 
+<!--
       is a <type>timestamp without time zone</type>, while
+-->
+は<type>timestamp without time zone</type>に、
 
 <programlisting>
 TIMESTAMP '2004-10-19 10:23:54+02'
 </programlisting>
 
+<!--
       is a <type>timestamp with time zone</type>.
       <productname>PostgreSQL</productname> never examines the content of a
       literal string before determining its type, and therefore will treat
       both of the above as <type>timestamp without time zone</type>.  To
       ensure that a literal is treated as <type>timestamp with time
       zone</type>, give it the correct explicit type:
+-->
+は<type>timestamp with time zone</type>になります。
+<productname>PostgreSQL</productname>では、その型を決める前に文字列リテラルの内容を検証しません。
+そのため上の例はいずれも<type>timestamp without time zone</type>として扱います。
+リテラルが確実に<type>timestamp with time zone</type>として扱われるようにするには、例えば、
 
 <programlisting>
 TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'
 </programlisting>
 
+<!--
       In a literal that has been determined to be <type>timestamp without time
       zone</type>, <productname>PostgreSQL</productname> will silently ignore
       any time zone indication.
       That is, the resulting value is derived from the date/time
       fields in the input value, and is not adjusted for time zone.
 -->
-標準<acronym>SQL</acronym>では、<type>timestamp without time zone</type>のリテラルと<type>timestamp with time zone</type>のリテラルを、時刻の後の<quote>+</quote>もしくは<quote>-</quote>記号と時間帯補正の有無により区別します。
-そのため、標準に従うと、
-
-<programlisting>TIMESTAMP '2004-10-19 10:23:54'</programlisting>
-
-は<type>timestamp without time zone</type>に、
-
-<programlisting>TIMESTAMP '2004-10-19 10:23:54+02'</programlisting>
-
-は<type>timestamp with time zone</type>になります。
-<productname>PostgreSQL</productname>では、その型を決める前に文字列リテラルの内容を検証しません。
-そのため上の例はいずれも<type>timestamp without time zone</type>として扱います。
-リテラルが確実に<type>timestamp with time zone</type>として扱われるようにするには、例えば、<programlisting>TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'</programlisting>のように正しい明示的な型を指定してください。
+のように正しい明示的な型を指定してください。
 <type>timestamp without time zone</type>と決定済みのリテラルでは、<productname>PostgreSQL</productname>は警告なく時間帯情報をすべて無視します。
 つまり、結果の値は明示された入力値の日付/時刻フィールドから持ち込まれますが、時間帯の調整はなされません。
      </para>
@@ -3454,7 +3464,7 @@ TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'
 <!--
      <title>Special Values</title>
 -->
-<title>特別な値</title>
+     <title>特別な値</title>
 
      <indexterm>
       <primary>time</primary>
@@ -3524,7 +3534,7 @@ TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'
          </row>
          <row>
           <entry><literal>infinity</literal></entry>
-          <entry><type>date</type>, <type>timestamp</type></entry>
+          <entry><type>date</type>, <type>timestamp</type>, <type>interval</type></entry>
 <!--
           <entry>later than all other time stamps</entry>
 -->
@@ -3532,7 +3542,7 @@ TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'
          </row>
          <row>
           <entry><literal>-infinity</literal></entry>
-          <entry><type>date</type>, <type>timestamp</type></entry>
+          <entry><type>date</type>, <type>timestamp</type>, <type>interval</type></entry>
 <!--
           <entry>earlier than all other time stamps</entry>
 -->
@@ -3743,12 +3753,12 @@ TIMESTAMP WITH TIME ZONE '2004-10-19 10:23:54+02'
       the date and time.  <productname>PostgreSQL</productname> accepts that format on
       input, but on output it uses a space rather than <literal>T</literal>, as shown
       above.  This is for readability and for consistency with
-      <ulink url="https://tools.ietf.org/html/rfc3339">RFC 3339</ulink> as
+      <ulink url="https://datatracker.ietf.org/doc/html/rfc3339">RFC 3339</ulink> as
       well as some other database systems.
 -->
 ISO 8601の仕様では日付と時刻を区切るために大文字の<literal>T</literal>を使用します。
 <productname>PostgreSQL</productname>は入力ではこの書式を受け付けますが、上記のように出力では<literal>T</literal>ではなく空白を使用します。
-これは読みやすさのため、そして<ulink url="https://tools.ietf.org/html/rfc3339">RFC3339</ulink>や他のデータベースシステムとの整合性を保つためです。
+これは読みやすさのため、そして<ulink url="https://datatracker.ietf.org/doc/html/rfc3339">RFC3339</ulink>や他のデータベースシステムとの整合性を保つためです。
      </para>
     </note>
 
@@ -3867,7 +3877,7 @@ ISO 8601の仕様では日付と時刻を区切るために大文字の<literal>
 <!--
     <title>Time Zones</title>
 -->
-<title>時間帯</title>
+    <title>時間帯</title>
 
     <indexterm zone="datatype-timezones">
      <primary>time zone</primary>
@@ -4357,10 +4367,40 @@ P <optional> <replaceable>years</replaceable>-<replaceable>months</replaceable>-
 
     <para>
 <!--
-     Field values can have fractional parts:  for example, <literal>'1.5
+     Internally, <type>interval</type> values are stored as three integral
+     fields: months, days, and microseconds.  These fields are kept
+     separate because the number of days in a month varies, while a day
+     can have 23 or 25 hours if a daylight savings time transition is
+     involved.  An interval input string that uses other units is
+     normalized into this format, and then reconstructed in a standardized
+     way for output, for example:
+-->
+内部的には、<type>interval</type>値は3つの整数フィールドとして格納されます。
+月、日、マイクロ秒です。
+月の日数は変化したり、 夏時間の移行が含まれる場合は1日が23時間または25時間になったりするため、これらのフィールドは分けて保持されます。
+他の単位を使用する時間間隔の入力文字列は、このフォーマットに正規化され、出力用に標準化された方法で再再構成されます。例えば以下のとおりです。
+
+<programlisting>
+SELECT '2 years 15 months 100 weeks 99 hours 123456789 milliseconds'::interval;
+               interval
+---------------------------------------
+ 3 years 3 mons 700 days 133:17:36.789
+</programlisting>
+
+<!--
+     Here weeks, which are understood as <quote>7 days</quote>, have been
+     kept separate, while the smaller and larger time units were
+     combined and normalized.
+-->
+ここでは、週は<quote>7日</quote>と理解され、別々に保持されていますが、小さな時間単位と大きな時間単位は結合され、正規化されています。
+    </para>
+
+    <para>
+<!--
+     Input field values can have fractional parts, for example <literal>'1.5
      weeks'</literal> or <literal>'01:02:03.45'</literal>.  However,
-     because interval internally stores only three integer units (months,
-     days, microseconds), fractional units must be spilled to smaller
+     because <type>interval</type> internally stores only integral fields,
+     fractional values must be converted into smaller
      units.  Fractional parts of units greater than months are rounded to
      be an integer number of months, e.g. <literal>'1.5 years'</literal>
      becomes <literal>'1 year 6 mons'</literal>.  Fractional parts of
@@ -4370,8 +4410,8 @@ P <optional> <replaceable>years</replaceable>-<replaceable>months</replaceable>-
      12:00:00</literal>.  Only seconds will ever be shown as fractional
      on output.
 -->
-フィールドには<literal>'1.5weeks'</literal> や <literal>'01:02:03.45'</literal>のような小数部分を持つことができます。
-しかし、intervalは内部的に３つの整数型の位(月、日、マイクロ秒)でのみ格納されるため、小数の位はより小さな位で埋められていく必要があります。
+入力フィールドの値には小数部分が含まれる場合があります。例えば、<literal>'1.5 weeks'</literal>や<literal>'01:02:03.45'</literal>などです。
+しかし、<type>interval</type>は内部的に整数フィールドでのみ格納されるため、小数の位はより小さな単位に変換する必要があります。
 月より大きな小数部分の位は月の整数に丸められます。例えば、<literal>'1.5 years'</literal>は<literal>'1 year 6 mons'</literal>になります。
 週と日の小数部分は、1ヶ月は30日、1日は24時間と想定して整数の日数やマイクロ秒として計算されます。例えば<literal>'1.75 months'</literal>は<literal>1 mon 22 days 12:00:00</literal>になります。
 出力では秒だけが小数として表示されます。
@@ -4441,43 +4481,6 @@ P <optional> <replaceable>years</replaceable>-<replaceable>months</replaceable>-
       </tgroup>
      </table>
 
-    <para>
-<!--
-     Internally <type>interval</type> values are stored as months, days,
-     and microseconds. This is done because the number of days in a month
-     varies, and a day can have 23 or 25 hours if a daylight savings
-     time adjustment is involved.  The months and days fields are integers
-     while the microseconds field can store fractional seconds.  Because intervals are
-     usually created from constant strings or <type>timestamp</type> subtraction,
-     this storage method works well in most cases, but can cause unexpected
-     results:
--->
-内部的に<type>interval</type>の値は月、日、マイクロ秒として格納されます。
-これはひと月の日数は変化し、一日も夏時間への切り替えで23時間もしくは25時間になりうるからです。
-マイクロ秒の桁は小数で格納できますが、月、日の桁は整数です。
-時間の間隔は通常、文字列定数もしくは<type>timestamp</type>の引き算で生成されるため、この格納方式はほとんどのケースではうまくいきますが、予期しない結果を返すこともあります。
-例：
-
-<programlisting>
-SELECT EXTRACT(hours from '80 minutes'::interval);
- date_part
------------
-         1
-
-SELECT EXTRACT(days from '80 hours'::interval);
- date_part
------------
-         0
-</programlisting>
-
-<!--
-     Functions <function>justify_days</function> and
-     <function>justify_hours</function> are available for adjusting days
-     and hours that overflow their normal ranges.
--->
-<function>justify_days</function>関数と<function>justify_hours</function>関数は範囲から溢れた日と時間の補正に役立ちます。
-    </para>
-
    </sect2>
 
    <sect2 id="datatype-interval-output">
@@ -4496,6 +4499,31 @@ SELECT EXTRACT(days from '80 hours'::interval);
      <secondary>出力書式</secondary>
      <seealso>書式設定</seealso>
     </indexterm>
+
+    <para>
+<!--
+     As previously explained, <productname>PostgreSQL</productname>
+     stores <type>interval</type> values as months, days, and
+     microseconds.  For output, the months field is converted to years and
+     months by dividing by 12.  The days field is shown as-is.  The
+     microseconds field is converted to hours, minutes, seconds, and
+     fractional seconds.  Thus months, minutes, and seconds will never be
+     shown as exceeding the ranges 0&ndash;11, 0&ndash;59, and 0&ndash;59
+     respectively, while the displayed years, days, and hours fields can
+     be quite large.  (The <link
+     linkend="function-justify-days"><function>justify_days</function></link>
+     and <link
+     linkend="function-justify-hours"><function>justify_hours</function></link>
+     functions can be used if it is desirable to transpose large days or
+     hours values into the next higher field.)
+-->
+前述のように、<productname>PostgreSQL</productname>は<type>interval</type>値を月、日、マイクロ秒として格納します。
+出力の場合、monthsフィールドは12で除算して年と月に変換されます。
+daysフィールドはそのまま表示されます。
+microseconds フィールドは、時間、分、秒、および小数の秒に変換されます。
+したがって、月、分、秒はそれぞれ0~11、0~59、0~59の範囲を超えることはありませんが、表示される年、日、時間のフィールドは非常に大きくなる可能性があります。
+（大きな日数または時間の値を次に高いフィールドに移すことが望ましい場合は、<link linkend="function-justify-days"><function>justify_days</function></link>および<link linkend="function-justify-hours"><function>justify_hours</function></link>関数を使用できます）。
+    </para>
 
     <para>
 <!--
@@ -4610,7 +4638,7 @@ SELECT EXTRACT(days from '80 hours'::interval);
 <!--
    <title>Boolean Type</title>
 -->
-<title>論理値データ型</title>
+   <title>論理値データ型</title>
 
    <indexterm zone="datatype-boolean">
     <primary>Boolean</primary>
@@ -4736,7 +4764,7 @@ SELECT EXTRACT(days from '80 hours'::interval);
 <!--
     <title>Using the <type>boolean</type> Type</title>
 -->
-<title><type>boolean</type>型の使用</title>
+    <title><type>boolean</type>型の使用</title>
 
 <programlisting>
 CREATE TABLE test1 (a boolean, b text);
@@ -5016,7 +5044,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 <!--
    <title>Geometric Types</title>
 -->
-<title>幾何データ型</title>
+   <title>幾何データ型</title>
 
    <para>
 <!--
@@ -5032,7 +5060,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 <!--
      <title>Geometric Types</title>
 -->
-<title>幾何データ型</title>
+     <title>幾何データ型</title>
      <tgroup cols="4">
       <colspec colname="col1" colwidth="1*"/>
       <colspec colname="col2" colwidth="1*"/>
@@ -5066,10 +5094,10 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
        <row>
         <entry><type>line</type></entry>
 <!--
-        <entry>32 bytes</entry>
+        <entry>24 bytes</entry>
         <entry>Infinite line</entry>
 -->
-        <entry>32バイト</entry>
+        <entry>24バイト</entry>
         <entry>無限の直線</entry>
         <entry>{A,B,C}</entry>
        </row>
@@ -5081,7 +5109,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 -->
         <entry>32バイト</entry>
         <entry>有限の線分</entry>
-        <entry>((x1,y1),(x2,y2))</entry>
+        <entry>[(x1,y1),(x2,y2)]</entry>
        </row>
        <row>
         <entry><type>box</type></entry>
@@ -5091,7 +5119,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 -->
         <entry>32バイト</entry>
         <entry>矩形</entry>
-        <entry>((x1,y1),(x2,y2))</entry>
+        <entry>(x1,y1),(x2,y2)</entry>
        </row>
        <row>
         <entry><type>path</type></entry>
@@ -5137,6 +5165,14 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
       </tbody>
      </tgroup>
     </table>
+
+   <para>
+<!--
+    In all these types, the individual coordinates are stored as
+    <type>double precision</type> (<type>float8</type>) numbers.
+-->
+いずれの型でも、個々の座標は<type>double precision</type> (<type>float8</type>)の数値として格納されます。
+   </para>
 
    <para>
 <!--
@@ -5291,7 +5327,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 <!--
     <title>Boxes</title>
 -->
-<title>矩形</title>
+    <title>矩形</title>
 
     <indexterm>
      <primary>box (data type)</primary>
@@ -5423,13 +5459,25 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 
     <para>
 <!--
-     Polygons are represented by lists of points (the vertexes of the
+     Polygons are represented by lists of points (the vertices of the
      polygon). Polygons are very similar to closed paths; the essential
-     difference is that a polygon is considered to include the area
-     within it, while a path is not.
+     semantic difference is that a polygon is considered to include the
+     area within it, while a path is not.
 -->
 多角形は座標点（多角形の頂点）のリストで表現されます。
-多角形は閉経路ととても良く似ています。多角形は領域をその内側に含むと考えますが、閉経路ではそのように考えない点が本質的な違いです。
+多角形は閉経路ととても良く似ています。多角形は領域をその内側に含むと考えますが、閉経路ではそのように考えない点が本質的な意味の違いです。
+    </para>
+
+    <para>
+<!--
+     An important implementation difference between polygons and
+     paths is that the stored representation of a polygon includes its
+     smallest bounding box.  This speeds up certain search operations,
+     although computing the bounding box adds overhead while constructing
+     new polygons.
+-->
+多角形と経路の重要な実装上の違いは、格納された多角形の表現形式に最小の外接矩形が含まれていることです。
+これにより、特定の検索操作が高速化されますが、新しい多角形を構築するときに外接矩形の計算のオーバーヘッドが掛かります。
     </para>
 
     <para>
@@ -5510,7 +5558,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 <!--
    <title>Network Address Types</title>
 -->
-<title>ネットワークアドレス型</title>
+   <title>ネットワークアドレス型</title>
 
    <indexterm zone="datatype-net-types">
     <primary>network</primary>
@@ -5540,7 +5588,7 @@ SELECT person.name, holidays.num_weeks FROM person, holidays
 <!--
      <title>Network Address Types</title>
 -->
-<title>ネットワークアドレスデータ型</title>
+     <title>ネットワークアドレスデータ型</title>
      <tgroup cols="3">
       <colspec colname="col1" colwidth="1*"/>
       <colspec colname="col2" colwidth="1*"/>
@@ -5814,7 +5862,7 @@ IPv6ではアドレス長は128ビットですので、128ビットが一意な�
 <!--
     <title><type>inet</type> vs. <type>cidr</type></title>
 -->
-<title><type>inet</type>と<type>cidr</type>データ型の違い</title>
+    <title><type>inet</type>と<type>cidr</type>データ型の違い</title>
 
     <para>
 <!--
@@ -5945,7 +5993,7 @@ PostgreSQLではビット反転に関する準備をしていません。
      in 6 byte format will be stored in 8 byte length format with the
      4th and 5th bytes set to FF and FE, respectively.
 -->
-<type>macaddr8</type>データ型はイーサーネットカードのハードウェアアドレスなどで知られるEUI-64形式でデータを格納します（MACアドレスは他の目的にもよく使用されます。）。
+<type>macaddr8</type>データ型はイーサネットカードのハードウェアアドレスなどで知られるEUI-64形式でデータを格納します（MACアドレスは他の目的にもよく使用されます）。
 このデータ型は６バイト長と８バイト長の両方の長さのMACアドレスを受け入れることがき、８バイト長の形式で格納します。
 6バイト形式で与えられたMACアドレスは8バイト長の形式では、それぞれ、４番目と５番目のバイトをFFとFEとして格納されます。
 
@@ -6031,7 +6079,7 @@ SELECT macaddr8_set7bit('08:00:2b:01:02:03');
 <!--
    <title>Bit String Types</title>
 -->
-<title>ビット列データ型</title>
+   <title>ビット列データ型</title>
 
    <indexterm zone="datatype-bit">
     <primary>bit string</primary>
@@ -6107,7 +6155,7 @@ SQLのビット型には2つあります。
 <!--
     <title>Using the Bit String Types</title>
 -->
-<title>ビット列データ型の使用</title>
+    <title>ビット列データ型の使用</title>
 
 <programlisting>
 CREATE TABLE test (a BIT(3), b BIT VARYING(5));
@@ -6504,7 +6552,7 @@ SELECT to_tsvector( 'postgraduate' ), to_tsquery( 'postgres:*' );
    <para>
 <!--
     The data type <type>uuid</type> stores Universally Unique Identifiers
-    (UUID) as defined by <ulink url="https://tools.ietf.org/html/rfc4122">RFC 4122</ulink>,
+    (UUID) as defined by <ulink url="https://datatracker.ietf.org/doc/html/rfc4122">RFC 4122</ulink>,
     ISO/IEC 9834-8:2005, and related standards.
     (Some systems refer to this data type as a globally unique identifier, or
     GUID,<indexterm><primary>GUID</primary></indexterm> instead.)  This
@@ -6515,7 +6563,7 @@ SELECT to_tsvector( 'postgraduate' ), to_tsquery( 'postgres:*' );
     guarantee than sequence generators, which
     are only unique within a single database.
 -->
-<type>uuid</type>データ型は、<ulink url="https://tools.ietf.org/html/rfc4122">RFC 4122</ulink>:、ISO/IEC 9834-8:2005および関連する標準に従う、汎用一意識別子（UUID）を格納します。
+<type>uuid</type>データ型は、<ulink url="https://datatracker.ietf.org/doc/html/rfc4122">RFC 4122</ulink>:、ISO/IEC 9834-8:2005および関連する標準に従う、汎用一意識別子（UUID）を格納します。
 （一部のシステムでは、このデータ型をグローバル一意識別子（GUID<indexterm><primary>GUID</primary></indexterm>）と呼んでいます。）
 この識別子は、同一のアルゴリズムを使用しても既知の世界上の他の誰かが同一識別子が生成される可能性がほとんどないように選択されたアルゴリズムで生成された128ビット量の値です。
 したがって、分散システムにおいて、これら識別子は、単一データベース内でしか一意にならないシーケンスジェネレータよりも優れた一意性保証を提供します。
@@ -7133,7 +7181,7 @@ SELECT * FROM pg_attribute
     <type>regclass</type> is handy for symbolic display of a numeric OID.
 -->
 後者もそう悪くないように見えますが、これは過度に単純化されています。
-異なるスキーマに<literal>mytable</literal>テーブルが複数ある場合には、正しいOIDを選択するために、より複雑なsub-SELECTが必要となります。
+異なるスキーマに<literal>mytable</literal>テーブルが複数ある場合には、正しいOIDを選択するために、より複雑な副SELECTが必要となります。
 <type>regclass</type>入力変換ではスキーマパスの設定に従ってテーブル検索を扱いますので、自動的に<quote>正しい検索</quote>を行います。
 同様に、テーブルのOIDを<type>regclass</type>にキャストすることは、数値のOIDのシンボル表示に便利です。
    </para>
@@ -7379,12 +7427,6 @@ nextval('foo')              <lineannotation><literal>foo</literal>のサーチ�
      want <quote>late binding</quote> where the object reference is resolved
      at run time.  To get late-binding behavior, force the constant to be
      stored as a <type>text</type> constant instead of <type>regclass</type>:
-<programlisting>
-nextval('foo'::text)      <lineannotation><literal>foo</literal> is looked up at runtime</lineannotation>
-</programlisting>
-     The <function>to_regclass()</function> function and its siblings
-     can also be used to perform run-time lookups.  See
-     <xref linkend="functions-info-catalog-table"/>.
 -->
 そのような関数の引数を装飾のない文字列として記載した場合、それは<type>regclass</type>型(もしくは適切な型)の定数になります。
 これは実際には単にOIDなので、スキーマの再割り当てなどで後からリネームされたとしても最初に識別されたオブジェクトを追跡します。
@@ -7392,8 +7434,13 @@ nextval('foo'::text)      <lineannotation><literal>foo</literal> is looked up at
 しかし、オブジェクトの参照を実行時に行う<quote>遅延バインディング(late binding)</quote>が望ましいこともあります。
 遅延バインディングの動作とするためには、定数は<type>regclass</type>の代わりに<type>text</type>の定数として配置してください。
 <programlisting>
-nextval('foo'::text)      <lineannotation><literal>foo</literal>は実行時に参照されます。</lineannotation>
+nextval('foo'::text)      <lineannotation><literal>foo</literal> is looked up at runtime</lineannotation>
 </programlisting>
+<!--
+     The <function>to_regclass()</function> function and its siblings
+     can also be used to perform run-time lookups.  See
+     <xref linkend="functions-info-catalog-table"/>.
+-->
 <function>to_regclass()</function>関数とその兄弟は実行時に参照させるために使用することもできます。
 詳細は<xref linkend="functions-info-catalog-table"/>を参照ください。
     </para>
@@ -7408,23 +7455,6 @@ nextval('foo'::text)      <lineannotation><literal>foo</literal>は実行時に�
     the <function>pg_relation_size()</function> function, which requires
     the table OID.  Taking the above rules into account, the correct way
     to do that is
-<programlisting>
-SELECT table_schema, table_name,
-       pg_relation_size((quote_ident(table_schema) || '.' ||
-                         quote_ident(table_name))::regclass)
-FROM information_schema.tables
-WHERE ...
-</programlisting>
-    The <function>quote_ident()</function> function will take care of
-    double-quoting the identifiers where needed.  The seemingly easier
-<programlisting>
-SELECT pg_relation_size(table_name)
-FROM information_schema.tables
-WHERE ...
-</programlisting>
-    is <emphasis>not recommended</emphasis>, because it will fail for
-    tables that are outside your search path or have names that require
-    quoting.
 -->
 <type>regclass</type>のもう一つの実用的な使用例はそのようなOIDを直接提供しない<literal>information_schema</literal>ビューにリストされたテーブルのOIDを参照することです。
 例えば、テーブルのOIDを必要とする<function>pg_relation_size()</function>関数を呼び出したい場合を考えます。
@@ -7436,6 +7466,10 @@ SELECT table_schema, table_name,
 FROM information_schema.tables
 WHERE ...
 </programlisting>
+<!--
+    The <function>quote_ident()</function> function will take care of
+    double-quoting the identifiers where needed.  The seemingly easier
+-->
 <function>quote_ident()</function>関数は必要に応じて二重引用符をつけます。
 より簡単そうに思われる
 <programlisting>
@@ -7443,6 +7477,11 @@ SELECT pg_relation_size(table_name)
 FROM information_schema.tables
 WHERE ...
 </programlisting>
+<!--
+    is <emphasis>not recommended</emphasis>, because it will fail for
+    tables that are outside your search path or have names that require
+    quoting.
+-->
 という方法は<emphasis>推奨されません</emphasis>。
 テーブルがサーチパスの範囲外にあったり、引用符付けを必要とする名前であった場合に失敗するためです。
    </para>

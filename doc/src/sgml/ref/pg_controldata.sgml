@@ -43,7 +43,7 @@ PostgreSQL documentation
 <!--
   <title>Description</title>
 -->
-<title>説明</title>
+  <title>説明</title>
   <para>
 <!--
    <command>pg_controldata</command> prints information initialized during
@@ -105,7 +105,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>

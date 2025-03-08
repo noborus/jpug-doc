@@ -8,7 +8,7 @@
 # - readfuncs
 # - outfuncs
 #
-# Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+# Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
 # Portions Copyright (c) 1994, Regents of the University of California
 #
 # src/backend/nodes/gen_node_support.pl
@@ -16,7 +16,7 @@
 #----------------------------------------------------------------------
 
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 
 use File::Basename;
 use Getopt::Long;
@@ -107,7 +107,7 @@ my @nodetag_only_files = qw(
 # ABI stability during development.
 
 my $last_nodetag = 'WindowObjectData';
-my $last_nodetag_no = 454;
+my $last_nodetag_no = 474;
 
 # output file names
 my @output_files;
@@ -149,7 +149,7 @@ my @abstract_types = qw(Node);
 # they otherwise don't participate in node support.
 my @extra_tags = qw(
   IntList OidList XidList
-  AllocSetContext GenerationContext SlabContext
+  AllocSetContext GenerationContext SlabContext BumpContext
   TIDBitmap
   WindowObjectData
 );
@@ -585,7 +585,7 @@ my $header_comment =
  * %s
  *    Generated node infrastructure code
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * NOTES
@@ -777,7 +777,7 @@ _equal${n}(const $n *a, const $n *b)
 			print $eff "\tCOMPARE_BITMAPSET_FIELD($f);\n"
 			  unless $equal_ignore;
 		}
-		elsif ($t eq 'int' && $f =~ 'location$')
+		elsif ($t eq 'ParseLoc')
 		{
 			print $cff "\tCOPY_LOCATION_FIELD($f);\n" unless $copy_ignore;
 			print $eff "\tCOMPARE_LOCATION_FIELD($f);\n" unless $equal_ignore;
@@ -1010,7 +1010,7 @@ _read${n}(void)
 			print $off "\tWRITE_BOOL_FIELD($f);\n";
 			print $rff "\tREAD_BOOL_FIELD($f);\n" unless $no_read;
 		}
-		elsif ($t eq 'int' && $f =~ 'location$')
+		elsif ($t eq 'ParseLoc')
 		{
 			print $off "\tWRITE_LOCATION_FIELD($f);\n";
 			print $rff "\tREAD_LOCATION_FIELD($f);\n" unless $no_read;
@@ -1303,7 +1303,7 @@ _jumble${n}(JumbleState *jstate, Node *node)
 			print $jff "\tJUMBLE_NODE($f);\n"
 			  unless $query_jumble_ignore;
 		}
-		elsif ($t eq 'int' && $f =~ 'location$')
+		elsif ($t eq 'ParseLoc')
 		{
 			# Track the node's location only if directly requested.
 			if ($query_jumble_location)

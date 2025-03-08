@@ -4,7 +4,7 @@
 <!--
   <title>PL/Tcl &mdash; Tcl Procedural Language</title>
 -->
-<title>PL/Tcl &mdash; Tcl手続き言語</title>
+  <title>PL/Tcl &mdash; Tcl手続き言語</title>
 
   <indexterm zone="pltcl">
    <primary>PL/Tcl</primary>
@@ -31,7 +31,7 @@ PL/Tclとは、<productname>PostgreSQL</productname>データベースシステ�
 <!--
    <title>Overview</title>
 -->
-<title>概要</title>
+   <title>概要</title>
 
    <para>
 <!--
@@ -114,7 +114,7 @@ C関数では可能ですが、PL/Tclにはデータベースサーバ内部に�
 <!--
     <title>PL/Tcl Functions and Arguments</title>
 -->
-<title>PL/Tcl関数と引数</title>
+    <title>PL/Tcl関数と引数</title>
 
     <para>
 <!--
@@ -311,8 +311,8 @@ $$ LANGUAGE pltcl;
 -->
 PL/Tcl関数は集合を返すことができます。
 このためにはTclコードで、<function>return_next</function>を返却する行ごとに呼び出します。
-スカラー値を返却する場合は適切な値を、複合型を返す場合は列の名前/値ペアのリストを渡します。
-スカラー型を返す例を示します。
+スカラ値を返却する場合は適切な値を、複合型を返す場合は列の名前/値ペアのリストを渡します。
+スカラ型を返す例を示します。
 
 <programlisting>
 CREATE FUNCTION sequence(int, int) RETURNS SETOF int AS $$
@@ -342,7 +342,7 @@ $$ LANGUAGE pltcl;
 <!--
     <title>Data Values in PL/Tcl</title>
 -->
-<title>PL/Tclにおけるデータの値</title>
+    <title>PL/Tclにおけるデータの値</title>
 
     <para>
 <!--
@@ -363,7 +363,7 @@ PL/Tcl関数コードに与えられる引数の値は、単に、テキスト�
 <!--
     <title>Global Data in PL/Tcl</title>
 -->
-<title>PL/Tclにおけるグローバルデータ</title>
+    <title>PL/Tclにおけるグローバルデータ</title>
 
     <indexterm zone="pltcl-global">
      <primary>global data</primary>
@@ -461,7 +461,7 @@ PL/Tcl関数が予期しない相互作用に巻き込まれないようにす�
 <!--
     <title>Database Access from PL/Tcl</title>
 -->
-<title>PL/Tclからのデータベースアクセス</title>
+    <title>PL/Tclからのデータベースアクセス</title>
 
     <para>
 <!--
@@ -528,16 +528,12 @@ PL/Tcl関数が予期しない相互作用に巻き込まれないようにす�
         No storing occurs if the query returns no rows.  (This case can be
         detected by checking the result of <function>spi_exec</function>.)
         For example:
-<programlisting>
-spi_exec "SELECT count(*) AS cnt FROM pg_proc"
-</programlisting>
 -->
 問い合わせ文が<command>SELECT</command>文、かつ、<replaceable>loop-body</replaceable>スクリプトが付与されなかった場合、結果のうち最初の行だけがTclの変数または配列要素に格納されます。
 他にも行があったとしても、それらは無視されます。
-問い合わせが行を返さなかった場合は、変数への格納は発生しません
-（<function>spi_exec</function>の戻り値を検査することで、これを検出することができます）。
+問い合わせが行を返さなかった場合は、変数への格納は発生しません。
+（<function>spi_exec</function>の戻り値を検査することで、これを検出することができます。）
 以下に例を示します。
-
 <programlisting>
 spi_exec "SELECT count(*) AS cnt FROM pg_proc"
 </programlisting>
@@ -557,8 +553,8 @@ spi_exec "SELECT count(*) AS cnt FROM pg_proc"
         are stored into Tcl variables or array elements before each iteration.
         For example:
 -->
-<replaceable>loop-body</replaceable>オプション引数が付与された場合、それは、問い合わせの結果内の行それぞれに対して一度だけ実行される小さなTclスクリプトです
-（<replaceable>loop-body</replaceable>は<command>SELECT</command>以外の問い合わせで付与された場合は無視されます）。
+<replaceable>loop-body</replaceable>オプション引数が付与された場合、それは、問い合わせの結果内の行それぞれに対して一度だけ実行される小さなTclスクリプトです。
+（<replaceable>loop-body</replaceable>は<command>SELECT</command>以外の問い合わせで付与された場合は無視されます。）
 処理中の行の列値は、各繰り返しの前にTclの変数または配列要素に格納されます。
 以下に例を示します。
 <programlisting>
@@ -849,7 +845,7 @@ SELECT 'doesn''t' AS ret
 <!--
     <title>Trigger Functions in PL/Tcl</title>
 -->
-<title>PL/Tclのトリガ関数</title>
+    <title>PL/Tclのトリガ関数</title>
 
     <indexterm>
      <primary>trigger</primary>
@@ -1393,6 +1389,7 @@ $$ LANGUAGE pltcl;
 -->
 このような状況に対応するには、複数のデータベース操作を、全体が成功するか、あるいは失敗する明示的なサブトランザクションで包みます。
 PL/Tclは、これを管理するための<function>subtransaction</function>コマンドを提供しています。
+関数を以下のように書き直せます。
 <programlisting>
 CREATE FUNCTION transfer_funds2() RETURNS void AS $$
     if [catch {
@@ -1610,7 +1607,7 @@ Tcl内でそれまでに行われた操作は取り消されません。
 <!--
     <title>Tcl Procedure Names</title>
 -->
-<title>Tclプロシージャ名</title>
+    <title>Tclプロシージャ名</title>
 
     <para>
 <!--

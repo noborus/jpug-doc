@@ -48,7 +48,7 @@ PostgreSQL documentation
    format; a "tar" format backup can be checked after extracting it.
 -->
 <application>pg_verifybackup</application>は、<command>pg_basebackup</command>を使って取られたデータベースクラスタバックアップの完全性を、バックアップ時にサーバで生成された<literal>backup_manifest</literal>と比較して確認するために使われます。
-バッックアップは"plain"形式で保管されていなければなりません。"tar"形式のバックアップは展開後に確認できます。
+バックアップは"plain"形式で保管されていなければなりません。"tar"形式のバックアップは展開後に確認できます。
   </para>
 
   <para>
@@ -72,13 +72,14 @@ PostgreSQL documentation
    Backup verification proceeds in four stages. First,
    <literal>pg_verifybackup</literal> reads the
    <literal>backup_manifest</literal> file. If that file
-   does not exist, cannot be read, is malformed, or fails verification
-   against its own internal checksum, <literal>pg_verifybackup</literal>
-   will terminate with a fatal error.
+   does not exist, cannot be read, is malformed, fails to match the system
+   identifier with <filename>pg_control</filename> of the backup directory or
+   fails verification against its own internal checksum,
+   <literal>pg_verifybackup</literal> will terminate with a fatal error.
 -->
-バックアップの検証は4つの段階を経て進みます。
+バックアップの検証は4つの段階で進みます。
 第1に、<literal>pg_verifybackup</literal>が<literal>backup_manifest</literal>ファイルを読みます。
-そのファイルが存在しない、読むことができない、不正である、または、自身の内部チェックサムの検証に失敗した場合には、<literal>pg_verifybackup</literal>は致命的なエラーで終了します。
+そのファイルが存在しない、読むことができない、不正である、バックアップディレクトリの<filename>pg_control</filename>とシステム識別子が一致しない、または、自身の内部チェックサムの検証に失敗した場合には、<literal>pg_verifybackup</literal>は致命的なエラーで終了します。
   </para>
 
   <para>

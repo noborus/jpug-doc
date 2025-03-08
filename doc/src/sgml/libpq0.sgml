@@ -387,7 +387,7 @@ PGconn *PQsetdb(char *pghost,
     <varlistentry id="libpq-PQconnectStartParams">
      <term><function>PQconnectStartParams</function><indexterm><primary>PQconnectStartParams</primary></indexterm></term>
      <term><function>PQconnectStart</function><indexterm><primary>PQconnectStart</primary></indexterm></term>
-     <term><function>PQconnectPoll</function><indexterm><primary>PQconnectPoll</primary></indexterm></term>
+     <term id="libpq-PQconnectPoll"><function>PQconnectPoll</function><indexterm><primary>PQconnectPoll</primary></indexterm></term>
      <listitem>
       <para>
        <indexterm><primary>nonblocking connection</primary></indexterm>
@@ -517,7 +517,10 @@ PostgresPollingStatusType PQconnectPoll(PGconn *conn);
        Loop thus: If <function>PQconnectPoll(conn)</function> last returned
        <symbol>PGRES_POLLING_READING</symbol>, wait until the socket is ready to
        read (as indicated by <function>select()</function>, <function>poll()</function>, or
-       similar system function).
+       similar system function).  Note that <function>PQsocketPoll</function>
+       can help reduce boilerplate by abstracting the setup of
+       <function>select(2)</function> or <function>poll(2)</function> if it is
+       available on your system.
        Then call <function>PQconnectPoll(conn)</function> again.
        Conversely, if <function>PQconnectPoll(conn)</function> last returned
        <symbol>PGRES_POLLING_WRITING</symbol>, wait until the socket is ready
@@ -530,7 +533,7 @@ PostgresPollingStatusType PQconnectPoll(PGconn *conn);
        has failed, or <symbol>PGRES_POLLING_OK</symbol>, indicating the connection
        has been successfully made.
 -->
-<function>PQconnectStart</function>あるいは<xref linkend="libpq-PQconnectStartParams"/>が成功したら、次は接続シーケンスを進めるために、<application>libpq</application>をポーリングします。
+《マッチ度[78.169014]》<function>PQconnectStart</function>あるいは<xref linkend="libpq-PQconnectStartParams"/>が成功したら、次は接続シーケンスを進めるために、<application>libpq</application>をポーリングします。
 データベース接続の背後にあるソケットの記述子を取り出すには、<function>PQsocket(conn)</function>を使用します。
 （注意：複数の<function>PQconnectPoll</function>呼び出しでソケットが同じままであると思わないでください。）
 以下の繰り返しです。
@@ -539,6 +542,16 @@ PostgresPollingStatusType PQconnectPoll(PGconn *conn);
 反対に直前の<function>PQconnectPoll(conn)</function>が<symbol>PGRES_POLLING_WRITING</symbol>の場合、ソケットの書き込み準備が整うまで待機し、その後、<function>PQconnectPoll(conn)</function>を再度呼び出します。
 繰り返しの最初、すなわち、未だ<function>PQconnectPoll</function>を呼び出していない場合、最後に<symbol>PGRES_POLLING_WRITING</symbol>を返したかのように振舞います。
 この繰り返しを<function>PQconnectPoll(conn)</function>が、接続手続きの失敗を示す<symbol>PGRES_POLLING_FAILED</symbol>、もしくは、接続確立に成功したことを示す<symbol>PGRES_POLLING_OK</symbol>を返すまで継続します。
+《機械翻訳》<function>PQconnectStart</function>または<xref linkend="libpq-PQconnectStartParams"/>が成功した場合、次の段階は<application>libpq</application>をポーリングして接続シーケンスを続行することです。
+データベース接続の基礎となるソケットの記述子を取得するには、<function>PQsocket(conn)</function>を使用します。
+（注意: ソケットは<function>PQconnectPoll</function>呼び出しの間で同じままだと仮定しないでください）。
+ループを次のように実行します。
+<function>PQconnectPoll(conn)</function>が最後に<symbol>PGRES_POLLING_READING</symbol>を返した場合、ソケットが読み込みの準備ができるまで待ちます(<function>select()</function>、<function>poll()</function>、または同様のシステム関数で示されます)。
+システムで利用可能であれば、<function>PQsocketPoll</function>は<function>select(2)</function>や<function>poll(2)</function>の設定を抽象化することで、定型コードを減らすことができます。
+次に、<function>PQconnectPoll(conn)</function>を再度呼び出します。
+逆に、<function>PQconnectPoll(conn)</function>が最後に<symbol>PGRES_POLLING_WRITING</symbol>を返した場合、ソケットが書き込み可能になるまで待ってから、再度<function>PQconnectPoll(conn)</function>を呼び出します。
+最初の繰り返しでは、つまり<function>PQconnectPoll</function>をまだ呼び出していない場合、最後に<symbol>PGRES_POLLING_WRITING</symbol>を返したかのように振る舞います。
+接続手順が失敗したことを示す<symbol>PGRES_POLLING_FAILED</symbol>を返すか、接続が成功したことを示す<symbol>PGRES_POLLING_OK</symbol>を返すまで、このループを続けます。
       </para>
 
       <para>
@@ -620,14 +633,14 @@ SSL暗号化の調停状態です。
          </listitem>
         </varlistentry>
 
-        <varlistentry id="libpq-connection-setenv">
-         <term><symbol>CONNECTION_SETENV</symbol></term>
+        <varlistentry id="libpq-connection-gss-startup">
+         <term><symbol>CONNECTION_GSS_STARTUP</symbol></term>
          <listitem>
           <para>
 <!--
-           Negotiating environment-driven parameter settings.
+           Negotiating GSS encryption.
 -->
-環境が提供するパラメータ設定の調停状態です。
+《機械翻訳》GSS暗号化の調停状態です。
           </para>
          </listitem>
         </varlistentry>
@@ -640,6 +653,18 @@ SSL暗号化の調停状態です。
            Checking if connection is able to handle write transactions.
 -->
 接続が書き込みトランザクションを扱えるかどうかを調べています。
+          </para>
+         </listitem>
+        </varlistentry>
+
+        <varlistentry id="libpq-connection-check-standby">
+         <term><symbol>CONNECTION_CHECK_STANDBY</symbol></term>
+         <listitem>
+          <para>
+<!--
+           Checking if connection is to a server in standby mode.
+-->
+《機械翻訳》接続がスタンバイ モードのサーバに対するものかどうかを確認しています。
           </para>
          </listitem>
         </varlistentry>
@@ -713,6 +738,98 @@ switch(PQstatus(conn))
      </listitem>
     </varlistentry>
 
+    <varlistentry id="libpq-PQsocketPoll">
+     <term><function>PQsocketPoll</function><indexterm><primary>PQsocketPoll</primary></indexterm></term>
+     <listitem>
+      <para>
+<!--
+       <indexterm><primary>nonblocking connection</primary></indexterm>
+       <indexterm><primary>非ブロック接続</primary></indexterm>
+       Poll a connection's underlying socket descriptor retrieved with
+       <xref linkend="libpq-PQsocket"/>.
+       The primary use of this function is iterating through the connection
+       sequence described in the documentation of
+       <xref linkend="libpq-PQconnectStartParams"/>.
+-->
+《機械翻訳》<indexterm><primary>非ブロッキング接続</primary></indexterm><xref linkend="libpq-PQsocket"/>で取得されたコネクションの基礎となるソケットディスクリプタをポーリングします。
+この関数のプライマリでの使用は、<xref linkend="libpq-PQconnectStartParams"/>の文書で説明されているコネクションシーケンスを通じて繰り返されます。
+<synopsis>
+typedef pg_int64 pg_usec_time_t;
+
+int PQsocketPoll(int sock, int forRead, int forWrite,
+                 pg_usec_time_t end_time);
+</synopsis>
+      </para>
+
+      <para>
+<!--
+       This function performs polling of a file descriptor, optionally with
+       a timeout.
+       If <parameter>forRead</parameter> is nonzero, the
+       function will terminate when the socket is ready for
+       reading. If <parameter>forWrite</parameter> is nonzero,
+       the function will terminate when the
+       socket is ready for writing.
+-->
+《機械翻訳》この関数は、ファイルディスクリプタのポーリングを実行します。
+オプションでタイムアウトも実行できます。
+<parameter>forRead</parameter>が非ゼロの場合、関数はソケットの読取り準備が整ったときに終了します。
+<parameter>forWrite</parameter>が非ゼロの場合、関数はソケットの書込み準備が整ったときに終了します。
+      </para>
+
+      <para>
+<!--
+       The timeout is specified by <parameter>end_time</parameter>, which
+       is the time to stop waiting expressed as a number of microseconds since
+       the Unix epoch (that is, <type>time_t</type> times 1 million).
+       Timeout is infinite if <parameter>end_time</parameter>
+       is <literal>-1</literal>.  Timeout is immediate (no blocking) if
+       end_time is <literal>0</literal> (or indeed, any time before now).
+       Timeout values can be calculated conveniently by adding the desired
+       number of microseconds to the result of
+       <xref linkend="libpq-PQgetCurrentTimeUSec"/>.
+       Note that the underlying system calls may have less than microsecond
+       precision, so that the actual delay may be imprecise.
+-->
+《機械翻訳》タイムアウトは<parameter>end_time</parameter>で指定されます。
+これは、Unixエポックからのマイクロ秒数で表される待機を停止する時間です（つまり、<type>time_t</type>×100万）。
+<parameter>end_time</parameter>が<literal>-1</literal>の場合、タイムアウトは無限になります。
+end_timeが<literal>0</literal>の場合、タイムアウトは即時（ブロッキングなし）です（実際には、現在の任意の時間前です）。
+タイムアウト値は、<xref linkend="libpq-PQgetCurrentTimeUSec"/>の結果に所望のマイクロ秒数を加えることによって便利に計算することができる。
+基礎となるシステムが呼び出すノートは、より小さいマイクロ秒精度を有することがあり、その結果、実際の遅延は不正確であり得る。
+      </para>
+
+      <para>
+<!--
+       The function returns a value greater than <literal>0</literal> if the
+       specified condition is met, <literal>0</literal> if a timeout occurred,
+       or <literal>-1</literal> if an error occurred. The error can be
+       retrieved by checking the <literal>errno(3)</literal> value. In the
+       event both <parameter>forRead</parameter>
+       and <parameter>forWrite</parameter> are zero, the function immediately
+       returns a timeout indication.
+-->
+《機械翻訳》関数は、指定された条件が満たされた場合は値より大きい<literal>0</literal>を返し、タイムアウトが発生した場合は<literal>0</literal>を返し、エラーが発生した場合は<literal>-1</literal>を返します。
+エラーは、<literal>errno(3)</literal>値をチェックすることによって取得できます。
+イベントでは、<parameter>forRead</parameter>と<parameter>forWrite</parameter>の両方がゼロであり、関数はすぐにタイムアウト表示を返します。
+      </para>
+
+      <para>
+<!--
+       <function>PQsocketPoll</function> is implemented using either
+       <function>poll(2)</function> or <function>select(2)</function>,
+       depending on platform.  See <literal>POLLIN</literal>
+       and <literal>POLLOUT</literal> from <function>poll(2)</function>,
+       or <parameter>readfds</parameter> and
+       <parameter>writefds</parameter> from <function>select(2)</function>,
+       for more information.
+-->
+《機械翻訳》<function>PQsocketPoll</function>は、<function>select(2)</function>に応じて<function>poll(2)</function>またはプラットフォームを使用して実装されます。
+詳細については、<function>poll(2)</function>の<literal>POLLIN</literal>と<literal>POLLOUT</literal>、<function>select(2)</function>の<parameter>readfds</parameter>と<parameter>writefds</parameter>を参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+
     <varlistentry id="libpq-PQconndefaults">
      <term><function>PQconndefaults</function><indexterm><primary>PQconndefaults</primary></indexterm></term>
      <listitem>
@@ -769,8 +886,8 @@ typedef struct
 -->
 接続オプションの配列を返します。
 これは、使用可能な<xref linkend="libpq-PQconnectdb"/>用オプションのすべてや、その時点でのデフォルト値を決定するために使用することができます。
-戻り値は、<structname>PQconninfoOption</structname>構造体の配列へのポインタで、<structfield>keyword</structfield>ポインタがヌルとなる項目が配列の末尾にきます。
-メモリが確保できなかった場合にはヌルポインタを返します。
+戻り値は、<structname>PQconninfoOption</structname>構造体の配列へのポインタで、<structfield>keyword</structfield>ポインタがNULLとなる項目が配列の末尾にきます。
+メモリが確保できなかった場合にはNULLポインタを返します。
 現在のデフォルト値(<structfield>val</structfield> フィールド)は、環境変数や他のコンテキストに依存します。
 呼び出し側では、接続オプションの情報は、読み込み専用として取り扱わなければいけません。
       </para>
@@ -845,7 +962,7 @@ PQconninfoOption *PQconninfoParse(const char *conninfo, char **errmsg);
 -->
 接続文字列の構文解析を行い、配列として結果オプションを返すか、または接続文字列に問題があった場合に<symbol>NULL</symbol>を返します。
 この関数を提供された接続文字列の中の<xref linkend="libpq-PQconnectdb"/>オプションを取り出すために使用することができます。
-戻り値は<structname>PQconninfoOption</structname>構造体の配列を指し示し、それはヌルの<structfield>keyword</structfield>ポインタを持つ項目で終結します。
+戻り値は<structname>PQconninfoOption</structname>構造体の配列を指し示し、それはNULLの<structfield>keyword</structfield>ポインタを持つ項目で終結します。
       </para>
 
       <para>
@@ -882,7 +999,7 @@ PQconninfoOption *PQconninfoParse(const char *conninfo, char **errmsg);
        be sure to free the error string using <xref linkend="libpq-PQfreemem"/>.
 -->
 オプション配列を処理した後、それを<xref linkend="libpq-PQconninfoFree"/>に渡して解放してください。
-これが行われない場合、<xref linkend="libpq-PQconninfoParse"/>へのそれぞれの呼び出しに対してメモリーリークが起こります。
+これが行われない場合、<xref linkend="libpq-PQconninfoParse"/>へのそれぞれの呼び出しに対してメモリリークが起こります。
 反対に、エラーが起こり、そして<literal>errmsg</literal>が非<symbol>NULL</symbol>であれば、<xref linkend="libpq-PQfreemem"/>を使用してエラー文字列を必ず解放してください。
       </para>
 
@@ -925,7 +1042,7 @@ void PQfinish(PGconn *conn);
 <!--
        Resets the communication channel to the server.
 -->
-サーバへの通信チャンネルをリセットします。
+サーバへの通信チャネルをリセットします。
 <synopsis>
 void PQreset(PGconn *conn);
 </synopsis>
@@ -953,7 +1070,7 @@ void PQreset(PGconn *conn);
 <!--
        Reset the communication channel to the server, in a nonblocking manner.
 -->
-非ブロッキング方式で、サーバへの接続チャンネルをリセットします。
+非ブロッキング方式で、サーバへの通信チャネルをリセットします。
 
 <synopsis>
 int PQresetStart(PGconn *conn);
@@ -1156,7 +1273,7 @@ int callback_fn(char *buf, int size, PGconn *conn);
 <application>libpq</application>はデフォルトの<function>PQdefaultSSLKeyPassHook_OpenSSL</function>ハンドラ<emphasis>の代わりに</emphasis>、これを呼び出します。
 コールバックはキーに対するパスワードを決定して、それを<parameter>size</parameter>の大きさを持つ結果バッファ<parameter>buf</parameter>にコピーすべきです。
 <parameter>buf</parameter>内の文字列はNULL終端でなければなりません。
-コールバックは<parameter>buf</parameter>に格納されたパスワードのヌル終端子を除いた長さを返さなければなりません。
+コールバックは<parameter>buf</parameter>に格納されたパスワードのNULL終端子を除いた長さを返さなければなりません。
 失敗した場合、コールバックは<literal>buf[0] = '\0'</literal>をセットし、0を返すべきです。
 例として、<application>libpq</application>のソースコードの<function>PQdefaultSSLKeyPassHook_OpenSSL</function>を参照してください。
       </para>
@@ -1238,13 +1355,13 @@ PQsslKeyPassHook_OpenSSL_type PQgetSSLKeyPassHook_OpenSSL(void);
     connection parameters.  There are two accepted formats for these strings:
     plain keyword/value strings
     and URIs.  URIs generally follow
-    <ulink url="https://tools.ietf.org/html/rfc3986">RFC
+    <ulink url="https://datatracker.ietf.org/doc/html/rfc3986">RFC
     3986</ulink>, except that multi-host connection strings are allowed
     as further described below.
 -->
 複数の<application>libpq</application>関数は、接続パラメータを得るためにユーザが指定した文字列の解析を行います。
 この文字列として、単純なキーワード/値文字列とURIという２種類の書式が受け付けられます。
-URIは通常<ulink url="https://tools.ietf.org/html/rfc3986">RFC3986</ulink>に従いますが、以下で詳細を説明する複数ホスト接続文字列が使用できるところが例外です。
+URIは通常<ulink url="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</ulink>に従いますが、以下で詳細を説明する複数ホスト接続文字列が使用できるところが例外です。
    </para>
 
    <sect3 id="libpq-connstring-keyword-value">
@@ -1361,13 +1478,13 @@ JDBC接続<acronym>URI</acronym>との互換性のために、<literal>ssl=true<
    <para>
 <!--
     The connection <acronym>URI</acronym> needs to be encoded with <ulink
-    url="https://tools.ietf.org/html/rfc3986#section-2.1">percent-encoding</ulink>
+    url="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">percent-encoding</ulink>
     if it includes symbols with special meaning in any of its parts.  Here is
     an example where the equal sign (<literal>=</literal>) is replaced with
     <literal>%3D</literal> and the space character with
     <literal>%20</literal>:
 -->
-接続<acronym>URI</acronym>は、その中のどこかの部分に特別な意味を持つシンボルを含む場合、<ulink url="https://tools.ietf.org/html/rfc3986#section-2.1">パーセントエンコーディング</ulink>でエンコードされている必要があります。
+接続<acronym>URI</acronym>は、その中のどこかの部分に特別な意味を持つシンボルを含む場合、<ulink url="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">パーセントエンコーディング</ulink>でエンコードされている必要があります。
 以下は等号(<literal>=</literal>)が<literal>%3D</literal>、空白が<literal>%20</literal>で置き換えられた例です。
 <programlisting>
 postgresql://user@localhost:5433/mydb?options=-c%20synchronous_commit%3Doff
@@ -1528,14 +1645,14 @@ postgresql://%2Fvar%2Flib%2Fpostgresql/dbname
         when <productname>PostgreSQL</productname> was built).  On Windows,
         the default is to connect to <literal>localhost</literal>.
 -->
-《マッチ度[]》接続するホスト名を指定します。
+接続するホスト名を指定します。
 <indexterm><primary>ホスト名</primary></indexterm> ホスト名が絶対パス名のように見えるなら、それはTCP/IPによる通信ではなく、Unixドメインの通信を示します。
 その場合、この値はソケットファイルを格納するディレクトリの名前になります。
 （Unixでは絶対パス名はスラッシュから始まります。Windowsではドライブ文字から始まるパスも認められます。）
 ホスト名が<literal>@</literal>から始まっていると、抽象名前空間（今のところLinuxとWindowsでサポートされています）内のUnixドメインソケットとして扱われます。
 <literal>host</literal>が指定されなかったり、空の場合のデフォルトの振る舞いは、<filename>/tmp</filename>（または、<productname>PostgreSQL</productname>の構築時に指定したソケットディレクトリ）にあるUnixドメインのソケットに接続することです。
 <indexterm><primary>Unixドメインソケット</primary></indexterm>
-Unixドメインソケットを持たないマシンにおけるデフォルトは、<literal>localhost</literal>に接続することです。
+Windowsでは、デフォルトは<literal>localhost</literal>に接続することです。
        </para>
        <para>
 <!--
@@ -1662,10 +1779,8 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         Unix-domain socket; or on Windows, it will attempt to connect to
         <literal>localhost</literal>.
 -->
-《マッチ度[61.616162]》ホスト名もホストのアドレスも用いない場合、<application>libpq</application>はローカルのUnixドメインソケットを使用して接続します。
-ただし、WindowsとUnixドメインソケットを持たないマシンでは、<literal>localhost</literal>への接続を試みます。
-《機械翻訳》ホスト名またはホストアドレスのいずれかがない場合、<application>libpq</application>はローカルのUnixドメインソケットを使用して接続します。
- または、Windowsでは、<literal>localhost</literal>に接続します。
+ホスト名もホストのアドレスも用いない場合、<application>libpq</application>はローカルのUnixドメインソケットを使用して接続します。
+Windowsでは、<literal>localhost</literal>への接続を試みます。
        </para>
        </listitem>
       </varlistentry>
@@ -1771,11 +1886,10 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         for the connection to succeed. By default, any authentication method is
         accepted, and the server is free to skip authentication altogether.
 -->
-《機械翻訳》クライアントがサーバーから要求する認証方法を指定します。
-サーバーがクライアントの認証に必要なメソッドを使用しない場合、またはサーバーが認証ハンドシェイクを完全に完了しない場合、接続は失敗します。
-必要なメソッドのコンマ区切りリストも指定できます。
-このリストでは、サーバーは接続を正常に完了するために、そのうちの1つを使用する必要があります。
-デフォルトでは、任意の認証方法が受け入れられ、サーバーは認証を完全にスキップできます。
+クライアントがサーバに要求する認証方式を指定します。
+サーバがクライアントの認証に必要な方式を使用しない場合、またはサーバが認証ハンドシェイクを完全に完了しない場合、接続は失敗します。
+必要な方式のカンマ区切りリストも指定できます。サーバは接続に成功するために、このリストのうちの1つを使用する必要があります。
+デフォルトでは、任意の認証方式が受け入れられ、サーバは認証を完全に省略できます。
       </para>
       <para>
 <!--
@@ -1787,12 +1901,11 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         listed negated methods. Negated and non-negated forms may not be
         combined in the same setting.
 -->
-《機械翻訳》メソッドは、<literal>!</literal>接頭辞を付けて否定することができます。
- その場合、サーバはリストされたメソッドを<emphasis>試みない</emphasis>ことになります。
- 他のメソッドはすべて受け入れられます。
- また、クライアントを全く認証しないこともできます。
- コンマ区切りのリストが与えられた場合、サーバは、リストされた否定されたメソッドのいずれも<emphasis>試みてはならない</emphasis>。
- 否定された形式と否定されていない形式は、同じ設定では組み合わせることができません。
+方式は、<literal>!</literal>接頭辞を付けて否定できます。
+その場合、サーバはリストされた方式を試み<emphasis>ない</emphasis>ことになります。
+他の方式はすべて受け入れられます。また、サーバがクライアントを全く認証しないこともできます。
+カンマ区切りのリストが与えられた場合、サーバは、リストされた否定された方式の<emphasis>いずれも</emphasis>試みません。
+否定された形式と否定されていない形式は、同じ設定では組み合わせることができません。
       </para>
       <para>
 <!--
@@ -1800,14 +1913,14 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         server not to use an authentication challenge. (It may also be negated,
         to require some form of authentication.)
 -->
-《機械翻訳》最後の特殊なケースとして、<literal>none</literal>メソッドはサーバが認証チャレンジを使用しないことを要求します。
-（また、何らかの形の認証を要求するために否定されることもあります。）
+最後の特殊な場合として、<literal>none</literal>方式はサーバが認証チャレンジを使用しないことを要求します。
+（何らかの形の認証を要求するために否定されることもあります。）
       </para>
       <para>
 <!--
         The following methods may be specified:
 -->
-《機械翻訳》次のメソッドを指定できます。
+以下の方式を指定できます。
 
         <variablelist>
          <varlistentry>
@@ -1817,7 +1930,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
 <!--
             The server must request plaintext password authentication.
 -->
-《機械翻訳》サーバは、平文パスワード認証を要求する必要があります。
+サーバは、平文パスワード認証を要求しなければなりません。
            </para>
           </listitem>
          </varlistentry>
@@ -1829,7 +1942,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
 <!--
             The server must request MD5 hashed password authentication.
 -->
-《機械翻訳》サーバは、MD5ハッシュパスワード認証を要求する必要があります。
+サーバは、MD5ハッシュパスワード認証を要求しなければなりません。
            </para>
           </listitem>
          </varlistentry>
@@ -1844,7 +1957,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
             <acronym>GSS</acronym>-encrypted channel (see also
             <xref linkend="libpq-connect-gssencmode" />).
 -->
-《機械翻訳》サーバは<acronym>GSSAPI</acronym>を介してKerberosハンドシェイクを要求するか、<acronym>GSS</acronym>で暗号化されたチャネルを確立する必要があります（<xref linkend="libpq-connect-gssencmode" />も参照してください）。
+サーバは<acronym>GSSAPI</acronym>を介してKerberosハンドシェイクを要求するか、<acronym>GSS</acronym>で暗号化されたチャネルを確立しなければなりません（<xref linkend="libpq-connect-gssencmode" />も参照してください）。
            </para>
           </listitem>
          </varlistentry>
@@ -1857,7 +1970,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
             The server must request Windows <acronym>SSPI</acronym>
             authentication.
 -->
-《機械翻訳》サーバは Windows <acronym>SSPI</acronym>認証を要求する必要があります。
+サーバはWindows <acronym>SSPI</acronym>認証を要求しなければなりません。
            </para>
           </listitem>
          </varlistentry>
@@ -1870,7 +1983,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
             The server must successfully complete a SCRAM-SHA-256 authentication
             exchange with the client.
 -->
-《機械翻訳》サーバは、クライアントとのSCRAM-SHA-256認証交換を正常に完了する必要があります。
+サーバは、クライアントとのSCRAM-SHA-256認証交換を正常に完了しなければなりません。
            </para>
           </listitem>
          </varlistentry>
@@ -1884,7 +1997,8 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
             exchange. (This does not prohibit client certificate authentication
             via TLS, nor GSS authentication via its encrypted transport.)
 -->
-《機械翻訳》サーバはクライアントに認証交換を要求してはならない（これは、TLSによるクライアント証明書認証や、その暗号化されたトランスポートによるGSS認証を禁止するものではない）。
+サーバはクライアントに認証交換を要求してはなりません。
+（これは、TLSによるクライアント証明書認証や、その暗号化されたトランスポートによるGSS認証を禁止するものではありません。）
            </para>
           </listitem>
          </varlistentry>
@@ -1907,8 +2021,8 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         <productname>PostgreSQL</productname> is compiled with SSL support;
         otherwise the default is <literal>disable</literal>.
 -->
-このオプションはクライアントのチャンネルバインディングの使用を制御します。
-<literal>require</literal>設定では接続はチャンネルバイデンディングを使わなければならず、<literal>prefer</literal>ではクラアイントが可能であればチャンネルバインディングを使い、<literal>disable</literal>ではチャンネルバイディングを使用させません。
+このオプションはクライアントのチャネルバインディングの使用を制御します。
+<literal>require</literal>設定では接続はチャネルバインディングを使わなければならず、<literal>prefer</literal>ではクライアントが可能であればチャネルバインディングを使い、<literal>disable</literal>ではチャネルバインディングを使用させません。
 <productname>PostgreSQL</productname>がSSLサポートを伴ってコンパイルされている場合のデフォルトは<literal>prefer</literal>で、そうでなければデフォルトは<literal>disable</literal>です。
       </para>
       <para>
@@ -1918,7 +2032,7 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
         with <productname>PostgreSQL</productname> 11 or later servers using
         the <literal>SCRAM</literal> authentication method.
 -->
-チャンネルバインディングはサーバが自身が信頼できることをクライアントに証明する方法です。
+チャネルバインディングはサーバが自身が信頼できることをクライアントに証明する方法です。
 これは、<literal>SCRAM</literal>認証方式を使った<productname>PostgreSQL</productname> 11以降のサーバとのSSL接続上でのみサポートされます。
       </para>
       </listitem>
@@ -1931,20 +2045,24 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
 <!--
        Maximum time to wait while connecting, in seconds (write as a decimal integer,
        e.g., <literal>10</literal>).  Zero, negative, or not specified means
-       wait indefinitely.  The minimum allowed timeout is 2 seconds, therefore
-       a value of <literal>1</literal> is interpreted as <literal>2</literal>.
+       wait indefinitely.
        This timeout applies separately to each host name or IP address.
        For example, if you specify two hosts and <literal>connect_timeout</literal>
        is 5, each host will time out if no connection is made within 5
        seconds, so the total time spent waiting for a connection might be
        up to 10 seconds.
 -->
-接続中の最大待機時間を秒単位（10進整数で記述してください、<literal>10</literal>など）で指定します。
+《マッチ度[58.643326]》接続中の最大待機時間を秒単位（10進整数で記述してください、<literal>10</literal>など）で指定します。
 ゼロ、負値、もしくは未設定は、無期限の待機を意味します。
 許容される最小のタイムアウトは2秒です。
 したがって、<literal>1</literal>は<literal>2</literal>と解釈されます。
 このタイムアウトは各ホスト名やIPアドレスに別々に適用されます。
 例えば、二つのホストを指定して、<literal>connect_timeout</literal>が5であるなら、各ホストが5秒以内に接続できないときにタイムアウトして、接続を待つ合計所要時間は10秒近くになるかもしれません。
+《機械翻訳》接続中に待機する最大時間を秒単位で指定します（10進数整数として記述します。
+例:<literal>10</literal>）。
+ゼロ、負の値、または指定しない場合は、無限に待機することを意味します。
+このタイムアウトは、各ホストの名前またはIPアドレスに個別に適用されます。
+例の場合、2つのホストを指定し、<literal>connect_タイムアウト</literal>が5の場合、5秒以内にコネクションが作成されないと各ホストがタイムアウトするため、コネクションの待機に費やされる合計時間は最大10秒になります。
       </para>
       </listitem>
      </varlistentry>
@@ -1974,19 +2092,25 @@ Unixドメインソケットを持たないマシンにおけるデフォルト�
        <para>
 <!--
         Specifies command-line options to send to the server at connection
-        start.  For example, setting this to <literal>-c geqo=off</literal> sets the
-        session's value of the <varname>geqo</varname> parameter to
-        <literal>off</literal>.  Spaces within this string are considered to
+        start.  For example, setting this to <literal>-c geqo=off</literal>
+        or <literal>&#45;-geqo=off</literal> sets the session's value of the
+        <varname>geqo</varname> parameter to <literal>off</literal>.
+        Spaces within this string are considered to
         separate command-line arguments, unless escaped with a backslash
         (<literal>\</literal>); write <literal>\\</literal> to represent a literal
         backslash.  For a detailed discussion of the available
         options, consult <xref linkend="runtime-config"/>.
 -->
-接続開始時にサーバに送信するコマンドラインオプションを指定します。
+《マッチ度[82.481752]》接続開始時にサーバに送信するコマンドラインオプションを指定します。
 例えば、これを<literal>-c geqo=off</literal>に設定すると、<varname>geqo</varname>パラメータのセッション値は<literal>off</literal>になります。
 この文字列中の空白はバックスラッシュ(<literal>\</literal>)でエスケープされていなければコマンド行引数の区切りであるとみなされます。
 リテラルのバックスラッシュを表すには<literal>\\</literal>と書いて下さい。
 利用可能なオプションに関する詳細については<xref linkend="runtime-config"/>を参照してください。
+《機械翻訳》コネクションスタートでサーバに送信するコマンド-直線オプションを指定します。
+例の場合、これを<literal>-c geqo=オフ</literal>または<literal>--geqo=オフ</literal>に設定すると、<varname>geqo</varname>パラメータのセッションの値が<literal>オフ</literal>に設定されます。
+この文字列内のスペースは、コマンド-直線引数を区切るものと見なされます。
+ただし、リテラルバックスラッシュを表すためにバックスラッシュ<literal>\</literal>);write<literal>\\</literal>でエスケープされている場合を除きます。
+利用可能なオプションの詳細については、<xref linkend="runtime-config"/>を参照してください。
        </para>
       </listitem>
      </varlistentry>
@@ -2419,11 +2543,13 @@ SSLサポートなしで<productname>PostgreSQL</productname>がコンパイル�
         encryption, regardless of the value of <literal>sslmode</literal>.
         To force use of <acronym>SSL</acronym> encryption in an
         environment that has working <acronym>GSSAPI</acronym>
-        infrastructure (such as a Kerberos server), also
-        set <literal>gssencmode</literal> to <literal>disable</literal>.
+        infrastructure (such as a Kerberos server), also set
+        <literal>gssencmode</literal> to <literal>disable</literal>.
 -->
-<acronym>GSSAPI</acronym>暗号化が可能な場合、<literal>sslmode</literal>の値に関係なく、<acronym>SSL</acronym>暗号化よりも優先して使用されることに注意してください。
+《マッチ度[86.407767]》<acronym>GSSAPI</acronym>暗号化が可能な場合、<literal>sslmode</literal>の値に関係なく、<acronym>SSL</acronym>暗号化よりも優先して使用されることに注意してください。
 <acronym>GSSAPI</acronym>インフラストラクチャが動作している環境(Kerberosサーバなど)で<acronym>SSL</acronym>暗号化を強制的に使用するには、<literal>gssencmode</literal>を<literal>disable</literal>に設定します。
+《機械翻訳》<acronym>GSSAPI</acronym>暗号化が可能な場合、<literal>sslmode</literal>の値に関係なく、<acronym>SSL</acronym>暗号化よりも優先して使用されることに注意してください。
+<acronym>GSSAPI</acronym>インフラストラクチャが動作している環境（Kerberosサーバなど）で<acronym>SSL</acronym>暗号化を強制的に使用するには、<literal>gssencmode</literal>を<literal>disable</literal>に設定します。
        </para>
       </listitem>
      </varlistentry>
@@ -2461,6 +2587,68 @@ SSLサポート付きで<productname>PostgreSQL</productname>をコンパイル�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="libpq-connect-sslnegotiation" xreflabel="sslnegotiation">
+      <term><literal>sslnegotiation</literal></term>
+      <listitem>
+       <para>
+<!--
+        This option controls how SSL encryption is negotiated with the server,
+        if SSL is used. In the default <literal>postgres</literal> mode, the
+        client first asks the server if SSL is supported. In
+        <literal>direct</literal> mode, the client starts the standard SSL
+        handshake directly after establishing the TCP/IP connection. Traditional
+        <productname>PostgreSQL</productname> protocol negotiation is the most
+        flexible with different server configurations. If the server is known
+        to support direct <acronym>SSL</acronym> connections then the latter
+        requires one fewer round trip reducing connection latency and also
+        allows the use of protocol agnostic SSL network tools. The direct SSL
+        option was introduced in <productname>PostgreSQL</productname> version
+        17.
+-->
+《機械翻訳》このオプションは、SSLが使用されている場合に、SSL暗号化がサーバとどのようにネゴシエートされるかを制御します。
+デフォルト<literal>POSTGRES</literal>モードでは、クライアントは最初にサーバにSSLがサポートされているかどうかを尋ねます。
+<literal>直接</literal>モードでは、クライアントはTCP/IPハンドシェークを確立した直後に標準SSLコネクションを開始します。
+従来型(プロトコルネゴシエーションは、さまざまなサーバ設定に対して最も柔軟性があります。
+<productname>PostgreSQL</productname>サーバがサポート直接<acronym>SSL</acronym>接続に認識されている場合、SSL接続では必要なラウンドトリップが1つ少なくなり、コネクションレイテンシが削減され、プロトコルに依存しないSSLネットワークツールを使用できるようになります。
+直接SSLオプションは、<productname>PostgreSQL</productname>バージョン17で導入されました。
+       </para>
+
+        <variablelist>
+         <varlistentry>
+          <term><literal>postgres</literal></term>
+          <listitem>
+           <para>
+<!--
+             perform <productname>PostgreSQL</productname> protocol
+             negotiation. This is the default if the option is not provided.
+-->
+《機械翻訳》<productname>PostgreSQL</productname>プロトコルのネゴシエーションを行います。
+このオプションが指定されていない場合のデフォルトです。
+           </para>
+          </listitem>
+         </varlistentry>
+
+         <varlistentry>
+          <term><literal>direct</literal></term>
+          <listitem>
+           <para>
+<!--
+             start SSL handshake directly after establishing the TCP/IP
+             connection.  This is only allowed with sslmode=require or higher,
+             because the weaker settings could lead to unintended fallback to
+             plaintext authentication when the server does not support direct
+             SSL handshake.
+-->
+《機械翻訳》TCP/IPハンドシェークを確立した直後にSSLコネクションをスタートします。
+これは、sslmode=require以上の場合にのみ許可されます。
+これは、弱い設定では、サーバがSSL認証をサポートしない場合に、意図しないプレーンテキストハンドシェークへのフォールバックが発生する可能性があるためです。
+           </para>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+      </listitem>
+     </varlistentry>
+
      <varlistentry id="libpq-connect-sslcompression" xreflabel="sslcompression">
       <term><literal>sslcompression</literal></term>
       <listitem>
@@ -2479,16 +2667,19 @@ SSLサポート付きで<productname>PostgreSQL</productname>をコンパイル�
        <para>
 <!--
         SSL compression is nowadays considered insecure and its use is no
-        longer recommended.  <productname>OpenSSL</productname> 1.1.0 disables
+        longer recommended.  <productname>OpenSSL</productname> 1.1.0 disabled
         compression by default, and many operating system distributions
-        disable it in prior versions as well, so setting this parameter to on
+        disabled it in prior versions as well, so setting this parameter to on
         will not have any effect if the server does not accept compression.
-        <productname>PostgreSQL</productname> 14 disables compression
+        <productname>PostgreSQL</productname> 14 disabled compression
         completely in the backend.
 -->
-SSL圧縮は今日では安全ではないと考えられていて、もはや使用は推奨されません。
+《マッチ度[85.948478]》SSL圧縮は今日では安全ではないと考えられていて、もはや使用は推奨されません。
 <productname>OpenSSL</productname> 1.1.0はデフォルトでは圧縮を無効にしており、多くのOSディストリビューションでもこれまでのバージョンで無効化しています。そのため、サーバが圧縮を受け付けない場合、本パラメータをonに設定しても効果がありません。
 <productname>PostgreSQL</productname> 14はバックエンドでの圧縮を完全に無効にしています。
+《機械翻訳》SSL圧縮は現在では安全ではないと考えられており、その使用は推奨されません。
+<productname>OpenSSL</productname> 1.1.0ではデフォルトで圧縮が無効になっており、多くのオペレーティングシステムのディストリビューションでも以前のバージョンでは無効になっていたため、このパラメータをonに設定してもサーバが圧縮を受け入れない場合は効果がありません。
+<productname>PostgreSQL</productname> 14ではバックエンドで圧縮が完全に無効になりました。
        </para>
 
        <para>
@@ -2599,8 +2790,8 @@ SSL接続が確立していない場合このパラメータは無視されま�
         server, and whether the server is required to request one. There are
         three modes:
 -->
-《機械翻訳》このオプションは、クライアント証明書をサーバに送信するかどうか、およびサーバがそれを要求する必要があるかどうかを決定します。
- 以下の3つのモードがあります。
+このオプションは、クライアント証明書をサーバに送信するかどうか、およびサーバがそれを要求する必要があるかどうかを決定します。
+以下の3つのモードがあります。
 
         <variablelist>
          <varlistentry>
@@ -2612,7 +2803,7 @@ SSL接続が確立していない場合このパラメータは無視されま�
             (default location or provided via
             <xref linkend="libpq-connect-sslcert" />).
 -->
-《機械翻訳》クライアント証明書は、使用可能であっても（デフォルトの場所または<xref linkend="libpq-connect-sslcert" />で提供されている場合）、決して送信されません。
+クライアント証明書は、（デフォルトの場所または<xref linkend="libpq-connect-sslcert" />で提供されていて）使用可能であっても、決して送信されません。
            </para>
           </listitem>
          </varlistentry>
@@ -2625,7 +2816,7 @@ SSL接続が確立していない場合このパラメータは無視されま�
             A certificate may be sent, if the server requests one and the
             client has one to send.
 -->
-《機械翻訳》サーバが証明書を要求し、クライアントが送信する証明書を持っている場合は、証明書を送信することができます。
+サーバが証明書を要求し、クライアントが送信する証明書を持っている場合は、証明書が送信されます。
            </para>
           </listitem>
          </varlistentry>
@@ -2639,8 +2830,8 @@ SSL接続が確立していない場合このパラメータは無視されま�
             connection will fail if the client does not send a certificate and
             the server successfully authenticates the client anyway.
 -->
-《機械翻訳》サーバは証明書を要求する<emphasis>必要があります</emphasis>。
-クライアントが証明書を送信しない場合でも、サーバはクライアントを認証するため、接続は失敗します。
+サーバは証明書を要求<emphasis>しなければなりません</emphasis>。
+サーバがクライアントの認証にとにかく成功したものの、クライアントが証明書を送信しなかった場合には、接続は失敗します。
            </para>
           </listitem>
          </varlistentry>
@@ -2657,7 +2848,7 @@ SSL接続が確立していない場合このパラメータは無視されま�
          option may be useful when troubleshooting more complicated TLS
          setups.
 -->
-《機械翻訳》<literal>sslcertmode=require</literal>は、サーバが証明書を正しく検証しているかどうかを保証しないため、追加のセキュリティを追加するものではありません。
+<literal>sslcertmode=require</literal>は、サーバが証明書を正しく検証しているかどうかを保証しないため、さらにセキュリティを追加するものではありません。
 PostgreSQLサーバは、一般に、有効にするかどうかに関係なく、クライアントからTLS証明書を要求します。
 このオプションは、より複雑なTLS設定のトラブルシューティングに役立つ場合があります。
         </para>
@@ -2689,10 +2880,9 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
         locations may be further modified by the <envar>SSL_CERT_DIR</envar>
         and <envar>SSL_CERT_FILE</envar> environment variables.
 -->
-《機械翻訳》特別な値<literal>system</literal>を指定することもできます。
- この場合、システムの信頼できるCAルートがロードされます。
- これらのルート証明書の正確な位置は、SSL実装とプラットフォームによって異なります。
- <productname>OpenSSL</productname>の場合、特に、<envar>SSL_CERT_DIR</envar>と<envar>SSL_CERT_FILE</envar>環境変数によって位置がさらに変更される可能性があります。
+代わりに、特別な値<literal>system</literal>を指定することもできます。この場合、システムの信頼できるCAルートがロードされます。
+これらのルート証明書の正確な位置は、SSL実装とプラットフォームによって異なります。
+<productname>OpenSSL</productname>の場合、特に、<envar>SSL_CERT_DIR</envar>と<envar>SSL_CERT_FILE</envar>環境変数によって位置がさらに変更される可能性があります。
        </para>
        <note>
         <para>
@@ -2704,8 +2894,8 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
          hostname they control, rendering <literal>verify-ca</literal> and all
          weaker modes useless.
 -->
-《機械翻訳》<literal>sslrootcert=system</literal>を使用すると、デフォルトの<literal>sslmode</literal>は<literal>verify-full</literal>に変更され、より弱い設定はエラーになります。
- ほとんどの場合、誰かが制御するホスト名に対してシステムが信頼できる証明書を取得することは簡単であり、<literal>verify-ca</literal>や他の弱いモードはすべて無意味になります。
+<literal>sslrootcert=system</literal>を使用すると、デフォルトの<literal>sslmode</literal>は<literal>verify-full</literal>に変更され、より弱い設定はエラーになります。
+ほとんどの場合、自身が制御するホスト名に対してシステムが信頼する証明書を取得することは誰にでも簡単であり、<literal>verify-ca</literal>や他の弱いモードはすべて無意味になります。
         </para>
         <para>
 <!--
@@ -2714,8 +2904,8 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
          yourself in this situation, use an alternative path like
          <literal>sslrootcert=./system</literal> instead.
 -->
-《機械翻訳》マジック値 <literal>system</literal> は、同じ名前のローカル証明書ファイルよりも優先されます。
- 何らかの理由でこのような状況になった場合は、代わりに <literal>sslrootcert=./system</literal> のような別のパスを使用してください。
+マジック値<literal>system</literal>は、同じ名前のローカル証明書ファイルよりも優先されます。
+何らかの理由でこのような状況になった場合は、代わりに<literal>sslrootcert=./system</literal>のような別のパスを使用してください。
         </para>
        </note>
       </listitem>
@@ -2735,12 +2925,9 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
         taken as
         <filename>~/.postgresql/root.crl</filename>.
 -->
-《マッチ度[82.005141]》このパラメータはSSLサーバ証明書失効リスト（CRL）のファイル名を指定します。
+このパラメータはSSLサーバ証明書失効リスト（CRL）のファイル名を指定します。
 このファイルに列挙された証明書が存在した場合、それはサーバ証明書を承認しようとする時に拒絶されます。
-<xref linkend='libpq-connect-sslcrl'/>も<xref linkend='libpq-connect-sslcrldir'/>も設定されていなければ、設定は<filename>~/.postgresql/root.crl</filename>から取得されます。
-《機械翻訳》このパラメータは、SSLサーバ証明書失効リスト（CRL）のファイル名を指定します。
- このファイルが存在する場合、サーバの証明書を認証しようとするときに拒否されます。
- <xref linkend="libpq-connect-sslcrl"/>も<xref linkend="libpq-connect-sslcrldir"/>も設定されていない場合、この設定は<filename>~/.postgresql/root.crl</filename>として取られます。
+<xref linkend="libpq-connect-sslcrl"/>も<xref linkend="libpq-connect-sslcrldir"/>も設定されていなければ、設定は<filename>~/.postgresql/root.crl</filename>から取得されます。
        </para>
       </listitem>
      </varlistentry>
@@ -2756,7 +2943,7 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
         authenticate the server's certificate.
 -->
 このパラメータは、SSLサーバ証明書失効リスト(CRL)のディレクトリ名を指定します。
-このディレクトリのファイルにリストされている証明書が存在する場合は、サーバーの証明書の認証中に拒否されます。
+このディレクトリのファイルにリストされている証明書が存在する場合は、サーバの証明書の認証中に拒否されます。
        </para>
 
        <para>
@@ -2796,14 +2983,19 @@ PostgreSQLサーバは、一般に、有効にするかどうかに関係なく�
        <para>
 <!--
         The Server Name Indication can be used by SSL-aware proxies to route
-        connections without having to decrypt the SSL stream.  (Note that this
-        requires a proxy that is aware of the PostgreSQL protocol handshake,
-        not just any SSL proxy.)  However, <acronym>SNI</acronym> makes the
-        destination host name appear in cleartext in the network traffic, so
-        it might be undesirable in some cases.
+        connections without having to decrypt the SSL stream.  (Note that
+        unless the proxy is aware of the PostgreSQL protocol handshake this
+        would require setting <literal>sslnegotiation</literal>
+        to <literal>direct</literal>.)
+        However, <acronym>SNI</acronym> makes the destination host name appear
+        in cleartext in the network traffic, so it might be undesirable in
+        some cases.
 -->
-Server Name Indicationは、SSLストリームを復号化することなく接続をルーティングするために、SSL対応プロキシによって使用できます(これには、SSLプロキシだけでなく、PostgreSQLプロトコルハンドシェイクを認識するプロキシが必要であることに注意してください)。
+《マッチ度[68.264840]》Server Name Indicationは、SSLストリームを復号化することなく接続をルーティングするために、SSL対応プロキシによって使用できます(これには、SSLプロキシだけでなく、PostgreSQLプロトコルハンドシェイクを認識するプロキシが必要であることに注意してください)。
 しかし、<acronym>SNI</acronym>は宛先ホスト名をネットワークトラフィック中に平文で表示しますので、場合によっては望ましくないかもしれません。
+《機械翻訳》サーバ名前表示は、SSL対応プロキシがSSLストリームを復号化せずに接続をルーティングするために使用できます。
+（ノートは、プロキシがPostgreSQLプロトコルハンドシェークを認識していない限り、<literal>直接</literal>への設定<literal>sslnegotiation</literal>が必要になります。）
+ただし、<acronym>SNI</acronym>では、ネットワークトラフィックに宛先ホスト名がクリアテキストで表示されるため、場合によっては望ましくない場合があります。
        </para>
       </listitem>
      </varlistentry>
@@ -2856,7 +3048,7 @@ Unixドメインソケット接続を確立する時に、このパラメータ�
 -->
 このパラメータは接続で許容されるSSL/TLSプロトコルの最小バージョンを指定します。
 有効な値は<literal>TLSv1</literal>、<literal>TLSv1.1</literal>、<literal>TLSv1.2</literal>、および、<literal>TLSv1.3</literal>です。
-対応しているプロトコルは使われている<productname>OpenSSL</productname>バージョンに依存し、より古いバージョンでは最新プトロコルバージョンに対応していません。
+対応しているプロトコルは使われている<productname>OpenSSL</productname>バージョンに依存し、より古いバージョンでは最新プロトコルバージョンに対応していません。
 指定しない場合、デフォルトは<literal>TLSv1.2</literal>で、これは執筆時点では業界標準を満たします。
        </para>
       </listitem>
@@ -2944,9 +3136,9 @@ GSSAPI認証で使用されるGSSライブラリです。
         to the server.  Set this to <literal>1</literal> to have credentials
         forwarded when possible.
 -->
-《機械翻訳》GSS 資格証明をサーバに転送 (委任) します。
- デフォルトは <literal>0</literal> で、これは資格証明がサーバに転送されないことを意味します。
- 可能な場合は資格証明を転送するには <literal>1</literal> に設定します。
+GSS資格証明をサーバに転送(委任)します。
+デフォルトは<literal>0</literal>で、これは資格証明がサーバに転送されないことを意味します。
+可能な場合に資格証明を転送するには<literal>1</literal>に設定します。
        </para>
       </listitem>
      </varlistentry>
@@ -3031,7 +3223,7 @@ GSSAPI認証で使用されるGSSライブラリです。
 <!--
             server must not be in hot standby mode
 -->
-サーバーはホット・スタンバイ・モードであってはなりません
+サーバはホットスタンバイモードであってはなりません
            </para>
           </listitem>
          </varlistentry>
@@ -3043,7 +3235,7 @@ GSSAPI認証で使用されるGSSライブラリです。
 <!--
             server must be in hot standby mode
 -->
-サーバーはホット・スタンバイ・モードでなければなりません
+サーバはホットスタンバイモードでなければなりません
            </para>
           </listitem>
          </varlistentry>
@@ -3081,20 +3273,24 @@ GSSAPI認証で使用されるGSSライブラリです。
         connected, subsequent queries on the returned connection will all be
         sent to the same server. There are currently two modes:
 -->
-《機械翻訳》使用可能なホストおよびアドレスへの接続試行をクライアントが試行する順序を制御します。
-接続が成功すると、他のホストおよびアドレスへの試行は行われません。
+使用可能なホストおよびアドレスへの接続をクライアントが試行する順序を制御します。
+接続試行が成功すると、他のホストおよびアドレスへの試行は行われません。
 このパラメータは、通常、複数のホスト名または複数のIPを返すDNSレコードと組み合わせて使用されます。
-このパラメータは、例えばロードバランシングを実行するために<xref linkend="libpq-connect-target-session-attrs"/>と組み合わせて使用できます。
-接続に成功すると、返された接続に対するすべての負荷分散は同じサーバで実行されます。
-クライアントが提供されたホストからの接続を試行し、DNSまたはホストファイルからIPを受信する順序でアドレスが試行されます。
+このパラメータは、例えばスタンバイサーバのみで負荷分散を実行するために<xref linkend="libpq-connect-target-session-attrs"/>と組み合わせて使用できます。
+接続に成功すると、返された接続に対する後続の問い合わせはすべて同じサーバへ送られます。
+以下の2つのモードがあります。
         <variablelist>
          <varlistentry>
           <term><literal>disable</literal> (default)</term>
           <listitem>
            <para>
+<!--
             No load balancing across hosts is performed.  Hosts are tried in
             the order in which they are provided and addresses are tried in
             the order they are received from DNS or a hosts file.
+-->
+ホスト間の負荷分散は実行されません。
+ホストは与えられた順に試行され、アドレスはDNSやホストファイルから受け取った順に試行されます。
            </para>
           </listitem>
          </varlistentry>
@@ -3109,9 +3305,9 @@ GSSAPI認証で使用されるGSSライブラリです。
             from different machines. This way connections can be load balanced
             across multiple <productname>PostgreSQL</productname> servers.
 -->
-《機械翻訳》ホストとアドレスはランダムな順序で試されます。
- この値は、同時に複数の接続を開こうとする場合、おそらく異なるマシンからの接続を開こうとする場合に便利です。
- このようにして、複数の<productname>PostgreSQL</productname>サーバ間で接続をロードバランスできます。
+ホストとアドレスはランダムな順序で試行されます。
+この値は、主に同時に複数の接続を開こうとする場合、おそらく異なるマシンからの接続を開こうとする場合に便利です。
+このようにして、複数の<productname>PostgreSQL</productname>サーバ間で接続を負荷分散できます。
            </para>
            <para>
 <!--
@@ -3128,12 +3324,12 @@ GSSAPI認証で使用されるGSSライブラリです。
             connections a larger server gets by providing its hostname multiple
             times in the host string.
 -->
-《機械翻訳》ランダム負荷分散は、そのランダムな性質のために、完全に均一な分布になることはほとんどありませんが、統計的には非常に近くなります。
-ここで重要な側面の1つは、このアルゴリズムが2つのレベルのランダム選択を使用することである。
-まず、ホストはランダムな順序で解決される。
-次に、次のホストを解決する前に、現在のホストのすべての解決済みアドレスがランダムな順序で試される。
+ランダム負荷分散は、そのランダムな性質のために、完全に均一な分布になることはほとんどありませんが、統計的には非常に近くなります。
+ここで重要な側面の1つは、このアルゴリズムが2つのレベルのランダム選択を使用することです。
+まず、ホストはランダムな順序で解決されます。
+次に、次のホストを解決する前に、現在のホストのすべての解決済みアドレスがランダムな順序で試されます。
 この動作は、特定のケースで各ノードが取得する接続の数を大幅に歪める可能性があります。たとえば、一部のホストが他のホストより多くのアドレスを解決する場合などです。
-しかし、このようなスキューは、特定の目的で意図的に使用することもできます。たとえば、ホスト文字列で複数回ホスト名を指定することによって、大きなサーバーが取得する接続数を増やすことができます。
+しかし、このような歪曲は、特定の目的で意図的に使用することもできます。たとえば、ホスト文字列で複数回ホスト名を指定することによって、大きなサーバが取得する接続数を増やすことができます。
            </para>
            <para>
 <!--
@@ -3142,8 +3338,8 @@ GSSAPI認証で使用されるGSSライブラリです。
             if one of the nodes that are used for load balancing is not responding,
             a new node will be tried.
 -->
-《機械翻訳》この値を使用する場合、<xref linkend="libpq-connect-connect-timeout"/>にも妥当な値を設定することをお勧めします。
- なぜなら、負荷分散に使用されているノードの1つが応答しない場合、新しいノードが試されるからです。
+この値を使用する場合、<xref linkend="libpq-connect-connect-timeout"/>にも妥当な値を設定することをお勧めします。
+なぜならそうすれば、負荷分散に使用されているノードの1つが応答しない場合、新しいノードが試されるからです。
            </para>
           </listitem>
          </varlistentry>
@@ -3562,40 +3758,39 @@ const char *PQparameterStatus(const PGconn *conn, const char *paramName);
 
       <para>
 <!--
-       Parameters reported as of the current release include
-       <varname>server_version</varname>,
-       <varname>server_encoding</varname>,
-       <varname>client_encoding</varname>,
-       <varname>application_name</varname>,
-       <varname>default_transaction_read_only</varname>,
-       <varname>in_hot_standby</varname>,
-       <varname>is_superuser</varname>,
-       <varname>session_authorization</varname>,
-       <varname>DateStyle</varname>,
-       <varname>IntervalStyle</varname>,
-       <varname>TimeZone</varname>,
-       <varname>integer_datetimes</varname>, and
-       <varname>standard_conforming_strings</varname>.
-       (<varname>server_encoding</varname>, <varname>TimeZone</varname>, and
-       <varname>integer_datetimes</varname> were not reported by releases before 8.0;
-       <varname>standard_conforming_strings</varname> was not reported by releases
-       before 8.1;
-       <varname>IntervalStyle</varname> was not reported by releases before 8.4;
-       <varname>application_name</varname> was not reported by releases before
-       9.0;
-       <varname>default_transaction_read_only</varname> and
+       Parameters reported as of the current release include:
+-->
+現在のリリースで報告されるパラメータは、次の通りです。
+       <simplelist type="vert" columns="2">
+        <member><varname>application_name</varname></member>
+        <member><varname>client_encoding</varname></member>
+        <member><varname>DateStyle</varname></member>
+        <member><varname>default_transaction_read_only</varname></member>
+        <member><varname>in_hot_standby</varname></member>
+        <member><varname>integer_datetimes</varname></member>
+        <member><varname>IntervalStyle</varname></member>
+        <member><varname>is_superuser</varname></member>
+        <member><varname>scram_iterations</varname></member>
+        <member><varname>server_encoding</varname></member>
+        <member><varname>server_version</varname></member>
+        <member><varname>session_authorization</varname></member>
+        <member><varname>standard_conforming_strings</varname></member>
+        <member><varname>TimeZone</varname></member>
+       </simplelist>
+<!--
+       (<varname>default_transaction_read_only</varname> and
        <varname>in_hot_standby</varname> were not reported by releases before
-       14.)
+       14; <varname>scram_iterations</varname> was not reported by releases
+       before 16.)
        Note that
        <varname>server_version</varname>,
        <varname>server_encoding</varname> and
        <varname>integer_datetimes</varname>
        cannot change after startup.
 -->
-現在のリリースで報告されるパラメータには、<varname>server_version</varname>、<varname>server_encoding</varname>、<varname>client_encoding</varname>、<varname>application_name</varname>、<varname>default_transaction_read_only</varname>、<varname>in_hot_standby</varname>、<varname>is_superuser</varname>、<varname>session_authorization</varname>、<varname>DateStyle</varname>、<varname>IntervalStyle</varname>、<varname>TimeZone</varname>、<varname>integer_datetimes</varname>および<varname>standard_conforming_strings</varname>があります。
-（8.0より前では<varname>server_encoding</varname>、<varname>TimeZone</varname>および<varname>integer_datetimes</varname>が、8.1より前では<varname>standard_conforming_strings</varname>が、そして8.4より前では<varname>IntervalStyle</varname>が、9.0より前では<varname>application_name</varname>が報告されませんでした。
-14より前では<varname>default_transaction_read_only</varname>と<varname>in_hot_standby</varname>が報告されませんでした。）
-<varname>server_version</varname>、<varname>server_encoding</varname>および<varname>integer_datetimes</varname>は起動後変更できないことに注意してください。
+《機械翻訳》（<varname>default_transaction_read_only</varname>と<varname>in_hot_standby</varname>は14より前のリリースでは報告されませんでした。
+<varname>scram_iterations</varname>は16より前のリリースでは報告されませんでした。
+なお、<varname>server_version</varname>、<varname>server_encoding</varname>、および<varname>integer_datetimes</varname>は起動後に変更できません。
       </para>
 
       <para>
@@ -3712,21 +3907,22 @@ int PQserverVersion(const PGconn *conn);
     </varlistentry>
 
     <varlistentry id="libpq-PQerrorMessage">
-     <term><function>PQerrorMessage</function><indexterm><primary>PQerrorMessage</primary></indexterm></term>
+     <term>
+      <function>PQerrorMessage</function><indexterm><primary>PQerrorMessage</primary></indexterm>
+      <indexterm><primary>error message</primary><secondary>in <structname>PGconn</structname></secondary></indexterm>
+     </term>
 
      <listitem>
       <para>
 <!--
-       <indexterm><primary>error message</primary></indexterm> Returns the error message
-       most recently generated by an operation on the connection.
+       Returns the error message most recently generated by
+       an operation on the connection.
 -->
-<indexterm><primary>エラーメッセージ</primary></indexterm>
-接続における操作において、最も最近に生成されたエラーメッセージを返します。
+《機械翻訳》接続に対する操作によって最後に生成されたエラー・メッセージを戻します。
 
 <synopsis>
 char *PQerrorMessage(const PGconn *conn);
 </synopsis>
-
       </para>
 
       <para>
@@ -3872,8 +4068,8 @@ int PQconnectionUsedPassword(const PGconn *conn);
        Returns true (1) if the connection authentication method
        used GSSAPI. Returns false (0) if not.
 -->
-《機械翻訳》接続認証方式が GSSAPI を使用している場合は true (1) を返します。
- 使用していない場合は false (0) を返します。
+接続認証方式が GSSAPI を使用している場合はtrue (1)を返します。
+使用していない場合はfalse (0)を返します。
 
 <synopsis>
 int PQconnectionUsedGSSAPI(const PGconn *conn);
@@ -3885,7 +4081,7 @@ int PQconnectionUsedGSSAPI(const PGconn *conn);
        This function can be applied to detect whether the connection was
        authenticated with GSSAPI.
 -->
-《機械翻訳》この関数は、接続がGSSAPIで認証されたかどうかを検出するために適用できます。
+この関数は、接続がGSSAPIで認証されたかどうかを検出するために適用できます。
       </para>
      </listitem>
     </varlistentry>
@@ -4013,6 +4209,23 @@ SSL圧縮が使用されている場合は"on"を返し、使用されていな�
            </para>
           </listitem>
          </varlistentry>
+        <varlistentry>
+         <term><literal>alpn</literal></term>
+          <listitem>
+           <para>
+<!--
+            Application protocol selected by the TLS Application-Layer
+            Protocol Negotiation (ALPN) extension.  The only protocol
+            supported by libpq is <literal>postgresql</literal>, so this is
+            mainly useful for checking whether the server supported ALPN or
+            not. Empty string if ALPN was not used.
+-->
+《機械翻訳》TLSアプリケーションレイヤプロトコルネゴシエーション(ALPN)拡張によって選択されたアプリケーションプロトコル。
+libpqがサポートするプロトコルは<literal>postgresql</literal>のみであるため、これは主にサーバがALPNをサポートしているかどうかをチェックするのに役立ちます。
+ALPNが使用されなかった場合は空文字列です。
+           </para>
+          </listitem>
+         </varlistentry>
        </variablelist>
       </para>
 
@@ -4046,8 +4259,8 @@ SSL圧縮が使用されている場合は"on"を返し、使用されていな�
        in <function>PQsslAttribute()</function>.
        The array is terminated by a NULL pointer.
 -->
-《機械翻訳》<function>PQsslAttributeNames(conn)</function>で使用できるSSL属性名の配列を返します。
-配列はNULLポインタで終了します。
+<function>PQsslAttribute()</function>で使用できるSSL属性名の配列を返します。
+配列の最後のメンバにはNULLポインタが入ります。
 <synopsis>
 const char * const * PQsslAttributeNames(const PGconn *conn);
 </synopsis>
@@ -4062,10 +4275,9 @@ const char * const * PQsslAttributeNames(const PGconn *conn);
        available for the SSL library in use for the connection are returned,
        or an empty list if the connection is not encrypted.
 -->
-《機械翻訳》<literal>conn</literal>がNULLの場合、デフォルトのSSLライブラリで使用可能な属性が返されます。
-または、<application>libpq</application>が暗号化なしでコンパイルされた場合は空のリストが返されます。
-<literal>conn</literal>がNULLの場合、接続に使用可能なSSLライブラリで使用可能な属性が返されます。
-接続が暗号化されていない場合は空のリストが返されます。
+<literal>conn</literal>がNULLの場合、デフォルトのSSLライブラリで使用可能な属性が返されます。
+または、<application>libpq</application>がSSLサポートなしでコンパイルされた場合は空のリストが返されます。
+<literal>conn</literal>がNULLでない場合、接続に使用されているSSLライブラリで使用可能な属性が返されます。接続が暗号化されていない場合は空のリストが返されます。
       </para>
      </listitem>
     </varlistentry>

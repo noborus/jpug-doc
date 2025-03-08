@@ -894,14 +894,14 @@
       </para>
       <para>
 <!--
-       An identifier of the data type descriptor of the column, unique
-       among the data type descriptors pertaining to the table.  This
+       An identifier of the data type descriptor of the attribute, unique
+       among the data type descriptors pertaining to the composite type.  This
        is mainly useful for joining with other instances of such
        identifiers.  (The specific format of the identifier is not
        defined and not guaranteed to remain the same in future
        versions.)
 -->
-列のデータ型記述子の、テーブルに属するデータ型記述子内で一意な識別子です。
+属性のデータ型記述子の、複合データ型に属するデータ型記述子内で一意な識別子です。
 この識別子のインスタンスを結合する時に、主に有用です。
 （識別子の書式仕様は定義されておらず、今後のバージョンで同一性を維持する保証もありません。）
       </para></entry>
@@ -980,15 +980,15 @@ PostgreSQLはひとつのデータベース内で複数の文字セットをサ�
 <!--
        An encoding of some character repertoire.  Most older character
        repertoires only use one encoding form, and so there are no
-       separate names for them (e.g., <literal>LATIN1</literal> is an
-       encoding form applicable to the <literal>LATIN1</literal>
+       separate names for them (e.g., <literal>LATIN2</literal> is an
+       encoding form applicable to the <literal>LATIN2</literal>
        repertoire).  But for example Unicode has the encoding forms
        <literal>UTF8</literal>, <literal>UTF16</literal>, etc. (not
        all supported by PostgreSQL).  Encoding forms are not exposed
        as an SQL object, but are visible in this view.
 -->
 文字集合の符号化方式です。
-ほとんどの古い文字集合はひとつの符号化形式を使うため、それらについては分離した名称はありません(たとえば、<literal>LATIN1</literal>は<literal>LATIN1</literal>集合に適用可能な符号化形式です)。
+ほとんどの古い文字集合はひとつの符号化形式を使うため、それらについては分離した名称はありません(たとえば、<literal>LATIN2</literal>は<literal>LATIN2</literal>集合に適用可能な符号化形式です)。
 しかし例えばUnicodeには<literal>UTF8</literal>、<literal>UTF16</literal>などの符号化形式があります（PostgreSQLでは一部だけサポートしています）。
 符号化形式はSQLオブジェクトとして表にでませんが、このビューで参照できます。
       </para>
@@ -1282,6 +1282,17 @@ PostgreSQLにおける<quote>encoding</quote>は、文字セットまたは文�
 -->
 <literal>check_constraints</literal>ビューには、現在有効なロールが所有している、テーブル上もしくはドメイン上のどちらかにある、全ての検査制約が含まれます
 （テーブルもしくはドメインの所有者がこの制約の所有者です）。
+  </para>
+
+  <para>
+<!--
+   The SQL standard considers not-null constraints to be check constraints
+   with a <literal>CHECK (<replaceable>column_name</replaceable> IS NOT
+   NULL)</literal> expression.  So not-null constraints are also included here
+   and don't have a separate view.
+-->
+標準SQLでは、非NULL制約は<literal>CHECK（<replaceable>column_name</replaceable>IS NOT NULL）</literal>式を持つ検査制約とみなされます。
+したがって、非NULL制約もここに含まれ、個別のビューはありません。
   </para>
 
   <table>
@@ -2910,7 +2921,9 @@ PostgreSQLでは、データベースごとに一つの文字セットしか存�
    columns in the current database that are used by some constraint.
    Only those columns are shown that are contained in a table owned by
    a currently enabled role.  For a check constraint, this view
-   identifies the columns that are used in the check expression.  For
+   identifies the columns that are used in the check expression.  For a
+   not-null constraint, this view identifies the column that the constraint is
+   defined on.  For
    a foreign key constraint, this view identifies the columns that the
    foreign key references.  For a unique or primary key constraint,
    this view identifies the constrained columns.
@@ -2918,6 +2931,7 @@ PostgreSQLでは、データベースごとに一つの文字セットしか存�
 <literal>constraint_column_usage</literal>ビューは、現在のデータベースで制約を使用する全ての列を示します。
 現在有効なロールが所有するテーブル内の列のみが表示されます。
 検査制約では、このビューは検査式で使用される列を示します。
+非NULL以制約の場合、このビューは、その制約が定義されている列を識別します。
 外部キー制約では、このビューは外部キーを参照する列を示します。
 一意性制約もしくは主キー制約では、このビューは制約される列を示します。
   </para>
@@ -4300,18 +4314,6 @@ ORDER BY c.ordinal_position;
 -->
 常にNULLです。
 この情報は、<productname>PostgreSQL</productname>における配列要素のデータ型には当てはまらないからです。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>domain_default</structfield> <type>character_data</type>
-      </para>
-      <para>
-<!--
-       Not yet implemented
--->
-未実装です。
       </para></entry>
      </row>
 
@@ -6647,12 +6649,15 @@ PostgreSQLではデータ型は実際の権限を持たず、<literal>PUBLIC</li
 
   <para>
 <!--
-   The view <literal>routine_column_usage</literal> is meant to identify all
-   columns that are used by a function or procedure.  This information is
-   currently not tracked by <productname>PostgreSQL</productname>.
+   The view <literal>routine_column_usage</literal> identifies all columns
+   that are used by a function or procedure, either in the SQL body or in
+   parameter default expressions.  (This only works for unquoted SQL bodies,
+   not quoted bodies or functions in other languages.)  A column is only
+   included if its table is owned by a currently enabled role.
 -->
-<literal>routine_column_usage</literal>ビューは、関数またはプロシージャで使用される全ての列を識別することを目的としています。
-現在<productname>PostgreSQL</productname>では、この情報は追跡されません。
+<literal>routine_column_usage</literal>ビューは、SQL本体またはパラメータのデフォルト式のいずれかで関数またはプロシージャによって使用されるすべての列を識別します。
+（これは、引用符で囲まれていないSQL本体に対してのみ機能し、引用符で囲まれた本文や他の言語の関数では機能しません。）
+列が含まれるのは、その列が現在有効なロールによって所有されている場合のみです。
   </para>
 
   <table>
@@ -6971,16 +6976,16 @@ PostgreSQLではデータ型は実際の権限を持たず、<literal>PUBLIC</li
 
   <para>
 <!--
-   The view <literal>routine_routine_usage</literal> is meant to identify all
-   functions or procedures that are used by another (or the same) function or
-   procedure, either in the body or in parameter default expressions.
-   Currently, only functions used in parameter default expressions are
-   tracked.  An entry is included here only if the used function is owned by a
-   currently enabled role.  (There is no such restriction on the using
+   The view <literal>routine_routine_usage</literal> identifies all functions
+   or procedures that are used by another (or the same) function or procedure,
+   either in the SQL body or in parameter default expressions.  (This only
+   works for unquoted SQL bodies, not quoted bodies or functions in other
+   languages.)  An entry is included here only if the used function is owned
+   by a currently enabled role.  (There is no such restriction on the using
    function.)
 -->
-<literal>routine_routine_usage</literal>ビューは、本体またはパラメータのデフォルト式のいずれかで、別の（または同じ）関数またはプロシージャによって使用される、全ての関数またはプロシージャを識別することを目的としています。
-現在、パラメータのデフォルト式で使用される関数のみが追跡されます。
+<literal>routine_routine_usage</literal>ビューは、SQL本体またはパラメータのデフォルト式のいずれかで、別の（または同じ）関数またはプロシージャによって使用される、すべての関数またはプロシージャを識別します。
+（これは、引用符で囲まれていないSQL本体に対してのみ機能し、引用符で囲まれた本文や他の言語の関数では機能しません。）
 ここにエントリが含まれるのは、使用される関数が現在使用可能なロールによって所有されている場合のみです。
 （使用する関数にこのような制限はありません。）
   </para>
@@ -7105,14 +7110,14 @@ PostgreSQLではデータ型は実際の権限を持たず、<literal>PUBLIC</li
 
   <para>
 <!--
-   The view <literal>routine_sequence_usage</literal> is meant to identify all
-   sequences that are used by a function or procedure, either in the body or
-   in parameter default expressions.  Currently, only sequences used in
-   parameter default expressions are tracked.  A sequence is only included if
-   that sequence is owned by a currently enabled role.
+   The view <literal>routine_sequence_usage</literal> identifies all sequences
+   that are used by a function or procedure, either in the SQL body or in
+   parameter default expressions.  (This only works for unquoted SQL bodies,
+   not quoted bodies or functions in other languages.)  A sequence is only
+   included if that sequence is owned by a currently enabled role.
 -->
-<literal>routine_sequence_usage</literal>ビューは、本体またはパラメータのデフォルト式のいずれかで関数またはプロシージャによって使用される全てのシーケンスを識別することを目的としています。
-現在、パラメータのデフォルト式で使用されるシーケンスのみが追跡されます。
+<literal>routine_sequence_usage</literal>ビューは、SQL本体またはパラメータのデフォルト式のいずれかで関数またはプロシージャによって使用されるすべてのシーケンスを識別します。
+（これは、引用符で囲まれていないSQL本体に対してのみ機能し、引用符で囲まれた本文や他の言語の関数では機能しません。）
 シーケンスが含まれるのは、そのシーケンスが現在有効なロールによって所有されている場合のみです。
   </para>
 
@@ -9391,12 +9396,12 @@ ODBCインタフェースの説明に記載されています。
       </para>
       <para>
 <!--
-       Type of the constraint: <literal>CHECK</literal>,
+       Type of the constraint: <literal>CHECK</literal> (includes not-null constraints),
        <literal>FOREIGN KEY</literal>, <literal>PRIMARY KEY</literal>,
        or <literal>UNIQUE</literal>
 -->
 制約の種類です。
-<literal>CHECK</literal>、<literal>FOREIGN KEY</literal>、<literal>PRIMARY KEY</literal>、<literal>UNIQUE</literal>のいずれかです。
+<literal>CHECK</literal>（非NULL制約を含む）、<literal>FOREIGN KEY</literal>、<literal>PRIMARY KEY</literal>、<literal>UNIQUE</literal>のいずれかです。
       </para></entry>
      </row>
 

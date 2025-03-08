@@ -5,7 +5,7 @@
  *	  wherein you authenticate a user by seeing what IP address the system
  *	  says he comes from and choosing authentication method based on it).
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -26,24 +26,19 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "access/htup_details.h"
 #include "catalog/pg_collation.h"
-#include "catalog/pg_type.h"
 #include "common/ip.h"
 #include "common/string.h"
-#include "funcapi.h"
+#include "libpq/hba.h"
 #include "libpq/ifaddr.h"
-#include "libpq/libpq.h"
-#include "miscadmin.h"
+#include "libpq/libpq-be.h"
 #include "postmaster/postmaster.h"
 #include "regex/regex.h"
 #include "replication/walsender.h"
 #include "storage/fd.h"
 #include "utils/acl.h"
-#include "utils/builtins.h"
 #include "utils/conffiles.h"
 #include "utils/guc.h"
-#include "utils/lsyscache.h"
 #include "utils/memutils.h"
 #include "utils/varlena.h"
 
@@ -1383,7 +1378,7 @@ parse_hba_line(TokenizedAuthLine *tok_line, int elevel)
 				ereport(elevel,
 						(errcode(ERRCODE_CONFIG_FILE_ERROR),
 						 errmsg("hostssl record cannot match because SSL is disabled"),
-						 errhint("Set ssl = on in postgresql.conf."),
+						 errhint("Set \"ssl = on\" in postgresql.conf."),
 						 errcontext("line %d of configuration file \"%s\"",
 									line_num, file_name)));
 				*err_msg = "hostssl record cannot match because SSL is disabled";
@@ -1719,19 +1714,7 @@ parse_hba_line(TokenizedAuthLine *tok_line, int elevel)
 	else if (strcmp(token->string, "reject") == 0)
 		parsedline->auth_method = uaReject;
 	else if (strcmp(token->string, "md5") == 0)
-	{
-		if (Db_user_namespace)
-		{
-			ereport(elevel,
-					(errcode(ERRCODE_CONFIG_FILE_ERROR),
-					 errmsg("MD5 authentication is not supported when \"db_user_namespace\" is enabled"),
-					 errcontext("line %d of configuration file \"%s\"",
-								line_num, file_name)));
-			*err_msg = "MD5 authentication is not supported when \"db_user_namespace\" is enabled";
-			return NULL;
-		}
 		parsedline->auth_method = uaMD5;
-	}
 	else if (strcmp(token->string, "scram-sha-256") == 0)
 		parsedline->auth_method = uaSCRAM;
 	else if (strcmp(token->string, "pam") == 0)

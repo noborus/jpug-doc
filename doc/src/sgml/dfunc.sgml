@@ -56,8 +56,8 @@ Cで書かれた<productname>PostgreSQL</productname>の拡張関数を使うた
 まずソースファイルがオブジェクトファイルにコンパイルされ、そのオブジェクトファイル同士がリンクされます。
 これらのオブジェクトファイルは<firstterm>位置独立なコード</firstterm>（<acronym>PIC</acronym>）として作られる必要があります。
 <indexterm><primary>PIC</primary></indexterm>
-それは概念的には、実行プログラムから呼び出される時にメモリの適当な場所に置くことができるということです
-（実行プログラム用として作られたオブジェクトファイルはそのようにはコンパイルされません）。
+それは概念的には、実行プログラムから呼び出される時にメモリの適当な場所に置くことができるということです。
+（実行プログラム用として作られたオブジェクトファイルはそのようにはコンパイルされません。）
 共有ライブラリをリンクするコマンドは実行プログラムのリンクと区別するための特別なフラグがあります（少なくとも理論上ではそのようになっています。システムによってはもっと醜い実際が見受けられます）。
  </para>
 
@@ -98,14 +98,15 @@ Cで書かれた<productname>PostgreSQL</productname>の拡張関数を使うた
 <acronym>PIC</acronym>を作るためのコンパイラフラグは<option>-fPIC</option>です。
 共有ライブラリを作るコンパイラフラグは<option>-shared</option>です。
 <programlisting>
-gcc -fPIC -c foo.c
-gcc -shared -o foo.so foo.o
+cc -fPIC -c foo.c
+cc -shared -o foo.so foo.o
 </programlisting>
 <!--
-      This is applicable as of version 3.0 of
-      <systemitem class="osname">FreeBSD</systemitem>.
+      This is applicable as of version 13.0 of
+      <systemitem class="osname">FreeBSD</systemitem>, older versions used
+      the <filename>gcc</filename> compiler.
 -->
-これは<systemitem class="osname">FreeBSD</systemitem>のバージョン3.0に適用されます。
+これは<systemitem class="osname">FreeBSD</systemitem>のバージョン13.0に適用されます。古いバージョンでは<filename>gcc</filename>コンパイラを使用していました。
      </para>
     </listitem>
    </varlistentry>
@@ -277,24 +278,5 @@ gcc -G -o foo.so foo.o
 -->
 サーバがライブラリファイルをどこに見つけるかに関しては<xref linkend="xfunc-c-dynload"/>を見直してください。
  </para>
-
-<!--
-Under AIX, object files are compiled normally but building the shared
-library requires a couple of steps.  First, create the object file:
-.nf
-cc <other flags> -c foo.c
-.fi
-You must then create a symbol \*(lqexports\*(rq file for the object
-file:
-.nf
-mkldexport foo.o `pwd` &gt; foo.exp
-.fi
-Finally, you can create the shared library:
-.nf
-ld <other flags> -H512 -T512 -o foo.so -e _nostart \e
-   -bI:.../lib/postgres.exp -bE:foo.exp foo.o \e
-   -lm -lc 2>/dev/null
-.fi
-  -->
 
 </sect2>

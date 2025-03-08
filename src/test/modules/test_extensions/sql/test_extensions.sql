@@ -67,6 +67,19 @@ end';
 -- dropping it should still work
 drop extension test_ext8;
 
+-- check handling of types as extension members
+create extension test_ext9;
+\dx+ test_ext9
+alter extension test_ext9 drop type varbitrange;
+\dx+ test_ext9
+alter extension test_ext9 add type varbitrange;
+\dx+ test_ext9
+alter extension test_ext9 drop table sometable;
+\dx+ test_ext9
+alter extension test_ext9 add table sometable;
+\dx+ test_ext9
+drop extension test_ext9;
+
 -- Test creation of extension in temporary schema with two-phase commit,
 -- which should not work.  This function wrapper is useful for portability.
 
@@ -218,6 +231,16 @@ ALTER EXTENSION test_ext_cine UPDATE TO '1.1';
 CREATE SCHEMA "has space";
 CREATE EXTENSION test_ext_extschema SCHEMA has$dollar;
 CREATE EXTENSION test_ext_extschema SCHEMA "has space";
+
+--
+-- Test basic SET SCHEMA handling.
+--
+CREATE SCHEMA s1;
+CREATE SCHEMA s2;
+CREATE EXTENSION test_ext_set_schema SCHEMA s1;
+ALTER EXTENSION test_ext_set_schema SET SCHEMA s2;
+\dx+ test_ext_set_schema
+\sf s2.ess_func(int)
 
 --
 -- Test extension with objects outside the extension's schema.

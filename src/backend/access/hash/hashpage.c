@@ -3,7 +3,7 @@
  * hashpage.c
  *	  Hash table page management code for the Postgres hash access method
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -33,9 +33,9 @@
 #include "access/xloginsert.h"
 #include "miscadmin.h"
 #include "port/pg_bitutils.h"
-#include "storage/lmgr.h"
 #include "storage/predicate.h"
 #include "storage/smgr.h"
+#include "utils/rel.h"
 
 static bool _hash_alloc_buckets(Relation rel, BlockNumber firstblock,
 								uint32 nblocks);

@@ -3,7 +3,7 @@
  * varchar.c
  *	  Functions for the built-in types char(n) and varchar(n).
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -25,7 +25,6 @@
 #include "nodes/supportnodes.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
-#include "utils/lsyscache.h"
 #include "utils/pg_locale.h"
 #include "utils/varlena.h"
 
@@ -1029,7 +1028,9 @@ hashbpchar(PG_FUNCTION_ARGS)
 		buf = palloc(bsize + 1);
 
 		rsize = pg_strnxfrm(buf, bsize + 1, keydata, keylen, mylocale);
-		if (rsize != bsize)
+
+		/* the second call may return a smaller value than the first */
+		if (rsize > bsize)
 			elog(ERROR, "pg_strnxfrm() returned unexpected result");
 
 		/*
@@ -1085,7 +1086,9 @@ hashbpcharextended(PG_FUNCTION_ARGS)
 		buf = palloc(bsize + 1);
 
 		rsize = pg_strnxfrm(buf, bsize + 1, keydata, keylen, mylocale);
-		if (rsize != bsize)
+
+		/* the second call may return a smaller value than the first */
+		if (rsize > bsize)
 			elog(ERROR, "pg_strnxfrm() returned unexpected result");
 
 		/*

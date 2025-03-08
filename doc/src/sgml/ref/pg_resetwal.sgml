@@ -51,7 +51,7 @@ PostgreSQL documentation
 <!--
   <title>Description</title>
 -->
-<title>説明</title>
+  <title>説明</title>
   <para>
 <!--
    <command>pg_resetwal</command> clears the write-ahead log (WAL) and
@@ -67,29 +67,45 @@ PostgreSQL documentation
 
   <para>
 <!--
-   After running this command, it should be possible to start the server,
+   Some options, such as <option>&#45;-wal-segsize</option> (see below), can also
+   be used to modify certain global settings of a database cluster without the
+   need to rerun <command>initdb</command>.  This can be done safely on an
+   otherwise sound database cluster, if none of the dangerous modes mentioned
+   below are used.
+-->
+<option>--wal-segsize</option>（後述）のようないくつかのオプションは、<command>initdb</command>を再実行せずに、データベースクラスタの特定のグローバル設定を変更するために使用することもできます。
+これは、後述する危険なモードが使用されていないか、正常なデータベースクラスタ上であれば安全に使用できます。
+  </para>
+
+  <para>
+<!--
+   If <command>pg_resetwal</command> is used on a data directory where the
+   server has been cleanly shut down and the control file is sound, then it
+   will have no effect on the contents of the database system, except that no
+   longer used WAL files are cleared away.  Any other use is potentially
+   dangerous and must be done with great care.  <command>pg_resetwal</command>
+   will require the <option>-f</option> (force) option to be specified before
+   working on a data directory in an unclean shutdown state or with a
+   corrupted control file.
+-->
+サーバが正常にシャットダウンされ、かつ制御ファイルが正常な状態で、<command>pg_resetwal</command>がデータディレクトリに対して使用された場合、使用されなくなったWALファイルが削除される以外に、データベースシステムの内容に影響を与えることはありません。
+その他の状態での使用は危険をともなう可能性があり、細心の注意をはらって使用しなければなりません。
+<command>pg_resetwal</command>は、正常にシャットダウンされていない状態のデータディレクトリや、破損した制御ファイルが存在する場合、実行時に<option>-f</option> (force,強制) オプションを指定する必要があります。
+  </para>
+
+  <para>
+<!--
+   After running this command on a data directory with corrupted WAL or a
+   corrupted control file, it should be possible to start the server,
    but bear in mind that the database might contain inconsistent data due to
    partially-committed transactions.  You should immediately dump your data,
    run <command>initdb</command>, and restore.  After restore, check for
    inconsistencies and repair as needed.
 -->
-このコマンドを実行すると、サーバが開始できるようになるはずです。
+破損したWALファイルや、破損した制御ファイルが存在するデータディレクトリに対してこのコマンドを実行すると、サーバが開始できるようになるはずです。
 ただし、不完全にコミットされたトランザクションが原因でデータベースのデータに矛盾が起こる可能性があることに注意してください。
 コマンドの実行後は、ただちにデータをダンプし、<command>initdb</command>を実行し、リストアすべきです。
 リストア後、矛盾がないか検査し、必要に応じて修復を行ってください。
-  </para>
-
-  <para>
-<!--
-   This utility can only be run by the user who installed the server, because
-   it requires read/write access to the data directory.
-   For safety reasons, you must specify the data directory on the command line.
-   <command>pg_resetwal</command> does not use the environment variable
-   <envar>PGDATA</envar>.
--->
-このユーティリティの実行にはデータディレクトリへの読み込み/書き込みアクセス権限が必要となるため、サーバをインストールしたユーザのみが実行できます。
-安全のため、データディレクトリをコマンドラインで指定する必要があります。
-<command>pg_resetwal</command>は、環境変数<envar>PGDATA</envar>を使用しません。
   </para>
 
   <para>
@@ -117,6 +133,14 @@ PostgreSQL documentation
 決して、ダンプを行う前にデータ変更などの操作を行っては<emphasis>なりません</emphasis>。
 そのような操作は、破損状態をさらに悪化させます。
   </para>
+
+  <para>
+<!--
+   This utility can only be run by the user who installed the server, because
+   it requires read/write access to the data directory.
+-->
+このユーティリティは、データディレクトリへの読み取り/書き込みアクセスが必要なため、サーバをインストールしたユーザのみ実行できます。
+  </para>
  </refsect1>
 
  <refsect1>
@@ -127,15 +151,38 @@ PostgreSQL documentation
 
   <variablelist>
    <varlistentry>
+    <term><replaceable class="parameter">datadir</replaceable></term>
+    <term><option>-D <replaceable class="parameter">datadir</replaceable></option></term>
+    <term><option>--pgdata=<replaceable class="parameter">datadir</replaceable></option></term>
+    <listitem>
+     <para>
+<!--
+      Specifies the location of the database directory.
+      For safety reasons, you must specify the data directory on the command
+      line.  <command>pg_resetwal</command> does not use the environment
+      variable <envar>PGDATA</envar>.
+-->
+データベースディレクトリの場所を指定します。
+安全上の理由から、コマンドラインでデータディレクトリを指定しなければなりません。
+<command>pg_resetwal</command>は環境変数<envar>PGDATA</envar>を使用しません。
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
     <term><option>-f</option></term>
     <term><option>--force</option></term>
     <listitem>
      <para>
 <!--
-      Force <command>pg_resetwal</command> to proceed even if it cannot determine
-      valid data for <filename>pg_control</filename>, as explained above.
+      Force <command>pg_resetwal</command> to proceed even in situations where
+      it could be dangerous, as explained above.  Specifically, this option is
+      required to proceed if the server had not been cleanly shut down or if
+      <command>pg_resetwal</command> cannot determine valid data for
+      <filename>pg_control</filename>.
 -->
-上で説明したように、<filename>pg_control</filename>に有効なデータが確認できない場合でも、強制的に<command>pg_resetwal</command>の処理を実行します。
+前述のように、危険な状況でも強制的に<command>pg_resetwal</command>を実行します。
+具体的には、サーバが正常にシャットダウンされていない場合や、<command>pg_resetwal</command>が<filename>pg_control</filename>の有効なデータを確認できない場合に、このオプションは必要です。
      </para>
     </listitem>
    </varlistentry>
@@ -184,11 +231,13 @@ PostgreSQL documentation
    <command>pg_resetwal</command> is unable to determine appropriate values
    by reading <filename>pg_control</filename>.  Safe values can be determined as
    described below.  For values that take numeric arguments, hexadecimal
-   values can be specified by using the prefix <literal>0x</literal>.
+   values can be specified by using the prefix <literal>0x</literal>.  Note
+   that these instructions only apply with the standard block size of 8 kB.
 -->
 以下のオプションは<command>pg_resetwal</command>が<filename>pg_control</filename>を読んでも適切な値を決定できない場合にのみ必要になります。
 安全な値は以下で説明するようにして決定できます。
 数値を引数として取る値については、<literal>0x</literal>の接頭辞をつけることで16進数の値を指定できます。
+これらの手順は標準的な8kBブロックサイズでのみ適用されることに注意してください。
   </para>
 
   <variablelist>
@@ -219,6 +268,7 @@ PostgreSQL documentation
 逆に、コミット時刻が取り出せる最新のトランザクションIDとして安全な値（2番目の部分）は同じディレクトリの中で、数値的に最大のファイル名を探すことで決定できます。
 ファイル名は16進数になっています。
      </para>
+      <!-- XXX: Should there be a multiplier, similar to the other options? -->
     </listitem>
    </varlistentry>
 
@@ -336,6 +386,7 @@ PostgreSQL documentation
 逆に、最古のマルチトランザクションIDとして安全な値（<option>-m</option>の2番目の部分）は、同じディレクトリの中で数値的に最小のファイル名を探し、65536を掛けることで決定できます。
 ファイル名は16進ですので、このための最も簡単なやり方は、オプション値を16進で指定し、ゼロを4つ追加することです。
      </para>
+     <!-- 65536 = SLRU_PAGES_PER_SEGMENT * BLCKSZ / sizeof(MultiXactOffset) -->
     </listitem>
    </varlistentry>
 
@@ -385,6 +436,7 @@ PostgreSQL documentation
 ファイル名は16進数です。
 他のオプションのような0をつけるだけの簡単な計算方法はありません。
      </para>
+     <!-- 52352 = SLRU_PAGES_PER_SEGMENT * floor(BLCKSZ/20) * 4; see multixact.c -->
     </listitem>
    </varlistentry>
 
@@ -400,6 +452,15 @@ PostgreSQL documentation
 新たなWALセグメントサイズをメガバイトで設定します。
 値には1から1024（メガバイト）の2の冪乗を設定しなければなりません。
 詳しくは<xref linkend="app-initdb"/>の同じオプションを参照してください。
+     </para>
+
+     <para>
+<!--
+      This option can also be used to change the WAL segment size of an
+      existing database cluster, avoiding the need to
+      re-<command>initdb</command>.
+-->
+このオプションは、既存のデータベースクラスタのWALセグメントサイズを変更するためにも使用でき、<command>initdb</command>を再実行する必要がなくなります。
      </para>
 
      <note>
@@ -445,6 +506,7 @@ PostgreSQL documentation
 通常は、オプションの値も16進数で指定するのが最も簡単でしょう。
 例えば、<filename>0007</filename>が<filename>pg_xact</filename>で最も小さなエントリであれば、<literal>-u 0x700000</literal>とすれば良いです（後ろにゼロを5つ付けると、正しく掛け算をしたことになります）。
      </para>
+     <!-- 1048576 = SLRU_PAGES_PER_SEGMENT * BLCKSZ * CLOG_XACTS_PER_BYTE -->
     </listitem>
    </varlistentry>
 
@@ -475,6 +537,7 @@ PostgreSQL documentation
 通常は、オプションの値も16進数で指定するのが最も簡単でしょう。
 例えば、<filename>0011</filename>が<filename>pg_xact</filename>で最も大きなエントリであれば、<literal>-x 0x1200000</literal>とすれば良いです（後ろにゼロを5つ付けると、正しく掛け算をしたことになります）。
      </para>
+     <!-- 1048576 = SLRU_PAGES_PER_SEGMENT * BLCKSZ * CLOG_XACTS_PER_BYTE -->
     </listitem>
    </varlistentry>
   </variablelist>
@@ -484,7 +547,7 @@ PostgreSQL documentation
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry>
@@ -497,7 +560,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -508,7 +571,7 @@ PostgreSQL documentation
 <!--
   <title>Notes</title>
 -->
-<title>注釈</title>
+  <title>注釈</title>
 
   <para>
 <!--

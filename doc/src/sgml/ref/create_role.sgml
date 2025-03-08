@@ -45,10 +45,8 @@ CREATE ROLE <replaceable class="parameter">name</replaceable> [ [ WITH ] <replac
     | [ ENCRYPTED ] PASSWORD '<replaceable class="parameter">password</replaceable>' | PASSWORD NULL
     | VALID UNTIL '<replaceable class="parameter">timestamp</replaceable>'
     | IN ROLE <replaceable class="parameter">role_name</replaceable> [, ...]
-    | IN GROUP <replaceable class="parameter">role_name</replaceable> [, ...]
     | ROLE <replaceable class="parameter">role_name</replaceable> [, ...]
     | ADMIN <replaceable class="parameter">role_name</replaceable> [, ...]
-    | USER <replaceable class="parameter">role_name</replaceable> [, ...]
     | SYSID <replaceable class="parameter">uid</replaceable>
 </synopsis>
  </refsynopsisdiv>
@@ -89,6 +87,22 @@ in sync when changing the above synopsis!
    level, and so are valid in all databases in the cluster.
 -->
 ロールはデータベースクラスタのレベルで定義されるため、クラスタ内のすべてのデータベースで有効となることに注意してください。
+  </para>
+
+  <para>
+<!--
+   During role creation it is possible to immediately assign the newly created
+   role to be a member of an existing role, and also assign existing roles
+   to be members of the newly created role.  The rules for which initial
+   role membership options are enabled are described below in the
+   <literal>IN ROLE</literal>, <literal>ROLE</literal>, and
+   <literal>ADMIN</literal> clauses.  The <xref linkend="sql-grant"/>
+   command has fine-grained option control during membership creation,
+   and the ability to modify these options after the new role is created.
+-->
+ロールの作成時に、新しく作成されたロールを既存のロールのメンバに直ちに割り当てることができます。また、既存のロールを新しく作成されたロールのメンバに割り当てることもできます。
+初期ロールメンバ資格オプションが有効になるルールは、以下の<literal>IN ROLE</literal>、<literal>ROLE</literal>、<literal>ADMIN</literal>句で説明します。
+<xref linkend="sql-grant"/>コマンドは、メンバ資格の作成中に細かいオプション制御を行い、新しいロールが作成された後にこれらのオプションを変更する機能を持っています。
   </para>
  </refsect1>
 
@@ -183,32 +197,29 @@ in sync when changing the above synopsis!
       <listitem>
        <para>
 <!--
-        When the <literal>GRANT</literal> statement is used to confer
-        membership in one role to another role, the <literal>GRANT</literal>
-        may use the <literal>WITH INHERIT</literal> clause to specify whether
-        the privileges of the granted role should be <quote>inherited</quote>
-        by the new member. If the <literal>GRANT</literal> statement does not
-        specify either inheritance behavior, the new <literal>GRANT</literal>
-        will be created <literal>WITH INHERIT TRUE</literal> if the member
-        role is set to <literal>INHERIT</literal> and to
-        <literal>WITH INHERIT FALSE</literal> if it is set to
-        <literal>NOINHERIT</literal>.
+        This affects the membership inheritance status when this
+        role is added as a member of another role, both in this and
+        future commands.  Specifically, it controls the inheritance
+        status of memberships added with this command using the
+        <literal>IN ROLE</literal> clause, and in later commands using
+        the <literal>ROLE</literal> clause.  It is also used as the
+        default inheritance status when adding this role as a member
+        using the <literal>GRANT</literal> command.  If not specified,
+        <literal>INHERIT</literal> is the default.
 -->
-<literal>GRANT</literal>文を使用して、あるロールのメンバ資格を別のロールに付与する場合、<literal>GRANT</literal>は<literal>WITH INHERIT</literal>句を使用して、付与されたロールの権限を新しいメンバで<quote>継承(inherit)</quote>するかどうかを指定できます。
-<literal>GRANT</literal>文で継承の動作が指定されていない場合、新しい<literal>GRANT</literal>は、メンバロールが<literal>INHERIT</literal>に設定されている場合には<literal>WITH INHERIT TRUE</literal>で、<literal>NOINHERIT</literal>に設定されている場合には<literal>WITH INHERIT FALSE</literal>で作成されます。
+これは、このロールが別のロールのメンバとして追加された場合、このロールと将来のコマンドの両方でメンバ資格継承状態に影響します。
+特に、このコマンドで追加されたメンバ資格の継承状態は、<literal>IN ROLE</literal>句を使用して制御され、後のコマンドでは<literal>ROLE</literal>句を使用して制御されます。
+また、<literal>GRANT</literal>コマンドを使用してこのロールをメンバとして追加する際のデフォルトの継承状態としても使用されます。
+指定しない場合、<literal>INHERIT</literal>がデフォルトです。
        </para>
 
        <para>
 <!--
         In <productname>PostgreSQL</productname> versions before 16,
-        the <literal>GRANT</literal> statement did not support
-        <literal>WITH INHERIT</literal>. Therefore, changing this role-level
-        property would also change the behavior of already-existing grants.
-        This is no longer the case.
+        inheritance was a role-level attribute that controlled all runtime
+        membership checks for that role.
 -->
-16より前の<productname>PostgreSQL</productname>のバージョンでは、<literal>GRANT</literal>文は<literal>WITH INHERIT</literal>をサポートしませんでした。
-したがって、このロールレベル属性を変更すると、既存の権限の付与の動作も変更されました。
-これはもはや当てはまりません。
+16より前の<productname>PostgreSQL</productname>バージョンでは、継承はそのロールのすべてのランタイムメンバ資格チェックを制御するロールレベルの属性でした。
        </para>
       </listitem>
      </varlistentry>
@@ -397,24 +408,14 @@ NULLというパスワードを明示的に<literal>PASSWORD NULL</literal>と�
 <!--
         The <literal>IN ROLE</literal> clause causes the new role to
         be automatically added as a member of the specified existing
-        roles. (Note that there is no option to add the new role as an
-        administrator; use a separate <command>GRANT</command> command
-        to do that.)
+        roles. The new membership will have the <literal>SET</literal>
+        option enabled and the <literal>ADMIN</literal> option disabled.
+        The <literal>INHERIT</literal> option will be enabled unless the
+        <literal>NOINHERIT</literal> option is specified.
 -->
 <literal>IN ROLE</literal>句を指定すると、新しいロールが自動的に指定した既存のロールのメンバとして追加されます。
-（新しく作成するロールを管理者として追加するオプションがないことに注意してください。このためには別途<command>GRANT</command>コマンドを使用してください。）
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry>
-      <term><literal>IN GROUP</literal> <replaceable class="parameter">role_name</replaceable></term>
-      <listitem>
-<!--
-       <para><literal>IN GROUP</literal> is an obsolete spelling of
-        <literal>IN ROLE</literal>.
--->
-<para><literal>IN GROUP</literal>は<literal>IN ROLE</literal>の別名で、廃止予定です。
+新しいメンバ資格は<literal>SET</literal>オプションが有効で、<literal>ADMIN</literal>オプションは無効です。
+<literal>NOINHERIT</literal>オプションが指定されていない限り、<literal>INHERIT</literal>オプションが有効になります。
        </para>
       </listitem>
      </varlistentry>
@@ -425,11 +426,17 @@ NULLというパスワードを明示的に<literal>PASSWORD NULL</literal>と�
        <para>
 <!--
         The <literal>ROLE</literal> clause causes one or more specified
-        existing roles to be automatically added as members of the new
-        role.  This in effect makes the new role a <quote>group</quote>.
+        existing roles to be automatically added as members, with the
+        <literal>SET</literal> option enabled. This in effect makes the
+        new role a <quote>group</quote>.  Roles named in this clause
+        with the role-level <literal>INHERIT</literal> attribute will have
+        the <literal>INHERIT</literal> option enabled in the new membership.
+        New memberships will have the <literal>ADMIN</literal> option disabled.
 -->
-<literal>ROLE</literal>句を指定すると、指定された1つ以上の既存のロールが新しいロールのメンバとして自動的に追加されます。
+<literal>ROLE</literal>句を指定すると、指定された1つ以上の既存のロールが<literal>SET</literal>オプションを有効にしてメンバとして自動的に追加されます。
 これは実質的に新しく作成したロールを<quote>グループ</quote>とします。
+この句で指定されたロールで、ロールレベルの<literal>INHERIT</literal>属性を持つものは、新しいメンバ資格で<literal>INHERIT</literal>オプションが有効になります。
+新しいメンバ資格では、<literal>ADMIN</literal>オプションは無効になります。
        </para>
       </listitem>
      </varlistentry>
@@ -439,26 +446,12 @@ NULLというパスワードを明示的に<literal>PASSWORD NULL</literal>と�
       <listitem>
        <para>
 <!--
-        The <literal>ADMIN</literal> clause is like <literal>ROLE</literal>,
-        but the named roles are added to the new role <literal>WITH ADMIN
-        OPTION</literal>, giving them the right to grant membership in this role
-        to others.
+        The <literal>ADMIN</literal> clause has the same effect as
+        <literal>ROLE</literal>, but the named roles are added as members
+        of the new role with <literal>ADMIN</literal> enabled, giving
+        them the right to grant membership in the new role to others.
 -->
-<literal>ADMIN</literal>句は<literal>ROLE</literal>と似ていますが、新しく作成されるロールに指定されたロールが<literal>WITH ADMIN OPTION</literal>として追加される点が異なります。
-つまり、新しく作成されるロールのメンバ資格を他者に与えることができる権利を、指定されたロールに与えます。
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry>
-      <term><literal>USER</literal> <replaceable class="parameter">role_name</replaceable></term>
-      <listitem>
-       <para>
-<!--
-        The <literal>USER</literal> clause is an obsolete spelling of
-        the <literal>ROLE</literal> clause.
--->
-<literal>USER</literal>句は<literal>ROLE</literal>句の別名で廃止予定です。
+<literal>ADMIN</literal>句は<literal>ROLE</literal>と同じ効果を持ちますが、指定されたロールは<literal>ADMIN</literal>が有効な新しいロールのメンバとして追加され、新しいロールで他のロールにメンバ資格を付与する権限が与えられます。
        </para>
       </listitem>
      </varlistentry>
@@ -519,20 +512,25 @@ NULLというパスワードを明示的に<literal>PASSWORD NULL</literal>と�
 
   <para>
 <!--
-   The <literal>INHERIT</literal> attribute governs inheritance of grantable
-   privileges (that is, access privileges for database objects and role
-   memberships).  It does not apply to the special role attributes set by
-   <command>CREATE ROLE</command> and <command>ALTER ROLE</command>.  For example, being
-   a member of a role with <literal>CREATEDB</literal> privilege does not immediately
-   grant the ability to create databases, even if <literal>INHERIT</literal> is set;
-   it would be necessary to become that role via
-   <link linkend="sql-set-role"><command>SET ROLE</command></link> before
-   creating a database.
+   The role attributes defined here are non-inheritable, i.e., being a
+   member of a role with, e.g., <literal>CREATEDB</literal> will not
+   allow the member to create new databases even if the membership grant
+   has the <literal>INHERIT</literal> option.  Of course, if the membership
+   grant has the <literal>SET</literal> option the member role would be able to
+   <link linkend="sql-set-role"><command>SET ROLE</command></link> to the
+   createdb role and then create a new database.
 -->
-<literal>INHERIT</literal>属性は、許可可能な権限（つまり、データベースオブジェクトに対するアクセス権限とロールのメンバ資格）の継承を管理します。
-これは、<command>CREATE ROLE</command>や<command>ALTER ROLE</command>で設定される特別なロール属性には適用されません。
-<literal>INHERIT</literal>が設定されていたとしても、例えば、<literal>CREATEDB</literal>権限を持つロールのメンバであっても、データベース作成権限は即座に付与されません。
-データベースを作成する前に<link linkend="sql-set-role"><command>SET ROLE</command></link>を使用してそのロールにならなければなりません。
+ここで定義されるロール属性は継承不可です。すなわち、例えば<literal>CREATEDB</literal>を持つロールのメンバであることは、メンバ資格権限に<literal>INHERIT</literal>オプションがあったとしても、新しいデータベースを作成することを許可しません。
+もちろん、メンバ資格権限に<literal>SET</literal>オプションがある場合、メンバのロールはcreatedbロールに<link linkend="sql-set-role"><command>SET ROLE</command></link>を行い、新しいデータベースを作成できます。
+  </para>
+
+  <para>
+<!--
+   The membership grants created by the
+   <literal>IN ROLE</literal>, <literal>ROLE</literal>, and <literal>ADMIN</literal>
+   clauses have the role executing this command as the grantor.
+-->
+<literal>IN ROLE</literal>、<literal>ROLE</literal>、<literal>ADMIN</literal>句で作成されたメンバ資格の付与は、このコマンドを実行するロールを付与者として持ちます。
   </para>
 
   <para>
@@ -687,10 +685,34 @@ CREATE ROLE <replaceable class="parameter">name</replaceable> [ WITH ADMIN <repl
   <para>
 <!--
    The behavior specified by the SQL standard is most closely approximated
-   by giving users the <literal>NOINHERIT</literal> attribute, while roles are
-   given the <literal>INHERIT</literal> attribute.
+   creating SQL-standard users as <productname>PostgreSQL</productname>
+   roles with the <literal>NOINHERIT</literal> option, and SQL-standard
+   roles as <productname>PostgreSQL</productname> roles with the
+   <literal>INHERIT</literal> option.
 -->
-ユーザは<literal>NOINHERIT</literal>属性を与えること、ロールは<literal>INHERIT</literal>属性を与えることで、標準SQLで規定された振舞いに最も近くなります。
+<literal>NOINHERIT</literal>オプションを指定した<productname>PostgreSQL</productname>ユーザとして標準SQLユーザを作成し、<literal>INHERIT</literal>オプションを指定した<productname>PostgreSQL</productname>ロールとして標準SQLロールを作成することで、標準SQLで規定された振舞いに最も近くなります。
+  </para>
+
+  <para>
+<!--
+   The <literal>USER</literal> clause has the same behavior as
+   <literal>ROLE</literal> but has been deprecated:
+-->
+<literal>USER</literal>句は<literal>ROLE</literal>と同じ動作をしますが、廃止予定です。
+<synopsis>
+USER <replaceable class="parameter">role_name</replaceable> [, ...]
+</synopsis>
+  </para>
+
+  <para>
+<!--
+   The <literal>IN GROUP</literal> clause has the same behavior as <literal>IN
+   ROLE</literal> but has been deprecated:
+-->
+<literal>IN GROUP</literal>句は<literal>IN ROLE</literal>と同じ動作をしますが、廃止予定です。
+<synopsis>
+IN GROUP <replaceable class="parameter">role_name</replaceable> [, ...]
+</synopsis>
   </para>
  </refsect1>
 

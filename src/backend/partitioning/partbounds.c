@@ -3,7 +3,7 @@
  * partbounds.c
  *		Support routines for manipulating partition bounds
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -30,7 +30,6 @@
 #include "parser/parse_coerce.h"
 #include "partitioning/partbounds.h"
 #include "partitioning/partdesc.h"
-#include "partitioning/partprune.h"
 #include "utils/array.h"
 #include "utils/builtins.h"
 #include "utils/datum.h"
@@ -4313,7 +4312,7 @@ get_qual_for_range(Relation parent, PartitionBoundSpec *spec,
 			Datum		datum;
 			PartitionBoundSpec *bspec;
 
-			tuple = SearchSysCache1(RELOID, inhrelid);
+			tuple = SearchSysCache1(RELOID, ObjectIdGetDatum(inhrelid));
 			if (!HeapTupleIsValid(tuple))
 				elog(ERROR, "cache lookup failed for relation %u", inhrelid);
 
@@ -4720,8 +4719,8 @@ get_range_nulltest(PartitionKey key)
  * Compute the hash value for given partition key values.
  */
 uint64
-compute_partition_hash_value(int partnatts, FmgrInfo *partsupfunc, Oid *partcollation,
-							 Datum *values, bool *isnull)
+compute_partition_hash_value(int partnatts, FmgrInfo *partsupfunc, const Oid *partcollation,
+							 const Datum *values, const bool *isnull)
 {
 	int			i;
 	uint64		rowHash = 0;

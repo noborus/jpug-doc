@@ -4,7 +4,7 @@
 <!--
   <title><application>PL/pgSQL</application> &mdash; <acronym>SQL</acronym> Procedural Language</title>
 -->
-<title><application>PL/pgSQL</application> &mdash; <acronym>SQL</acronym>手続き言語</title>
+  <title><application>PL/pgSQL</application> &mdash; <acronym>SQL</acronym>手続き言語</title>
 
  <indexterm zone="plpgsql">
   <primary>PL/pgSQL</primary>
@@ -14,7 +14,7 @@
 <!--
   <title>Overview</title>
 -->
-<title>概要</title>
+  <title>概要</title>
 
  <para>
 <!--
@@ -23,8 +23,8 @@
   system.  The design goals of <application>PL/pgSQL</application> were to create
   a loadable procedural language that
 -->
-<application>PL/pgSQL</application>は、<productname>PostgreSQL</productname>データベースシステム用の読み込み可能な手続き言語です。
-<application>PL/pgSQL</application>の設計目的は、次のような読み込み可能な手続き言語でした。
+<application>PL/pgSQL</application>は、<productname>PostgreSQL</productname>データベースシステム用のロード可能な手続き言語です。
+<application>PL/pgSQL</application>の設計目的は、次のようなロード可能な手続き言語でした。
 
     <itemizedlist>
      <listitem>
@@ -105,7 +105,7 @@
 <!--
    <title>Advantages of Using <application>PL/pgSQL</application></title>
 -->
-<title><application>PL/pgSQL</application>を使用することの利点</title>
+   <title><application>PL/pgSQL</application>を使用することの利点</title>
 
     <para>
 <!--
@@ -190,7 +190,7 @@
 <!--
    <title>Supported Argument and Result Data Types</title>
 -->
-<title>引数と結果データ型のサポート</title>
+   <title>引数と結果データ型のサポート</title>
 
     <para>
 <!--
@@ -286,7 +286,7 @@
 <!--
   <title>Structure of <application>PL/pgSQL</application></title>
 -->
-<title><application>PL/pgSQL</application>の構造</title>
+  <title><application>PL/pgSQL</application>の構造</title>
 
   <para>
 <!--
@@ -493,7 +493,7 @@ $$ LANGUAGE plpgsql;
 <!--
     <title>Declarations</title>
 -->
-<title>宣言</title>
+    <title>宣言</title>
 
     <para>
 <!--
@@ -611,7 +611,7 @@ DECLARE
 <!--
      <title>Declaring Function Parameters</title>
 -->
-<title>関数引数の宣言</title>
+     <title>関数引数の宣言</title>
 
      <para>
 <!--
@@ -995,28 +995,56 @@ DECLARE
 <!--
    <title>Copying Types</title>
 -->
-<title>型のコピー</title>
+   <title>型のコピー</title>
 
 <synopsis>
-<replaceable>variable</replaceable>%TYPE
+<replaceable>name</replaceable> <replaceable>table</replaceable>.<replaceable>column</replaceable>%TYPE
+<replaceable>name</replaceable> <replaceable>variable</replaceable>%TYPE
 </synopsis>
 
    <para>
 <!--
-    <literal>%TYPE</literal> provides the data type of a variable or
-    table column. You can use this to declare variables that will hold
+    <literal>%TYPE</literal> provides the data type of a table column
+    or a previously-declared <application>PL/pgSQL</application>
+    variable. You can use this to declare variables that will hold
     database values. For example, let's say you have a column named
     <literal>user_id</literal> in your <literal>users</literal>
     table. To declare a variable with the same data type as
     <literal>users.user_id</literal> you write:
 -->
-<literal>%TYPE</literal>は変数やテーブル列のデータ型を提供します。
+《マッチ度[78.450363]》<literal>%TYPE</literal>は変数やテーブル列のデータ型を提供します。
 これを使用してデータベース値を保持する変数を宣言することができます。
 例えば、<literal>users</literal>テーブルに<literal>user_id</literal>という列があるものとします。
 <literal>users.user_id</literal>と同じデータ型の変数を宣言するには、以下のように記述します。
+《機械翻訳》<literal>%TYPE</literal>は、テーブル列または以前に宣言された<application>PL/pgSQL</application>変数のデータ型を提供します。
+これを使用して、データベース値を保持する変数を宣言できます。
+たとえば、<literal>users</literal>テーブルに<literal>user_id</literal>という名前の列があるとします。
+<literal>users.user_id</literal>と同じデータ型で変数を宣言するには、次のように書きます。
 <programlisting>
 user_id users.user_id%TYPE;
 </programlisting>
+   </para>
+
+   <para>
+<!--
+    It is also possible to write array decoration
+    after <literal>%TYPE</literal>, thereby creating a variable that holds
+    an array of the referenced type:
+-->
+《機械翻訳》<literal>%TYPE</literal>の後に配列修飾子を書くことも可能で、それによって参照される型の配列を保持する変数が作成されます。
+<programlisting>
+user_ids users.user_id%TYPE[];
+user_ids users.user_id%TYPE ARRAY[4];  -- equivalent to the above
+</programlisting>
+<!--
+    Just as when declaring table columns that are arrays, it doesn't
+    matter whether you write multiple bracket pairs or specific array
+    dimensions: <productname>PostgreSQL</productname> treats all arrays of
+    a given element type as the same type, regardless of dimensionality.
+    (See <xref linkend="arrays-declaration"/>.)
+-->
+《機械翻訳》配列を宣言する際と同様に、複数の括弧のペアを書くか、特定の配列の次元を書くかは問題ではありません。
+<productname>PostgreSQL</productname>は、次元性に関係なく、与えられた要素型のすべての配列を同じ型として扱います（<xref linkend="arrays-declaration"/>を参照してください）。
    </para>
 
    <para>
@@ -1050,7 +1078,7 @@ user_id users.user_id%TYPE;
 <!--
      <title>Row Types</title>
 -->
-<title>行型</title>
+     <title>行型</title>
 
 <synopsis>
 <replaceable>name</replaceable> <replaceable>table_name</replaceable><literal>%ROWTYPE</literal>;
@@ -1088,6 +1116,15 @@ user_id users.user_id%TYPE;
 もしくは、複合型の名前を付与して宣言することができます。
 （全てのテーブルは、同じ名前の関連する複合型を持ちますので、実際のところ<productname>PostgreSQL</productname>では、<literal>%ROWTYPE</literal>と書いても書かなくても問題にはなりません。
 しかし、<literal>%ROWTYPE</literal>の方がより移植性が高まります。）
+   </para>
+
+   <para>
+<!--
+    As with <literal>%TYPE</literal>, <literal>%ROWTYPE</literal> can be
+    followed by array decoration to declare a variable that holds an array
+    of the referenced composite type.
+-->
+《機械翻訳》<literal>%TYPE</literal>と同様に、<literal>%ROWTYPE</literal>の後に配列デコレーションを付けることで、参照される複合型の配列を保持する変数を宣言できます。
    </para>
 
    <para>
@@ -1130,7 +1167,7 @@ SELECT merge_fields(t.*) FROM table1 t WHERE ... ;
 <!--
    <title>Record Types</title>
 -->
-<title>レコード型</title>
+   <title>レコード型</title>
 
 <synopsis>
 <replaceable>name</replaceable> RECORD;
@@ -1175,7 +1212,7 @@ SELECT merge_fields(t.*) FROM table1 t WHERE ... ;
 <!--
    <title>Collation of <application>PL/pgSQL</application> Variables</title>
 -->
-<title><application>PL/pgSQL</application>変数の照合</title>
+   <title><application>PL/pgSQL</application>変数の照合</title>
 
    <indexterm>
     <primary>collation</primary>
@@ -1307,7 +1344,7 @@ $$ LANGUAGE plpgsql;
 <!--
   <title>Expressions</title>
 -->
-<title>式</title>
+  <title>式</title>
 
     <para>
 <!--
@@ -1422,7 +1459,7 @@ IF count(*) &gt; 0 FROM my_table THEN ...
 <!--
     <title>Assignment</title>
 -->
-<title>代入</title>
+    <title>代入</title>
 
     <para>
 <!--
@@ -1504,8 +1541,8 @@ INSERT INTO mytable VALUES (1,'one'), (2,'two');
 
     <para>
 <!--
-     If the command does return rows (for example <command>SELECT</command>,
-     or <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>
+     If the command does return rows (for example <command>SELECT</command>, or
+     <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>
      with <literal>RETURNING</literal>), there are two ways to proceed.
      When the command will return at most one row, or you only care about
      the first row of output, write the command as usual but add
@@ -1515,9 +1552,12 @@ INSERT INTO mytable VALUES (1,'one'), (2,'two');
      source for a <command>FOR</command> loop, as described in
      <xref linkend="plpgsql-records-iterating"/>.
 -->
-コマンドが行を返すのであれば(例えば<command>SELECT</command>や<literal>RETURNING</literal>を伴う<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>など)、処理する方法が2つあります。
+《マッチ度[89.441931]》コマンドが行を返すのであれば(例えば<command>SELECT</command>や<literal>RETURNING</literal>を伴う<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>など)、処理する方法が2つあります。
 コマンドが多くても1行を返す場合、もしくは出力の最初の行だけに関心がある場合には、<xref linkend="plpgsql-statements-sql-onerow"/>に書かれているように、出力を取得するための<literal>INTO</literal>句を追加する以外は通常通りコマンドを書いてください。
 出力行をすべて処理するためには、<xref linkend="plpgsql-records-iterating"/>に書かれているように、<command>FOR</command>ループに対するデータソースとしてコマンドを書いてください。
+《機械翻訳》コマンドが行を返す場合（例えば<command>SELECT</command>、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>と<literal>RETURNING</literal>を伴う）、2つの方法があります。
+コマンドが最大1行を返す場合、または出力の最初の行だけを気にする場合は、通常どおりコマンドを書きますが、<xref linkend="plpgsql-statements-sql-onerow"/>で説明したように、<literal>INTO</literal>句を追加して出力を取り込みます。
+すべての出力行を処理するには、<xref linkend="plpgsql-records-iterating"/>で説明したように、<command>FOR</command>ループのデータソースとしてコマンドを書いてください。
     </para>
 
     <para>
@@ -1695,6 +1735,7 @@ SELECT <replaceable>select_expressions</replaceable> INTO <optional>STRICT</opti
 INSERT ... RETURNING <replaceable>expressions</replaceable> INTO <optional>STRICT</optional> <replaceable>target</replaceable>;
 UPDATE ... RETURNING <replaceable>expressions</replaceable> INTO <optional>STRICT</optional> <replaceable>target</replaceable>;
 DELETE ... RETURNING <replaceable>expressions</replaceable> INTO <optional>STRICT</optional> <replaceable>target</replaceable>;
+MERGE ... RETURNING <replaceable>expressions</replaceable> INTO <optional>STRICT</optional> <replaceable>target</replaceable>;
 </synopsis>
 
 <!--
@@ -1706,16 +1747,20 @@ DELETE ... RETURNING <replaceable>expressions</replaceable> INTO <optional>STRIC
      <literal>INTO</literal> clause) just as described above,
      and the plan is cached in the same way.
      This works for <command>SELECT</command>,
-     <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command> with
-     <literal>RETURNING</literal>, and certain utility commands
+     <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>
+     with <literal>RETURNING</literal>, and certain utility commands
      that return row sets, such as <command>EXPLAIN</command>.
      Except for the <literal>INTO</literal> clause, the SQL command is the same
      as it would be written outside <application>PL/pgSQL</application>.
 -->
-ここで、<replaceable>target</replaceable>はレコード変数、行変数、あるいは、単純な変数とレコード/行変数のフィールドをカンマで区切ったリストです。
+《マッチ度[88.604353]》ここで、<replaceable>target</replaceable>はレコード変数、行変数、あるいは、単純な変数とレコード/行変数のフィールドをカンマで区切ったリストです。
 上述のように<application>PL/pgSQL</application>変数によりコマンドの残り(すなわち、<literal>INTO</literal>句以外のすべて)が置換され、同じように計画がキャッシュされます。
 このように作動するのは、<command>SELECT</command>、<literal>RETURNING</literal>を伴った<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>とおよび<command>EXPLAIN</command>のような行セットの結果を返す特定のユーティリティコマンドです。
 <literal>INTO</literal>句以外では、SQLコマンドは<application>PL/pgSQL</application>の外部に記述したものと同じです。
+《機械翻訳》ここで<replaceable>target</replaceable>はレコード変数、行変数、または単純な変数とレコード/行フィールドのカンマ区切りリストです。
+上記のように、<application>PL/pgSQL</application>変数はコマンドの残りの部分（つまり<literal>INTO</literal>句以外の部分）に置換され、計画は同じ方法でキャッシュされます。
+これは<command>SELECT</command>、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>、<literal>RETURNING</literal>を伴う特定のユーティリティコマンド、および行セットを返す<command>EXPLAIN</command>などに有効です。
+<literal>INTO</literal>句を除き、SQLコマンドは<application>PL/pgSQL</application>の外部で書かれた場合と同じです。
     </para>
 
    <tip>
@@ -1819,15 +1864,17 @@ END;
 
     <para>
 <!--
-     For <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command> with
+     For <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command> with
      <literal>RETURNING</literal>, <application>PL/pgSQL</application> reports
      an error for more than one returned row, even when
      <literal>STRICT</literal> is not specified.  This is because there
      is no option such as <literal>ORDER BY</literal> with which to determine
      which affected row should be returned.
 -->
-<application>PL/pgSQL</application>は<literal>STRICT</literal>が指定されない場合でも、<literal>RETURNING</literal>を伴った<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>が2行以上を返した時は、エラーとなります。
+《マッチ度[86.714976]》<application>PL/pgSQL</application>は<literal>STRICT</literal>が指定されない場合でも、<literal>RETURNING</literal>を伴った<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>が2行以上を返した時は、エラーとなります。
 なぜなら、どの1行を返すか決定する<literal>ORDER BY</literal>のようなオプションが存在しないからです。
+《機械翻訳》<literal>RETURNING</literal>を指定した<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>に対して、<literal>STRICT</literal>が指定されていない場合でも、<application>PL/pgSQL</application>は複数の返された行に対してエラーを報告します。
+これは、どの返された行を返すかを決定するための<literal>ORDER BY</literal>などのオプションがないためです。
     </para>
 
     <para>
@@ -1867,7 +1914,7 @@ $$ LANGUAGE plpgsql;
 失敗したとき、この関数は次のようなエラーメッセージを生成します。
 <programlisting>
 ERROR:  query returned no rows
-DETAIL:  parameters: $1 = 'nosuchuser'
+DETAIL:  parameters: username = 'nosuchuser'
 CONTEXT:  PL/pgSQL function get_userid(text) line 6 at SQL statement
 </programlisting>
     </para>
@@ -1888,7 +1935,7 @@ CONTEXT:  PL/pgSQL function get_userid(text) line 6 at SQL statement
 <!--
     <title>Executing Dynamic Commands</title>
 -->
-<title>動的コマンドの実行</title>
+    <title>動的コマンドの実行</title>
 
     <para>
 <!--
@@ -2102,7 +2149,7 @@ EXECUTE format('SELECT count(*) FROM %I '
 <!--
    <title>Quoting Values in Dynamic Queries</title>
 -->
-<title>動的問い合わせの中の値の引用符付け</title>
+   <title>動的問い合わせの中の値の引用符付け</title>
 
     <indexterm>
      <primary>quote_ident</primary>
@@ -2341,7 +2388,7 @@ EXECUTE format('UPDATE tbl SET %I = $1 WHERE key = $2', colname)
 <!--
     <title>Obtaining the Result Status</title>
 -->
-<title>結果ステータスの取得</title>
+    <title>結果ステータスの取得</title>
 
     <para>
 <!--
@@ -2423,7 +2470,10 @@ GET DIAGNOSTICS integer_var = ROW_COUNT;
         <row>
          <entry><literal>PG_ROUTINE_OID</literal></entry>
          <entry><type>oid</type></entry>
+<!--
          <entry>OID of the current function</entry>
+-->
+         <entry>現在の関数のOID</entry>
         </row>
        </tbody>
       </tgroup>
@@ -2549,7 +2599,7 @@ GET DIAGNOSTICS integer_var = ROW_COUNT;
 <!--
     <title>Doing Nothing At All</title>
 -->
-<title>まったく何もしない</title>
+    <title>まったく何もしない</title>
 
     <para>
 <!--
@@ -2620,7 +2670,7 @@ OracleのPL/SQLでは無記述の文は許されませんので、こうした�
 <!--
    <title>Control Structures</title>
 -->
-<title>制御構造</title>
+   <title>制御構造</title>
 
    <para>
 <!--
@@ -2638,7 +2688,7 @@ OracleのPL/SQLでは無記述の文は許されませんので、こうした�
 <!--
     <title>Returning from a Function</title>
 -->
-<title>関数からの復帰</title>
+    <title>関数からの復帰</title>
 
     <para>
 <!--
@@ -2749,7 +2799,7 @@ RETURN (1, 2, 'three'::text);  -- 正しい型の列にキャストしなけれ�
 <!--
      <title><command>RETURN NEXT</command> and <command>RETURN QUERY</command></title>
 -->
-<title><command>RETURN NEXT</command>および<command>RETURN QUERY</command></title>
+     <title><command>RETURN NEXT</command>および<command>RETURN QUERY</command></title>
     <indexterm>
      <primary>RETURN NEXT</primary>
      <secondary>in PL/pgSQL</secondary>
@@ -3261,7 +3311,7 @@ END IF;
 <!--
       <title>Simple <literal>CASE</literal></title>
 -->
-<title>単純な<literal>CASE</literal></title>
+      <title>単純な<literal>CASE</literal></title>
 
 <synopsis>
 CASE <replaceable>search-expression</replaceable>
@@ -3317,7 +3367,7 @@ END CASE;
 <!--
       <title>Searched <literal>CASE</literal></title>
 -->
-<title>検索付き<literal>CASE</literal></title>
+      <title>検索付き<literal>CASE</literal></title>
 
 <synopsis>
 CASE
@@ -3385,7 +3435,7 @@ END CASE;
 <!--
     <title>Simple Loops</title>
 -->
-<title>単純なループ</title>
+    <title>単純なループ</title>
 
     <indexterm zone="plpgsql-control-structures-loops">
      <primary>loop</primary>
@@ -3840,13 +3890,17 @@ $$ LANGUAGE plpgsql;
      The <replaceable>query</replaceable> used in this type of <literal>FOR</literal>
      statement can be any SQL command that returns rows to the caller:
      <command>SELECT</command> is the most common case,
-     but you can also use <command>INSERT</command>, <command>UPDATE</command>, or
-     <command>DELETE</command> with a <literal>RETURNING</literal> clause.  Some utility
+     but you can also use <command>INSERT</command>, <command>UPDATE</command>,
+     <command>DELETE</command>, or <command>MERGE</command> with a
+     <literal>RETURNING</literal> clause.  Some utility
      commands such as <command>EXPLAIN</command> will work too.
 -->
-この種類の<literal>FOR</literal>文の<replaceable>query</replaceable>としては、呼び出し元に行を返すSQLコマンドをすべて使用できます。
+《マッチ度[87.133183]》この種類の<literal>FOR</literal>文の<replaceable>query</replaceable>としては、呼び出し元に行を返すSQLコマンドをすべて使用できます。
 通常は<command>SELECT</command>ですが、<literal>RETURNING</literal>句を持つ<command>INSERT</command>、<command>UPDATE</command>または<command>DELETE</command>も使用できます。
 <command>EXPLAIN</command>などのユーティリティコマンドも作動します。
+《機械翻訳》このタイプの<literal>FOR</literal>文で使用される<replaceable>query</replaceable>は、呼び出し元に行を返す任意のSQLコマンドです。
+最も一般的なケースは<command>SELECT</command>ですが、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>に<literal>RETURNING</literal>句を使用することもできます。
+<command>EXPLAIN</command>などのユーティリティコマンドも動作します。
     </para>
 
     <para>
@@ -3902,7 +3956,7 @@ END LOOP <optional> <replaceable>label</replaceable> </optional>;
 <!--
     <title>Looping through Arrays</title>
 -->
-<title>配列を巡回</title>
+    <title>配列を巡回</title>
 
     <para>
 <!--
@@ -4013,7 +4067,7 @@ NOTICE:  row = {10,11,12}
 <!--
     <title>Trapping Errors</title>
 -->
-<title>エラーの捕捉</title>
+    <title>エラーの捕捉</title>
 
     <indexterm>
      <primary>exceptions</primary>
@@ -4172,7 +4226,7 @@ END;
 <!--
     <title>Exceptions with <command>UPDATE</command>/<command>INSERT</command></title>
 -->
-<title><command>UPDATE</command>/<command>INSERT</command>の例外</title>
+    <title><command>UPDATE</command>/<command>INSERT</command>の例外</title>
     <para>
 
 <!--
@@ -4247,7 +4301,7 @@ SELECT merge_db(1, 'dennis');
 <!--
     <title>Obtaining Information about an Error</title>
 -->
-<title>エラーに関する情報の取得</title>
+    <title>エラーに関する情報の取得</title>
 
     <para>
 <!--
@@ -4303,7 +4357,7 @@ GET STACKED DIAGNOSTICS <replaceable>variable</replaceable> { = | := } <replacea
 <!--
       <title>Error Diagnostics Items</title>
 -->
-<title>エラーの診断値</title>
+      <title>エラーの診断値</title>
       <tgroup cols="3">
        <colspec colname="col1" colwidth="2*"/>
        <colspec colname="col2" colwidth="1*"/>
@@ -4444,7 +4498,7 @@ END;
 <!--
    <title>Obtaining Execution Location Information</title>
 -->
-<title>実行位置情報の取得</title>
+   <title>実行位置情報の取得</title>
 
    <para>
 <!--
@@ -4513,7 +4567,7 @@ CONTEXT:  PL/pgSQL function outer_func() line 3 at RETURN
 <!--
    <title>Cursors</title>
 -->
-<title>カーソル</title>
+   <title>カーソル</title>
 
    <indexterm zone="plpgsql-cursors">
     <primary>cursor</primary>
@@ -4549,7 +4603,7 @@ CONTEXT:  PL/pgSQL function outer_func() line 3 at RETURN
 <!--
     <title>Declaring Cursor Variables</title>
 -->
-<title>カーソル変数の宣言</title>
+    <title>カーソル変数の宣言</title>
 
     <para>
 <!--
@@ -4610,10 +4664,10 @@ DECLARE
      is said to be <firstterm>unbound</firstterm> since it is not bound to
      any particular query.
 -->
-これら3つの変数は全て<type>refcursor</type>データ型を持ちますが、最初のものは全ての問い合わせに使用でき、2番目には完全な問い合わせが既に<firstterm>バウンド</firstterm>されています（結び付けられています）。
-また、最後のものには、パラメータ付きの問い合わせがバウンドされています
+これら3つの変数は全て<type>refcursor</type>データ型を持ちますが、最初のものは全ての問い合わせに使用でき、2番目には完全な問い合わせが既に<firstterm>バインドされて</firstterm>います（結び付けられています）。
+また、最後のものには、パラメータ付きの問い合わせがバインドされています
 （<literal>key</literal>はカーソルが開いた時に整数パラメータ値に置き換えられます）。
-<literal>curs1</literal>変数は、特定の問い合わせに結び付けられていませんので、<firstterm>アンバウンド</firstterm>であると呼ばれます。
+<literal>curs1</literal>変数は、特定の問い合わせに結び付けられていませんので、<firstterm>バインドされていない</firstterm>と呼ばれます。
     </para>
 
     <para>
@@ -4647,13 +4701,9 @@ DECLARE
      three forms of the <command>OPEN</command> statement, two of which use unbound
      cursor variables while the third uses a bound cursor variable.
 -->
-《マッチ度[84.615385]》カーソルを使用して行を取り出す前に、<firstterm>開かれる</firstterm>必要があります。
-（これは<command>DECLARE CURSOR</command> SQLコマンドの動作と同じです。）
-<application>PL/pgSQL</application>には3種類の<command>OPEN</command>文があり、そのうちの2つはアンバウンドカーソル変数を使用し、残りの1つはバウンドカーソル変数を使用します。
-《機械翻訳》カーソルを使用して行を取り出す前に、<firstterm>開く</firstterm>する必要があります。
-（これは、SQLコマンド<link linkend="sql-declare"><command>DECLARE CURSOR</command></link>と同じ動作です。）
- <application>PL/pgSQL</application>には、3つの形式の<command>OPEN</command>文があります。
- そのうち2つはバインドされていないカーソル変数を使用し、3つ目はバインドされたカーソル変数を使用します。
+カーソルを使用して行を取り出す前に、カーソルは<firstterm>開かれる</firstterm>必要があります。
+（これは<link linkend="sql-declare"><command>DECLARE CURSOR</command></link> SQLコマンドの動作と同じです。）
+<application>PL/pgSQL</application>には3種類の<command>OPEN</command>文があり、そのうちの2つはバインドされていないカーソル変数を使用し、残りの1つはバインドされたカーソル変数を使用します。
     </para>
 
     <note>
@@ -4662,16 +4712,21 @@ DECLARE
       Bound cursor variables can also be used without explicitly opening the cursor,
       via the <command>FOR</command> statement described in
       <xref linkend="plpgsql-cursor-for-loop"/>.
--->
-バウンドカーソル変数は<xref linkend="plpgsql-cursor-for-loop"/>で説明されている<command>FOR</command>文で、明示的にカーソルを開かなくても使用することができます。
       A <command>FOR</command> loop will open the cursor and then
       close it again when the loop completes.
+-->
+バインドされたカーソル変数は<xref linkend="plpgsql-cursor-for-loop"/>で説明されている<command>FOR</command>文で、明示的にカーソルを開かなくても使用できます。
+<command>FOR</command>ループはカーソルを開き、ループが完了すると再び閉じます。
      </para>
     </note>
 
     <indexterm>
      <primary>portal</primary>
      <secondary>in PL/pgSQL</secondary>
+    </indexterm>
+    <indexterm>
+     <primary>ポータル</primary>
+     <secondary>PL/pgSQLでの</secondary>
     </indexterm>
 
     <para>
@@ -4686,12 +4741,11 @@ DECLARE
      portal name.  This feature can be used as described in
      <xref linkend="plpgsql-cursor-returning"/>.
 -->
-《機械翻訳》カーソルを開くには、<firstterm>ポータル</firstterm>と呼ばれるサーバ内部のデータ構造を作成します。
- ポータルは、カーソルの問い合わせの実行状態を保持します。
- ポータルには名前があり、ポータルの存続期間中はセッション内で一意でなければなりません。
- デフォルトでは、<application>PL/pgSQL</application>は作成する各ポータルに一意の名前を割り当てます。
- しかし、カーソル変数にNULL文字列以外の値を割り当てると、その文字列がポータル名として使用されます。
- この機能は<xref linkend="plpgsql-cursor-returning"/>で説明しています。
+カーソルを開くと、<firstterm>ポータル</firstterm>と呼ばれるサーバ内部のデータ構造が作成されます。ポータルは、カーソルの問い合わせの実行状態を保持します。
+ポータルには名前があり、ポータルの存続期間中はセッション内で一意でなければなりません。
+デフォルトでは、<application>PL/pgSQL</application>は作成する各ポータルに一意の名前を割り当てます。
+しかし、カーソル変数にNULL文字列以外の値を割り当てると、その文字列がポータル名として使用されます。
+この機能は<xref linkend="plpgsql-cursor-returning"/>で説明するように使うことができます。
     </para>
 
     <sect3 id="plpgsql-cursor-opening-open-for-query">
@@ -4721,12 +4775,12 @@ OPEN <replaceable>unbound_cursorvar</replaceable> <optional> <optional> NO </opt
         options have the same meanings as for a bound cursor.
 -->
 カーソル変数は開かれ、実行するよう指定した問い合わせが付与されます。
-既に開いたカーソルを開くことはできず、また、アンバウンドカーソル変数として（つまり、単なる<type>refcursor</type>変数として）宣言されていなければなりません。
+既に開いたカーソルを開くことはできず、また、バインドされていないカーソル変数として（つまり、単なる<type>refcursor</type>変数として）宣言されていなければなりません。
 この問い合わせは<command>SELECT</command>文であるか、または（<command>EXPLAIN</command>のように）何らかの行を返すものでなければなりません。
 この問い合わせは、他の<application>PL/pgSQL</application>のSQL文と同様の方法で扱われます。
 <application>PL/pgSQL</application>の変数名は置き換えられ、問い合わせ計画は再利用できるようにキャッシュされます。
 <application>PL/pgSQL</application>変数がカーソルを使用する問い合わせに代入された時、変数は<command>OPEN</command>時の値となり、その後の変更はカーソルの動きに影響しません。
-<literal>SCROLL</literal>および<literal>NO SCROLL</literal>オプションの意味はバウンドカーソルと同様です。
+<literal>SCROLL</literal>および<literal>NO SCROLL</literal>オプションの意味はバインドされたカーソルと同様です。
        </para>
 
        <para>
@@ -4766,12 +4820,12 @@ OPEN <replaceable>unbound_cursorvar</replaceable> <optional> <optional> NO </opt
           cursor.
 -->
 カーソル変数は開かれ、実行するよう指定した問い合わせが付与されます。
-既に開いたカーソルを開くことはできず、また、アンバウンドカーソル変数として（つまり、単なる<type>refcursor</type>変数として）宣言されていなければなりません。
+既に開いたカーソルを開くことはできず、また、バインドされていないカーソル変数として（つまり、単なる<type>refcursor</type>変数として）宣言されていなければなりません。
 問い合わせは、<command>EXECUTE</command>コマンドと同じ方法による文字列式として指定されます。
 通常と同様に、これにより、次回に実行する際に違った問い合わせを計画できる柔軟性が得られます(<xref linkend="plpgsql-plan-caching"/>参照)。
 また、変数置換がコマンド文字列上で行われないことも意味します。
 <command>EXECUTE</command>と同様に<literal>format()</literal>と<literal>USING</literal>を介して動的コマンドにパラメータ値を挿入することができます。
-<literal>SCROLL</literal>および<literal>NO SCROLL</literal>オプションの意味はバウンドカーソルと同様です。
+<literal>SCROLL</literal>および<literal>NO SCROLL</literal>オプションの意味はバインドされたカーソルと同様です。
          </para>
 
        <para>
@@ -4797,7 +4851,7 @@ OPEN curs1 FOR EXECUTE format('SELECT * FROM %I WHERE col1 = $1',tabname) USING 
 <!--
      <title>Opening a Bound Cursor</title>
 -->
-<title>バウンドカーソルを開く</title>
+     <title>バインドされたカーソルを開く</title>
 
 <synopsis>
 OPEN <replaceable>bound_cursorvar</replaceable> <optional> ( <optional> <replaceable>argument_name</replaceable> := </optional> <replaceable>argument_value</replaceable> <optional>, ...</optional> ) </optional>;
@@ -4825,7 +4879,7 @@ OPEN <replaceable>bound_cursorvar</replaceable> <optional> ( <optional> <replace
           specified in <command>OPEN</command>, as the cursor's scrolling
           behavior was already determined.
 -->
-バウンドカーソルの問い合わせ計画は常にキャッシュ可能とみなされます。
+バインドされたカーソルの問い合わせ計画は常にキャッシュ可能とみなされます。
 この場合、<command>EXECUTE</command>と等価なものはありません。
 <literal>SCROLL</literal>および<literal>NO SCROLL</literal>を<command>OPEN</command>において指定できないことに注意してください。
 カーソル移動の仕様はすでに決まっているからです。
@@ -4871,9 +4925,9 @@ OPEN curs3(key := 42);
           For example, another way to get the same effect as the
           <literal>curs3</literal> example above is
 -->
-変数の代入はバウンドカーソルの問い合わせで行われるため、カーソルへ値を渡す方法が2つあります。
+変数の代入はバインドされたカーソルの問い合わせで行われるため、カーソルへ値を渡す方法が2つあります。
 <command>OPEN</command>コマンドの明確な引数とするものと、問い合わせにおける<application>PL/pgSQL</application>変数として暗黙的に参照するものです。
-しかし、バウンドカーソルの宣言より前に宣言した変数だけが代入されます。
+しかし、バインドされたカーソルの宣言より前に宣言した変数だけが代入されます。
 どちらの場合も、<command>OPEN</command>の実行時に変数値が決まります。
 例えば、上例の<literal>curs3</literal>と同じ結果を取得する方法を、以下に示します。
 <programlisting>
@@ -4892,7 +4946,7 @@ BEGIN
 <!--
     <title>Using Cursors</title>
 -->
-<title>カーソルの使用</title>
+    <title>カーソルの使用</title>
 
     <para>
 <!--
@@ -4912,14 +4966,10 @@ BEGIN
      can be passed around, assigned to other <type>refcursor</type> variables,
      and so on, without disturbing the portal.)
 -->
-《マッチ度[89.647577]》これらの操作は、カーソルを開始するために開いた関数内で行う必要はありません。
+これらの操作は、カーソルを開始するために開いた関数内で行う必要はありません。
 関数から<type>refcursor</type>値を返し、呼び出し元でそのカーソルの操作をさせることもできます。
 （内部的には<type>refcursor</type>値は、カーソルへの有効な問い合わせを持つポータルの名前を示す単なる文字列です。
-この名前は、ポータルを壊すことなく、他の<type>refcursor</type>型の変数に代入することで、他に渡すことができます。）
-《機械翻訳》これらの操作は、カーソルを開いたときに同じ関数で行う必要はありません。
-<type>refcursor</type>の値を関数から返して、呼出し側がカーソルを操作できるようにします。
-（内部的には、<type>refcursor</type>値は単にカーソルのアクティブな問い合わせを含むポータルの文字列名です。
-この名前は、ポータルに影響を与えることなく、他の<type>refcursor</type>変数に渡したり、他の<type>refcursor</type>変数に割り当てたりすることができます。）
+この名前は、ポータルを壊すことなく、他の<type>refcursor</type>型の変数に渡したり、代入したりすることなどができます。）
     </para>
 
     <para>
@@ -4941,17 +4991,22 @@ FETCH <optional> <replaceable>direction</replaceable> { FROM | IN } </optional> 
 
     <para>
 <!--
-     <command>FETCH</command> retrieves the next row from the
+     <command>FETCH</command> retrieves the next row (in the indicated
+     direction) from the
      cursor into a target, which might be a row variable, a record
      variable, or a comma-separated list of simple variables, just like
-     <command>SELECT INTO</command>.  If there is no next row, the
+     <command>SELECT INTO</command>.  If there is no suitable row, the
      target is set to NULL(s).  As with <command>SELECT
      INTO</command>, the special variable <literal>FOUND</literal> can
-     be checked to see whether a row was obtained or not.
+     be checked to see whether a row was obtained or not.  If no row is
+     obtained, the cursor is positioned after the last row or before the
+     first row, depending on the movement direction.
 -->
-<command>FETCH</command>は<command>SELECT INTO</command>と同様に、カーソルから次の行を抽出し、対象に格納します。
+<command>FETCH</command>は<command>SELECT INTO</command>と同様に、カーソルから次の行を（指定された方向に）抽出し、対象に格納します。
 対象とは、行変数、レコード変数、または単純な変数をカンマで区切ったリストです。
-<command>SELECT INTO</command>の場合と同様、特殊な<literal>FOUND</literal>変数を検査することで、行が取得できたかどうかを確認することができます。
+適切な行がない場合、ターゲットはNULLに設定されます。
+<command>SELECT INTO</command>の場合と同様、特殊な<literal>FOUND</literal>変数を検査することで、行が取得できたかどうかを確認できます。
+行が取得されない場合、カーソルは移動方向に応じて最後の行の後または最初の行の前に位置します。
     </para>
 
     <para>
@@ -5022,15 +5077,34 @@ MOVE <optional> <replaceable>direction</replaceable> { FROM | IN } </optional> <
     <para>
 <!--
      <command>MOVE</command> repositions a cursor without retrieving
-     any data. <command>MOVE</command> works exactly like the
+     any data. <command>MOVE</command> works like the
      <command>FETCH</command> command, except it only repositions the
-     cursor and does not return the row moved to. As with <command>SELECT
+     cursor and does not return the row moved to.
+     The <replaceable>direction</replaceable> clause can be any of the
+     variants allowed in the SQL <xref linkend="sql-fetch"/>
+     command, including those that can fetch more than one row;
+     the cursor is positioned to the last such row.
+     (However, the case in which the <replaceable>direction</replaceable>
+     clause is simply a <replaceable>count</replaceable> expression with
+     no key word is deprecated in <application>PL/pgSQL</application>.
+     That syntax is ambiguous with the case where
+     the <replaceable>direction</replaceable> clause is omitted
+     altogether, and hence it may fail if
+     the <replaceable>count</replaceable> is not a constant.)
+     As with <command>SELECT
      INTO</command>, the special variable <literal>FOUND</literal> can
-     be checked to see whether there was a next row to move to.
+     be checked to see whether there was a row to move to.  If there is no
+     such row, the cursor is positioned after the last row or before the
+     first row, depending on the movement direction.
 -->
 <command>MOVE</command>コマンドは、データを取り出さないでカーソルの位置を変更します。
-<command>MOVE</command>コマンドは、移動先の行を返さないでカーソルの位置だけを変更することを除けば、<command>FETCH</command>コマンドと同一の働きをします。
+<command>MOVE</command>コマンドは、移動先の行を返さないでカーソルの位置だけを変更することを除けば、<command>FETCH</command>コマンドと同様の働きをします。
+<replaceable>direction</replaceable>句は、SQL <xref linkend="sql-fetch"/>コマンドで許可されるどのような形式も可能で、複数行を取り出すことができるものも含まれます。
+カーソルはそのような行の最後に位置します。
+（しかし、<replaceable>direction</replaceable>句が単にキーワードのない<replaceable>count</replaceable>式である場合は、<application>PL/pgSQL</application>では非推奨です。
+この構文は、<replaceable>direction</replaceable>句がすべて省略された場合との区別が曖昧であるため、<replaceable>count</replaceable>が定数でない場合は失敗する可能性があります。）
 <command>SELECT INTO</command>と同様に、特殊な変数<literal>FOUND</literal>を用いて、移動先に行が存在するかどうかを検査できます。
+そのような行がない場合、カーソルは移動方向に応じて最後の行の後または最初の行の前に位置します。
     </para>
 
     <para>
@@ -5094,7 +5168,7 @@ CLOSE <replaceable>cursor</replaceable>;
         cursor.  This can be used to release resources earlier than end of
         transaction, or to free up the cursor variable to be opened again.
 -->
-<command>CLOSE</command>はポータルの背後にあるカーソルを閉じます。
+<command>CLOSE</command>は、開いているカーソルの背後にあるポータルを閉じます。
 これを使用してトランザクションの終わりよりも前にリソースを解放することができ、また、カーソル変数を解放し、再度開くことができます。
        </para>
 
@@ -5113,7 +5187,7 @@ CLOSE curs1;
 <!--
      <title>Returning Cursors</title>
 -->
-<title>カーソルを返す</title>
+     <title>カーソルを返す</title>
 
        <para>
 <!--
@@ -5147,14 +5221,10 @@ CLOSE curs1;
         conflict with any existing portal, and assigns it to the
         <type>refcursor</type> variable.
 -->
-《マッチ度[82.967960]》カーソル用のポータル名は、プログラマが指定するか、または自動的に生成されます。
+カーソル用のポータル名は、プログラマが指定するか、または自動的に生成されます。
 ポータル名を指定するには、開く前に、単に<type>refcursor</type>変数に文字列を代入します。
 <type>refcursor</type>変数の文字列値は<command>OPEN</command>によって、背後のポータル名として使用されます。
-しかし、<type>refcursor</type>変数がNULLの場合、<command>OPEN</command>は自動的に既存のポータルと競合しない名前を生成し、それを<type>refcursor</type>変数に代入します。
-《機械翻訳》カーソルに使用されるポータル名は、プログラマによって指定するか、自動的に生成することができます。
-ポータル名を指定するには、カーソルを開く前に、<type>refcursor</type>変数に文字列を割り当てるだけです。
-<type>refcursor</type>変数の文字列値は、<command>OPEN</command>によって基礎となるポータルの名前として使用されます。
-ただし、<type>refcursor</type>変数の値がNULLである場合(デフォルトである)、<command>OPEN</command>は既存のポータルと競合しない名前を自動的に生成し、それを<type>refcursor</type>変数に割り当てます。
+しかし、<type>refcursor</type>変数の値がNULLの場合（デフォルトではそうなっています）、<command>OPEN</command>は自動的に既存のポータルと競合しない名前を生成し、それを<type>refcursor</type>変数に代入します。
        </para>
 
        <note>
@@ -5167,8 +5237,8 @@ CLOSE curs1;
          changed because it created too much risk of conflicts between
          similarly-named cursors in different functions.
 -->
-《機械翻訳》<productname>PostgreSQL</productname>16以前は、バウンド・カーソル変数は、デフォルトでカーソル変数の名前と同じになるように、NULLではなく自身の名前を含むように初期化されていました。
-これは、異なる関数内の同じ名前のカーソル間で競合するリスクがあまりにも大きくなるため、変更されたものです。
+<productname>PostgreSQL</productname> 16以前は、バインドされたカーソル変数は、NULLではなく自身の名前を含むように初期化されていました。そのため、背後にあるポータル名はデフォルトでカーソル変数の名前と同じになっていました。
+これは、異なる関数内の同じような名前のカーソル間で競合するリスクがあまりにも大きくなるため、変更されました。
         </para>
        </note>
 
@@ -5267,7 +5337,7 @@ COMMIT;
 <!--
     <title>Looping through a Cursor's Result</title>
 -->
-<title>カーソル結果に対するループ</title>
+    <title>カーソル結果に対するループ</title>
 
     <para>
 <!--
@@ -5294,7 +5364,7 @@ END LOOP <optional> <replaceable>label</replaceable> </optional>;
      the same way as during an <command>OPEN</command> (see <xref
      linkend="plpgsql-open-bound-cursor"/>).
 -->
-カーソル変数は宣言されたとき、何らかの問い合わせとバウンドされていなければならず、また既に開かれていては<emphasis>なりません</emphasis>。
+カーソル変数は宣言されたとき、何らかの問い合わせと結び付けられて（バインドされて）いなければならず、また既に開かれていては<emphasis>なりません</emphasis>。
 <command>FOR</command>文は自動的にカーソルを開き、ループから抜けたときに再度閉じます。
 実際の引数値式のリストは、カーソルが引数を取ることを宣言された場合に限ってのみ出現できます。
 これらの値は、<command>OPEN</command>過程と同じ方法で、問い合わせの中で置換されます（<xref linkend="plpgsql-open-bound-cursor"/>を参照してください）。
@@ -5407,6 +5477,23 @@ CALL transaction_test1();
 
    <para>
 <!--
+    <application>PL/pgSQL</application> does not support savepoints
+    (<command>SAVEPOINT</command>/<command>ROLLBACK TO
+    SAVEPOINT</command>/<command>RELEASE SAVEPOINT</command> commands).
+    Typical usage patterns for savepoints can be replaced by blocks with
+    exception handlers (see <xref linkend="plpgsql-error-trapping"/>).
+    Under the hood, a block with exception handlers forms a
+    subtransaction, which means that transactions cannot be ended inside
+    such a block.
+-->
+《機械翻訳》<application>PL/pgSQL</application>はセーブポイントをサポートしません（<command>SAVEPOINT</command>/<command>ROLLBACK TO SAVEPOINT</command>/<command>RELEASE SAVEPOINT</command>）。
+セーブポイントの典型的な使用パターンは、例外ハンドラを持つブロックに置き換えることができます（<xref linkend="plpgsql-error-trapping"/>を参照）。
+内部では、例外ハンドラを持つブロックがサブトランザクションを形成します。
+これは、そのようなブロック内ではトランザクションを終了できないことを意味します。
+   </para>
+
+   <para>
+<!--
     Special considerations apply to cursor loops.  Consider this example:
 -->
 カーソルループには特別な考慮事項が当てはまります。
@@ -5435,12 +5522,20 @@ CALL transaction_test2();
     evaluated at the first <command>COMMIT</command> or
     <command>ROLLBACK</command> rather than row by row.  The cursor is still
     removed automatically after the loop, so this is mostly invisible to the
-    user.
+    user.  But one must keep in mind that any table or row locks taken by
+    the cursor's query will no longer be held after the
+    first <command>COMMIT</command> or
+    <command>ROLLBACK</command>.
 -->
-通常、カーソルはトランザクションのコミット時に自動的に閉じられます。
+《マッチ度[68.597561]》通常、カーソルはトランザクションのコミット時に自動的に閉じられます。
 しかしながら、このようにループの一部として作られたカーソルは、最初の<command>COMMIT</command>または<command>ROLLBACK</command>から自動的にホールドカーソルに変換されます。
 このことは、今や、最初の<command>COMMIT</command>や<command>ROLLBACK</command>の時点でカーソルが行ごとではなく完全に評価されることを意味します。
 従来通りカーソルはループ後に自動で削除されるので、このことはユーザにほとんど認識されません。
+《機械翻訳》通常、カーソルはトランザクションコミットで自動的に閉じたになります。
+ただし、このようなループのパートとして作成されたカーソルは、最初の<command>COMMIT</command>または<command>ROLLBACK</command>によって自動的に保持可能なカーソルに変換されます。
+これは、カーソルが行によって行ではなく、最初の<command>COMMIT</command>または<command>ROLLBACK</command>で完全に評価されることを意味します。
+カーソルはループの後に自動的に除去されるため、これはユーザにはほとんど見えません。
+しかし、カーソルのクエリによって取られたテーブルまたは行の鍵は、最初の<command>COMMIT</command>または<command>ROLLBACK</command>の後にはもはや保持されないことに留意しなければならない。
    </para>
 
    <para>
@@ -5451,20 +5546,13 @@ CALL transaction_test2();
 -->
 トランザクションコマンドは、読み込み専用でないコマンド（例えば<command>UPDATE ... RETURNING</command>）で駆動されるカーソルループ内では許可されません。
    </para>
-
-   <para>
-<!--
-    A transaction cannot be ended inside a block with exception handlers.
--->
-例外ハンドラを伴うブロック内ではトランザクションを終了できません。
-   </para>
   </sect1>
 
   <sect1 id="plpgsql-errors-and-messages">
 <!--
    <title>Errors and Messages</title>
 -->
-<title>エラーとメッセージ</title>
+   <title>エラーとメッセージ</title>
 
   <sect2 id="plpgsql-statements-raise">
 <!--
@@ -5728,11 +5816,11 @@ RAISE unique_violation USING MESSAGE = 'Duplicate user ID: ' || user_id;
 <!--
     If no condition name nor SQLSTATE is specified in a
     <command>RAISE EXCEPTION</command> command, the default is to use
-    <literal>ERRCODE_RAISE_EXCEPTION</literal> (<literal>P0001</literal>).
+    <literal>raise_exception</literal> (<literal>P0001</literal>).
     If no message text is specified, the default is to use the condition
     name or SQLSTATE as message text.
 -->
-<command>RAISE EXCEPTION</command>コマンド内で状況名もSQLSTATEも指定されない場合、デフォルトは<literal>ERRCODE_RAISE_EXCEPTION</literal> (<literal>P0001</literal>)を使用します。
+<command>RAISE EXCEPTION</command>コマンド内で状況名もSQLSTATEも指定されない場合、デフォルトは<literal>raise_exception</literal> (<literal>P0001</literal>)を使用します。
 メッセージテキストが指定されない場合、デフォルトは状況名、またはSQLSTATEをメッセージテキストとして使用します。
    </para>
 
@@ -5855,7 +5943,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
   <title>Trigger Functions</title>
 -->
-<title>トリガ関数</title>
+  <title>トリガ関数</title>
 
   <indexterm zone="plpgsql-trigger">
    <primary>trigger</primary>
@@ -5886,7 +5974,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
    <title>Triggers on Data Changes</title>
 -->
-<title>データ変更によるトリガ</title>
+   <title>データ変更によるトリガ</title>
 
   <para>
 <!--
@@ -5921,8 +6009,8 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        triggers. This variable is null in statement-level triggers
        and for <command>DELETE</command> operations.
 -->
-《機械翻訳》行レベルの<command>INSERT</command>/<command>UPDATE</command>操作での新しいデータベース行。
-この変数は、文レベルのトリガで、または<command>DELETE</command>操作で、NULLになります。
+行レベルのトリガでの<command>INSERT</command>/<command>UPDATE</command>操作での新しいデータベースの行。
+この変数は、文レベルのトリガおよび<command>DELETE</command>操作ではNULLになります。
       </para>
      </listitem>
     </varlistentry>
@@ -5936,11 +6024,8 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        triggers. This variable is null in statement-level triggers
        and for <command>INSERT</command> operations.
 -->
-《マッチ度[60.396040]》<type>RECORD</type>データ型。
-この変数は、行レベルのトリガでの<command>UPDATE</command>/<command>DELETE</command>操作によって更新される前のデータベースの行を保持します。
-文レベルのトリガおよび<command>INSERT</command>操作では、この変数はnullです。
-《機械翻訳》行レベルの<command>UPDATE</command>/<command>DELETE</command>操作での古いデータベース行の<command>UPDATE</command>/<command>DELETE</command>操作。
-この変数は、文レベルのトリガーで、<command>INSERT</command>操作でNULLです。
+行レベルのトリガでの<command>UPDATE</command>/<command>DELETE</command>操作での更新される前のデータベースの行。
+この変数は、文レベルのトリガおよび<command>INSERT</command>操作ではNULLになります。
       </para>
      </listitem>
     </varlistentry>
@@ -5952,7 +6037,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
        name of the trigger which fired.
 -->
-《機械翻訳》起動したトリガの名前。
+発行されたトリガの名前。
       </para>
      </listitem>
     </varlistentry>
@@ -5965,9 +6050,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        <literal>BEFORE</literal>, <literal>AFTER</literal>, or
        <literal>INSTEAD OF</literal>, depending on the trigger's definition.
 -->
-《マッチ度[50.400000]》<type>text</type>データ型。
-トリガの定義に依存した<literal>BEFORE</literal>、<literal>AFTER</literal>、または<literal>INSTEAD OF</literal>という文字列。
-《機械翻訳》<literal>BEFORE</literal>、<literal>AFTER</literal>、または<literal>INSTEAD OF</literal> （トリガの定義による）。
+トリガの定義に依存して、<literal>BEFORE</literal>、<literal>AFTER</literal>、または<literal>INSTEAD OF</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -5980,7 +6063,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        <literal>ROW</literal> or <literal>STATEMENT</literal>,
        depending on the trigger's definition.
 -->
-《機械翻訳》<literal>ROW</literal>または<literal>STATEMENT</literal>。 トリガの定義によって異なります。
+トリガの定義に依存して、<literal>ROW</literal>または<literal>STATEMENT</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -5994,7 +6077,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        <literal>INSERT</literal>, <literal>UPDATE</literal>,
        <literal>DELETE</literal>, or <literal>TRUNCATE</literal>.
 -->
-《機械翻訳》トリガが起動された操作: <literal>INSERT</literal>、<literal>UPDATE</literal>、<literal>DELETE</literal>、または <literal>TRUNCATE</literal>。
+トリガを起動した操作: <literal>INSERT</literal>、<literal>UPDATE</literal>、<literal>DELETE</literal>、または <literal>TRUNCATE</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -6006,7 +6089,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
        object ID of the table that caused the trigger invocation.
 -->
-《機械翻訳》トリガの起動元のテーブルのオブジェクトID。
+トリガの起動元のテーブルのオブジェクトID。
       </para>
      </listitem>
     </varlistentry>
@@ -6020,11 +6103,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        invocation. This is now deprecated, and could disappear in a future
        release. Use <literal>TG_TABLE_NAME</literal> instead.
 -->
-《マッチ度[56.578947]》<type>name</type>データ型。
-このトリガの呼び出し元になるテーブルの名前。
-将来これは廃止されそうです。
-代わりに<literal>TG_TABLE_NAME</literal>を使用してください。
-《機械翻訳》トリガーを起動したテーブル
+トリガを起動したテーブル。
 これは現在は非推奨であり、将来のリリースで削除される可能性があります。
 代わりに<literal>TG_TABLE_NAME</literal>を使用してください。
       </para>
@@ -6038,7 +6117,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
        table that caused the trigger invocation.
 -->
-《機械翻訳》トリガーを起動したテーブル
+トリガを起動したテーブル。
       </para>
      </listitem>
     </varlistentry>
@@ -6050,7 +6129,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
 <!--
        schema of the table that caused the trigger invocation.
 -->
-《機械翻訳》トリガーの起動を引き起こしたテーブルのスキーマ。
+トリガを起動したテーブルのスキーマ。
       </para>
      </listitem>
     </varlistentry>
@@ -6063,9 +6142,7 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        number of arguments given to the trigger
        function in the <command>CREATE TRIGGER</command> statement.
 -->
-《マッチ度[50.495050]》<type>integer</type>型。
 <command>CREATE TRIGGER</command>文におけるトリガ関数に与えられる引数の数。
-《機械翻訳》<command>CREATE TRIGGER</command>文の引数の数。
       </para>
      </listitem>
     </varlistentry>
@@ -6081,13 +6158,9 @@ ASSERT <replaceable class="parameter">condition</replaceable> <optional> , <repl
        indexes (less than 0 or greater than or equal to <varname>tg_nargs</varname>)
        result in a null value.
 -->
-《マッチ度[61.111111]》<type>text</type>型の配列型。
 <command>CREATE TRIGGER</command>文での引数。
 このインデックスは0から始まります。
 無効なインデックス（0未満や<varname>tg_nargs</varname>以上）は、NULL値という結果になります。
-《機械翻訳》引数は<command>CREATE TRIGGER</command>文からです。
-インデックスは0から始まります。
-無効なインデックス(0より小さいか、<varname>tg_nargs</varname>以上の)はNULL値を返します。
       </para>
      </listitem>
     </varlistentry>
@@ -6189,7 +6262,7 @@ NULLとしても構いません。
 <!--
     <title>A <application>PL/pgSQL</application> Trigger Function</title>
 -->
-<title><application>PL/pgSQL</application>トリガ関数</title>
+    <title><application>PL/pgSQL</application>トリガ関数</title>
 
     <para>
 <!--
@@ -6263,7 +6336,7 @@ CREATE TRIGGER emp_stamp BEFORE INSERT OR UPDATE ON emp
 <!--
     <title>A <application>PL/pgSQL</application> Trigger Function for Auditing</title>
 -->
-<title><application>PL/pgSQL</application>による監査用のトリガ関数</title>
+    <title><application>PL/pgSQL</application>による監査用のトリガ関数</title>
 
     <para>
 <!--
@@ -6301,11 +6374,11 @@ CREATE OR REPLACE FUNCTION process_emp_audit() RETURNS TRIGGER AS $emp_audit$
         -- 操作の種類を決定するために、特殊な変数TG_OPを活用
         --
         IF (TG_OP = 'DELETE') THEN
-            INSERT INTO emp_audit SELECT 'D', now(), user, OLD.*;
+            INSERT INTO emp_audit SELECT 'D', now(), current_user, OLD.*;
         ELSIF (TG_OP = 'UPDATE') THEN
-            INSERT INTO emp_audit SELECT 'U', now(), user, NEW.*;
+            INSERT INTO emp_audit SELECT 'U', now(), current_user, NEW.*;
         ELSIF (TG_OP = 'INSERT') THEN
-            INSERT INTO emp_audit SELECT 'I', now(), user, NEW.*;
+            INSERT INTO emp_audit SELECT 'I', now(), current_user, NEW.*;
         END IF;
 <!--
         RETURN NULL; &#45;- result is ignored since this is an AFTER trigger
@@ -6339,7 +6412,7 @@ AFTER INSERT OR UPDATE OR DELETE ON emp
 <!--
     <title>A <application>PL/pgSQL</application> View Trigger Function for Auditing</title>
 -->
-<title>監査のための<application>PL/pgSQL</application>ビュートリガ関数</title>
+    <title>監査のための<application>PL/pgSQL</application>ビュートリガ関数</title>
 
     <para>
 <!--
@@ -6392,20 +6465,20 @@ CREATE OR REPLACE FUNCTION update_emp_view() RETURNS TRIGGER AS $$
             IF NOT FOUND THEN RETURN NULL; END IF;
 
             OLD.last_updated = now();
-            INSERT INTO emp_audit VALUES('D', user, OLD.*);
+            INSERT INTO emp_audit VALUES('D', current_user, OLD.*);
             RETURN OLD;
         ELSIF (TG_OP = 'UPDATE') THEN
             UPDATE emp SET salary = NEW.salary WHERE empname = OLD.empname;
             IF NOT FOUND THEN RETURN NULL; END IF;
 
             NEW.last_updated = now();
-            INSERT INTO emp_audit VALUES('U', user, NEW.*);
+            INSERT INTO emp_audit VALUES('U', current_user, NEW.*);
             RETURN NEW;
         ELSIF (TG_OP = 'INSERT') THEN
             INSERT INTO emp VALUES(NEW.empname, NEW.salary);
 
             NEW.last_updated = now();
-            INSERT INTO emp_audit VALUES('I', user, NEW.*);
+            INSERT INTO emp_audit VALUES('I', current_user, NEW.*);
             RETURN NEW;
         END IF;
     END;
@@ -6440,7 +6513,7 @@ INSTEAD OF INSERT OR UPDATE OR DELETE ON emp_view
 <!--
     <title>A <application>PL/pgSQL</application> Trigger Function for Maintaining a Summary Table</title>
 -->
-<title>サマリテーブルを維持するための<application>PL/pgSQL</application>トリガ関数</title>
+    <title>サマリテーブルを維持するための<application>PL/pgSQL</application>トリガ関数</title>
 
     <para>
 <!--
@@ -6674,13 +6747,13 @@ CREATE OR REPLACE FUNCTION process_emp_audit() RETURNS TRIGGER AS $emp_audit$
         --
         IF (TG_OP = 'DELETE') THEN
             INSERT INTO emp_audit
-                SELECT 'D', now(), user, o.* FROM old_table o;
+                SELECT 'D', now(), current_user, o.* FROM old_table o;
         ELSIF (TG_OP = 'UPDATE') THEN
             INSERT INTO emp_audit
-                SELECT 'U', now(), user, n.* FROM new_table n;
+                SELECT 'U', now(), current_user, n.* FROM new_table n;
         ELSIF (TG_OP = 'INSERT') THEN
             INSERT INTO emp_audit
-                SELECT 'I', now(), user, n.* FROM new_table n;
+                SELECT 'I', now(), current_user, n.* FROM new_table n;
         END IF;
 <!--
         RETURN NULL; &#45;- result is ignored since this is an AFTER trigger
@@ -6710,7 +6783,7 @@ CREATE TRIGGER emp_audit_del
 <!--
    <title>Triggers on Events</title>
 -->
-<title>イベントによるトリガ</title>
+   <title>イベントによるトリガ</title>
 
    <para>
 <!--
@@ -6741,7 +6814,7 @@ CREATE TRIGGER emp_audit_del
 <!--
        event the trigger is fired for.
 -->
-《機械翻訳》トリガーが起動されるイベント。
+トリガが起動されるイベント。
       </para>
      </listitem>
     </varlistentry>
@@ -6753,7 +6826,7 @@ CREATE TRIGGER emp_audit_del
 <!--
        command tag for which the trigger is fired.
 -->
-《機械翻訳》トリガーが起動されるコマンド・タグ。
+トリガが起動されるコマンドタグ。
       </para>
      </listitem>
     </varlistentry>
@@ -6772,7 +6845,7 @@ CREATE TRIGGER emp_audit_del
 <!--
     <title>A <application>PL/pgSQL</application> Event Trigger Function</title>
 -->
-<title><application>PL/pgSQL</application>イベントトリガ関数</title>
+    <title><application>PL/pgSQL</application>イベントトリガ関数</title>
 
     <para>
 <!--
@@ -6800,7 +6873,7 @@ CREATE EVENT TRIGGER snitch ON ddl_command_start EXECUTE FUNCTION snitch();
 <!--
    <title><application>PL/pgSQL</application> under the Hood</title>
 -->
-<title><application>PL/pgSQL</application>の秘訣</title>
+   <title><application>PL/pgSQL</application>の秘訣</title>
 
    <para>
 <!--
@@ -7076,7 +7149,7 @@ $$ LANGUAGE plpgsql;
 <!--
    <title>Plan Caching</title>
 -->
-<title>計画のキャッシュ</title>
+   <title>計画のキャッシュ</title>
 
    <para>
 <!--
@@ -7299,7 +7372,7 @@ $$ LANGUAGE plpgsql;
 <!--
   <title>Tips for Developing in <application>PL/pgSQL</application></title>
 -->
-<title><application>PL/pgSQL</application>による開発向けのヒント</title>
+  <title><application>PL/pgSQL</application>による開発向けのヒント</title>
 
    <para>
 <!--
@@ -7356,7 +7429,7 @@ $$ LANGUAGE plpgsql;
 <!--
    <title>Handling of Quotation Marks</title>
 -->
-<title>引用符の扱い</title>
+   <title>引用符の扱い</title>
 
    <para>
 <!--
@@ -7602,7 +7675,7 @@ a_output := a_output || $$ if v_$$ || referrer_keys.kind || $$ like '$$
 <!--
    <title>Additional Compile-Time and Run-Time Checks</title>
 -->
-<title>コンパイル時と実行時の付加的チェック</title>
+   <title>コンパイル時と実行時の付加的チェック</title>
 
    <para>
 <!--
@@ -7671,11 +7744,9 @@ a_output := a_output || $$ if v_$$ || referrer_keys.kind || $$ like '$$
         number of target variables and the number of source variables are
         different.
 -->
-《マッチ度[85.617597]》<application>PL/PgSQL</application>コマンドのいくつかは、<command>SELECT INTO</command>のように、一度に2つ以上の変数に値を割り当てることを許しています。
-<application>PL/PgSQL</application>は、ない値に対しては<literal>NULL</literal>を使い、余分な変数は無視しますが、通常は対象の変数の数と元の変数の数は一致するべきです。
-このチェックを有効にすると、<application>PL/PgSQL</application>は対象の変数の数と元の変数の数が異なる場合には必ず<literal>WARNING</literal>または<literal>ERROR</literal>を発生するようになります。
-《機械翻訳》<application>PL/pgSQL</application>の一部のコマンドでは、複数の変数に一度に値を割り当てることができます。 たとえば、<command>SELECT INTO</command>です。 通常、ターゲット変数の数とソース変数の数は一致しなければなりませんが、<application>PL/pgSQL</application>は<literal>NULL</literal>に対して<literal>NULL</literal>を使用し、余分な変数は無視されます。
-このチェックを有効にすると、ターゲット変数の数とソース変数の数が異なる場合、<application>PL/pgSQL</application>は<literal>WARNING</literal>または<literal>ERROR</literal>をスローします。
+<application>PL/pgSQL</application>コマンドのいくつかは、<command>SELECT INTO</command>のように、一度に2つ以上の変数に値を割り当てることを許しています。
+<application>PL/pgSQL</application>は、ない値に対しては<literal>NULL</literal>を使い、余分な変数は無視しますが、通常は対象の変数の数と元の変数の数は一致するべきです。
+このチェックを有効にすると、<application>PL/pgSQL</application>は対象の変数の数と元の変数の数が異なる場合には必ず<literal>WARNING</literal>または<literal>ERROR</literal>を発生するようになります。
        </para>
       </listitem>
      </varlistentry>
@@ -7692,10 +7763,8 @@ a_output := a_output || $$ if v_$$ || referrer_keys.kind || $$ like '$$
         rows is generally either inefficient and/or nondeterministic and
         therefore is likely an error.
 -->
-《マッチ度[86.111111]》このチェックを有効にすると、<application>PL/PgSQL</application>は<literal>INTO</literal>句が使われている場合、与えられた問い合わせが2行以上の行を返すかどうか確認します。
+このチェックを有効にすると、<application>PL/pgSQL</application>は<literal>INTO</literal>句が使われている場合、与えられた問い合わせが2行以上の行を返すかどうか確認します。
 <literal>INTO</literal>文は必ず1行に対してのみ使われますので、複数の行を返す問い合わせがあるということは一般に非効率かつ/または非決定論的であり、そのためおそらくエラーです。
-《機械翻訳》このチェックを有効にすると、<application>PL/pgSQL</application>は、<literal>INTO</literal>句が使用されている場合に、指定された問い合わせが複数の行を返すかどうかをチェックします。
-<literal>INTO</literal>文は通常、1行しか返さないため、問い合わせが複数の行を返すことは、一般に非効率的で非決定論的であり、したがってエラーになる可能性があります。
        </para>
       </listitem>
      </varlistentry>
@@ -7767,7 +7836,7 @@ HINT:  Make sure the query returns the exact list of columns.
 <!--
   <title>Porting from <productname>Oracle</productname> PL/SQL</title>
 -->
-<title><productname>Oracle</productname> PL/SQLからの移植</title>
+  <title><productname>Oracle</productname> PL/SQLからの移植</title>
 
   <indexterm zone="plpgsql-porting">
    <primary>Oracle</primary>
@@ -7942,7 +8011,7 @@ SQLコマンド内に使用された名前が、コマンドで使われてい�
 <!--
    <title>Porting Examples</title>
 -->
-<title>移植例</title>
+   <title>移植例</title>
 
    <para>
 <!--
@@ -7956,7 +8025,7 @@ SQLコマンド内に使用された名前が、コマンドで使われてい�
 <!--
     <title>Porting a Simple Function from <application>PL/SQL</application> to <application>PL/pgSQL</application></title>
 -->
-<title>簡単な関数の<application>PL/SQL</application>から<application>PL/pgSQL</application>への移植</title>
+    <title>簡単な関数の<application>PL/SQL</application>から<application>PL/pgSQL</application>への移植</title>
 
     <para>
 <!--
@@ -8079,7 +8148,7 @@ $$ LANGUAGE plpgsql;
 <!--
     <title>Porting a Function that Creates Another Function from <application>PL/SQL</application> to <application>PL/pgSQL</application></title>
 -->
-<title>他の関数を生成する<application>PL/SQL</application>を<application>PL/pgSQL</application>に移植</title>
+    <title>他の関数を生成する<application>PL/SQL</application>を<application>PL/pgSQL</application>に移植</title>
 
     <para>
 <!--
@@ -8207,7 +8276,7 @@ $func$ LANGUAGE plpgsql;
     <literal>OUT</literal> Parameters from <application>PL/SQL</application> to
     <application>PL/pgSQL</application></title>
 -->
-<title>文字列操作を行い、<literal>OUT</literal>パラメータを持つ<application>PL/SQL</application>プロシージャの<application>PL/pgSQL</application>への移植</title>
+    <title>文字列操作を行い、<literal>OUT</literal>パラメータを持つ<application>PL/SQL</application>プロシージャの<application>PL/pgSQL</application>への移植</title>
 
     <para>
 <!--
@@ -8340,7 +8409,7 @@ SELECT * FROM cs_parse_url('http://foobar.com/query.cgi?baz');
 <!--
     <title>Porting a Procedure from <application>PL/SQL</application> to <application>PL/pgSQL</application></title>
 -->
-<title><application>PL/SQL</application>プロシージャの<application>PL/pgSQL</application>への移植</title>
+    <title><application>PL/SQL</application>プロシージャの<application>PL/pgSQL</application>への移植</title>
 
     <para>
 <!--
@@ -8459,7 +8528,7 @@ $$ LANGUAGE plpgsql;
 <!--
    <title>Other Things to Watch For</title>
 -->
-<title>その他の注意事項</title>
+   <title>その他の注意事項</title>
 
    <para>
 <!--
@@ -8474,7 +8543,7 @@ $$ LANGUAGE plpgsql;
 <!--
     <title>Implicit Rollback after Exceptions</title>
 -->
-<title>例外後の暗黙的ロールバック</title>
+    <title>例外後の暗黙的ロールバック</title>
 
     <para>
 <!--
@@ -8576,7 +8645,7 @@ $$ LANGUAGE plpgsql STRICT IMMUTABLE;
 <!--
    <title>Appendix</title>
 -->
-<title>付録</title>
+   <title>付録</title>
 
    <para>
 <!--
@@ -8595,22 +8664,20 @@ $$ LANGUAGE plpgsql STRICT IMMUTABLE;
    </indexterm>
 
 <programlisting><![CDATA[
---]]><!--
-&#45;- instr functions that mimic Oracle's counterpart
-&#45;- Syntax: instr(string1, string2 [, n [, m]])
-&#45;- where [] denotes optional parameters.
---><![CDATA[
+--
+-- instr functions that mimic Oracle's counterpart
+-- Syntax: instr(string1, string2 [, n [, m]])
+-- where [] denotes optional parameters.
 -- Oracleのものと同じ動作をするinstr関数
 -- 構文: instr(string1, string2 [, n [, m]])
 -- ただし、[]は省略可能なパラメータ
---]]><!--
-&#45;- Search string1, beginning at the nth character, for the mth occurrence
-&#45;- of string2.  If n is negative, search backwards, starting at the abs(n)'th
-&#45;- character from the end of string1.
-&#45;- If n is not passed, assume 1 (search starts at first character).
-&#45;- If m is not passed, assume 1 (find first occurrence).
-&#45;- Returns starting index of string2 in string1, or 0 if string2 is not found.
---><![CDATA[
+--
+-- Search string1, beginning at the nth character, for the mth occurrence
+-- of string2.  If n is negative, search backwards, starting at the abs(n)'th
+-- character from the end of string1.
+-- If n is not passed, assume 1 (search starts at first character).
+-- If m is not passed, assume 1 (find first occurrence).
+-- Returns starting index of string2 in string1, or 0 if string2 is not found.
 -- string1内のn番目の文字から始めて、m番目のstring2を探します。
 -- nが負の場合、string1の終わりからabs(n)番目の文字から始めて、逆方向に検索します。
 -- nが渡されなかった場合は、1とみなします（最初の文字から探し始めます）。

@@ -147,43 +147,41 @@ POSTGRESは後からいくつかの商用データベースで利用できるよ
 <productname>PostgreSQL</productname>はオリジナルのバークレイ校のソースコードを引き継ぐオープンソースのデータベースで、標準SQLの大部分やその他の最新の機能をサポートしています。
 
    <itemizedlist spacing="compact">
+    <listitem>
 <!--
-    <listitem>
-     <simpara>complex queries</simpara>
-    </listitem>
-    <listitem>
-     <simpara>foreign keys</simpara>
-    </listitem>
-    <listitem>
-     <simpara>triggers</simpara>
-    </listitem>
-    <listitem>
-     <simpara>updatable views</simpara>
-    </listitem>
-    <listitem>
-     <simpara>transactional integrity</simpara>
-    </listitem>
-    <listitem>
-     <simpara>multiversion concurrency control</simpara>
-    </listitem>
+     <simpara><link linkend="sql">complex queries</link></simpara>
 -->
-    <listitem>
-     <simpara>複雑な問い合わせ</simpara>
+     <simpara><link linkend="sql">複雑な問い合わせ</link></simpara>
     </listitem>
     <listitem>
-     <simpara>外部キー</simpara>
+<!--
+     <simpara><link linkend="ddl-constraints-fk">foreign keys</link></simpara>
+-->
+     <simpara><link linkend="ddl-constraints-fk">外部キー</link></simpara>
     </listitem>
     <listitem>
-     <simpara>トリガ</simpara>
+<!--
+     <simpara><link linkend="triggers">triggers</link></simpara>
+-->
+     <simpara><link linkend="triggers">トリガ</link></simpara>
     </listitem>
     <listitem>
-     <simpara>更新可能ビュー</simpara>
+<!--
+     <simpara><link linkend="sql-createview-updatable-views">updatable views</link></simpara>
+-->
+     <simpara><link linkend="sql-createview-updatable-views">更新可能ビュー</link></simpara>
     </listitem>
     <listitem>
-     <simpara>トランザクションの一貫性</simpara>
+<!--
+     <simpara><link linkend="transaction-iso">transactional integrity</link></simpara>
+-->
+     <simpara><link linkend="transaction-iso">トランザクションの一貫性</link></simpara>
     </listitem>
     <listitem>
-     <simpara>多版同時実行制御</simpara>
+<!--
+     <simpara><link linkend="mvcc">multiversion concurrency control</link></simpara>
+-->
+     <simpara><link linkend="mvcc">多版同時実行制御</link></simpara>
     </listitem>
    </itemizedlist>
 
@@ -194,43 +192,41 @@ POSTGRESは後からいくつかの商用データベースで利用できるよ
 また<productname>PostgreSQL</productname>は、例えば新規に以下のものを付け加えることで、いろいろな方法でユーザが拡張できます。
 
    <itemizedlist spacing="compact">
+    <listitem>
 <!--
-    <listitem>
-     <simpara>data types</simpara>
-    </listitem>
-    <listitem>
-     <simpara>functions</simpara>
-    </listitem>
-    <listitem>
-     <simpara>operators</simpara>
-    </listitem>
-    <listitem>
-     <simpara>aggregate functions</simpara>
-    </listitem>
-    <listitem>
-     <simpara>index methods</simpara>
-    </listitem>
-    <listitem>
-     <simpara>procedural languages</simpara>
-    </listitem>
+     <simpara><link linkend="datatype">data types</link></simpara>
 -->
-    <listitem>
-     <simpara>データ型</simpara>
+     <simpara><link linkend="datatype">データ型</link></simpara>
     </listitem>
     <listitem>
-     <simpara>関数</simpara>
+<!--
+     <simpara><link linkend="functions">functions</link></simpara>
+-->
+     <simpara><link linkend="functions">関数</link></simpara>
     </listitem>
     <listitem>
-     <simpara>演算子</simpara>
+<!--
+     <simpara><link linkend="functions">operators</link></simpara>
+-->
+     <simpara><link linkend="functions">演算子</link></simpara>
     </listitem>
     <listitem>
-     <simpara>集約関数</simpara>
+<!--
+     <simpara><link linkend="functions-aggregate">aggregate functions</link></simpara>
+-->
+     <simpara><link linkend="functions-aggregate">集約関数</link></simpara>
     </listitem>
     <listitem>
-     <simpara>インデックスメソッド</simpara>
+<!--
+     <simpara><link linkend="indexes">index methods</link></simpara>
+-->
+     <simpara><link linkend="indexes">インデックスメソッド</link></simpara>
     </listitem>
     <listitem>
-     <simpara>手続き言語</simpara>
+<!--
+     <simpara><link linkend="server-programming">procedural languages</link></simpara>
+-->
+     <simpara><link linkend="server-programming">手続き言語</link></simpara>
     </listitem>
    </itemizedlist>
   </para>

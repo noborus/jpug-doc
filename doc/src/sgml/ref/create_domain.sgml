@@ -30,12 +30,12 @@ PostgreSQL documentation
 CREATE DOMAIN <replaceable class="parameter">name</replaceable> [ AS ] <replaceable class="parameter">data_type</replaceable>
     [ COLLATE <replaceable>collation</replaceable> ]
     [ DEFAULT <replaceable>expression</replaceable> ]
-    [ <replaceable class="parameter">constraint</replaceable> [ ... ] ]
+    [ <replaceable class="parameter">domain_constraint</replaceable> [ ... ] ]
 
 <!--
-<phrase>where <replaceable class="parameter">constraint</replaceable> is:</phrase>
+<phrase>where <replaceable class="parameter">domain_constraint</replaceable> is:</phrase>
 -->
-<phrase>ここで<replaceable class="parameter">constraint</replaceable>は、以下の通りです。</phrase>
+<phrase>ここで<replaceable class="parameter">domain_constraint</replaceable>は、以下の通りです。</phrase>
 
 [ CONSTRAINT <replaceable class="parameter">constraint_name</replaceable> ]
 { NOT NULL | NULL | CHECK (<replaceable class="parameter">expression</replaceable>) }
@@ -275,7 +275,7 @@ TRUEまたはUNKNOWNとして評価される式は成功します。
   </variablelist>
  </refsect1>
 
- <refsect1>
+ <refsect1 id="sql-createdomain-notes">
 <!--
   <title>Notes</title>
 -->
@@ -291,7 +291,7 @@ TRUEまたはUNKNOWNとして評価される式は成功します。
    subtle example is
 -->
 ドメイン制約、特に<literal>NOT NULL</literal>は、値がドメイン型に変換されるときに検査されます。
-通常はドメイン型である列が、NOT NULLの制約にも関わらずNULLとして読み出される場合もあり得ます。
+名目上はドメイン型である列が、NOT NULLの制約にも関わらずNULLとして読み出される場合もあり得ます。
 例えば、外部結合の問い合わせにおいて、ドメインの列が外部結合のNULLになる側にあるときに、これが起こり得ます。
 より微妙な例は以下です。
 <programlisting>
@@ -302,7 +302,7 @@ INSERT INTO tab (domcol) VALUES ((SELECT domcol FROM tab WHERE false));
    to be of the domain type, so no further constraint checking is applied
    to it, and the insertion will succeed.
 -->
-空でスカラーの副問い合わせにより、ドメイン型であると見なされるNULL値が生成されます。
+空でスカラの副SELECTにより、ドメイン型であると見なされるNULL値が生成されます。
 そのため、制約についてこれ以上の検証は行われず、挿入は成功します。
   </para>
 
@@ -399,7 +399,7 @@ CREATE TABLE us_snail_addy (
 <!--
   <title>Compatibility</title>
 -->
-<title>互換性</title>
+  <title>互換性</title>
 
   <para>
 <!--
@@ -407,6 +407,23 @@ CREATE TABLE us_snail_addy (
    standard.
 -->
 <command>CREATE DOMAIN</command>コマンドは標準SQLに準拠しています。
+  </para>
+
+  <para>
+<!--
+   The syntax <literal>NOT NULL</literal> in this command is a
+   <productname>PostgreSQL</productname> extension.  (A standard-conforming
+   way to write the same would be <literal>CHECK (VALUE IS NOT
+   NULL)</literal>.  However, per <xref linkend="sql-createdomain-notes"/>,
+   such constraints are best avoided in practice anyway.)  The
+   <literal>NULL</literal> <quote>constraint</quote> is a
+   <productname>PostgreSQL</productname> extension (see also <xref
+   linkend="sql-createtable-compatibility"/>).
+-->
+このコマンドの<literal>NOT NULL</literal>という構文は<productname>PostgreSQL</productname>の拡張です。
+（同じことを書くための標準に準拠した方法は<literal>CHECK (VALUE IS NOT NULL)</literal>です。
+しかし<xref linkend="sql-createdomain-notes"/>に従って、実際にはそのような制約は避けるのが最善です。）
+<literal>NULL</literal>の<quote>制約</quote>は<productname>PostgreSQL</productname>の拡張です（<xref linkend="sql-createtable-compatibility"/>も参照してください）。
   </para>
  </refsect1>
 

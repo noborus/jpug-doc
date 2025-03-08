@@ -145,6 +145,55 @@ CREATE INDEX test1_id_index ON test1 (id);
 
   <para>
 <!--
+   In general, <productname>PostgreSQL</productname> indexes can be used
+   to optimize queries that contain one or more <literal>WHERE</literal>
+   or <literal>JOIN</literal> clauses of the form
+-->
+一般に、<productname>PostgreSQL</productname>のインデックスは、以下の形式の1つ以上の<literal>WHERE</literal>句または<literal>JOIN</literal>句を含む問い合わせを最適化するために使用できます。
+
+<synopsis>
+<replaceable>indexed-column</replaceable> <replaceable>indexable-operator</replaceable> <replaceable>comparison-value</replaceable>
+</synopsis>
+
+<!--
+   Here, the <replaceable>indexed-column</replaceable> is whatever
+   column or expression the index has been defined on.
+   The <replaceable>indexable-operator</replaceable> is an operator that
+   is a member of the index's <firstterm>operator class</firstterm> for
+   the indexed column.  (More details about that appear below.)
+   And the <replaceable>comparison-value</replaceable> can be any
+   expression that is not volatile and does not reference the index's
+   table.
+-->
+ここで、<replaceable>indexed-column</replaceable>はインデックスが定義されている列または式であれば何でもかまいません。
+<replaceable>indexable-operator</replaceable>は、インデックスの<firstterm>演算子クラス</firstterm>のメンバである演算子です。
+（詳細は後述。）
+また、<replaceable>comparison-value</replaceable>は揮発性でなく、インデックスのテーブルを参照しない式であれば何でもかまいません。
+  </para>
+
+  <para>
+<!--
+   In some cases the query planner can extract an indexable clause of
+   this form from another SQL construct.  A simple example is that if
+   the original clause was
+-->
+場合によっては、問い合わせプランナは、別のSQL構造からこの形式のインデックス可能な句を抽出できます。
+単純な例は、元の句が以下の通りであり、
+
+<synopsis>
+<replaceable>comparison-value</replaceable> <replaceable>operator</replaceable> <replaceable>indexed-column</replaceable>
+</synopsis>
+
+<!--
+   then it can be flipped around into indexable form if the
+   original <replaceable>operator</replaceable> has a commutator
+   operator that is a member of the index's operator class.
+-->
+元の<replaceable>operator</replaceable>にインデックスの演算子クラスのメンバである交代演算子がある場合、インデックス可能な形式に切り替えることができます。
+  </para>
+
+  <para>
+<!--
    Creating an index on a large table can take a long time.  By default,
    <productname>PostgreSQL</productname> allows reads (<command>SELECT</command> statements) to occur
    on the table in parallel with index creation, but writes (<command>INSERT</command>,
@@ -190,7 +239,7 @@ CREATE INDEX test1_id_index ON test1 (id);
    B-tree, Hash, GiST, SP-GiST, GIN, BRIN, and the extension <link
    linkend="bloom">bloom</link>.
    Each index type uses a different
-   algorithm that is best suited to different types of queries.
+   algorithm that is best suited to different types of indexable clauses.
    By default, the <link linkend="sql-createindex"><command>CREATE
    INDEX</command></link> command creates
    B-tree indexes, which fit the most common situations.
@@ -199,7 +248,7 @@ CREATE INDEX test1_id_index ON test1 (id);
    For example, to create a Hash index:
 -->
 <productname>PostgreSQL</productname>では、B-tree、Hash、GiST、SP-GiST、GIN、BRIN、そして<link linkend="bloom">ブルーム</link>拡張といった複数の種類のインデックスを使用可能です。
-インデックスの各種類は、異なる種類の問い合わせに最も適した、異なるアルゴリズムを使用します。
+インデックスの各種類は、異なる種類のインデックス可能な句に最も適した、異なるアルゴリズムを使用します。
 デフォルトで<link linkend="sql-createindex"><command>CREATE INDEX</command></link>コマンドは、B-treeインデックスを作成し、それは最も一般的な状況に適合します。
 他のインデックスの種類は、キーワード<literal>USING</literal>の後にインデックス種類名を記述することで選択されます。
 例えば、ハッシュインデックスを作成するには、次のようにします。
@@ -1177,7 +1226,7 @@ CREATE INDEX people_names ON people ((first_name || ' ' || last_name));
 <!--
    Index expressions are relatively expensive to maintain, because the
    derived expression(s) must be computed for each row insertion
-   and <link linkend="storage-hot">non-HOT update.</link>  However, the index expressions are
+   and <link linkend="storage-hot">non-HOT update</link>. However, the index expressions are
    <emphasis>not</emphasis> recomputed during an indexed search, since they are
    already stored in the index.  In both examples above, the system
    sees the query as just <literal>WHERE indexedcolumn = 'constant'</literal>
@@ -1185,7 +1234,7 @@ CREATE INDEX people_names ON people ((first_name || ' ' || last_name));
    query.  Thus, indexes on expressions are useful when retrieval speed
    is more important than insertion and update speed.
 -->
-派生した式が、行挿入と<link linkend="storage-hot">非HOT更新</link>の度に計算されなければなりませんので、インデックス式は相対的に見て維持が高価です。
+派生した式が、行挿入と<link linkend="storage-hot">非HOT更新</link>の度に計算されなければならないので、インデックス式は相対的に見て維持が高価です。
 しかし、インデックス式はインデックス内にすでに格納されているため、インデックスを使用する検索の間は再計算<emphasis>されません</emphasis>。
 上の両方の例では、システムは問い合わせを単なる<literal>WHERE indexedcolumn = 'constant'</literal>と理解しますので、この検索速度は他の単純なインデックス問い合わせと同じです。
 したがって、式に対するインデックスは取り出し速度が挿入、更新速度より重要な場合に有用です。
@@ -2328,7 +2377,7 @@ CREATE INDEX test1c_content_y_index ON test1c (content COLLATE "y");
    The rest of this section gives some tips for that:
 -->
 どのインデックスを作成すべきかを判断するための一般的な手順を定めることは困難です。
-これまでの節では、例として典型的なケースをいくつか記述してきました。
+前節では、例として典型的なケースをいくつか記述してきました。
 十分な検証がしばしば必要です。
 本節の残りで、検証のためのヒントをいくつか説明しておきます。
   </para>

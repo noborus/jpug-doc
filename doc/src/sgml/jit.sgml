@@ -163,6 +163,7 @@
    will often be higher than the time it can save.
 -->
 <acronym>JIT</acronym>コンパイルは、主に長時間実行するCPUバウンドの問い合わせに有益です。
+これらはしばしば分析的な問い合わせでしょう。
 短い問い合わせでは、<acronym>JIT</acronym>コンパイルを行うことにより加わるオーバーヘッドはしばしばそれによって短縮できる時間よりも大きくなるでしょう。
   </para>
 
@@ -260,7 +261,7 @@ SET
  JIT:
    Functions: 3
    Options: Inlining false, Optimization false, Expressions true, Deforming true
-   Timing: Generation 1.259 ms, Inlining 0.000 ms, Optimization 0.797 ms, Emission 5.048 ms, Total 7.104 ms
+   Timing: Generation 1.259 ms (Deform 0.000 ms), Inlining 0.000 ms, Optimization 0.797 ms, Emission 5.048 ms, Total 7.104 ms
  Execution Time: 7.416 ms
 </screen>
 <!--
@@ -277,9 +278,11 @@ SET
 
 <!--
  <sect1 id="jit-configuration" xreflabel="JIT Configuration">
-  <title>Configuration</title>
 -->
  <sect1 id="jit-configuration" xreflabel="JIT設定">
+<!--
+  <title>Configuration</title>
+-->
   <title>設定</title>
 
   <para>

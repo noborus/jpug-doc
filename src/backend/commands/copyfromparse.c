@@ -47,7 +47,7 @@
  * and 'attribute_buf' are expanded on demand, to hold the longest line
  * encountered so far.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -70,10 +70,10 @@
 #include "libpq/pqformat.h"
 #include "mb/pg_wchar.h"
 #include "miscadmin.h"
+#include "nodes/miscnodes.h"
 #include "pgstat.h"
 #include "port/pg_bswap.h"
 #include "utils/builtins.h"
-#include "utils/memutils.h"
 #include "utils/rel.h"
 
 #define ISOCTAL(c) (((c) >= '0') && ((c) <= '7'))
@@ -174,7 +174,7 @@ ReceiveCopyBegin(CopyFromState cstate)
 	int16		format = (cstate->opts.binary ? 1 : 0);
 	int			i;
 
-	pq_beginmessage(&buf, 'G');
+	pq_beginmessage(&buf, PqMsg_CopyInResponse);
 	pq_sendbyte(&buf, format);	/* overall format */
 	pq_sendint16(&buf, natts);
 	for (i = 0; i < natts; i++)
@@ -279,13 +279,13 @@ CopyGetData(CopyFromState cstate, void *databuf, int minread, int maxread)
 					/* Validate message type and set packet size limit */
 					switch (mtype)
 					{
-						case 'd':	/* CopyData */
+						case PqMsg_CopyData:
 							maxmsglen = PQ_LARGE_MESSAGE_LIMIT;
 							break;
-						case 'c':	/* CopyDone */
-						case 'f':	/* CopyFail */
-						case 'H':	/* Flush */
-						case 'S':	/* Sync */
+						case PqMsg_CopyDone:
+						case PqMsg_CopyFail:
+						case PqMsg_Flush:
+						case PqMsg_Sync:
 							maxmsglen = PQ_SMALL_MESSAGE_LIMIT;
 							break;
 						default:
@@ -305,20 +305,20 @@ CopyGetData(CopyFromState cstate, void *databuf, int minread, int maxread)
 					/* ... and process it */
 					switch (mtype)
 					{
-						case 'd':	/* CopyData */
+						case PqMsg_CopyData:
 							break;
-						case 'c':	/* CopyDone */
+						case PqMsg_CopyDone:
 							/* COPY IN correctly terminated by frontend */
 							cstate->raw_reached_eof = true;
 							return bytesread;
-						case 'f':	/* CopyFail */
+						case PqMsg_CopyFail:
 							ereport(ERROR,
 									(errcode(ERRCODE_QUERY_CANCELED),
 									 errmsg("COPY from stdin failed: %s",
 											pq_getmsgstring(cstate->fe_msgbuf))));
 							break;
-						case 'H':	/* Flush */
-						case 'S':	/* Sync */
+						case PqMsg_Flush:
+						case PqMsg_Sync:
 
 							/*
 							 * Ignore Flush/Sync for the convenience of client
@@ -955,11 +955,56 @@ NextCopyFrom(CopyFromState cstate, ExprContext *econtext,
 
 				values[m] = ExecEvalExpr(defexprs[m], econtext, &nulls[m]);
 			}
-			else
-				values[m] = InputFunctionCall(&in_functions[m],
-											  string,
-											  typioparams[m],
-											  att->atttypmod);
+
+			/*
+			 * If ON_ERROR is specified with IGNORE, skip rows with soft
+			 * errors
+			 */
+			else if (!InputFunctionCallSafe(&in_functions[m],
+											string,
+											typioparams[m],
+											att->atttypmod,
+											(Node *) cstate->escontext,
+											&values[m]))
+			{
+				Assert(cstate->opts.on_error != COPY_ON_ERROR_STOP);
+
+				cstate->num_errors++;
+
+				if (cstate->opts.log_verbosity == COPY_LOG_VERBOSITY_VERBOSE)
+				{
+					/*
+					 * Since we emit line number and column info in the below
+					 * notice message, we suppress error context information
+					 * other than the relation name.
+					 */
+					Assert(!cstate->relname_only);
+					cstate->relname_only = true;
+
+					if (cstate->cur_attval)
+					{
+						char	   *attval;
+
+						attval = CopyLimitPrintoutLength(cstate->cur_attval);
+						ereport(NOTICE,
+								errmsg("skipping row due to data type incompatibility at line %llu for column \"%s\": \"%s\"",
+									   (unsigned long long) cstate->cur_lineno,
+									   cstate->cur_attname,
+									   attval));
+						pfree(attval);
+					}
+					else
+						ereport(NOTICE,
+								errmsg("skipping row due to data type incompatibility at line %llu for column \"%s\": null input",
+									   (unsigned long long) cstate->cur_lineno,
+									   cstate->cur_attname));
+
+					/* reset relname_only */
+					cstate->relname_only = false;
+				}
+
+				return true;
+			}
 
 			cstate->cur_attname = NULL;
 			cstate->cur_attval = NULL;
@@ -1160,9 +1205,6 @@ CopyReadLineText(CopyFromState cstate)
 	 * In CSV mode, \r and \n inside a quoted field are just part of the data
 	 * value and are put in line_buf.  We keep just enough state to know if we
 	 * are currently in a quoted field or not.
-	 *
-	 * These four characters, and the CSV escape and quote characters, are
-	 * assumed the same in frontend and backend encodings.
 	 *
 	 * The input has already been converted to the database encoding.  All
 	 * supported server encodings have the property that all bytes in a

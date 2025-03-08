@@ -1,9 +1,9 @@
-# Copyright (c) 2023, PostgreSQL Global Development Group
+# Copyright (c) 2023-2024, PostgreSQL Global Development Group
 #
 # Test we handle interrupted DROP DATABASE correctly.
 
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 use PostgreSQL::Test::Cluster;
 use PostgreSQL::Test::Utils;
 use Test::More;
@@ -42,11 +42,15 @@ like(
 	qr/FATAL:\s+cannot connect to invalid database "regression_invalid"/,
 	"can't connect to invalid database - error message");
 
-is($node->psql('postgres', 'ALTER DATABASE regression_invalid CONNECTION LIMIT 10'),
-	2, "can't ALTER invalid database");
+is( $node->psql(
+		'postgres', 'ALTER DATABASE regression_invalid CONNECTION LIMIT 10'),
+	2,
+	"can't ALTER invalid database");
 
 # check invalid database can't be used as a template
-is( $node->psql('postgres', 'CREATE DATABASE copy_invalid TEMPLATE regression_invalid'),
+is( $node->psql(
+		'postgres',
+		'CREATE DATABASE copy_invalid TEMPLATE regression_invalid'),
 	3,
 	"can't use invalid database as template");
 

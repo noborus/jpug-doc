@@ -102,8 +102,8 @@ SELECT * FROM <replaceable>name</replaceable>;
    <function>nextval</function> calls.)
 -->
 これを使用すると、シーケンスのパラメータと現在の状態を確認することができます。
-中でも、シーケンスの<literal>last_value</literal>フィールドは全てのセッションで割り当てられた最後の値を示します
-（もちろんこの値は、他のセッションの<function>nextval</function>の実行により、表示された時点で既に最新ではない可能性があります）。
+中でも、シーケンスの<literal>last_value</literal>フィールドは全てのセッションで割り当てられた最後の値を示します。
+（もちろんこの値は、他のセッションの<function>nextval</function>の実行により、表示された時点で既に最新ではない可能性があります。）
   </para>
  </refsect1>
 
@@ -309,7 +309,7 @@ SELECT * FROM <replaceable>name</replaceable>;
       can be generated at a time, i.e., no cache), and this is also the
       default.
 -->
-<literal>CACHE <replaceable class="parameter">cache</replaceable></literal>オプションは、あらかじめ番号を割り当て、メモリに格納しておくシーケンス番号の量を指定します。これによりアクセスを高速にすることができます。
+<literal>CACHE <replaceable class="parameter">cache</replaceable></literal>句は、あらかじめ番号を割り当て、メモリに格納しておくシーケンス番号の量を指定します。これによりアクセスを高速にすることができます。この句は省略可能です。
 最小値は1です（一度に生成する値が1つだけなので、キャッシュがない状態になります）。これがデフォルトになっています。
      </para>
     </listitem>
@@ -405,7 +405,7 @@ SELECT * FROM <replaceable>name</replaceable>;
    concurrently.
 -->
 <function>nextval</function>と<function>setval</function>の呼び出しは決してロールバックされないので、シーケンスの番号について<quote>欠番のない</quote>割り当てが必要な場合には、シーケンスオブジェクトを使うことはできません。
-カウンターを含むテーブルに対して排他ロックを使うことで、欠番のない割り当てを構築することは可能ですが、この解決策はシーケンスオブジェクトに比べてずっと高価で、特に多くのトランザクションが同時にシーケンスの番号を必要とする場合は高価になります。
+カウンタを含むテーブルに対して排他ロックを使うことで、欠番のない割り当てを構築することは可能ですが、この解決策はシーケンスオブジェクトに比べてずっと高価で、特に多くのトランザクションが同時にシーケンスの番号を必要とする場合は高価になります。
   </para>
 
   <para>
@@ -546,7 +546,7 @@ END;
    <command>CREATE SEQUENCE</command> conforms to the <acronym>SQL</acronym>
    standard, with the following exceptions:
 -->
-以下の例外を除き、<command>CREATE SEQUENCE</command>は標準<acronym>SQL</acronym>に従います。
+以下の例外を除き、<command>CREATE SEQUENCE</command>は標準<acronym>SQL</acronym>に準拠しています。
    <itemizedlist>
     <listitem>
      <para>

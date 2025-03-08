@@ -3,7 +3,7 @@
  * nodeIncrementalSort.c
  *	  Routines to handle incremental sorting of relations.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -78,7 +78,6 @@
 
 #include "postgres.h"
 
-#include "access/htup_details.h"
 #include "executor/execdebug.h"
 #include "executor/nodeIncrementalSort.h"
 #include "miscadmin.h"
@@ -1079,11 +1078,6 @@ ExecEndIncrementalSort(IncrementalSortState *node)
 {
 	SO_printf("ExecEndIncrementalSort: shutting down sort node\n");
 
-	/* clean out the scan tuple */
-	ExecClearTuple(node->ss.ss_ScanTupleSlot);
-	/* must drop pointer to sort result tuple */
-	ExecClearTuple(node->ss.ps.ps_ResultTupleSlot);
-	/* must drop standalone tuple slots from outer node */
 	ExecDropSingleTupleTableSlot(node->group_pivot);
 	ExecDropSingleTupleTableSlot(node->transfer_tuple);
 

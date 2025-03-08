@@ -61,30 +61,22 @@ PostgreSQL documentation
     </arg>
    </arg>
 
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
-  </cmdsynopsis>
+   <arg choice="plain">
+    <arg choice="opt">
+     <group choice="plain">
+      <arg choice="plain"><option>-s</option></arg>
+      <arg choice="plain"><option>--system</option></arg>
+     </group>
+    </arg>
+   </arg>
 
-  <cmdsynopsis>
-   <command>reindexdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-
-   <group choice="plain">
-    <arg choice="plain"><option>-a</option></arg>
-    <arg choice="plain"><option>--all</option></arg>
-   </group>
-  </cmdsynopsis>
-
-  <cmdsynopsis>
-   <command>reindexdb</command>
-   <arg rep="repeat"><replaceable>connection-option</replaceable></arg>
-   <arg rep="repeat"><replaceable>option</replaceable></arg>
-
-   <group choice="plain">
-    <arg choice="plain"><option>-s</option></arg>
-    <arg choice="plain"><option>--system</option></arg>
-   </group>
-   <arg choice="opt"><replaceable>dbname</replaceable></arg>
+   <arg choice="opt">
+    <group choice="plain">
+     <arg choice="plain"><replaceable>dbname</replaceable></arg>
+     <arg choice="plain"><option>-a</option></arg>
+     <arg choice="plain"><option>--all</option></arg>
+    </group>
+   </arg>
   </cmdsynopsis>
  </refsynopsisdiv>
 
@@ -238,10 +230,9 @@ PostgreSQL documentation
        </para>
        <para>
 <!--
-        Note that this option is incompatible with the <option>&#45;-index</option>
-        and <option>&#45;-system</option> options.
+        Note that this option is incompatible with the <option>&#45;-system</option> option.
 -->
-このオプションは<option>--index</option>や<option>--system</option>オプションと非互換であることに注意してください。
+《機械翻訳》このオプションは<option>--system</option>オプションと互換性がありません。
        </para>
       </listitem>
      </varlistentry>
@@ -525,7 +516,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -537,7 +528,7 @@ PostgreSQL documentation
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>
@@ -565,28 +556,6 @@ PostgreSQL documentation
   </para>
 
  </refsect1>
-
-
- <refsect1>
-<!--
-  <title>Notes</title>
--->
-  <title>注釈</title>
-
-  <para>
-<!--
-   <application>reindexdb</application> might need to connect several
-   times to the <productname>PostgreSQL</productname> server, asking
-   for a password each time. It is convenient to have a
-   <filename>~/.pgpass</filename> file in such cases. See <xref
-   linkend="libpq-pgpass"/> for more information.
--->
-<application>reindexdb</application>の実行中には<productname>PostgreSQL</productname>サーバに何度も接続しなければならないことがありますが、この場合その度にパスワードが必要です。
-そのような場合は<filename>~/.pgpass</filename>ファイルを用意しておくと便利です。
-詳細は<xref linkend="libpq-pgpass"/>を参照してください。
-  </para>
- </refsect1>
-
 
  <refsect1>
 <!--

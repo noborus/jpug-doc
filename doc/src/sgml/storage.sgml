@@ -309,7 +309,7 @@ these files are named after the table or index's <firstterm>filenode</firstterm>
 which can be found in <structname>pg_class</structname>.<structfield>relfilenode</structfield>. But
 for temporary relations, the file name is of the form
 <literal>t<replaceable>BBB</replaceable>_<replaceable>FFF</replaceable></literal>, where <replaceable>BBB</replaceable>
-is the backend ID of the backend which created the file, and <replaceable>FFF</replaceable>
+is the process number of the backend which created the file, and <replaceable>FFF</replaceable>
 is the filenode number.  In either case, in addition to the main file (a/k/a
 main fork), each table and index has a <firstterm>free space map</firstterm> (see <xref
 linkend="storage-fsm"/>), which stores information about free space available in
@@ -325,7 +325,7 @@ with the suffix <literal>_init</literal> (see <xref linkend="storage-init"/>).
 通常のリレーションでは、これらのファイル名はテーブルまたはインデックスの<firstterm>ファイルノード</firstterm>番号となります。
 ファイルノード番号は<structname>pg_class</structname>.<structfield>relfilenode</structfield>内で見つけられます。
 しかし一時的なリレーションでは、ファイル名は<literal>t<replaceable>BBB</replaceable>_<replaceable>FFF</replaceable></literal>という形になります。
-ここで<replaceable>BBB</replaceable>はファイルを生成したバックエンドのバックエンドID、<replaceable>FFF</replaceable>はファイルノード番号です。
+ここで<replaceable>BBB</replaceable>はファイルを生成したバックエンドのプロセス番号、<replaceable>FFF</replaceable>はファイルノード番号です。
 どちらの場合でも、主ファイル（いわゆる主フォーク）に加え、それぞれのテーブルとインデックスはリレーションに利用できる空き領域についての情報を格納する<firstterm>空き領域マップ</firstterm>（<xref linkend="storage-fsm"/>参照）を持ちます。
 空き領域マップはファイルノード番号に接尾辞<literal>_fsm</literal>がついた名前のファイルに格納されます。
 テーブルは同時に、どのページが無効なタプルを持っていないと判断できるように追跡する<firstterm>可視性マップ</firstterm>を持ち、フォークに接尾辞<literal>_vm</literal>を付けたファイルに格納します。
@@ -667,7 +667,7 @@ bytes regardless of the actual size of the represented value.
 すべての<acronym>TOAST</acronym>テーブルは<structfield>chunk_id</structfield>列（特定の<acronym>TOAST</acronym>化された値を識別するOID）、<structfield>chunk_seq</structfield>列（値の塊に対する連番）、<structfield>chunk_data</structfield>（塊の実際のデータ）列を持ちます。
 <structfield>chunk_id</structfield>と<structfield>chunk_seq</structfield>に対する一意性インデックスは値の抽出を高速化します。
 したがって、行外のディスク上の<acronym>TOAST</acronym>化された値を示すポインタデータには、検索先となる<acronym>TOAST</acronym>テーブルのOIDと指定した値のOID(<structfield>chunk_id</structfield>)を格納しなければなりません。
-簡便性のために、ポインタデータには論理データサイズ（元々の非圧縮のデータ長）、物理的な格納サイズ（圧縮時には異なります）、そして、利用されているのであれば、その圧縮法も格納されます。
+簡便性のために、ポインタデータには論理データサイズ（元々の非圧縮のデータ長）、物理的な格納サイズ（圧縮時には異なります）、そして、利用されているのであれば、その圧縮方式も格納されます。
 varlenaヘッダバイトに収納するためにディスク上の<acronym>TOAST</acronym>ポインタデータの総サイズは、表現される値の実サイズに関係なく、18バイトになります。
 </para>
 
@@ -702,13 +702,10 @@ for storing <acronym>TOAST</acronym>-able columns on disk:
      <para>
 <!--
       <literal>PLAIN</literal> prevents either compression or
-      out-of-line storage; furthermore it disables use of single-byte headers
-      for varlena types.
-      This is the only possible strategy for
+      out-of-line storage.  This is the only possible strategy for
       columns of non-<acronym>TOAST</acronym>-able data types.
 -->
 <literal>PLAIN</literal>は圧縮や行外の格納を防止します。
-さらにvarlena型での単一バイトヘッダの使用を無効にします。
 これは<acronym>TOAST</acronym>化不可能のデータ型の列に対してのみ取り得る戦略です。
      </para>
     </listitem>
@@ -1093,24 +1090,25 @@ erased (they will be recreated automatically as needed).
 <!--
 This section provides an overview of the page format used within
 <productname>PostgreSQL</productname> tables and indexes.<footnote>
+-->
+本節では<productname>PostgreSQL</productname>のテーブルおよびインデックスで使われるページ書式の概略について説明します。
+<footnote>
   <para>
+<!--
     Actually, use of this page format is not required for either table or
     index access methods. The <literal>heap</literal> table access method
     always uses this format.  All the existing index methods also use the
     basic format, but the data kept on index metapages usually doesn't follow
     the item layout rules.
-  </para>
-</footnote>
-Sequences and <acronym>TOAST</acronym> tables are formatted just like a regular table.
 -->
-本節では<productname>PostgreSQL</productname>のテーブルおよびインデックスで使われるページ書式の概略について説明します。
-<footnote>
-<para>
 実際には、テーブルアクセスメソッドもインデックスアクセスメソッドも、このページ書式を使用する必要はありません。
 <literal>heap</literal>テーブルアクセスメソッドは常にこの書式を使用します。
 既存のすべてのインデックスメソッドも、この基本書式を使用しています。しかし、インデックスメタページに保持されるデータは通常、アイテムレイアウト規則に従っていません。
   </para>
 </footnote>
+<!--
+Sequences and <acronym>TOAST</acronym> tables are formatted just like a regular table.
+-->
 <acronym>TOAST</acronym>のテーブルとシーケンスは、通常のテーブルと同様に整形されています。
 </para>
 
@@ -1724,10 +1722,13 @@ NULLビットマップは<firstterm>HEAP_HASNULL</firstterm>ビットが<structf
    <listitem>
     <para>
 <!--
-     The update does not modify any columns referenced by the table's
-     indexes, including expression and partial indexes.
+     The update does not modify any columns referenced by the table's indexes,
+     not including summarizing indexes.  The only summarizing index method in
+     the core <productname>PostgreSQL</productname> distribution is <link
+     linkend="brin">BRIN</link>.
 -->
-更新は、式や部分インデックスを含むテーブルのインデックスによって参照されるカラムを変更しません。
+更新は、集約インデックスを除き、テーブルのインデックスによって参照される列を変更しません。
+コアの<productname>PostgreSQL</productname>配布で唯一の集約インデックスメソッドは<link linkend="brin">BRIN</link>です。
      </para>
    </listitem>
    <listitem>
@@ -1750,22 +1751,31 @@ NULLビットマップは<firstterm>HEAP_HASNULL</firstterm>ビットが<structf
    <listitem>
     <para>
 <!--
-     New index entries are not needed to represent updated rows.
+     New index entries are not needed to represent updated rows, however,
+     summary indexes may still need to be updated.
 -->
-更新された行を表すために新しいインデックスエントリは必要ありません。
+更新された行を表すために新しいインデックスエントリは必要ありませんが、集約インデックスは更新が必要でしょう。
     </para>
    </listitem>
    <listitem>
     <para>
 <!--
-     Old versions of updated rows can be completely removed during normal
-     operation, including <command>SELECT</command>s, instead of requiring
-     periodic vacuum operations.  (This is possible because indexes
-     do not reference their <link linkend="storage-page-layout">page
-     item identifiers</link>.)
+     When a row is updated multiple times, row versions other than the oldest
+     and the newest can be completely removed during normal operation,
+     including <command>SELECT</command>s, instead of requiring periodic vacuum
+     operations.  (Indexes always refer to the
+     <link linkend="storage-page-layout">page item identifier</link> of the
+     original row version. The tuple data associated with that row version
+     is removed, and its item identifier is converted to a redirect that
+     points to the oldest version that may still be visible to some concurrent
+     transaction. Intermediate row versions that are no longer visible to
+     anyone are completely removed, and the associated page item identifiers
+     are made available for reuse.)
 -->
-更新された行の古いバージョンは、定期的なバキューム操作を必要とする代わりに、<command>SELECT</command>を含む通常の操作中に完全に削除することができます。
-（これはインデックスが<link linkend="storage-page-layout">ページアイテム識別子</link>を参照しないため可能です。）
+行が複数回更新されると、最も古いものと最も新しいもの以外の行バージョンは、定期的なバキューム操作を必要とせずに、<command>SELECT</command>を含む通常の操作で完全に削除されることがあります。
+（インデックスは常に元の行バージョンの<link linkend="storage-page-layout">ページアイテム識別子</link>を参照します。
+その行バージョンに関連付けられたタプルデータは削除され、そのアイテム識別子は、依然としていくつかの同時トランザクションに見える可能性のある最も古いバージョンを指すリダイレクトに変換されます。
+もはや誰にも見えない中間行バージョンは完全に削除され、関連するページアイテム識別子は再利用可能になります。）
     </para>
    </listitem>
   </itemizedlist>
@@ -1773,22 +1783,19 @@ NULLビットマップは<firstterm>HEAP_HASNULL</firstterm>ビットが<structf
 
  <para>
 <!--
-  In summary, heap-only tuple updates can only be created
-  if columns used by indexes are not updated.  You can
-  increase the likelihood of sufficient page space for
+  You can increase the likelihood of sufficient page space for
   <acronym>HOT</acronym> updates by decreasing a table's <link
-  linkend="reloption-fillfactor"><literal>fillfactor</literal></link>.
-  If you don't, <acronym>HOT</acronym> updates will still happen because
-  new rows will naturally migrate to new pages and existing pages with
-  sufficient free space for new row versions.  The system view <link
+  linkend="reloption-fillfactor"><literal>fillfactor</literal></link>.  If you
+  don't, <acronym>HOT</acronym> updates will still happen because new rows
+  will naturally migrate to new pages and existing pages with sufficient free
+  space for new row versions.  The system view <link
   linkend="monitoring-pg-stat-all-tables-view">pg_stat_all_tables</link>
   allows monitoring of the occurrence of HOT and non-HOT updates.
 -->
-要約すると、ヒープ専用タプル更新は、インデックスで使用されるカラムが更新されない場合にのみ作成できます。
 テーブルの<link linkend="reloption-fillfactor"><literal>fillfactor</literal></link>を減らすことで、<acronym>HOT</acronym>更新のための十分なページ領域の可能性を高めることができます。
 そうしない場合でも、<acronym>HOT</acronym>更新は発生します。
 なぜなら、新しい行は新しいページや、新しい行バージョンのために十分な空き領域を持つ既存のページに自然に移動するからです。
-システムビュー<link linkend="monitoring-pg-stat-all-tables-view">pg_stat_all_tables</link>は、HOTおよび非HOT更新の発生を監視することができます。
+システムビュー<link linkend="monitoring-pg-stat-all-tables-view">pg_stat_all_tables</link>は、HOTおよび非HOT更新の発生を監視できます。
  </para>
 </sect1>
 

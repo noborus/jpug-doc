@@ -280,17 +280,17 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
   <para>
 <!--
    The parameter <xref linkend="guc-track-io-timing"/> enables monitoring
-   of block read and write times.
+   of block read, write, extend, and fsync times.
 -->
-<xref linkend="guc-track-io-timing"/>パラメータは、ブロック読み取りおよび書き込み時間を監視するかどうかを指定できます。
+<xref linkend="guc-track-io-timing"/>パラメータは、ブロック読み取り、書き込み、拡張およびfsync時間を監視するかどうかを指定できます。
   </para>
 
   <para>
 <!--
    The parameter <xref linkend="guc-track-wal-io-timing"/> enables monitoring
-   of WAL write times.
+   of WAL write and fsync times.
 -->
-<xref linkend="guc-track-wal-io-timing"/>パラメータは、WALの書き込み時間を監視するかどうかを指定できます。
+<xref linkend="guc-track-wal-io-timing"/>パラメータは、WALの書き込みおよびfsync時間を監視するかどうかを指定できます。
   </para>
 
   <para>
@@ -387,7 +387,7 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 したがって、現在のトランザクションを続行しているかぎり、統計には静的な情報が表示されます。
 同様に、すべてのセッションの現在の問合せに関する情報は、その情報がトランザクション内で最初に要求されたときに収集され、同じ情報がトランザクション全体にわたって表示されます。
 これはバグではなく特徴です。
-これにより、統計に対して複数の問合せを実行し、結果を相互に関連付ける際に、ユーザーの下で数値が変化することを心配する必要がないためです。
+これにより、統計に対して複数の問合せを実行し、結果を相互に関連付ける際に、ユーザの下で数値が変化することを心配する必要がないためです。
 
 <!--
    When analyzing statistics interactively, or with expensive queries, the
@@ -402,16 +402,16 @@ postgres   27093  0.0  0.0  30096  2752 ?        Ss   11:34   0:00 postgres: ser
 -->
 統計情報を対話的に分析する場合、または高価な問い合わせを使用する場合、個々の統計へのアクセス間の時間差によって、キャッシュされた統計に大幅な歪みが発生する可能性があります。
 歪みを最小化するには、<varname>stats_fetch_consistency</varname>を<literal>snapshot</literal>に設定します。
-ただし、不要な統計データをキャッシュするためのメモリー使用量が増加します。逆に、統計が一度しかアクセスされないことがわかっている場合は、アクセスされた統計のキャッシュは不要であり、<varname>stats_fetch_consistency</varname>を<literal>none</literal>に設定することで回避できます。
+ただし、不要な統計データをキャッシュするためのメモリ使用量が増加します。逆に、統計が一度しかアクセスされないことがわかっている場合は、アクセスされた統計のキャッシュは不要であり、<varname>stats_fetch_consistency</varname>を<literal>none</literal>に設定することで回避できます。
 
 <!--
-   You can invoke <function>pg_stat_clear_snapshot</function>() to discard the
+   You can invoke <function>pg_stat_clear_snapshot()</function> to discard the
    current transaction's statistics snapshot or cached values (if any).  The
    next use of statistical information will (when in snapshot mode) cause a
    new snapshot to be built or (when in cache mode) accessed statistics to be
    cached.
 -->
-<function>pg_stat_clear_snapshot</function>()を呼び出して、現在のトランザクションの統計スナップショットまたはキャッシュされた値（もしあれば）を破棄することができます。
+<function>pg_stat_clear_snapshot()</function>を呼び出して、現在のトランザクションの統計スナップショットまたはキャッシュされた値（もしあれば）を破棄できます。
 次に統計情報を使用すると（スナップショットモードの場合）新しいスナップショットが作成され、（キャッシュモードの場合）アクセスされた統計がキャッシュされます。
   </para>
 
@@ -574,8 +574,8 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
        <command>ANALYZE</command>, showing current progress.
        See <xref linkend="analyze-progress-reporting"/>.
 -->
-     <entry>
-《マッチ度[]》<command>ANALYZE</command>を実行している（自動バキュームワーカープロセスを含んだ）各バックエンドごとに1行の形式で、現在の進捗を表示します。
+      <entry>
+<command>ANALYZE</command>を実行している各バックエンド（自動バキュームワーカープロセスを含む）ごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="analyze-progress-reporting"/>を参照してください。
       </entry>
      </row>
@@ -588,7 +588,7 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
       See <xref linkend="create-index-progress-reporting"/>.
 -->
      <entry>
-《マッチ度[]》<command>CREATE INDEX</command>または<command>REINDEX</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
+<command>CREATE INDEX</command>または<command>REINDEX</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="create-index-progress-reporting"/>を参照してください。
      </entry>
      </row>
@@ -600,8 +600,8 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
        <command>VACUUM</command>, showing current progress.
        See <xref linkend="vacuum-progress-reporting"/>.
 -->
-     <entry>
-《マッチ度[]》<command>VACUUM</command>を実行している（自動バキュームワーカープロセスを含んだ）各バックエンドごとに1行の形式で、現在の進捗を表示します。
+      <entry>
+<command>VACUUM</command>を実行している各バックエンド（自動バキュームワーカープロセスを含む）ごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="vacuum-progress-reporting"/>を参照してください。
       </entry>
      </row>
@@ -613,8 +613,8 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
        <command>CLUSTER</command> or <command>VACUUM FULL</command>, showing current progress.
        See <xref linkend="cluster-progress-reporting"/>.
 -->
-     <entry>
-《マッチ度[]》<command>CLUSTER</command>または<command>VACUUM FULL</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
+      <entry>
+<command>CLUSTER</command>または<command>VACUUM FULL</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="cluster-progress-reporting"/>を参照してください。
       </entry>
      </row>
@@ -626,8 +626,8 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
        showing current progress.
        See <xref linkend="basebackup-progress-reporting"/>.
 -->
-     <entry>
-《マッチ度[]》ベースバックアップをストリームしている各WAL送信プロセスごとに1行の形式で、現在の進捗を表示します。
+      <entry>
+ベースバックアップをストリームしている各WAL送信プロセスごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="basebackup-progress-reporting"/>を参照してください。
       </entry>
      </row>
@@ -638,8 +638,8 @@ WAL送信プロセス毎に1行の形式で、送信サーバが接続したス�
       <entry>One row for each backend running <command>COPY</command>, showing current progress.
        See <xref linkend="copy-progress-reporting"/>.
 -->
-     <entry>
-《マッチ度[]》<command>COPY</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
+      <entry>
+<command>COPY</command>を実行している各バックエンドごとに1行の形式で、現在の進捗を表示します。
 <xref linkend="copy-progress-reporting"/>を参照してください。
       </entry>
      </row>
@@ -698,6 +698,20 @@ WALアーカイバプロセスの活動状況に関する統計情報を1行の�
      </row>
 
      <row>
+      <entry><structname>pg_stat_checkpointer</structname><indexterm><primary>pg_stat_checkpointer</primary></indexterm></entry>
+<!--
+      <entry>One row only, showing statistics about the
+       checkpointer process's activity. See
+       <link linkend="monitoring-pg-stat-checkpointer-view">
+       <structname>pg_stat_checkpointer</structname></link> for details.
+-->
+      <entry>
+チェックポインタプロセスの活動状況に関する統計情報を1行のみで表示します。
+詳細については<link linkend="monitoring-pg-stat-checkpointer-view"><structname>pg_stat_checkpointer</structname></link>を参照してください。
+     </entry>
+     </row>
+
+     <row>
       <entry><structname>pg_stat_database</structname><indexterm><primary>pg_stat_database</primary></indexterm></entry>
 <!--
       <entry>One row per database, showing database-wide statistics. See
@@ -727,10 +741,14 @@ WALアーカイバプロセスの活動状況に関する統計情報を1行の�
      <row>
       <entry><structname>pg_stat_io</structname><indexterm><primary>pg_stat_io</primary></indexterm></entry>
       <entry>
+<!--
        One row for each combination of backend type, context, and target object
        containing cluster-wide I/O statistics.
        See <link linkend="monitoring-pg-stat-io-view">
        <structname>pg_stat_io</structname></link> for details.
+-->
+バックエンドタイプ、コンテキスト、ターゲットのオブジェクトの組み合わせごとに1行で、クラスタ全体のI/O統計情報を含みます。
+詳細については<link linkend="monitoring-pg-stat-io-view"><structname>pg_stat_io</structname></link>を参照してください。
      </entry>
      </row>
 
@@ -1062,13 +1080,9 @@ WALの活動状況に関する統計情報を1行のみで表示します。
    statistics views in combination with operating system utilities for a more
    complete picture of their database's I/O performance.
 -->
-《マッチ度[]》<structname>pg_stat_io</structname>ビューは主に、バッファキャッシュの効率を評価する際に有用です。
-実ディスク読み取りの数がバッファヒットの数よりもかなり少ないのであれば、そのキャッシュはカーネル呼び出しを行うことなく、ほとんどの読み取り要求を満足させています。
-しかし、<productname>PostgreSQL</productname>バッファキャッシュに存在しないデータはカーネルのI/Oキャッシュにある可能性があり、そのため、物理的な読み取りを行うことなく取り出される可能性があるという<productname>PostgreSQL</productname>のディスクI/Oの取り扱いのため、これらの統計情報は、完全な論拠を提供しません。
-<productname>PostgreSQL</productname>のI/O動作に関するより詳細な情報を入手したいのであれば、<productname>PostgreSQL</productname>統計情報ビューとカーネルのI/Oの取り扱いの監視を行うオペレーティングシステムユーティリティを組み合わせることを勧めます。
-《機械翻訳》<structname>pg_stat_io</structname>と<structname>pg_statio_</structname>ビューは、バッファキャッシュの有効性を判断するのに役立ちます。
+<structname>pg_stat_io</structname>と<structname>pg_statio_</structname>ビューの組み合わせは、バッファキャッシュの有効性を判断するのに役立ちます。
 これらはキャッシュヒット率を計算するのに使用できます。
-<productname>PostgreSQL</productname>のI/O統計は、I/Oを実行するためにカーネルが呼び出されたほとんどのインスタンスを取得しますが、ディスクからフェッチされなければならなかったデータと、カーネルページキャッシュにすでに存在していたデータとを区別しません。
+<productname>PostgreSQL</productname>のI/O統計は、I/Oを実行するためにカーネルが呼び出されたほとんどのインスタンスを取得しますが、ディスクから取得しなければならなかったデータと、カーネルページキャッシュにすでに存在していたデータとを区別しません。
 ユーザは、データベースのI/Oパフォーマンスのより完全な全体像を得るために、<productname>PostgreSQL</productname>の統計ビューをオペレーティングシステムのユーティリティと組み合わせて使用することをお勧めします。
   </para>
 
@@ -1162,10 +1176,9 @@ WALの活動状況に関する統計情報を1行のみで表示します。
        process is a parallel group leader or leader apply worker, or does not
        participate in any parallel operation.
 -->
-《マッチ度[]》このプロセスがパラレルクエリワーカーであればパラレルグループリーダーのプロセスIDです。
-このプロセスがパラレルグループリーダーであるか、パラレルクエリに参加していないのであれば<literal>NULL</literal>です。
-《機械翻訳》このプロセスがパラレル・グループ・リーダーである場合は、パラレル・グループ・リーダーのプロセスID。このプロセスがパラレル適用ワーカーである場合は、パラレル適用ワーカーのプロセスID。
-<literal>NULL</literal>は、このプロセスがパラレル・グループ・リーダーまたはリーダー適用ワーカーであること、またはこのプロセスがパラレル適用ワーカーであることを示します。
+このプロセスがパラレルクエリワーカーであればパラレルグループリーダーのプロセスIDです。
+あるいは、このプロセスがパラレル適用ワーカーであればリーダー適用ワーカーのプロセスIDです。
+<literal>NULL</literal>は、このプロセスがパラレルグループリーダーまたはリーダー適用ワーカーであること、またはこのプロセスがパラレル処理に参加していないことを示します。
       </para></entry>
      </row>
 
@@ -1317,7 +1330,7 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
        The type of event for which the backend is waiting, if any;
        otherwise NULL.  See <xref linkend="wait-event-table"/>.
 -->
-バックエンドが待機しているイベントがあれば、その型、なければNULLとなります。
+バックエンドが待機しているイベントがあれば、そのタイプ、なければNULLとなります。
 <xref linkend="wait-event-table"/>を参照してください。
       </para></entry>
      </row>
@@ -1414,8 +1427,8 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
        Top-level transaction identifier of this backend, if any;  see
        <xref linkend="transaction-id"/>.
 -->
-《マッチ度[]》もしあれば、このバックエンドの最上位のトランザクション識別子です。
-《機械翻訳》このバックエンドのトップレベルのトランザクション識別子(ある場合)。 <xref linkend="transaction-id"/>を参照してください。
+もしあれば、このバックエンドの最上位のトランザクション識別子です。
+<xref linkend="transaction-id"/>を参照してください。
       </para></entry>
      </row>
 
@@ -1487,16 +1500,14 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
        <literal>client backend</literal>, <literal>checkpointer</literal>,
        <literal>archiver</literal>, <literal>standalone backend</literal>,
        <literal>startup</literal>, <literal>walreceiver</literal>,
-       <literal>walsender</literal> and <literal>walwriter</literal>.
+       <literal>walsender</literal>, <literal>walwriter</literal> and
+       <literal>walsummarizer</literal>.
        In addition, background workers registered by extensions may have
        additional types.
 -->
-《マッチ度[82.965300]》現在のバックエンドの種別です。
-取り得る値は<literal>autovacuum launcher</literal>、<literal>autovacuum worker</literal>、<literal>logical replication launcher</literal>、<literal>logical replication worker</literal>、<literal>parallel worker</literal>, <literal>background writer</literal>、<literal>client backend</literal>、<literal>checkpointer</literal>、<literal>archiver</literal>、<literal>startup</literal>、<literal>walreceiver</literal>、<literal>walsender</literal>、<literal>walwriter</literal>です。
-これに加えて、拡張によって登録されたバックグラウンドワーカーは追加の型を持つかも知れません。
-《機械翻訳》現在のバックエンドのタイプ。
-可能なタイプは、<literal>autovacuum launcher</literal>、<literal>autovacuum worker</literal>、<literal>logical replication launcher</literal>、<literal>logical replication worker</literal>、<literal>parallel worker</literal>、<literal>background writer</literal>、<literal>client backend</literal>、<literal>checkpointer</literal>、<literal>archiver</literal>、<literal>standalone backend</literal>、<literal>startup</literal>、<literal>walreceiver</literal>、<literal>walsender</literal>および<literal>walwriter</literal>です。
-さらに、拡張によって登録されたバックグラウンドワーカーは追加のタイプを持つことができます。
+現在のバックエンドのタイプです。
+可能なタイプは、<literal>autovacuum launcher</literal>、<literal>autovacuum worker</literal>、<literal>logical replication launcher</literal>、<literal>logical replication worker</literal>、<literal>parallel worker</literal>、<literal>background writer</literal>、<literal>client backend</literal>、<literal>checkpointer</literal>、<literal>archiver</literal>、<literal>standalone backend</literal>、<literal>startup</literal>、<literal>walreceiver</literal>、<literal>walsender</literal>、<literal>walwriter</literal>、<literal>walsummarizer</literal>です。
+さらに、拡張によって登録されたバックグラウンドワーカーは追加のタイプを持つ場合があります。
       </para></entry>
      </row>
     </tbody>
@@ -1594,6 +1605,20 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
       </entry>
      </row>
      <row>
+      <entry><literal>InjectionPoint</literal></entry>
+<!--
+      <entry>The server process is waiting for an injection point to reach an
+       outcome defined in a test.  See
+       <xref linkend="xfunc-addin-injection-points"/> for more details.  This
+       type has no predefined wait points.
+-->
+      <entry>
+サーバプロセスは、インジェクションポイントがテストで定義された結果に達するのを待機しています。
+詳細は、<xref linkend="xfunc-addin-injection-points"/>を参照してください。
+このタイプには事前定義された待機ポイントはありません。
+      </entry>
+     </row>
+     <row>
       <entry><literal>IO</literal></entry>
 <!--
       <entry>The server process is waiting for an I/O operation to complete.
@@ -1601,7 +1626,7 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
        see <xref linkend="wait-event-io-table"/>.
 -->
       <entry>
-サーバプロセスは入出力が完了するのを待機しています。
+サーバプロセスはI/O操作が完了するのを待機しています。
 <literal>wait_event</literal>によりその待機点が特定できます。<xref linkend="wait-event-io-table"/>を参照してください。
       </entry>
      </row>
@@ -1633,7 +1658,7 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
 サーバプロセスは重量ロックを待機しています。
 ロックマネージャロックや単にロックとしても知られている重量ロックは、主にテーブルのようなSQLで可視なオブジェクトを保護します。
 しかし、それらはリレーション拡張のような、なんらかの内部操作のために相互排他を確実にするためにも使用されます。
-<literal>wait_event</literal>は、待たせているロックの型を識別します。
+<literal>wait_event</literal>は、待たせているロックのタイプを識別します。
 <xref linkend="wait-event-lock-table"/>を参照してください。
       </entry>
      </row>
@@ -1671,2042 +1696,11 @@ IP接続、かつ<xref linkend="guc-log-hostname"/>が有効である場合に�
    </tgroup>
   </table>
 
-  <table id="wait-event-activity-table">
-<!--
-   <title>Wait Events of Type <literal>Activity</literal></title>
--->
-   <title><literal>Activity</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>Activity</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>Activity</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>ArchiverMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of archiver process.</entry>
--->
-      <entry>アーカイバプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>AutoVacuumMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of autovacuum launcher process.</entry>
--->
-      <entry>自動バキュームのランチャプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BgWriterHibernate</literal></entry>
-<!--
-      <entry>Waiting in background writer process, hibernating.</entry>
--->
-      <entry>バックグラウンドライタプロセス内で待機し、休止状態になっています。</entry>
-     </row>
-     <row>
-      <entry><literal>BgWriterMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of background writer process.</entry>
--->
-      <entry>バックグラウンドライタプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CheckpointerMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of checkpointer process.</entry>
--->
-      <entry>チェックポインタプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalApplyMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of logical replication apply process.</entry>
--->
-      <entry>論理レプリケーション適用プロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalLauncherMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of logical replication launcher process.</entry>
--->
-      <entry>論理レプリケーションランチャプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalParallelApplyMain</literal></entry>
-      <entry>Waiting in main loop of logical replication parallel apply
-       process.</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryWalStream</literal></entry>
-<!--
-      <entry>Waiting in main loop of startup process for WAL to arrive, during
-       streaming recovery.</entry>
--->
-      <entry>ストリーミングリカバリ中に、起動プロセスのメインループ内でWALが到着するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SysLoggerMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of syslogger process.</entry>
--->
-      <entry>sysloggerプロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalReceiverMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of WAL receiver process.</entry>
--->
-      <entry>WAL受信プロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalSenderMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of WAL sender process.</entry>
--->
-      <entry>WAL送信プロセスのメインループ内で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalWriterMain</literal></entry>
-<!--
-      <entry>Waiting in main loop of WAL writer process.</entry>
--->
-      <entry>WAL書き込みプロセスのメインループ内で待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-bufferpin-table">
-<!--
-   <title>Wait Events of Type <literal>BufferPin</literal></title>
--->
-   <title><literal>BufferPin</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>BufferPin</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>BufferPin</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>BufferPin</literal></entry>
-<!--
-      <entry>Waiting to acquire an exclusive pin on a buffer.</entry>
--->
-      <entry>バッファ上の排他ピンを獲得するのを待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-client-table">
-<!--
-   <title>Wait Events of Type <literal>Client</literal></title>
--->
-   <title><literal>Client</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>Client</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>Client</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>ClientRead</literal></entry>
-<!--
-      <entry>Waiting to read data from the client.</entry>
--->
-      <entry>クライアントからのデータの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ClientWrite</literal></entry>
-<!--
-      <entry>Waiting to write data to the client.</entry>
--->
-      <entry>クライアントへのデータの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>GSSOpenServer</literal></entry>
-<!--
-      <entry>Waiting to read data from the client while establishing a GSSAPI
-       session.</entry>
--->
-      <entry>GSSAPIセッションを確立する際にクライアントからのデータ読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LibPQWalReceiverConnect</literal></entry>
-<!--
-      <entry>Waiting in WAL receiver to establish connection to remote
-       server.</entry>
--->
-      <entry>WAL受信プロセス内でリモートサーバへの接続が確立するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LibPQWalReceiverReceive</literal></entry>
-<!--
-      <entry>Waiting in WAL receiver to receive data from remote server.</entry>
--->
-      <entry>WAL受信プロセス内でリモートサーバからデータを受信するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SSLOpenServer</literal></entry>
-<!--
-      <entry>Waiting for SSL while attempting connection.</entry>
--->
-      <entry>接続試行中にSSLを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalSenderWaitForWAL</literal></entry>
-<!--
-      <entry>Waiting for WAL to be flushed in WAL sender process.</entry>
--->
-      <entry>WAL送信プロセス内でWALがフラッシュされるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalSenderWriteData</literal></entry>
-<!--
-      <entry>Waiting for any activity when processing replies from WAL
-       receiver in WAL sender process.</entry>
--->
-      <entry>WAL送信プロセス内でWAL受信者からの応答を処理している時に、何らかの活動を待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-extension-table">
-<!--
-   <title>Wait Events of Type <literal>Extension</literal></title>
--->
-   <title><literal>Extension</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>Extension</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>Extension</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>Extension</literal></entry>
-<!--
-      <entry>Waiting in an extension.</entry>
--->
-      <entry>拡張内で待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-io-table">
-<!--
-   <title>Wait Events of Type <literal>IO</literal></title>
--->
-   <title><literal>IO</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>IO</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>IO</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>BaseBackupRead</literal></entry>
-<!--
-      <entry>Waiting for base backup to read from a file.</entry>
--->
-      <entry>ベースバックアップがファイルから読み取るのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BaseBackupSync</literal></entry>
-<!--
-      <entry>Waiting for data written by a base backup to reach durable storage.</entry>
--->
-      <entry>ベースバックアップによって書き込まれたデータが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BaseBackupWrite</literal></entry>
-<!--
-      <entry>Waiting for base backup to write to a file.</entry>
--->
-      <entry>ベースバックアップがファイルに書き込むのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufFileRead</literal></entry>
-<!--
-      <entry>Waiting for a read from a buffered file.</entry>
--->
-      <entry>バッファファイルからの読み取りを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufFileTruncate</literal></entry>
-<!--
-      <entry>Waiting for a buffered file to be truncated.</entry>
--->
-      <entry>バッファファイルが切り捨てられるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to a buffered file.</entry>
--->
-      <entry>バッファファイルへの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFileRead</literal></entry>
-<!--
-      <entry>Waiting for a read from the <filename>pg_control</filename>
-       file.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルからの読み取りを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFileSync</literal></entry>
-<!--
-      <entry>Waiting for the <filename>pg_control</filename> file to reach
-       durable storage.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFileSyncUpdate</literal></entry>
-<!--
-      <entry>Waiting for an update to the <filename>pg_control</filename> file
-       to reach durable storage.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルの更新が永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to the <filename>pg_control</filename>
-       file.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルへの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFileWriteUpdate</literal></entry>
-<!--
-      <entry>Waiting for a write to update the <filename>pg_control</filename>
-       file.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルの更新の書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CopyFileRead</literal></entry>
-<!--
-      <entry>Waiting for a read during a file copy operation.</entry>
--->
-      <entry>ファイルコピーの操作の間、読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CopyFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write during a file copy operation.</entry>
--->
-      <entry>ファイルコピーの操作の間、書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DSMAllocate</literal></entry>
-      <entry>Waiting for a dynamic shared memory segment to be
-       allocated.</entry>
-     </row>
-     <row>
-      <entry><literal>DSMFillZeroWrite</literal></entry>
-<!--
-      <entry>Waiting to fill a dynamic shared memory backing file with
-       zeroes.</entry>
--->
-      <entry>動的共有メモリの背後のファイルにゼロのバイトを書き込むのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileExtend</literal></entry>
-<!--
-      <entry>Waiting for a relation data file to be extended.</entry>
--->
-      <entry>リレーションのデータファイルが拡張されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileFlush</literal></entry>
-<!--
-      <entry>Waiting for a relation data file to reach durable storage.</entry>
--->
-      <entry>リレーションのデータファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileImmediateSync</literal></entry>
-<!--
-      <entry>Waiting for an immediate synchronization of a relation data file to
-       durable storage.</entry>
--->
-      <entry>リレーションのデータファイルが永続的ストレージに即座に同期されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFilePrefetch</literal></entry>
-<!--
-      <entry>Waiting for an asynchronous prefetch from a relation data
-       file.</entry>
--->
-      <entry>リレーションのデータファイルからの非同期プリフェッチを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileRead</literal></entry>
-<!--
-      <entry>Waiting for a read from a relation data file.</entry>
--->
-      <entry>リレーションのデータファイルからの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileSync</literal></entry>
-<!--
-      <entry>Waiting for changes to a relation data file to reach durable storage.</entry>
--->
-      <entry>リレーションのデータファイルへの変更が永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileTruncate</literal></entry>
-<!--
-      <entry>Waiting for a relation data file to be truncated.</entry>
--->
-      <entry>リレーションのデータファイルが切り詰められるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DataFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to a relation data file.</entry>
--->
-      <entry>リレーションのデータファイルへの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileAddToDataDirRead</literal></entry>
-<!--
-      <entry>Waiting for a read while adding a line to the data directory lock
-       file.</entry>
--->
-      <entry>データディレクトリのロックファイルに行を追加する間の読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileAddToDataDirSync</literal></entry>
-<!--
-      <entry>Waiting for data to reach durable storage while adding a line to the
-       data directory lock file.</entry>
--->
-      <entry>データディレクトリのロックファイルに行を追加する間、データが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileAddToDataDirWrite</literal></entry>
-<!--
-      <entry>Waiting for a write while adding a line to the data directory
-       lock file.</entry>
--->
-      <entry>データディレクトリのロックファイルに行を追加する間の書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileCreateRead</literal></entry>
-<!--
-      <entry>Waiting to read while creating the data directory lock
-       file.</entry>
--->
-      <entry>データディレクトリのロックファイルを作成する間の読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileCreateSync</literal></entry>
-<!--
-      <entry>Waiting for data to reach durable storage while creating the data
-       directory lock file.</entry>
--->
-      <entry>データディレクトリのロックファイルを作成する間、データが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileCreateWrite</literal></entry>
-<!--
-      <entry>Waiting for a write while creating the data directory lock
-       file.</entry>
--->
-      <entry>データディレクトリのロックファイルを作成する間の書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFileReCheckDataDirRead</literal></entry>
-<!--
-      <entry>Waiting for a read during recheck of the data directory lock
-       file.</entry>
--->
-      <entry>データディレクトリのロックファイルを再検査する間の読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteCheckpointSync</literal></entry>
-<!--
-      <entry>Waiting for logical rewrite mappings to reach durable storage
-       during a checkpoint.</entry>
--->
-      <entry>チェックポイントの間に、論理的な再書き込みのマッピングが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteMappingSync</literal></entry>
-<!--
-      <entry>Waiting for mapping data to reach durable storage during a logical
-       rewrite.</entry>
--->
-      <entry>論理的な再書き込みの間に、マッピングデータが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteMappingWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of mapping data during a logical
-       rewrite.</entry>
--->
-      <entry>論理的な再書き込みの間に、マッピングデータの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteSync</literal></entry>
-<!--
-      <entry>Waiting for logical rewrite mappings to reach durable
-       storage.</entry>
--->
-      <entry>論理的な再書き込みのマッピングが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteTruncate</literal></entry>
-<!--
-      <entry>Waiting for truncate of mapping data during a logical
-       rewrite.</entry>
--->
-      <entry>論理的な再書き込みの際にマッピングデータが切り詰められるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRewriteWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of logical rewrite mappings.</entry>
--->
-      <entry>論理的な再書き込みのマッピングの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RelationMapRead</literal></entry>
-<!--
-      <entry>Waiting for a read of the relation map file.</entry>
--->
-      <entry>リレーションのマップファイルの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RelationMapReplace</literal></entry>
-      <entry>Waiting for durable replacement of a relation map file.</entry>
-     </row>
-     <row>
-      <entry><literal>RelationMapWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to the relation map file.</entry>
--->
-      <entry>リレーションのマップファイルの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReorderBufferRead</literal></entry>
-<!--
-      <entry>Waiting for a read during reorder buffer management.</entry>
--->
-      <entry>並べ替えのバッファ管理の間に読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReorderBufferWrite</literal></entry>
-<!--
-      <entry>Waiting for a write during reorder buffer management.</entry>
--->
-      <entry>並べ替えのバッファ管理の間に書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReorderLogicalMappingRead</literal></entry>
-<!--
-      <entry>Waiting for a read of a logical mapping during reorder buffer
-       management.</entry>
--->
-      <entry>並べ替えのバッファ管理の間に、論理マッピングの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotRead</literal></entry>
-<!--
-      <entry>Waiting for a read from a replication slot control file.</entry>
--->
-      <entry>レプリケーションスロットの制御ファイルからの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotRestoreSync</literal></entry>
-<!--
-      <entry>Waiting for a replication slot control file to reach durable storage
-       while restoring it to memory.</entry>
--->
-      <entry>レプリケーションスロットの制御ファイルをメモリにリストアする間、それが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotSync</literal></entry>
-<!--
-      <entry>Waiting for a replication slot control file to reach durable
-       storage.</entry>
--->
-      <entry>レプリケーションスロットの制御ファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to a replication slot control file.</entry>
--->
-      <entry>レプリケーションスロットの制御ファイルへの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SLRUFlushSync</literal></entry>
-<!--
-      <entry>Waiting for SLRU data to reach durable storage during a checkpoint
-       or database shutdown.</entry>
--->
-      <entry>チェックポイントまたはデータベースのシャットダウン中に、SLRUデータが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SLRURead</literal></entry>
-<!--
-      <entry>Waiting for a read of an SLRU page.</entry>
--->
-      <entry>SLRUページの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SLRUSync</literal></entry>
-<!--
-      <entry>Waiting for SLRU data to reach durable storage following a page
-       write.</entry>
--->
-      <entry>ページ書き込みの後、SLRUデータが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SLRUWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of an SLRU page.</entry>
--->
-      <entry>SLRUページの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SnapbuildRead</literal></entry>
-<!--
-      <entry>Waiting for a read of a serialized historical catalog
-       snapshot.</entry>
--->
-      <entry>シリアライズされた通時的カタログのスナップショットの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SnapbuildSync</literal></entry>
-<!--
-      <entry>Waiting for a serialized historical catalog snapshot to reach
-       durable storage.</entry>
--->
-      <entry>シリアライズされた通時的カタログのスナップショットが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SnapbuildWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of a serialized historical catalog
-       snapshot.</entry>
--->
-      <entry>シリアライズされた通時的カタログのスナップショットの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TimelineHistoryFileSync</literal></entry>
-<!--
-      <entry>Waiting for a timeline history file received via streaming
-       replication to reach durable storage.</entry>
--->
-      <entry>ストリーミングレプリケーションを経由して受け取ったタイムラインの履歴ファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TimelineHistoryFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of a timeline history file received via
-       streaming replication.</entry>
--->
-      <entry>ストリーミングレプリケーションを経由して受け取ったタイムラインの履歴ファイルの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TimelineHistoryRead</literal></entry>
-<!--
-      <entry>Waiting for a read of a timeline history file.</entry>
--->
-      <entry>タイムラインの履歴ファイルの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TimelineHistorySync</literal></entry>
-<!--
-      <entry>Waiting for a newly created timeline history file to reach durable
-       storage.</entry>
--->
-      <entry>新しく作成されたタイムラインの履歴ファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TimelineHistoryWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of a newly created timeline history
-       file.</entry>
--->
-      <entry>新しく作成されたタイムラインの履歴ファイルの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TwophaseFileRead</literal></entry>
-<!--
-      <entry>Waiting for a read of a two phase state file.</entry>
--->
-      <entry>二相の状態ファイルの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TwophaseFileSync</literal></entry>
-<!--
-      <entry>Waiting for a two phase state file to reach durable storage.</entry>
--->
-      <entry>二相の状態ファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TwophaseFileWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of a two phase state file.</entry>
--->
-      <entry>二相の状態ファイルの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>VersionFileWrite</literal></entry>
-<!--
-      <entry>Waiting for the version file to be written while creating a database.</entry>
--->
-      <entry>データベースの作成中にバージョンファイルが作成されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALBootstrapSync</literal></entry>
-<!--
-      <entry>Waiting for WAL to reach durable storage during
-       bootstrapping.</entry>
--->
-      <entry>ブートストラップ時にWALが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALBootstrapWrite</literal></entry>
-<!--
-      <entry>Waiting for a write of a WAL page during bootstrapping.</entry>
--->
-      <entry>ブートストラップ時にWALページの書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALCopyRead</literal></entry>
-<!--
-      <entry>Waiting for a read when creating a new WAL segment by copying an
-       existing one.</entry>
--->
-      <entry>既存のWALセグメントをコピーして新しいWALセグメントを作成する時に読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALCopySync</literal></entry>
-<!--
-      <entry>Waiting for a new WAL segment created by copying an existing one to
-       reach durable storage.</entry>
--->
-      <entry>既存のWALセグメントをコピーして作成した新しいWALセグメントが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALCopyWrite</literal></entry>
-<!--
-      <entry>Waiting for a write when creating a new WAL segment by copying an
-       existing one.</entry>
--->
-      <entry>既存のWALセグメントをコピーして新しいWALセグメントを作成する時に書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALInitSync</literal></entry>
-<!--
-      <entry>Waiting for a newly initialized WAL file to reach durable
-       storage.</entry>
--->
-      <entry>新しく初期化されたWALファイルが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALInitWrite</literal></entry>
-<!--
-      <entry>Waiting for a write while initializing a new WAL file.</entry>
--->
-      <entry>新しいWALファイルを初期化している時に書き込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALRead</literal></entry>
-<!--
-      <entry>Waiting for a read from a WAL file.</entry>
--->
-      <entry>WALファイルからの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALSenderTimelineHistoryRead</literal></entry>
-<!--
-      <entry>Waiting for a read from a timeline history file during a walsender
-       timeline command.</entry>
--->
-      <entry>WAL送信サーバのタイムラインコマンドで、タイムラインの履歴ファイルの読み込みを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALSync</literal></entry>
-<!--
-      <entry>Waiting for a WAL file to reach durable storage.</entry>
--->
-      <entry>WALファイルが永続的ストレージに達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALSyncMethodAssign</literal></entry>
-<!--
-      <entry>Waiting for data to reach durable storage while assigning a new
-       WAL sync method.</entry>
--->
-      <entry>新しいWALの同期方法を割り当てている時にデータが永続的ストレージに到達するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALWrite</literal></entry>
-<!--
-      <entry>Waiting for a write to a WAL file.</entry>
--->
-      <entry>WALファイルへの書き込みを待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-ipc-table">
-<!--
-   <title>Wait Events of Type <literal>IPC</literal></title>
--->
-   <title><literal>IPC</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>IPC</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>IPC</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>AppendReady</literal></entry>
-<!--
-      <entry>Waiting for subplan nodes of an <literal>Append</literal> plan
-       node to be ready.</entry>
--->
-      <entry><literal>Append</literal>プランノードのサブプランノードの準備が整うのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ArchiveCleanupCommand</literal></entry>
-<!--
-      <entry>Waiting for <xref linkend="guc-archive-cleanup-command"/> to
-       complete.</entry>
--->
-      <entry><xref linkend="guc-archive-cleanup-command"/>が完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ArchiveCommand</literal></entry>
-<!--
-      <entry>Waiting for <xref linkend="guc-archive-command"/> to
-       complete.</entry>
--->
-      <entry><xref linkend="guc-archive-command"/>が完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BackendTermination</literal></entry>
-<!--
-      <entry>Waiting for the termination of another backend.</entry>
--->
-      <entry>他のバックエンドの終了を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BackupWaitWalArchive</literal></entry>
-<!--
-      <entry>Waiting for WAL files required for a backup to be successfully
-       archived.</entry>
--->
-      <entry>バックアップに必要なWALファイルがアーカイブに成功するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BgWorkerShutdown</literal></entry>
-<!--
-      <entry>Waiting for background worker to shut down.</entry>
--->
-      <entry>バックグラウンドワーカーがシャットダウンするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BgWorkerStartup</literal></entry>
-<!--
-      <entry>Waiting for background worker to start up.</entry>
--->
-      <entry>バックグラウンドワーカーが起動するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BtreePage</literal></entry>
-<!--
-      <entry>Waiting for the page number needed to continue a parallel B-tree
-       scan to become available.</entry>
--->
-      <entry>パラレルB-treeスキャンを継続するのに必要なページ番号が利用可能になるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufferIO</literal></entry>
-<!--
-      <entry>Waiting for buffer I/O to complete.</entry>
--->
-      <entry>バッファI/Oが完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CheckpointDone</literal></entry>
-<!--
-      <entry>Waiting for a checkpoint to complete.</entry>
--->
-      <entry>チェックポイントが完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CheckpointStart</literal></entry>
-<!--
-      <entry>Waiting for a checkpoint to start.</entry>
--->
-      <entry>チェックポイントが開始するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ExecuteGather</literal></entry>
-<!--
-      <entry>Waiting for activity from a child process while
-       executing a <literal>Gather</literal> plan node.</entry>
--->
-      <entry><literal>Gather</literal>計画ノードの実行時に子プロセスの活動を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBatchAllocate</literal></entry>
-<!--
-      <entry>Waiting for an elected Parallel Hash participant to allocate a hash
-       table.</entry>
--->
-      <entry>選ばれたパラレルハッシュ参加者がハッシュテーブルを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBatchElect</literal></entry>
-<!--
-      <entry>Waiting to elect a Parallel Hash participant to allocate a hash
-       table.</entry>
--->
-      <entry>ハッシュテーブルを獲得するパラレルハッシュ参加者を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBatchLoad</literal></entry>
-<!--
-      <entry>Waiting for other Parallel Hash participants to finish loading a
-       hash table.</entry>
--->
-      <entry>他のパラレルハッシュ参加者がハッシュテーブルのロードを完了させるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBuildAllocate</literal></entry>
-<!--
-      <entry>Waiting for an elected Parallel Hash participant to allocate the
-       initial hash table.</entry>
--->
-      <entry>選ばれたパラレルハッシュ参加者が初期ハッシュテーブルを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBuildElect</literal></entry>
-<!--
-      <entry>Waiting to elect a Parallel Hash participant to allocate the
-       initial hash table.</entry>
--->
-      <entry>初期ハッシュテーブルを獲得するパラレルハッシュ参加者を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBuildHashInner</literal></entry>
-<!--
-      <entry>Waiting for other Parallel Hash participants to finish hashing the
-       inner relation.</entry>
--->
-      <entry>他のパラレルハッシュ参加者がインナーリレーションのハッシュを完了させるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashBuildHashOuter</literal></entry>
-<!--
-      <entry>Waiting for other Parallel Hash participants to finish partitioning
-       the outer relation.</entry>
--->
-      <entry>他のパラレルハッシュ参加者がアウターリレーションのパーティショニングを完了させるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBatchesDecide</literal></entry>
-<!--
-      <entry>Waiting to elect a Parallel Hash participant to decide on future
-       batch growth.</entry>
--->
-      <entry>将来のバッチの増加を決めるパラレルハッシュ参加者を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBatchesElect</literal></entry>
-<!--
-      <entry>Waiting to elect a Parallel Hash participant to allocate more
-       batches.</entry>
--->
-      <entry>追加バッチを獲得するパラレルハッシュ参加者を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBatchesFinish</literal></entry>
-<!--
-      <entry>Waiting for an elected Parallel Hash participant to decide on
-       future batch growth.</entry>
--->
-      <entry>選ばれたパラレルハッシュ参加者が将来のバッチの増加を決めるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBatchesReallocate</literal></entry>
-<!--
-      <entry>Waiting for an elected Parallel Hash participant to allocate more
-       batches.</entry>
--->
-      <entry>選ばれたパラレルハッシュ参加者が追加バッチを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBatchesRepartition</literal></entry>
-<!--
-      <entry>Waiting for other Parallel Hash participants to finish
-       repartitioning.</entry>
--->
-      <entry>他のパラレルハッシュ参加者がリパーティショニングを完了させるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBucketsElect</literal></entry>
-<!--
-      <entry>Waiting to elect a Parallel Hash participant to allocate more
-       buckets.</entry>
--->
-      <entry>追加バケットを獲得するパラレルハッシュ参加者を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBucketsReallocate</literal></entry>
-<!--
-      <entry>Waiting for an elected Parallel Hash participant to finish
-       allocating more buckets.</entry>
--->
-      <entry>選ばれたパラレルハッシュ参加者が追加バケット獲得を完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>HashGrowBucketsReinsert</literal></entry>
-<!--
-      <entry>Waiting for other Parallel Hash participants to finish inserting
-       tuples into new buckets.</entry>
--->
-      <entry>他のパラレルハッシュ参加者が新しいバケットに対するタプル挿入を完了させるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalApplySendData</literal></entry>
-      <entry>Waiting for a logical replication leader apply process to send
-       data to a parallel apply process.</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalParallelApplyStateChange</literal></entry>
-      <entry>Waiting for a logical replication parallel apply process to change
-       state.</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalSyncData</literal></entry>
-<!--
-      <entry>Waiting for a logical replication remote server to send data for
-       initial table synchronization.</entry>
--->
-      <entry>論理レプリケーションのリモートサーバが最初のテーブル同期のためのデータを送信するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalSyncStateChange</literal></entry>
-<!--
-      <entry>Waiting for a logical replication remote server to change
-       state.</entry>
--->
-      <entry>論理レプリケーションのリモートサーバが状態を変更するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MessageQueueInternal</literal></entry>
-<!--
-      <entry>Waiting for another process to be attached to a shared message
-       queue.</entry>
--->
-      <entry>他のプロセスが共有メッセージキューにアタッチされるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MessageQueuePutMessage</literal></entry>
-<!--
-      <entry>Waiting to write a protocol message to a shared message queue.</entry>
--->
-      <entry>共有メッセージキューにプロトコルのメッセージを書くのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MessageQueueReceive</literal></entry>
-<!--
-      <entry>Waiting to receive bytes from a shared message queue.</entry>
--->
-      <entry>共有メッセージキューからバイトを受信するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MessageQueueSend</literal></entry>
-<!--
-      <entry>Waiting to send bytes to a shared message queue.</entry>
--->
-      <entry>共有メッセージキューにバイトを送信するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelBitmapScan</literal></entry>
-<!--
-      <entry>Waiting for parallel bitmap scan to become initialized.</entry>
--->
-      <entry>パラレルビットマップスキャンが初期化されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelCreateIndexScan</literal></entry>
-<!--
-      <entry>Waiting for parallel <command>CREATE INDEX</command> workers to
-       finish heap scan.</entry>
--->
-      <entry>パラレル<command>CREATE INDEX</command>ワーカーがヒープスキャンを完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelFinish</literal></entry>
-<!--
-      <entry>Waiting for parallel workers to finish computing.</entry>
--->
-      <entry>パラレルワーカーが計算を完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ProcArrayGroupUpdate</literal></entry>
-<!--
-      <entry>Waiting for the group leader to clear the transaction ID at
-       end of a parallel operation.</entry>
--->
-      <entry>グループリーダーが並列操作の最後にトランザクションIDをクリアするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ProcSignalBarrier</literal></entry>
-<!--
-      <entry>Waiting for a barrier event to be processed by all
-       backends.</entry>
--->
-      <entry>バックエンドすべてでバリアイベントが処理されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>Promote</literal></entry>
-<!--
-      <entry>Waiting for standby promotion.</entry>
--->
-      <entry>スタンバイの昇格を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryConflictSnapshot</literal></entry>
-<!--
-      <entry>Waiting for recovery conflict resolution for a vacuum
-       cleanup.</entry>
--->
-      <entry>バキュームクリーンアップに対するリカバリ競合の解決を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryConflictTablespace</literal></entry>
-<!--
-      <entry>Waiting for recovery conflict resolution for dropping a
-       tablespace.</entry>
--->
-      <entry>テーブル空間の削除に対するリカバリ競合の解決を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryEndCommand</literal></entry>
-<!--
-      <entry>Waiting for <xref linkend="guc-recovery-end-command"/> to
-       complete.</entry>
--->
-      <entry><xref linkend="guc-recovery-end-command"/>が完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryPause</literal></entry>
-<!--
-      <entry>Waiting for recovery to be resumed.</entry>
--->
-      <entry>リカバリが再開するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationOriginDrop</literal></entry>
-<!--
-      <entry>Waiting for a replication origin to become inactive so it can be
-       dropped.</entry>
--->
-      <entry>レプリケーションオリジンが削除できるよう非活動状態になるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotDrop</literal></entry>
-<!--
-      <entry>Waiting for a replication slot to become inactive so it can be
-       dropped.</entry>
--->
-      <entry>レプリケーションスロットが削除できるよう非活動状態になるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RestoreCommand</literal></entry>
-<!--
-      <entry>Waiting for <xref linkend="guc-restore-command"/> to
-       complete.</entry>
--->
-      <entry>Waiting for <xref linkend="guc-restore-command"/>が完了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SafeSnapshot</literal></entry>
-<!--
-      <entry>Waiting to obtain a valid snapshot for a <literal>READ ONLY
-       DEFERRABLE</literal> transaction.</entry>
--->
-      <entry><literal>READ ONLY DEFERRABLE</literal>のトランザクションに対する有効なスナップショットの獲得を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SyncRep</literal></entry>
-<!--
-      <entry>Waiting for confirmation from a remote server during synchronous
-       replication.</entry>
--->
-      <entry>同期レプリケーション中に、リモートサーバからの確認を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalReceiverExit</literal></entry>
-<!--
-      <entry>Waiting for the WAL receiver to exit.</entry>
--->
-      <entry>WALレシーバが終了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WalReceiverWaitStart</literal></entry>
-<!--
-      <entry>Waiting for startup process to send initial data for streaming
-       replication.</entry>
--->
-      <entry>ストリーミングレプリケーションの初期データを送信するための起動プロセスを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>XactGroupUpdate</literal></entry>
-<!--
-      <entry>Waiting for the group leader to update transaction status at
-       end of a parallel operation.</entry>
--->
-      <entry>グループリーダーが並列操作の最後にトランザクション状態を更新するのを待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-lock-table">
-<!--
-   <title>Wait Events of Type <literal>Lock</literal></title>
--->
-   <title><literal>Lock</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>Lock</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>Lock</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>advisory</literal></entry>
-<!--
-      <entry>Waiting to acquire an advisory user lock.</entry>
--->
-      <entry>勧告的ユーザロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>applytransaction</literal></entry>
-      <entry>Waiting to acquire a lock on a remote transaction being applied
-      by a logical replication subscriber.</entry>
-     </row>
-     <row>
-      <entry><literal>extend</literal></entry>
-<!--
-      <entry>Waiting to extend a relation.</entry>
--->
-      <entry>リレーションを拡張するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>frozenid</literal></entry>
-<!--
-      <entry>Waiting to
-       update <structname>pg_database</structname>.<structfield>datfrozenxid</structfield>
-       and <structname>pg_database</structname>.<structfield>datminmxid</structfield>.</entry>
--->
-      <entry><structname>pg_database</structname>.<structfield>datfrozenxid</structfield>と<structname>pg_database</structname>.<structfield>datminmxid</structfield>を更新するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>object</literal></entry>
-<!--
-      <entry>Waiting to acquire a lock on a non-relation database object.</entry>
--->
-      <entry>非リレーションデータベースオブジェクト上のロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>page</literal></entry>
-<!--
-      <entry>Waiting to acquire a lock on a page of a relation.</entry>
--->
-      <entry>リレーションのページ上のロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>relation</literal></entry>
-<!--
-      <entry>Waiting to acquire a lock on a relation.</entry>
--->
-      <entry>リレーション上のロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>spectoken</literal></entry>
-<!--
-      <entry>Waiting to acquire a speculative insertion lock.</entry>
--->
-      <entry>投機的挿入ロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>transactionid</literal></entry>
-<!--
-      <entry>Waiting for a transaction to finish.</entry>
--->
-      <entry>トランザクションが終了するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>tuple</literal></entry>
-<!--
-      <entry>Waiting to acquire a lock on a tuple.</entry>
--->
-      <entry>タプル上のロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>userlock</literal></entry>
-<!--
-      <entry>Waiting to acquire a user lock.</entry>
--->
-      <entry>ユーザロックを獲得するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>virtualxid</literal></entry>
-      <entry>Waiting to acquire a virtual transaction ID lock;  see
-      <xref linkend="transaction-id"/>.</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-  <table id="wait-event-lwlock-table">
-<!--
-   <title>Wait Events of Type <literal>LWLock</literal></title>
--->
-   <title><literal>LWLock</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>LWLock</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>LWLock</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>AddinShmemInit</literal></entry>
-<!--
-      <entry>Waiting to manage an extension's space allocation in shared
-       memory.</entry>
--->
-      <entry>共有メモリの拡張の領域確保を管理するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>AutoFile</literal></entry>
-<!--
-      <entry>Waiting to update the <filename>postgresql.auto.conf</filename>
-       file.</entry>
--->
-      <entry><filename>postgresql.auto.conf</filename>ファイルを更新するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>Autovacuum</literal></entry>
-<!--
-      <entry>Waiting to read or update the current state of autovacuum
-       workers.</entry>
--->
-      <entry>自動バキュームワーカーの現在の状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>AutovacuumSchedule</literal></entry>
-<!--
-      <entry>Waiting to ensure that a table selected for autovacuum
-       still needs vacuuming.</entry>
--->
-      <entry>自動バキューム対象として選定されたテーブルが、まだバキューム処理が必要であることを確認するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BackgroundWorker</literal></entry>
-<!--
-      <entry>Waiting to read or update background worker state.</entry>
--->
-      <entry>バックグラウンドワーカー状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BtreeVacuum</literal></entry>
-<!--
-      <entry>Waiting to read or update vacuum-related information for a
-       B-tree index.</entry>
--->
-      <entry>B-treeインデックスのバキュームに関連した情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufferContent</literal></entry>
-<!--
-      <entry>Waiting to access a data page in memory.</entry>
--->
-      <entry>メモリ内のデータページへアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>BufferMapping</literal></entry>
-<!--
-      <entry>Waiting to associate a data block with a buffer in the buffer
-       pool.</entry>
--->
-      <entry>データブロックをバッファプール内のバッファと関連付けるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CheckpointerComm</literal></entry>
-<!--
-      <entry>Waiting to manage fsync requests.</entry>
--->
-      <entry>fsyncリクエストを管理するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CommitTs</literal></entry>
-<!--
-      <entry>Waiting to read or update the last value set for a
-       transaction commit timestamp.</entry>
--->
-      <entry>トランザクションコミットタイムスタンプのために設定された最新の値の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CommitTsBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a commit timestamp SLRU buffer.</entry>
--->
-      <entry>コミットタイムスタンプSLRUバッファでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CommitTsSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the commit timestamp SLRU cache.</entry>
--->
-      <entry>コミットタイムスタンプSLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ControlFile</literal></entry>
-<!--
-      <entry>Waiting to read or update the <filename>pg_control</filename>
-       file or create a new WAL file.</entry>
--->
-      <entry><filename>pg_control</filename>ファイルの読み込みもしくは更新、または新しいWALファイルの作成を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>DynamicSharedMemoryControl</literal></entry>
-<!--
-      <entry>Waiting to read or update dynamic shared memory allocation
-       information.</entry>
--->
-      <entry>動的共有メモリの割り当て情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockFastPath</literal></entry>
-<!--
-      <entry>Waiting to read or update a process' fast-path lock
-       information.</entry>
--->
-      <entry>プロセスのファストパスロック情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LockManager</literal></entry>
-<!--
-      <entry>Waiting to read or update information
-       about <quote>heavyweight</quote> locks.</entry>
--->
-      <entry><quote>重量</quote>ロックに関する情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRepLauncherDSA</literal></entry>
-      <entry>Waiting to access logical replication launcher's dynamic shared
-       memory allocator.</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRepLauncherHash</literal></entry>
-      <entry>Waiting to access logical replication launcher's shared
-       hash table.</entry>
-     </row>
-     <row>
-      <entry><literal>LogicalRepWorker</literal></entry>
-<!--
-      <entry>Waiting to read or update the state of logical replication
-       workers.</entry>
--->
-      <entry>論理レプリケーションワーカーの状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactGen</literal></entry>
-<!--
-      <entry>Waiting to read or update shared multixact state.</entry>
--->
-      <entry>共有マルチトランザクション状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactMemberBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a multixact member SLRU buffer.</entry>
--->
-      <entry>マルチトランザクションメンバSLRUバッファでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactMemberSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the multixact member SLRU cache.</entry>
--->
-      <entry>マルチトランザクションメンバSLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactOffsetBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a multixact offset SLRU buffer.</entry>
--->
-      <entry>マルチトランザクションオフセットSLRUバッファでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactOffsetSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the multixact offset SLRU cache.</entry>
--->
-      <entry>マルチトランザクションオフセットSLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>MultiXactTruncation</literal></entry>
-<!--
-      <entry>Waiting to read or truncate multixact information.</entry>
--->
-      <entry>マルチトランザクション情報の読み込み、または切り詰めを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>NotifyBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a <command>NOTIFY</command> message SLRU
-       buffer.</entry>
--->
-      <entry><command>NOTIFY</command>メッセージSLRUバッファでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>NotifyQueue</literal></entry>
-<!--
-      <entry>Waiting to read or update <command>NOTIFY</command> messages.</entry>
--->
-      <entry><command>NOTIFY</command>メッセージの読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>NotifyQueueTail</literal></entry>
-<!--
-      <entry>Waiting to update limit on <command>NOTIFY</command> message
-       storage.</entry>
--->
-      <entry><command>NOTIFY</command>メッセージストレージの制限が更新されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>NotifySLRU</literal></entry>
-<!--
-      <entry>Waiting to access the <command>NOTIFY</command> message SLRU
-       cache.</entry>
--->
-      <entry><command>NOTIFY</command>メッセージSLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>OidGen</literal></entry>
-<!--
-      <entry>Waiting to allocate a new OID.</entry>
--->
-      <entry>新しいOIDを割り当てるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>OldSnapshotTimeMap</literal></entry>
-<!--
-      <entry>Waiting to read or update old snapshot control information.</entry>
--->
-      <entry>古いスナップショット制御情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelAppend</literal></entry>
-<!--
-      <entry>Waiting to choose the next subplan during Parallel Append plan
-       execution.</entry>
--->
-      <entry>パラレルアペンド計画を実行中に次のサブプランの選択を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelHashJoin</literal></entry>
-<!--
-      <entry>Waiting to synchronize workers during Parallel Hash Join plan
-       execution.</entry>
--->
-      <entry>パラレルハッシュ結合計画を実行中に、ワーカーの同期を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ParallelQueryDSA</literal></entry>
-<!--
-      <entry>Waiting for parallel query dynamic shared memory allocation.</entry>
--->
-      <entry>パラレルクエリの動的共有メモリ割り当てを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PerSessionDSA</literal></entry>
-<!--
-      <entry>Waiting for parallel query dynamic shared memory allocation.</entry>
--->
-      <entry>パラレルクエリの動的共有メモリ割り当てを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PerSessionRecordType</literal></entry>
-<!--
-      <entry>Waiting to access a parallel query's information about composite
-       types.</entry>
--->
-      <entry>複合型に関するパラレルクエリの情報にアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PerSessionRecordTypmod</literal></entry>
-<!--
-      <entry>Waiting to access a parallel query's information about type
-       modifiers that identify anonymous record types.</entry>
--->
-      <entry>匿名レコード型を特定する型修飾子に関するパラレルクエリの情報にアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PerXactPredicateList</literal></entry>
-<!--
-      <entry>Waiting to access the list of predicate locks held by the current
-       serializable transaction during a parallel query.</entry>
--->
-      <entry>パラレルクエリの間に、現在のシリアライザブルトランザクションによって保持された述語ロックの一覧へアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PgStatsData</literal></entry>
-<!--
-      <entry>Waiting for shared memory stats data access</entry>
--->
-      <entry>共有メモリの統計データアクセスを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PgStatsDSA</literal></entry>
-<!--
-      <entry>Waiting for stats dynamic shared memory allocator access</entry>
--->
-      <entry>統計動的共有メモリアロケータアクセスを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PgStatsHash</literal></entry>
-<!--
-      <entry>Waiting for stats shared memory hash table access</entry>
--->
-      <entry>統計共有メモリハッシュテーブルアクセスを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PredicateLockManager</literal></entry>
-<!--
-      <entry>Waiting to access predicate lock information used by
-       serializable transactions.</entry>
--->
-      <entry>シリアライザブルトランザクションによって使われる述語ロックの情報にアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ProcArray</literal></entry>
-<!--
-      <entry>Waiting to access the shared per-process data structures
-       (typically, to get a snapshot or report a session's transaction
-       ID).</entry>
--->
-      <entry>(典型的には、スナップショットを得たりセッションのトランザクションIDを報告するために)共有のプロセスごとのデータ構造にアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RelationMapping</literal></entry>
-<!--
-      <entry>Waiting to read or update
-       a <filename>pg_filenode.map</filename> file (used to track the
-       filenode assignments of certain system catalogs).</entry>
--->
-      <entry>(特定のシステムカタログのファイルノードの割り当てを追跡するのに使われる)<filename>pg_filenode.map</filename>ファイルの読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RelCacheInit</literal></entry>
-<!--
-      <entry>Waiting to read or update a <filename>pg_internal.init</filename>
-       relation cache initialization file.</entry>
--->
-      <entry><filename>pg_internal.init</filename>リレーションキャッシュ初期化ファイルの読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationOrigin</literal></entry>
-<!--
-      <entry>Waiting to create, drop or use a replication origin.</entry>
--->
-      <entry>レプリケーションオリジンの作成、削除、または使用を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationOriginState</literal></entry>
-<!--
-      <entry>Waiting to read or update the progress of one replication
-       origin.</entry>
--->
-      <entry>あるレプリケーションオリジンの進捗の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotAllocation</literal></entry>
-<!--
-      <entry>Waiting to allocate or free a replication slot.</entry>
--->
-      <entry>レプリケーションスロットの割り当て、または解放を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotControl</literal></entry>
-<!--
-      <entry>Waiting to read or update replication slot state.</entry>
--->
-      <entry>レプリケーションスロット状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ReplicationSlotIO</literal></entry>
-<!--
-      <entry>Waiting for I/O on a replication slot.</entry>
--->
-      <entry>レプリケーションスロットでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SerialBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a serializable transaction conflict SLRU
-       buffer.</entry>
--->
-      <entry>シリアライザブルトランザクション競合SLRUバッファでのI/Oを待機しています</entry>
-     </row>
-     <row>
-      <entry><literal>SerializableFinishedList</literal></entry>
-<!--
-      <entry>Waiting to access the list of finished serializable
-       transactions.</entry>
--->
-      <entry>完了したシリアライザブルトランザクションの一覧へアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SerializablePredicateList</literal></entry>
-<!--
-      <entry>Waiting to access the list of predicate locks held by
-       serializable transactions.</entry>
--->
-      <entry>シリアライザブルトランザクションによって保持された述語ロックの一覧へアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SerializableXactHash</literal></entry>
-<!--
-      <entry>Waiting to read or update information about serializable
-       transactions.</entry>
--->
-      <entry>シリアライザブルトランザクションに関する情報の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SerialSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the serializable transaction conflict SLRU
-       cache.</entry>
--->
-      <entry>シリアライザブルトランザクション競合SLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SharedTidBitmap</literal></entry>
-<!--
-      <entry>Waiting to access a shared TID bitmap during a parallel bitmap
-       index scan.</entry>
--->
-      <entry>パラレルビットマップインデックススキャンの間に、共有TIDにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SharedTupleStore</literal></entry>
-<!--
-      <entry>Waiting to access a shared tuple store during parallel
-       query.</entry>
--->
-      <entry>パラレルクエリの間に共有タプルストアにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>ShmemIndex</literal></entry>
-<!--
-      <entry>Waiting to find or allocate space in shared memory.</entry>
--->
-      <entry>共有メモリ内に領域を発見する、もしくは割り当てるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SInvalRead</literal></entry>
-<!--
-      <entry>Waiting to retrieve messages from the shared catalog invalidation
-       queue.</entry>
--->
-      <entry>共有カタログ無効化キューからメッセージを取り出すのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SInvalWrite</literal></entry>
-<!--
-      <entry>Waiting to add a message to the shared catalog invalidation
-      queue.</entry>
--->
-      <entry>共有カタログ無効化キューにメッセージを追加するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SubtransBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a sub-transaction SLRU buffer.</entry>
--->
-      <entry>サブトランザクションSLRUバッファのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SubtransSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the sub-transaction SLRU cache.</entry>
--->
-      <entry>サブトランザクションSLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SyncRep</literal></entry>
-<!--
-      <entry>Waiting to read or update information about the state of
-       synchronous replication.</entry>
--->
-      <entry>同期レプリケーションの状態に関する情報を読み込む、または更新するの待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SyncScan</literal></entry>
-<!--
-      <entry>Waiting to select the starting location of a synchronized table
-       scan.</entry>
--->
-      <entry>同期テーブルスキャンの開始位置を選ぶのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TablespaceCreate</literal></entry>
-<!--
-      <entry>Waiting to create or drop a tablespace.</entry>
--->
-      <entry>テーブルスペースの作成、または削除を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>TwoPhaseState</literal></entry>
-<!--
-      <entry>Waiting to read or update the state of prepared transactions.</entry>
--->
-      <entry>プリペアドトランザクションの状態の読み込み、または更新を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALBufMapping</literal></entry>
-<!--
-      <entry>Waiting to replace a page in WAL buffers.</entry>
--->
-      <entry>WALバッファ内のページの置き換えを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALInsert</literal></entry>
-<!--
-      <entry>Waiting to insert WAL data into a memory buffer.</entry>
--->
-      <entry>WALデータをメモリバッファに挿入するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WALWrite</literal></entry>
-<!--
-      <entry>Waiting for WAL buffers to be written to disk.</entry>
--->
-      <entry>WALバッファがディスクに書き込まれるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>WrapLimitsVacuum</literal></entry>
-<!--
-      <entry>Waiting to update limits on transaction id and multixact
-       consumption.</entry>
--->
-      <entry>トランザクションIDとマルチトランザクションの消費の制限が更新されるのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>XactBuffer</literal></entry>
-<!--
-      <entry>Waiting for I/O on a transaction status SLRU buffer.</entry>
--->
-      <entry>トランザクション状態SLRUバッファでのI/Oを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>XactSLRU</literal></entry>
-<!--
-      <entry>Waiting to access the transaction status SLRU cache.</entry>
--->
-      <entry>トランザクション状態SLRUキャッシュにアクセスするのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>XactTruncation</literal></entry>
-<!--
-      <entry>Waiting to execute <function>pg_xact_status</function> or update
-       the oldest transaction ID available to it.</entry>
--->
-      <entry><function>pg_xact_status</function>を実行する、またはその関数で利用可能な最古のトランザクションIDを更新するのを待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>XidGen</literal></entry>
-<!--
-      <entry>Waiting to allocate a new transaction ID.</entry>
--->
-      <entry>新しいトランザクションIDを割り当てるのを待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
-
-   <note>
-    <para>
-<!--
-     Extensions can add <literal>LWLock</literal> types to the list shown in
-     <xref linkend="wait-event-lwlock-table"/>.  In some cases, the name
-     assigned by an extension will not be available in all server processes;
-     so an <literal>LWLock</literal> wait event might be reported as
-     just <quote><literal>extension</literal></quote> rather than the
-     extension-assigned name.
--->
-拡張は<xref linkend="wait-event-lwlock-table"/>に示す一覧に<literal>LWLock</literal>型を追加できます。
-拡張によって割り当てられた名前がすべてのサーバプロセスでは利用可能でない場合があります。そのため<literal>LWLock</literal>待機イベントは、拡張が割り当てた名前ではなく単に<quote><literal>extension</literal></quote>と報告されるかもしれません。
-    </para>
-   </note>
-
-  <table id="wait-event-timeout-table">
-<!--
-   <title>Wait Events of Type <literal>Timeout</literal></title>
--->
-   <title><literal>Timeout</literal>型の待機イベント</title>
-   <tgroup cols="2">
-    <thead>
-     <row>
-<!--
-      <entry><literal>Timeout</literal> Wait Event</entry>
-      <entry>Description</entry>
--->
-      <entry><literal>Timeout</literal>待機イベント</entry>
-      <entry>説明</entry>
-     </row>
-    </thead>
-
-    <tbody>
-     <row>
-      <entry><literal>BaseBackupThrottle</literal></entry>
-<!--
-      <entry>Waiting during base backup when throttling activity.</entry>
--->
-      <entry>スロットル活動時にベースバックアップで待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>CheckpointWriteDelay</literal></entry>
-<!--
-      <entry>Waiting between writes while performing a checkpoint.</entry>
--->
-      <entry>チェックポイント実行中の書き込みの間で待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>PgSleep</literal></entry>
-<!--
-      <entry>Waiting due to a call to <function>pg_sleep</function> or
-       a sibling function.</entry>
--->
-      <entry><function>pg_sleep</function>または同系列の関数を呼び出したため待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryApplyDelay</literal></entry>
-<!--
-      <entry>Waiting to apply WAL during recovery because of a delay
-       setting.</entry>
--->
-      <entry>遅延設定によりリカバリ時のWAL適用を待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RecoveryRetrieveRetryInterval</literal></entry>
-<!--
-      <entry>Waiting during recovery when WAL data is not available from any
-       source (<filename>pg_wal</filename>, archive or stream).</entry>
--->
-      <entry>WALデータがまだあらゆる種類のソース(<filename>pg_wal</filename>、アーカイブまたはストリーム)から得られない時にリカバリで待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>RegisterSyncRequest</literal></entry>
-<!--
-      <entry>Waiting while sending synchronization requests to the
-       checkpointer, because the request queue is full.</entry>
--->
-      <entry>要求キューがいっぱいのため、同期要求をチェックポインターに送信する間、待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>SpinDelay</literal></entry>
-      <entry>Waiting while acquiring a contended spinlock.</entry>
-     </row>
-     <row>
-      <entry><literal>VacuumDelay</literal></entry>
-<!--
-      <entry>Waiting in a cost-based vacuum delay point.</entry>
--->
-      <entry>コストに基づくバキューム遅延ポイントで待機しています。</entry>
-     </row>
-     <row>
-      <entry><literal>VacuumTruncate</literal></entry>
-<!--
-      <entry>Waiting to acquire an exclusive lock to truncate off any
-       empty pages at the end of a table vacuumed.</entry>
--->
-      <entry>バキュームされたテーブルの最後にある空のロックをオフで切り捨てるために、排他的ページの獲得を待機しています。</entry>
-     </row>
-    </tbody>
-   </tgroup>
-  </table>
+  &wait_event_types;
 
    <para>
 <!--
-     Here is an example of how wait events can be viewed:
+     Here are examples of how wait events can be viewed:
 -->
 以下に、待機イベントが表示される例を示します。
 
@@ -3718,8 +1712,37 @@ SELECT pid, wait_event_type, wait_event FROM pg_stat_activity WHERE wait_event i
  6644 | LWLock          | ProcArray
 (2 rows)
 </programlisting>
+
+<programlisting>
+SELECT a.pid, a.wait_event, w.description
+  FROM pg_stat_activity a JOIN
+       pg_wait_events w ON (a.wait_event_type = w.type AND
+                            a.wait_event = w.name)
+  WHERE a.wait_event is NOT NULL and a.state = 'active';
+-[ RECORD 1 ]------------------------------------------------------&zwsp;------------
+pid         | 686674
+wait_event  | WALInitSync
+description | Waiting for a newly initialized WAL file to reach durable storage
+</programlisting>
    </para>
 
+   <note>
+    <para>
+<!--
+     Extensions can add <literal>Extension</literal>,
+     <literal>InjectionPoint</literal>. and <literal>LWLock</literal> events
+     to the lists shown in <xref linkend="wait-event-extension-table"/> and
+     <xref linkend="wait-event-lwlock-table"/>. In some cases, the name
+     of an <literal>LWLock</literal> assigned by an extension will not be
+     available in all server processes.  It might be reported as just
+     <quote><literal>extension</literal></quote> rather than the
+     extension-assigned name.
+-->
+拡張は、<xref linkend="wait-event-extension-table"/>と<xref linkend="wait-event-lwlock-table"/>に示す一覧に<literal>Extension</literal>、<literal>InjectionPoint</literal>、<literal>LWLock</literal>イベントを追加できます。
+拡張によって割り当てられた<literal>LWLock</literal>の名前がすべてのサーバプロセスでは利用可能でない場合があります。
+その場合、拡張によって割り当てられた名前ではなく、単に<quote><literal>extension</literal></quote>と報告されることがあります。
+    </para>
+   </note>
  </sect2>
 
  <sect2 id="monitoring-pg-stat-replication-view">
@@ -4591,7 +2614,7 @@ WALレシーバによって使用されたレプリケーションスロット�
        Unix socket.  (The path case can be distinguished because it
        will always be an absolute path, beginning with <literal>/</literal>.)
 -->
-WALレシーバーが接続している<productname>PostgreSQL</productname>インスタンスのホストです。
+WALレシーバが接続している<productname>PostgreSQL</productname>インスタンスのホストです。
 これはホスト名、IPアドレス、あるいはUNIXソケットで接続している場合はディレクトリのパスです。
 （パスは、常に<literal>/</literal>で始まる絶対パスなので、パスであることを識別できます。）
       </para></entry>
@@ -4606,7 +2629,7 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Port number of the <productname>PostgreSQL</productname> instance
        this WAL receiver is connected to.
 -->
-WALレシーバーが接続している<productname>PostgreSQL</productname>インスタンスのポート番号です。
+WALレシーバが接続している<productname>PostgreSQL</productname>インスタンスのポート番号です。
       </para></entry>
      </row>
 
@@ -4874,6 +2897,21 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>worker_type</structfield> <type>text</type>
+      </para>
+      <para>
+<!--
+       Type of the subscription worker process.  Possible types are
+       <literal>apply</literal>, <literal>parallel apply</literal>, and
+       <literal>table synchronization</literal>.
+-->
+サブスクリプションワーカープロセスのタイプです。
+可能なタイプは<literal>apply</literal>、<literal>parallel apply</literal>、<literal>table synchronization</literal>です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>pid</structfield> <type>integer</type>
       </para>
       <para>
@@ -4891,11 +2929,11 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
       <para>
 <!--
        Process ID of the leader apply worker if this process is a parallel
-       apply worker; NULL if this process is a leader apply worker or a
+       apply worker; NULL if this process is a leader apply worker or a table
        synchronization worker
 -->
-《機械翻訳》このプロセスがパラレル適用ワーカーの場合は、リーダー適用ワーカーのプロセスID。
-このプロセスがリーダー適用ワーカーまたは同期ワーカーの場合はNULL。
+このプロセスがパラレル適用ワーカーの場合は、リーダー適用ワーカーのプロセスIDです。
+このプロセスがリーダー適用ワーカーまたはテーブル同期ワーカーの場合はNULLです。
       </para></entry>
      </row>
 
@@ -4908,9 +2946,7 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        OID of the relation that the worker is synchronizing; NULL for the
        leader apply worker and parallel apply workers
 -->
-《マッチ度[64.601770]》ワーカーが同期しているリレーションのOIDです。メインの適用ワーカーの場合はNULLです。
-《機械翻訳》ワーカーが同期しているリレーションのOID。
-リーダー・適用ワーカーの場合はNULL。
+ワーカーが同期しているリレーションのOIDです。リーダー適用ワーカーとパラレル適用ワーカーの場合はNULLです。
       </para></entry>
      </row>
 
@@ -4923,10 +2959,8 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Last write-ahead log location received, the initial value of
        this field being 0; NULL for parallel apply workers
 -->
-《マッチ度[58.035714]》最後に受け取った先行書き込みログ位置です。このフィールドの初期値は0です。
-《機械翻訳》最後に受信したwrite-ahead logの位置。
-このフィールドの初期値は0。
-パラレル適用ワーカーではNULL。
+最後に受け取った先行書き込みログ位置です。このフィールドの初期値は0です。
+パラレル適用ワーカーではNULLです。
       </para></entry>
      </row>
 
@@ -4939,9 +2973,7 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Send time of last message received from origin WAL sender; NULL for
        parallel apply workers
 -->
-《マッチ度[55.555556]》オリジンWAL送信サーバから受け取った最後のメッセージの送信時刻です。
-《機械翻訳》最後のメッセージを送信した時刻。
- パラレル適用ワーカーの場合は NULL。
+オリジンWAL送信サーバから受け取った最後のメッセージの送信時刻です。パラレル適用ワーカーの場合はNULLです。
       </para></entry>
      </row>
 
@@ -4954,9 +2986,7 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Receipt time of last message received from origin WAL sender; NULL for
        parallel apply workers
 -->
-《マッチ度[56.989247]》オリジンWAL送信サーバから受け取った最後のメッセージの受信時刻です。
-《機械翻訳》オリジナルのWAL送信者から受信した最後のメッセージの受信時刻。
-パラレル適用ワーカーの場合はNULL。
+オリジンWAL送信サーバから受け取った最後のメッセージの受信時刻です。パラレル適用ワーカーの場合はNULLです。
       </para></entry>
      </row>
 
@@ -4969,10 +2999,7 @@ WALレシーバーが接続している<productname>PostgreSQL</productname>イ�
        Last write-ahead log location reported to origin WAL sender; NULL for
        parallel apply workers
 -->
-《マッチ度[56.521739]》オリジンWAL送信サーバに最後に報告された先行書き込みログ位置です。
-《機械翻訳》最後の書き込みアボートログの位置。
-WAL送信側に報告される。
-並列適用ワーカーの場合はNULL。
+オリジンWAL送信サーバに最後に報告された先行書き込みログ位置です。パラレル適用ワーカーの場合はNULLです。
       </para></entry>
      </row>
 
@@ -4985,9 +3012,7 @@ WAL送信側に報告される。
        Time of last write-ahead log location reported to origin WAL
        sender; NULL for parallel apply workers
 -->
-《マッチ度[60.000000]》オリジンWAL送信サーバに最後に報告された先行書き込みログ位置です。
-《機械翻訳》最後の書き込みアボートログの位置が、WAL送信元に報告された時刻。
- パラレル適用ワーカーの場合はNULL。
+オリジンWAL送信サーバに最後に報告された先行書き込みログ位置です。パラレル適用ワーカーの場合はNULLです。
       </para></entry>
      </row>
     </tbody>
@@ -5366,8 +3391,7 @@ WAL送信側に報告される。
 <!--
        True if GSSAPI credentials were delegated on this connection.
 -->
-《マッチ度[52.459016]》この接続にGSSAPI認証が使われていたなら真です。
-《機械翻訳》この接続で GSSAPI 資格情報が委任された場合は、true です。
+この接続でGSSAPI認証情報が委任されていた場合は真です。
       </para></entry>
      </row>
     </tbody>
@@ -5530,8 +3554,8 @@ WALファイルのアーカイブに失敗した回数です。
    cluster-wide I/O statistics. Combinations which do not make sense are
    omitted.
 -->
-《機械翻訳》<structname>pg_stat_io</structname>ビューには、バックエンドのタイプ、ターゲットI/Oオブジェクト、およびI/Oコンテキストの各組み合わせに対する1行が含まれ、クラスタ全体のI/O統計が示されます。
- 意味のない組み合わせは省略されます。
+<structname>pg_stat_io</structname>ビューには、バックエンドのタイプ、ターゲットI/Oオブジェクト、およびI/Oコンテキストの各組み合わせに対する1行が含まれ、クラスタ全体のI/O統計が示されます。
+意味のない組み合わせは省略されます。
   </para>
 
   <para>
@@ -5540,8 +3564,8 @@ WALファイルのアーカイブに失敗した回数です。
    relation I/O which bypasses shared buffers (e.g. when moving a table from one
    tablespace to another) is currently not tracked.
 -->
-《機械翻訳》現在、リレーション（テーブル、インデックス）上の I/O は追跡されます。
-ただし、共有バッファをバイパスするリレーション I/O（たとえば、あるテーブルスペースから別のテーブルスペースにテーブルを移動するとき）は現在は追跡されません。
+今の所、リレーション（テーブル、インデックス）上のI/Oは追跡されます。
+ただし、共有バッファをバイパスするリレーションI/O（たとえば、あるテーブル空間から別のテーブル空間にテーブルを移動するとき）は現在は追跡されません。
   </para>
 
   <table id="pg-stat-io-view" xreflabel="pg_stat_io">
@@ -5580,9 +3604,9 @@ WALファイルのアーカイブに失敗した回数です。
         <varname>backend_type</varname>s do not accumulate I/O operation
         statistics and will not be included in the view.
 -->
-《機械翻訳》バックエンドのタイプ （バックグラウンドワーカー、自動バキュームワーカーなど）。
+バックエンドのタイプです（たとえばバックグラウンドワーカー、自動バキュームワーカーなど）。
  <varname>backend_type</varname>の詳細については<link linkend="monitoring-pg-stat-activity-view"><structname>pg_stat_activity</structname></link>を参照してください。
- 一部の<varname>backend_type</varname>はI/O操作統計を累積しないため、このビューには含まれません。
+一部の<varname>backend_type</varname>はI/O操作統計を累積しないため、このビューには含まれません。
        </para>
       </entry>
      </row>
@@ -5596,12 +3620,15 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
         Target object of an I/O operation. Possible values are:
 -->
-《機械翻訳》I/O操作のターゲット・オブジェクト。
+I/O操作のターゲットオブジェクトです。
 可能な値は次のとおりです。
        <itemizedlist>
         <listitem>
          <para>
+<!--
           <literal>relation</literal>: Permanent relations.
+-->
+          <literal>relation</literal>: 永続的リレーションです。
          </para>
         </listitem>
         <listitem>
@@ -5609,7 +3636,7 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
           <literal>temp relation</literal>: Temporary relations.
 -->
-《機械翻訳》<literal>temp relation</literal>: 一時的なリレーション。
+<literal>temp relation</literal>: 一時リレーションです。
          </para>
         </listitem>
        </itemizedlist>
@@ -5626,7 +3653,7 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
         The context of an I/O operation. Possible values are:
 -->
-《機械翻訳》I/O 操作のコンテキスト。
+I/O操作のコンテキストです。
 可能な値は次のとおりです。
        </para>
        <itemizedlist>
@@ -5640,7 +3667,7 @@ WALファイルのアーカイブに失敗した回数です。
           shared buffers are tracked in <varname>context</varname>
           <literal>normal</literal>.
 -->
-《機械翻訳》<literal>normal</literal>: I/O操作のタイプに対するデフォルトまたは標準の<varname>context</varname>です。
+<literal>normal</literal>: I/O操作のタイプに対するデフォルトまたは標準の<varname>context</varname>です。
 例えば、リレーションデータの読み込みと書き込みは、デフォルトで共有バッファに書き込まれます。
 したがって、共有バッファからのリレーションデータの読み込みと書き込みは、<varname>context</varname> <literal>normal</literal>で追跡されます。
          </para>
@@ -5651,10 +3678,10 @@ WALファイルのアーカイブに失敗した回数です。
           <literal>vacuum</literal>: I/O operations performed outside of shared
           buffers while vacuuming and analyzing permanent relations. Temporary
           table vacuums use the same local buffer pool as other temporary table
-          IO operations and are tracked in <varname>context</varname>
+          I/O operations and are tracked in <varname>context</varname>
           <literal>normal</literal>.
 -->
-《機械翻訳》<literal>vacuum</literal>: 永続的なリレーションのバキュームおよび解析中に共有バッファ外で実行されたI/O操作。
+<literal>vacuum</literal>: 永続的なリレーションのバキューム中および解析中に共有バッファ外で実行されたI/O操作です。
 一時テーブルのバキュームは、他の一時テーブルI/O操作と同じローカルバッファプールを使用し、<varname>context</varname> <literal>normal</literal>で追跡されます。
          </para>
         </listitem>
@@ -5665,7 +3692,7 @@ WALファイルのアーカイブに失敗した回数です。
           done outside of shared buffers, for example, a sequential scan of a
           large table.
 -->
-《機械翻訳》<literal>bulkread</literal>: 大きな読み取りI/O操作（大きなテーブルの逐次スキャンなど）で、共有バッファの外部で行われるもの。
+<literal>bulkread</literal>: 大きな読み取りI/O操作（大きなテーブルの逐次スキャンなど）で、共有バッファの外部で行われるものです。
          </para>
         </listitem>
         <listitem>
@@ -5674,7 +3701,7 @@ WALファイルのアーカイブに失敗した回数です。
           <literal>bulkwrite</literal>: Certain large write I/O operations
           done outside of shared buffers, such as <command>COPY</command>.
 -->
-《機械翻訳》<literal>bulkwrite</literal>: <command>COPY</command>などの共有バッファ外で行われる、大きな書き込みI/O操作。
+<literal>bulkwrite</literal>: <command>COPY</command>などの共有バッファ外で行われる、大きな書き込みI/O操作です。
          </para>
         </listitem>
        </itemizedlist>
@@ -5691,7 +3718,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of read operations, each of the size specified in
         <varname>op_bytes</varname>.
 -->
-《機械翻訳》<varname>op_bytes</varname>で指定されたサイズの読み取り操作の数。
+<varname>op_bytes</varname>で指定されたサイズの読み取り操作の数です。
        </para>
       </entry>
      </row>
@@ -5706,7 +3733,7 @@ WALファイルのアーカイブに失敗した回数です。
         Time spent in read operations in milliseconds (if
         <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-《機械翻訳》読み取り操作に費やした時間（ミリ秒単位）（<xref linkend="guc-track-io-timing"/>が有効な場合はゼロ）
+読み取り操作に費やした時間です（ミリ秒単位）。（<xref linkend="guc-track-io-timing"/>が有効な場合。それ以外はゼロ）
        </para>
       </entry>
      </row>
@@ -5721,7 +3748,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of write operations, each of the size specified in
         <varname>op_bytes</varname>.
 -->
-《機械翻訳》<varname>op_bytes</varname>で指定されたサイズの書き込み操作の数。
+<varname>op_bytes</varname>で指定されたサイズの書き込み操作の数です。
        </para>
       </entry>
      </row>
@@ -5736,7 +3763,7 @@ WALファイルのアーカイブに失敗した回数です。
         Time spent in write operations in milliseconds (if
         <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-《機械翻訳》書き込み操作に費やした時間（ミリ秒単位）（<xref linkend="guc-track-io-timing"/>が有効な場合は0）
+書き込み操作に費やした時間です（ミリ秒単位）。（<xref linkend="guc-track-io-timing"/>が有効な場合。それ以外はゼロ）
        </para>
       </entry>
      </row>
@@ -5751,7 +3778,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of units of size <varname>op_bytes</varname> which the process
         requested the kernel write out to permanent storage.
 -->
-《機械翻訳》プロセスがカーネルに永続的な記憶域への書き出しを要求した<varname>op_bytes</varname>のサイズの数。
+プロセスがカーネルに永続的な記憶域への書き出しを要求した<varname>op_bytes</varname>のサイズの数です。
        </para>
       </entry>
      </row>
@@ -5768,7 +3795,7 @@ WALファイルのアーカイブに失敗した回数です。
         includes the time spent queueing write-out requests and, potentially,
         the time spent to write out the dirty data.
 -->
-《機械翻訳》ライトバック操作に費やした時間（ミリ秒単位）（<xref linkend="guc-track-io-timing"/>が有効な場合、そうでない場合はゼロ）。
+ライトバック操作に費やした時間です（ミリ秒単位）。（<xref linkend="guc-track-io-timing"/>が有効な場合。そうでない場合はゼロ）。
 これには、書き出し要求の待ち時間と、書き出しデータの書き出しに費やした時間が含まれます。
        </para>
       </entry>
@@ -5784,7 +3811,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of relation extend operations, each of the size specified in
         <varname>op_bytes</varname>.
 -->
-《機械翻訳》<varname>op_bytes</varname>で指定されたサイズのリレーション拡張操作の数。
+<varname>op_bytes</varname>で指定されたサイズのリレーション拡張操作の数です。
        </para>
       </entry>
      </row>
@@ -5799,7 +3826,7 @@ WALファイルのアーカイブに失敗した回数です。
         Time spent in extend operations in milliseconds (if
         <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-《機械翻訳》拡張操作に費やした時間（ミリ秒単位）（<xref linkend="guc-track-io-timing"/>が有効な場合はゼロ）
+拡張操作に費やした時間です（ミリ秒単位）。（<xref linkend="guc-track-io-timing"/>が有効な場合。それ以外はゼロ）
        </para>
       </entry>
      </row>
@@ -5813,7 +3840,7 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
         The number of bytes per unit of I/O read, written, or extended.
 -->
-《機械翻訳》I/Oの読み取り、書き込み、または拡張の単位ごとのバイト数。
+I/Oの読み取り、書き込み、または拡張の単位ごとのバイト数です。
        </para>
        <para>
 <!--
@@ -5822,7 +3849,7 @@ WALファイルのアーカイブに失敗した回数です。
         parameter <symbol>BLCKSZ</symbol>, which is <literal>8192</literal> by
         default.
 -->
-《機械翻訳》リレーションデータの読み込み、書き込み、拡張は、構築時パラメータ<symbol>BLCKSZ</symbol>から導出される<varname>block_size</varname>単位で行われます。
+リレーションデータの読み込み、書き込み、拡張は、構築時パラメータ<symbol>BLCKSZ</symbol>から導出される<varname>block_size</varname>単位で行われます。
 デフォルトでは<literal>8192</literal>です。
        </para>
       </entry>
@@ -5837,7 +3864,7 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
         The number of times a desired block was found in a shared buffer.
 -->
-《機械翻訳》共有バッファ内で所望のブロックが見つかった回数。
+共有バッファ内で所望のブロックが見つかった回数です。
        </para>
       </entry>
      </row>
@@ -5852,7 +3879,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of times a block has been written out from a shared or local
         buffer in order to make it available for another use.
 -->
-《機械翻訳》ブロックが別の使用に使用できるように、共有バッファまたはローカルバッファから書き出された回数。
+ブロックが別の使用に使用できるように、共有バッファまたはローカルバッファから書き出された回数です。
        </para>
        <para>
 <!--
@@ -5864,7 +3891,7 @@ WALファイルのアーカイブに失敗した回数です。
         evicted from shared buffers in order to add the shared buffer to a
         separate, size-limited ring buffer for use in a bulk I/O operation.
 -->
-《機械翻訳》<varname>context</varname>が<literal>normal</literal>の場合、この値は、ブロックがバッファから削除され、別のブロックに置き換えられた回数をカウントします。
+<varname>context</varname>が<literal>normal</literal>の場合、この値は、ブロックがバッファから削除され、別のブロックに置き換えられた回数をカウントします。
  <varname>context</varname>が<literal>bulkwrite</literal>、<literal>bulkread</literal>、および<literal>vacuum</literal>の場合、この値は、バルクI/O操作で使用するために、共有バッファを別のサイズ制限のあるリングバッファに追加するために、ブロックが共有バッファから追い出された回数をカウントします。
         </para>
       </entry>
@@ -5882,7 +3909,7 @@ WALファイルのアーカイブに失敗した回数です。
         <literal>bulkread</literal>, <literal>bulkwrite</literal>, or
         <literal>vacuum</literal> <varname>context</varname>s.
 -->
-《機械翻訳》共有バッファ以外のサイズ制限付きリングバッファ内の既存のバッファが、<literal>bulkread</literal>、<literal>bulkwrite</literal>、または<literal>vacuum</literal> <varname>context</varname>内でI/O操作の一部として再利用された回数。
+共有バッファ以外のサイズ制限付きリングバッファ内の既存のバッファが、<literal>bulkread</literal>、<literal>bulkwrite</literal>、または<literal>vacuum</literal> <varname>context</varname>内でI/O操作の一部として再利用された回数です。
        </para>
       </entry>
      </row>
@@ -5897,7 +3924,7 @@ WALファイルのアーカイブに失敗した回数です。
         Number of <literal>fsync</literal> calls. These are only tracked in
         <varname>context</varname> <literal>normal</literal>.
 -->
-《機械翻訳》<literal>fsync</literal>呼び出しの数。
+<literal>fsync</literal>呼び出しの数です。
 これらは<varname>context</varname> <literal>normal</literal>でのみ追跡されます。
        </para>
       </entry>
@@ -5913,7 +3940,7 @@ WALファイルのアーカイブに失敗した回数です。
         Time spent in fsync operations in milliseconds (if
         <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-《機械翻訳》fsync操作に費やした時間（ミリ秒単位）（<xref linkend="guc-track-io-timing"/>が有効な場合は0）
+fsync操作に費やした時間です（ミリ秒単位）。（<xref linkend="guc-track-io-timing"/>が有効な場合。それ以外はゼロ）
        </para>
       </entry>
      </row>
@@ -5927,8 +3954,7 @@ WALファイルのアーカイブに失敗した回数です。
 <!--
         Time at which these statistics were last reset.
 -->
-《マッチ度[82.978723]》統計情報がリセットされた最終時刻です。
-《機械翻訳》これらの統計情報が最後にリセットされた時刻。
+これらの統計情報が最後にリセットされた時刻です。
        </para>
       </entry>
      </row>
@@ -5944,9 +3970,9 @@ WALファイルのアーカイブに失敗した回数です。
    for <varname>backend_type</varname> <literal>checkpointer</literal> and
    <varname>object</varname> <literal>temp relation</literal>.
 -->
-《機械翻訳》一部のバックエンドタイプは、一部のI/Oオブジェクトおよび/または一部のI/OコンテキストでI/O操作を実行しません。
- これらの行はビューから省略されます。
- たとえば、チェッカポインタは一時テーブルをチェックしないので、<varname>backend_type</varname> <literal>checkpointer</literal>および<varname>object</varname> <literal>temp relation</literal>に対する行はありません。
+一部のバックエンドタイプは、一部のI/Oオブジェクトおよび/または一部のI/OコンテキストでI/O操作を実行しません。
+これらの行はビューから省略されます。
+たとえば、チェッカポインタは一時テーブルをチェックしないので、<varname>backend_type</varname> <literal>checkpointer</literal>および<varname>object</varname> <literal>temp relation</literal>に対する行はありません。
   </para>
 
   <para>
@@ -5960,7 +3986,7 @@ WALファイルのアーカイブに失敗した回数です。
    be NULL in rows for <varname>backend_type</varname> <literal>background
    writer</literal>.
 -->
-《機械翻訳》また、特定のバックエンドタイプ、特定のI/Oオブジェクト、特定のI/Oコンテキストで、一部のI/O操作が実行されない場合もあります。
+また、特定のバックエンドタイプ、特定のI/Oオブジェクト、特定のI/Oコンテキストで、一部のI/O操作が実行されない場合もあります。
 これらのセルはNULLです。
 たとえば、一時テーブルは<literal>fsync</literal>されないので、<varname>fsyncs</varname>は<varname>object</varname> <literal>temp relation</literal>に対してNULLになります。
 また、バックグラウンドライタは読み取りを行わないので、<varname>backend_type</varname>が<literal>temp relation</literal>の行では<varname>reads</varname>がNULLになります。
@@ -5971,8 +3997,8 @@ WALファイルのアーカイブに失敗した回数です。
    <structname>pg_stat_io</structname> can be used to inform database tuning.
    For example:
 -->
-《機械翻訳》<structname>pg_stat_io</structname>はデータベースのチューニングに役立てることができます。
-たとえば、
+<structname>pg_stat_io</structname>はデータベースのチューニングに役立てることができます。
+例を示します。
    <itemizedlist>
     <listitem>
      <para>
@@ -5980,7 +4006,7 @@ WALファイルのアーカイブに失敗した回数です。
       A high <varname>evictions</varname> count can indicate that shared
       buffers should be increased.
 -->
-《機械翻訳》<varname>evictions</varname>の数が多いということは、共有バッファを増やす必要があることを示しています。
+<varname>evictions</varname>の数が多いということは、共有バッファを増やす必要があることを示しています。
      </para>
     </listitem>
     <listitem>
@@ -5992,8 +4018,8 @@ WALファイルのアーカイブに失敗した回数です。
       shared buffers or of the checkpointer. More information on configuring
       the checkpointer can be found in <xref linkend="wal-configuration"/>.
 -->
-《機械翻訳》クライアントバックエンドは、チェックポインタが永続的なストレージにデータが保存されていることを確認するために、チェックポインタに依存します。
-クライアントバッファによる多数の<varname>fsync</varname>は、共有バッファやチェックポインタの設定ミスを示している可能性があります。
+クライアントバックエンドは、永続的なストレージにデータが保存されていることを確実するために、チェックポインタに依存しています。
+<literal>client backend</literal>による多数の<varname>fsync</varname>は、共有バッファやチェックポインタの設定ミスを示している可能性があります。
 チェックポインタの設定の詳細は<xref linkend="wal-configuration"/>を参照してください。
      </para>
     </listitem>
@@ -6007,7 +4033,7 @@ WALファイルのアーカイブに失敗した回数です。
       More information on configuring the checkpointer can be found in <xref
       linkend="wal-configuration"/>.
 -->
-《機械翻訳》通常、クライアントバックエンドは、チェックポインタやバックグラウンドライタのような補助プロセスに、できるだけ多くの不正なデータを書き出すことに依存できるはずです。
+通常、クライアントバックエンドは、チェックポインタやバックグラウンドライタのような補助プロセスが、できるだけ多くのダーティーデータを書き出すことに依存できるはずです。
 クライアントバックエンドによる大量の書き込みは、共有バッファやチェックポインタの設定ミスを示している可能性があります。
 チェックポインタの設定についての詳細は<xref linkend="wal-configuration"/>を参照してください。
      </para>
@@ -6021,11 +4047,11 @@ WALファイルのアーカイブに失敗した回数です。
     Columns tracking I/O time will only be non-zero when
     <xref linkend="guc-track-io-timing"/> is enabled. The user should be
     careful when referencing these columns in combination with their
-    corresponding IO operations in case <varname>track_io_timing</varname>
+    corresponding I/O operations in case <varname>track_io_timing</varname>
     was not enabled for the entire time since the last stats reset.
 -->
-《機械翻訳》I/O時間を追跡する列は、<xref linkend="guc-track-io-timing"/>が有効な場合にのみ非ゼロになります。
-ユーザは、対応するIO操作を参照するときに、最後の統計リセット以降に<varname>track_io_timing</varname>が有効になっていなかった場合には注意が必要です。
+I/O時間を追跡する列は、<xref linkend="guc-track-io-timing"/>が有効な場合にのみゼロ以外になります。
+ユーザは、対応するI/O操作を参照するときに、最後の統計リセット以降の全期間で<varname>track_io_timing</varname>が有効になっていなかった場合には注意が必要です。
    </para>
   </note>
 
@@ -6043,9 +4069,9 @@ WALファイルのアーカイブに失敗した回数です。
   <para>
 <!--
    The <structname>pg_stat_bgwriter</structname> view will always have a
-   single row, containing global data for the cluster.
+   single row, containing data about the background writer of the cluster.
 -->
-<structname>pg_stat_bgwriter</structname>ビューは常に、クラスタのグローバルデータに関する１つの行を持ちます。
+<structname>pg_stat_bgwriter</structname>ビューは常に、クラスタのクラスタのバックグラウンドライタに関するデータに関する１つの行を持ちます。
   </para>
 
   <table id="pg-stat-bgwriter-view" xreflabel="pg_stat_bgwriter">
@@ -6074,69 +4100,6 @@ WALファイルのアーカイブに失敗した回数です。
     <tbody>
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>checkpoints_timed</structfield> <type>bigint</type>
-      </para>
-      <para>
-<!--
-       Number of scheduled checkpoints that have been performed
--->
-これまでに実行された、スケジュールされたチェックポイントの個数です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>checkpoints_req</structfield> <type>bigint</type>
-      </para>
-      <para>
-<!--
-       Number of requested checkpoints that have been performed
--->
-これまでに実行された、要求されたチェックポイントの個数です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>checkpoint_write_time</structfield> <type>double precision</type>
-      </para>
-      <para>
-<!--
-       Total amount of time that has been spent in the portion of
-       checkpoint processing where files are written to disk, in milliseconds
--->
-チェックポイント処理におけるディスクにファイルを書き出す部分に費やされた、ミリ秒単位の総時間です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>checkpoint_sync_time</structfield> <type>double precision</type>
-      </para>
-      <para>
-<!--
-       Total amount of time that has been spent in the portion of
-       checkpoint processing where files are synchronized to disk, in
-       milliseconds
--->
-チェックポイント処理におけるディスクにファイルを同期する部分に費やされた、ミリ秒単位の総時間です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>buffers_checkpoint</structfield> <type>bigint</type>
-      </para>
-      <para>
-<!--
-       Number of buffers written during checkpoints
--->
-チェックポイント期間に書き出されたバッファ数です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>buffers_clean</structfield> <type>bigint</type>
       </para>
       <para>
@@ -6162,33 +4125,6 @@ WALファイルのアーカイブに失敗した回数です。
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>buffers_backend</structfield> <type>bigint</type>
-      </para>
-      <para>
-<!--
-       Number of buffers written directly by a backend
--->
-バックエンドにより直接書き出されたバッファ数です。
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>buffers_backend_fsync</structfield> <type>bigint</type>
-      </para>
-      <para>
-<!--
-       Number of times a backend had to execute its own
-       <function>fsync</function> call (normally the background writer handles those
-       even when the backend does its own write)
--->
-バックエンドが独自に<function>fsync</function>呼び出しを実行しなければならなかった回数です。
-（通常は、バックエンドが独自に書き込んだ場合であっても、バックグラウンドライタがこれらを扱います。）
-      </para></entry>
-     </row>
-
-     <row>
-      <entry role="catalog_table_entry"><para role="column_definition">
        <structfield>buffers_alloc</structfield> <type>bigint</type>
       </para>
       <para>
@@ -6196,6 +4132,163 @@ WALファイルのアーカイブに失敗した回数です。
        Number of buffers allocated
 -->
 割当られたバッファ数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>stats_reset</structfield> <type>timestamp with time zone</type>
+      </para>
+      <para>
+<!--
+       Time at which these statistics were last reset
+-->
+統計情報がリセットされた最終時刻です。
+      </para></entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+ </sect2>
+
+ <sect2 id="monitoring-pg-stat-checkpointer-view">
+  <title><structname>pg_stat_checkpointer</structname></title>
+
+  <indexterm>
+   <primary>pg_stat_checkpointer</primary>
+  </indexterm>
+
+  <para>
+<!--
+   The <structname>pg_stat_checkpointer</structname> view will always have a
+   single row, containing data about the checkpointer process of the cluster.
+-->
+<structname>pg_stat_checkpointer</structname>ビューは常に、クラスタのチェックポインタプロセスに関するデータを含む１つの行を持ちます。
+  </para>
+
+  <table id="pg-stat-checkpointer-view" xreflabel="pg_stat_checkpointer">
+   <title><structname>pg_stat_checkpointer</structname> View</title>
+   <tgroup cols="1">
+    <thead>
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+<!--
+       Column Type
+-->
+列 型
+      </para>
+      <para>
+<!--
+       Description
+-->
+説明
+      </para></entry>
+     </row>
+    </thead>
+
+    <tbody>
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>num_timed</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of scheduled checkpoints due to timeout.
+       Note that checkpoints may be skipped if the server has been idle
+       since the last one, and this value counts both completed and
+       skipped checkpoints
+-->
+タイムアウトによってスケジュールされたチェックポイントの個数です。
+サーバが最後のチェックポイント以降アイドル状態である場合、チェックポイントはスキップされる可能性があり、この値は完了したチェックポイントとスキップされたチェックポイントの両方をカウントします。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>num_requested</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of requested checkpoints that have been performed
+-->
+これまでに実行された、要求されたチェックポイントの個数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>restartpoints_timed</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of scheduled restartpoints due to timeout or after a failed attempt to perform it
+-->
+タイムアウトまたは失敗した試行の後にスケジュールされたリスタートポイントの個数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>restartpoints_req</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of requested restartpoints
+-->
+要求されたリスタートポイントの個数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>restartpoints_done</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of restartpoints that have been performed
+-->
+これまでに実行された、リスタートポイントの個数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>write_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+<!--
+       Total amount of time that has been spent in the portion of
+       processing checkpoints and restartpoints where files are written to disk,
+       in milliseconds
+-->
+ファイルがディスクに書き込まれるチェックポイントおよびリスタートポイントの処理に費やされた、ミリ秒単位の総時間です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>sync_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+<!--
+       Total amount of time that has been spent in the portion of
+       processing checkpoints and restartpoints where files are synchronized to
+       disk, in milliseconds
+-->
+ファイルがディスクに同期されるチェックポイントおよびリスタートポイントの処理に費やされた、ミリ秒単位の総時間です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>buffers_written</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of buffers written during checkpoints and restartpoints
+-->
+チェックポイント中およびリスタートポイント中に書き出されたバッファ数です。
       </para></entry>
      </row>
 
@@ -6961,7 +5054,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        canceled due to old snapshots or too low a <xref linkend="guc-wal-level"/>
        on the primary
 -->
-《機械翻訳》古いスナップショットまたはプライマリ上の低すぎる<xref linkend="guc-wal-level"/>により取り消されたこのデータベース内の論理スロットの使用回数
+スナップショットが古い、またはプライマリ上で<xref linkend="guc-wal-level"/>が低すぎることにより取り消されたこのデータベース内の論理スロットの使用回数です。
       </para></entry>
      </row>
     </tbody>
@@ -7072,7 +5165,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        The time of the last sequential scan on this table, based on the
        most recent transaction stop time
 -->
-《機械翻訳》最新のトランザクション停止時刻に基づく、この表の最後の順次スキャンの時刻
+最新のトランザクション停止時刻に基づく、このテーブルの最後の順次スキャンの時刻です。
       </para></entry>
      </row>
 
@@ -7109,7 +5202,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        The time of the last index scan on this table, based on the
        most recent transaction stop time
 -->
-《機械翻訳》最新のトランザクション停止時刻に基づく、このテーブルに対する最新のインデックススキャンの時刻
+最新のトランザクション停止時刻に基づく、このテーブルに対する最新のインデックススキャンの時刻です。
       </para></entry>
      </row>
 
@@ -7133,8 +5226,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
 <!--
        Total number of rows inserted
 -->
-《マッチ度[75.862069]》挿入された行数です。
-《機械翻訳》挿入された行の総数
+挿入された総行数です。
       </para></entry>
      </row>
 
@@ -7149,7 +5241,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        <structfield>n_tup_newpage_upd</structfield>, and remaining
        non-<acronym>HOT</acronym> updates.)
 -->
-《機械翻訳》更新された行の総数。
+更新された総行数です。
 （これには、<structfield>n_tup_hot_upd</structfield>と<structfield>n_tup_newpage_upd</structfield>でカウントされた行更新と、<acronym>HOT</acronym>以外の残りの更新が含まれます。）
       </para></entry>
      </row>
@@ -7162,8 +5254,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
 <!--
        Total number of rows deleted
 -->
-《マッチ度[75.000000]》削除された行数です。
-《機械翻訳》削除された行の総数
+削除された総行数です。
       </para></entry>
      </row>
 
@@ -7177,7 +5268,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        These are updates where no successor versions are required in
        indexes.
 -->
-《機械翻訳》行数<link linkend="storage-hot">HOT更新</link>。
+<link linkend="storage-hot">HOT更新</link>された行数です。
 これらは、インデックスで後続のバージョンが必要ない更新です。
       </para></entry>
      </row>
@@ -7195,8 +5286,8 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
         field</link> that points to a different heap page.  These are
        always non-<acronym>HOT</acronym> updates.
 -->
-《機械翻訳》後継バージョンが<emphasis>新しい</emphasis>ヒープページに移動し、元のバージョンが別のヒープページを指す<link linkend="storage-tuple-layout"><structfield>t_ctid</structfield>フィールド</link>を残して置かれる<acronym>HOT</acronym>更新の数です。
-これらは常に<acronym>HOT</acronym>以外の更新です。
+後継バージョンが<emphasis>新しい</emphasis>ヒープページに移動し、元のバージョンが<link linkend="storage-tuple-layout"><structfield>t_ctid</structfield>フィールド</link>で別のヒープページを指すような更新が行われた行数です。
+これらは常に非<acronym>HOT</acronym>更新です。
       </para></entry>
      </row>
 
@@ -7481,7 +5572,7 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
        The time of the last scan on this index, based on the
        most recent transaction stop time
 -->
-《機械翻訳》最新のトランザクション停止時刻に基づく、このインデックスの最後のスキャン時刻
+最新のトランザクション停止時刻に基づく、このインデックスの最後のスキャン時刻です。
       </para></entry>
      </row>
 
@@ -7552,6 +5643,23 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
 <structfield>idx_tup_read</structfield>と<structfield>idx_tup_fetch</structfield>個数は、ビットマップスキャンがまったく使用されていない場合でも異なります。
 <structfield>idx_tup_read</structfield>はインデックスから取り出したインデックス項目を計上し、<structfield>idx_tup_fetch</structfield>はテーブルから取り出した有効行を計上するからです。
 インデックスを用いて無効行やまだコミットされていない行が取り出された場合やインデックスオンリースキャン法によりヒープの取り出しが回避された場合に、後者は減少します。
+   </para>
+  </note>
+
+  <note>
+   <para>
+<!--
+    Queries that use certain <acronym>SQL</acronym> constructs to search for
+    rows matching any value out of a list or array of multiple scalar values
+    (see <xref linkend="functions-comparisons"/>) perform multiple
+    <quote>primitive</quote> index scans (up to one primitive scan per scalar
+    value) during query execution.  Each internal primitive index scan
+    increments <structname>pg_stat_all_indexes</structname>.<structfield>idx_scan</structfield>,
+    so it's possible for the count of index scans to significantly exceed the
+    total number of index scan executor node executions.
+-->
+複数のスカラ値のリストや配列に一致する行を検索するために特定の<acronym>SQL</acronym>構文を使用する問い合わせ（<xref linkend="functions-comparisons"/>を参照）は、問い合わせ実行中に複数の<quote>プリミティブ</quote>インデックススキャン（スカラ値ごとに最大1つのプリミティブスキャン）を実行します。
+各内部プリミティブインデックススキャンは<structname>pg_stat_all_indexes</structname>.<structfield>idx_scan</structfield>を増加させるため、インデックススキャンの回数がインデックススキャン実行ノードの合計数を大幅に上回ることがあります。
    </para>
   </note>
 
@@ -8113,13 +6221,23 @@ WALファイルが<function>issue_xlog_fsync</function>要求によりディス�
   <para>
 <!--
    <productname>PostgreSQL</productname> accesses certain on-disk information
-   via <firstterm>SLRU</firstterm> (simple least-recently-used) caches.
+   via <literal>SLRU</literal> (<firstterm>simple least-recently-used</firstterm>)
+   caches.
    The <structname>pg_stat_slru</structname> view will contain
    one row for each tracked SLRU cache, showing statistics about access
    to cached pages.
 -->
-<productname>PostgreSQL</productname>は<firstterm>SLRU</firstterm>(simple least-recently-used)キャッシュ経由で特定のディスク上の情報にアクセスします。
+<productname>PostgreSQL</productname>は<literal>SLRU</literal> (<firstterm>simple least-recently-used</firstterm>)キャッシュ経由で特定のディスク上の情報にアクセスします。
 <structname>pg_stat_slru</structname>ビューは、追跡されたSLRUキャッシュごとに1行の形式で、キャッシュされたページへのアクセスに関する統計情報を表示します。
+  </para>
+
+  <para>
+<!--
+   For each <literal>SLRU</literal> cache that's part of the core server,
+   there is a configuration parameter that controls its size, with the suffix
+   <literal>_buffers</literal> appended.
+-->
+コアサーバの一部である各<literal>SLRU</literal>キャッシュに対して、そのサイズを制御する構成パラメータがあり、接尾辞<literal>_buffers</literal>が付加されます。
   </para>
 
   <table id="pg-stat-slru-view" xreflabel="pg_stat_slru">
@@ -8463,32 +6581,90 @@ SLRUでの切り詰めの数です。
         <indexterm>
          <primary>pg_stat_reset_shared</primary>
         </indexterm>
-        <function>pg_stat_reset_shared</function> ( <type>text</type> )
+        <function>pg_stat_reset_shared</function> ( [ <parameter>target</parameter> <type>text</type> <literal>DEFAULT</literal> <literal>NULL</literal> ] )
         <returnvalue>void</returnvalue>
        </para>
        <para>
 <!--
         Resets some cluster-wide statistics counters to zero, depending on the
-        argument.  The argument can be <literal>bgwriter</literal> to reset
-        all the counters shown in
-        the <structname>pg_stat_bgwriter</structname>
-        view, <literal>archiver</literal> to reset all the counters shown in
-        the <structname>pg_stat_archiver</structname> view,
-        <literal>io</literal> to reset all the counters shown in the
-        <structname>pg_stat_io</structname> view,
-        <literal>wal</literal> to reset all the counters shown in the
-        <structname>pg_stat_wal</structname> view or
-        <literal>recovery_prefetch</literal> to reset all the counters shown
-        in the <structname>pg_stat_recovery_prefetch</structname> view.
+        argument. <parameter>target</parameter> can be:
 -->
-《マッチ度[74.888559]》引数に応じて、クラスタ全体の統計情報カウンタの一部をゼロにリセットします。
-引数に<literal>bgwriter</literal>を指定すると、<structname>pg_stat_bgwriter</structname>ビューで示されるカウンタがすべてリセットされ、<literal>archiver</literal>を指定すると<structname>pg_stat_archiver</structname>ビューで示されるカウンタがすべてリセットされ、<literal>wal</literal>を指定すると<structname>pg_stat_wal</structname>ビューで示されるカウンタがすべてリセットされ、<literal>recovery_prefetch</literal>を指定すると<structname>pg_stat_recovery_prefetch</structname> ビュー示されるカウンタがすべてリセットされます。
-《機械翻訳》引数に応じて、クラスタ全体の統計カウンタをいくつかリセットします。
- 引数は<literal>bgwriter</literal>で、<structname>pg_stat_bgwriter</structname>ビューに表示されるすべてのカウンタをリセットします。
-<literal>archiver</literal>で、<structname>pg_stat_archiver</structname>ビューに表示されるすべてのカウンタをリセットします。
-<literal>io</literal>で、<structname>pg_stat_io</structname>ビューに表示されるすべてのカウンタをリセットします。
-<literal>wal</literal>で、<structname>pg_stat_wal</structname>ビューに表示されるすべてのカウンタをリセットします。
-<literal>recovery_prefetch</literal>で、<structname>pg_stat_recovery_prefetch</structname>ビューに表示されるすべてのカウンタをリセットします。
+引数に応じて、クラスタ全体の統計情報カウンタの一部をゼロにリセットします。
+<parameter>target</parameter>は以下のいずれかです。
+       <itemizedlist>
+        <listitem>
+         <para>
+<!--
+          <literal>archiver</literal>: Reset all the counters shown in the
+          <structname>pg_stat_archiver</structname> view.
+-->
+<literal>archiver</literal>: <structname>pg_stat_archiver</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+           <literal>bgwriter</literal>: Reset all the counters shown in the
+           <structname>pg_stat_bgwriter</structname> view.
+-->
+<literal>bgwriter</literal>: <structname>pg_stat_bgwriter</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>checkpointer</literal>: Reset all the counters shown in the
+          <structname>pg_stat_checkpointer</structname> view.
+-->
+<literal>checkpointer</literal>: <structname>pg_stat_checkpointer</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>io</literal>: Reset all the counters shown in the
+          <structname>pg_stat_io</structname> view.
+-->
+<literal>io</literal>: <structname>pg_stat_io</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>recovery_prefetch</literal>: Reset all the counters shown in
+          the <structname>pg_stat_recovery_prefetch</structname> view.
+-->
+<literal>recovery_prefetch</literal>: <structname>pg_stat_recovery_prefetch</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>slru</literal>: Reset all the counters shown in the
+          <structname>pg_stat_slru</structname> view.
+-->
+<literal>slru</literal>: <structname>pg_stat_slru</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>wal</literal>: Reset all the counters shown in the
+          <structname>pg_stat_wal</structname> view.
+-->
+<literal>wal</literal>: <structname>pg_stat_wal</structname>ビューで示されるカウンタがすべてリセットされます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+<!--
+          <literal>NULL</literal> or not specified: All the counters from the
+          views listed above are reset.
+-->
+<literal>NULL</literal>か、指定しない場合: 上記のビューのカウンタはすべてリセットされます。
+         </para>
+        </listitem>
+       </itemizedlist>
        </para>
        <para>
 <!--
@@ -8552,31 +6728,32 @@ SLRUでの切り詰めの数です。
         <indexterm>
          <primary>pg_stat_reset_slru</primary>
         </indexterm>
-        <function>pg_stat_reset_slru</function> ( <type>text</type> )
+        <function>pg_stat_reset_slru</function> ( [ <parameter>target</parameter> <type>text</type> <literal>DEFAULT</literal> <literal>NULL</literal> ] )
         <returnvalue>void</returnvalue>
        </para>
        <para>
 <!--
         Resets statistics to zero for a single SLRU cache, or for all SLRUs in
-        the cluster.  If the argument is NULL, all counters shown in
+        the cluster. If <parameter>target</parameter> is
+        <literal>NULL</literal> or is not specified, all the counters shown in
         the <structname>pg_stat_slru</structname> view for all SLRU caches are
-        reset.  The argument can be one of
-        <literal>CommitTs</literal>,
-        <literal>MultiXactMember</literal>,
-        <literal>MultiXactOffset</literal>,
-        <literal>Notify</literal>,
-        <literal>Serial</literal>,
-        <literal>Subtrans</literal>, or
-        <literal>Xact</literal>
+        reset. The argument can be one of
+        <literal>commit_timestamp</literal>,
+        <literal>multixact_member</literal>,
+        <literal>multixact_offset</literal>,
+        <literal>notify</literal>,
+        <literal>serializable</literal>,
+        <literal>subtransaction</literal>, or
+        <literal>transaction</literal>
         to reset the counters for only that entry.
         If the argument is <literal>other</literal> (or indeed, any
         unrecognized name), then the counters for all other SLRU caches, such
         as extension-defined caches, are reset.
 -->
-ひとつのSLRUキャッシュ、またはクラスタ内のすべてのSLRUの統計情報をゼロにリセットします。
-引数がNULLであれば、<structname>pg_stat_slru</structname>ビューで示されているすべてのSLRUキャッシュに対するカウンタがリセットされます。
-引数は、そのエントリのみに対応するカウンタをリセットするよう<literal>CommitTs</literal>、<literal>MultiXactMember</literal>、<literal>MultiXactOffset</literal>、<literal>Notify</literal>、<literal>Serial</literal>、<literal>Subtrans</literal>、<literal>Xact</literal>の1つを指定できます。
-引数が<literal>other</literal>(実際のところは、認められていない名前であれば何でも)であれば、拡張が定義したキャッシュのような、それ以外のSLRUキャッシュに対するカウンタがリセットされます。
+単一のSLRUキャッシュ、またはクラスタ内のすべてのSLRUの統計情報をゼロにリセットします。
+<parameter>target</parameter>が<literal>NULL</literal>であるか、指定されていない場合は、すべてのSLRUキャッシュに関する<structname>pg_stat_slru</structname>ビューで示されるすべてのカウンタがリセットされます。
+引数は、そのエントリのみに対応するカウンタをリセットするよう <literal>commit_timestamp</literal>、<literal>multixact_member</literal>、<literal>multixact_offset</literal>、<literal>notify</literal>、<literal>serializable</literal>、<literal>subtransaction</literal>、<literal>transaction</literal>の1つを指定できます。
+引数が<literal>other</literal>（実際のところは、認識されない名前であれば何でも）であれば、拡張が定義したキャッシュのような、それ以外のSLRUキャッシュに対するカウンタがリセットされます。
        </para>
        <para>
 <!--
@@ -8669,7 +6846,7 @@ SLRUでの切り詰めの数です。
    access functions can be used; these are shown in <xref
    linkend="monitoring-stats-backend-funcs-table"/>.
    These access functions use the session's backend ID number, which is a
-   small positive integer that is distinct from the backend ID of any
+   small integer (>= 0) that is distinct from the backend ID of any
    concurrent session, although a session's ID can be recycled as soon as
    it exits.  The backend ID is used, among other things, to identify the
    session's temporary schema if it has one.
@@ -8678,19 +6855,14 @@ SLRUでの切り詰めの数です。
    invoking these functions.  For example, to show the <acronym>PID</acronym>s and
    current queries of all backends:
 -->
-《マッチ度[60.648918]》<structname>pg_stat_activity</structname>ビューの基礎となる<function>pg_stat_get_activity</function>関数は、各バックエンドプロセスに関して利用可能な情報をすべて含むレコード集合を返します。
+<structname>pg_stat_activity</structname>ビューの基礎となる<function>pg_stat_get_activity</function>関数は、各バックエンドプロセスに関して利用可能な情報をすべて含むレコード集合を返します。
 この情報の一部のみを入手することがより簡便である場合があるかもしれません。
-このような場合、<xref linkend="monitoring-stats-backend-funcs-table"/>に示す、古めのバックエンド単位の統計情報アクセス関数を使用することができます。
-これらのアクセス関数は、１から現在活動中のバックエンドの個数までの値を取る、バックエンドID番号を使用します。
+このような場合、<xref linkend="monitoring-stats-backend-funcs-table"/>に示す、別のバックエンド単位の統計情報アクセス関数を使用できます。
+これらのアクセス関数は、セッションのバックエンドID番号を使用します。 これは、バックエンドIDが同時に実行されているセッションのIDとは異なる小さな整数(>= 0)です。
+ただし、セッションのIDは、セッションが終了すると再利用できます。
+とりわけバックエンドIDは、セッションが一時スキーマを持つ場合に、それを識別するために使用されます。
 <function>pg_stat_get_backend_idset</function>関数は、これらの関数を呼び出すために、活動中のバックエンド毎に1行を生成する簡便な方法を提供します。
 例えば以下はすべてのバックエンドについて<acronym>PID</acronym>と現在の問い合わせを示します。
-《機械翻訳》<function>pg_stat_activity</function>は、<structname>pg_stat_activity</structname>ビューの基本的な関数で、各バックエンドプロセスに関するすべての情報を含むレコードのセットを返します。
-この情報のサブセットだけを取得した方が便利な場合もあります。
-このような場合、別のバックエンドごとの統計情報アクセス関数を使用できます。 これらの関数は<xref linkend="monitoring-stats-backend-funcs-table"/>に示されています。
-これらのアクセス関数は、セッションのバックエンドID番号を使用します。 これは、バックエンドIDが同時に実行されているセッションのIDとは異なる小さな正の整数です。 ただし、セッションのIDは、セッションが終了すると再利用できます。
-バックエンドIDは、特に、セッションが持つ場合には、セッションの一時的なスキーマを識別するために使用されます。
-関数<function>pg_stat_get_backend_idset</function>は、これらの関数を呼び出すために、すべてのアクティブなバックエンドのID番号を一覧表示する便利な方法を提供します。
-たとえば、すべてのバックエンドの<acronym>PID</acronym>と現在の問い合わせを表示するには、次のようにします。
 
 <programlisting>
 SELECT pg_stat_get_backend_pid(backendid) AS pid,
@@ -8815,7 +6987,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
 <!--
         Returns the set of currently active backend ID numbers.
 -->
-《機械翻訳》現在アクティブなバックエンド ID 番号のセットを返します。
+現在アクティブなバックエンドID番号の集合を返します。
        </para></entry>
       </row>
 
@@ -8868,8 +7040,8 @@ FROM pg_stat_get_backend_idset() AS backendid;
         and <parameter>subxact_overflow</parameter>, which indicates whether
         the backend's subtransaction cache is overflowed or not.
 -->
-《機械翻訳》指定された ID を持つバックエンドのサブトランザクションの情報を含むレコードを返します。
-返されるフィールドは、バックエンドのサブトランザクション・キャッシュ内のサブトランザクション数を示す <parameter>subxact_count</parameter> と、バックエンドのサブトランザクション・キャッシュがオーバーフローしているかどうかを示す <parameter>subxact_overflow</parameter> です。
+指定されたIDを持つバックエンドのサブトランザクションの情報を含むレコードを返します。
+返却されるフィールドは、バックエンドのサブトランザクションキャッシュ内のサブトランザクション数を示す<parameter>subxact_count</parameter>と、バックエンドのサブトランザクションキャッシュがオーバーフローしているかどうかを示す<parameter>subxact_overflow</parameter>です。
        </para></entry>
       </row>
 
@@ -9782,16 +7954,15 @@ FROM pg_stat_get_backend_idset() AS backendid;
       </para>
       <para>
 <!--
-       The io type that the data is read from or written to:
+       The I/O type that the data is read from or written to:
        <literal>FILE</literal>, <literal>PROGRAM</literal>,
        <literal>PIPE</literal> (for <command>COPY FROM STDIN</command> and
        <command>COPY TO STDOUT</command>), or <literal>CALLBACK</literal>
        (used for example during the initial table synchronization in
        logical replication).
 -->
-データの読み取りまたは書き込みが行われる入出力の種類で、
-<literal>FILE</literal>、
-<literal>PROGRAM</literal>、
+データの読み取りまたは書き込みが行われるI/Oの種類です。
+<literal>FILE</literal>、<literal>PROGRAM</literal>、
 <literal>PIPE</literal>（<command>COPY FROM STDIN</command>および<command>COPY TO STDOUT</command>用）、
 または<literal>CALLBACK</literal>（たとえば、論理レプリケーションの初期テーブル同期中に使用されます）です。
       </para></entry>
@@ -9845,6 +8016,22 @@ FROM pg_stat_get_backend_idset() AS backendid;
        <command>WHERE</command> clause of the <command>COPY</command> command.
 -->
 <command>COPY</command>コマンドの<command>WHERE</command>句で除外されたために処理されなかったタプル数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>tuples_skipped</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of tuples skipped because they contain malformed data.
+       This counter only advances when a value other than
+       <literal>stop</literal> is specified to the <literal>ON_ERROR</literal>
+       option.
+-->
+不正なデータが含まれているためにスキップされたタプルの数です。
+このカウンタは、<literal>ON_ERROR</literal>オプションに対して<literal>stop</literal>以外の値が指定された時にのみ増加します。
       </para></entry>
      </row>
     </tbody>
@@ -9906,7 +8093,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
 <!--
        Process ID of the backend creating indexes.
 -->
-《機械翻訳》インデックスを作成するバックエンドのプロセスID。
+インデックスを作成するバックエンドのプロセスIDです。
       </para></entry>
      </row>
 
@@ -9970,11 +8157,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
        <literal>CREATE INDEX CONCURRENTLY</literal>,
        <literal>REINDEX</literal>, or <literal>REINDEX CONCURRENTLY</literal>.
 -->
-《マッチ度[78.034682]》実行しているコマンドで、
-<literal>CREATE INDEX</literal>、
-<literal>CREATE INDEX CONCURRENTLY</literal>、
-<literal>REINDEX</literal>または<literal>REINDEX CONCURRENTLY</literal>です。
-《機械翻訳》特定のコマンドタイプ: <literal>CREATE INDEX</literal>、<literal>CREATE INDEX CONCURRENTLY</literal>、<literal>REINDEX</literal>、または<literal>REINDEX CONCURRENTLY</literal>。
+特定のコマンドタイプ：<literal>CREATE INDEX</literal>、<literal>CREATE INDEX CONCURRENTLY</literal>、<literal>REINDEX</literal>、または<literal>REINDEX CONCURRENTLY</literal>です。
       </para></entry>
      </row>
 
@@ -10086,7 +8269,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
        <literal>0</literal> during a <literal>REINDEX</literal>, or when
        the index is not partitioned.
 -->
-《機械翻訳》直接パーティションと間接パーティションの両方を含む、インデックスが作成またはアタッチされるパーティションの総数。
+直接パーティションと間接パーティションの両方を含む、インデックスが作成またはアタッチされるパーティションの総数です。
  <literal>0</literal>は、<literal>REINDEX</literal>中またはインデックスがパーティション化されていない場合です。
       </para></entry>
      </row>
@@ -10102,7 +8285,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
        <literal>0</literal> during a <literal>REINDEX</literal>, or when
        the index is not partitioned.
 -->
-《機械翻訳》直接パーティションと間接パーティションの両方を含む、インデックスがすでに作成またはアタッチされているパーティションの数。
+直接パーティションと間接パーティションの両方を含む、インデックスがすでに作成またはアタッチされているパーティションの数です。
  <literal>0</literal>は、<literal>REINDEX</literal>中またはインデックスがパーティション化されていない場合です。
       </para></entry>
      </row>
@@ -10305,7 +8488,7 @@ FROM pg_stat_get_backend_idset() AS backendid;
    rewrite the table, while regular <command>VACUUM</command> only modifies it
    in place. See <xref linkend="cluster-progress-reporting"/>.
 -->
-《マッチ度[94.969512]》<command>VACUUM</command>を実行するときはいつでも、<structname>pg_stat_progress_vacuum</structname>ビューは、現在バキューム処理している（自動バキュームワーカープロセスを含む）それぞれのバックエンドごとに1行含まれます。
+<command>VACUUM</command>を実行するときはいつでも、<structname>pg_stat_progress_vacuum</structname>ビューは、現在バキューム処理している（自動バキュームワーカープロセスを含む）それぞれのバックエンドごとに1行含まれます。
 以下の表は、報告される情報を説明し、どのように解釈するかの情報を提供します。
 <command>VACUUM FULL</command>コマンドの進捗は<structname>pg_stat_progress_cluster</structname>でレポートされます。これは、通常の<command>VACUUM</command>はテーブル内を書き換えするのみである一方、<command>VACUUM FULL</command>と<command>CLUSTER</command>はいずれもテーブルを再作成するためです。
 <xref linkend="cluster-progress-reporting"/>を参照してください。
@@ -10463,27 +8646,70 @@ FROM pg_stat_get_backend_idset() AS backendid;
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>max_dead_tuples</structfield> <type>bigint</type>
+       <structfield>max_dead_tuple_bytes</structfield> <type>bigint</type>
       </para>
       <para>
 <!--
-       Number of dead tuples that we can store before needing to perform
+       Amount of dead tuple data that we can store before needing to perform
        an index vacuum cycle, based on
        <xref linkend="guc-maintenance-work-mem"/>.
 -->
-インデックスバキュームサイクルの実行に必要となる前に格納できる、<xref linkend="guc-maintenance-work-mem"/>に基づいた、無効なタプルの数です。
+インデックスバキュームサイクルの実行に必要となる前に格納できる、<xref linkend="guc-maintenance-work-mem"/>に基づいた、無効なタプルの量です。
       </para></entry>
      </row>
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>num_dead_tuples</structfield> <type>bigint</type>
+       <structfield>dead_tuple_bytes</structfield> <type>bigint</type>
       </para>
       <para>
 <!--
-       Number of dead tuples collected since the last index vacuum cycle.
+       Amount of dead tuple data collected since the last index vacuum cycle.
 -->
-最後のインデックスバキュームサイクルから収集された無効タプルの数です。
+最後のインデックスバキュームサイクルから収集された無効タプルの量です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+      <structfield>num_dead_item_ids</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of dead item identifiers collected since the last index vacuum cycle.
+-->
+最後のインデックスバキュームサイクルから収集された無効アイテム識別子の数です。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>indexes_total</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Total number of indexes that will be vacuumed or cleaned up. This
+       number is reported at the beginning of the
+       <literal>vacuuming indexes</literal> phase or the
+       <literal>cleaning up indexes</literal> phase.
+-->
+バキュームまたは削除されるインデックスの総数です。
+この数は<literal>vacuuming indexes</literal>フェーズまたは<literal>cleaning up indexes</literal>フェーズの開始時に報告されます。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>indexes_processed</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Number of indexes processed. This counter only advances when the
+       phase is <literal>vacuuming indexes</literal> or
+       <literal>cleaning up indexes</literal>.
+-->
+処理されたインデックスの数です。
+このカウンタはフェーズが<literal>vacuuming indexes</literal>または<literal>cleaning up indexes</literal>である時にのみ増加します。
       </para></entry>
      </row>
     </tbody>
@@ -10922,10 +9148,8 @@ WAL送信プロセスはバックアップ中に生成されたWALログをす�
    specify <option>&#45;-enable-dtrace</option> to configure.  See <xref
    linkend="configure-options-devel"/> for further information.
 -->
-《マッチ度[88.161994]》デフォルトでは、プローブは有効ではありません。そのため、<productname>PostgreSQL</productname>でプローブが利用できるようにするためにconfigureスクリプトで明示的に設定しなければなりません。
+デフォルトではプローブは利用ないので、configureスクリプトに明示的にプローブを<productname>PostgreSQL</productname>で利用可能にするように指示する必要があります。
 DTraceサポートを含めるには、configureに<option>--enable-dtrace</option>を指定します。
-詳細は<xref linkend="configure-options-devel"/>を参照してください。
-《機械翻訳》デフォルトではプローブは利用できませんので、configureスクリプトに明示的にプローブを<productname>PostgreSQL</productname>で利用可能にするように指示する必要があります。
 詳細は<xref linkend="configure-options-devel"/>を参照してください。
   </para>
   </sect2>
@@ -11304,49 +9528,84 @@ arg2は書き出されるであろうと見積もられたバッファ数(<liter
     <row>
      <entry><literal>buffer-extend-start</literal></entry>
      <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, unsigned int)</literal></entry>
+<!--
      <entry>Probe that fires when a relation extension starts.
        arg0 contains the fork to be extended. arg1, arg2, and arg3 contain the
        tablespace, database, and relation OIDs identifying the relation.  arg4
        is the ID of the backend which created the temporary relation for a
-       local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared
+       local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared
        buffer. arg5 is the number of blocks the caller would like to extend
        by.</entry>
+-->
+      <entry>
+リレーションの拡張が開始された時を捕捉するプローブです。
+arg0は拡張されるフォークを示します。
+arg1、arg2、arg3は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
+arg4はローカルバッファのために一時的なリレーションを作成したバックエンドのID、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
+arg5は呼び出し元が拡張したいブロックの数です。
+      </entry>
     </row>
     <row>
      <entry><literal>buffer-extend-done</literal></entry>
      <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, unsigned int, BlockNumber)</literal></entry>
+<!--
      <entry>Probe that fires when a relation extension is complete.
        arg0 contains the fork to be extended. arg1, arg2, and arg3 contain the
        tablespace, database, and relation OIDs identifying the relation.  arg4
        is the ID of the backend which created the temporary relation for a
-       local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared
+       local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared
        buffer. arg5 is the number of blocks the relation was extended by, this
        can be less than the number in the
        <literal>buffer-extend-start</literal> due to resource
        constraints. arg6 contains the BlockNumber of the first new
        block.</entry>
+-->
+     <entry>
+リレーションの拡張が完了した時を捕捉するプローブです。
+arg0は拡張されるフォークを示します。
+arg1、arg2、arg3は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
+arg4はローカルバッファのために一時的なリレーションを作成したバックエンドのID、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
+arg5はリレーションが拡張されたブロック数です。これはリソース制約により<literal>buffer-extend-start</literal>で指定された数より少ない場合があります。
+arg6は最初の新しいブロックのブロック番号です。
+      </entry>
     </row>
     <row>
      <entry><literal>buffer-read-start</literal></entry>
      <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</literal></entry>
+<!--
      <entry>Probe that fires when a buffer read is started.
       arg0 and arg1 contain the fork and block numbers of the page.
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.
+-->
+     <entry>
+バッファ読み込みの開始を捕捉するプローブです。
+arg0とarg1は読み込みページのフォーク番号とブロック番号です。
+arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
+arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
       </entry>
     </row>
     <row>
      <entry><literal>buffer-read-done</literal></entry>
      <entry><literal>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool)</literal></entry>
+<!--
      <entry>Probe that fires when a buffer read is complete.
       arg0 and arg1 contain the fork and block numbers of the page.
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.
       arg6 is true if the buffer was found in the pool, false if not.</entry>
+-->
+     <entry>
+バッファ読み込みの終了を捕捉するプローブです。
+arg0とarg1はそのページのフォーク番号とブロック番号です。
+arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
+arg5はローカルバッファのために一時的なリレーションを作成したバックエンドのID、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
+arg6はtrueならばバッファがプール内にある、falseはプール内に無かったことを示します。
+     </entry>
     </row>
     <row>
      <entry><literal>buffer-flush-start</literal></entry>
@@ -11432,13 +9691,13 @@ arg1は情報フラグです。
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.</entry>
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.</entry>
 -->
      <entry>
 リレーションからのブロック読み込みの開始を捕捉するプローブ。
 arg0とarg1はそのページのフォーク番号とブロック番号です。
 arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
-arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>InvalidBackendId</symbol>(-1)であれは共有バッファを指します。
+arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
      </entry>
     </row>
     <row>
@@ -11450,16 +9709,16 @@ arg5は一時テーブルをローカルバッファに作成していればそ�
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.
       arg6 is the number of bytes actually read, while arg7 is the number
-      requested (if these are different it indicates trouble).</entry>
+      requested (if these are different it indicates a short read).</entry>
 -->
      <entry>
 ブロックの読み込み終了を捕捉するプローブです。
 arg0とarg1はそのページのフォーク番号とブロック番号です。
 arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
-arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>InvalidBackendId</symbol>(-1)であれは共有バッファを指します。
-arg6は実際に読み込んだバイト数、arg7はリクエストされた読み込みバイト数です(もし、これらに差異があった場合、何らかの問題があることを示します)。
+arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
+arg6は実際に読み込んだバイト数、arg7はリクエストされた読み込みバイト数です（もし、これらに差異があった場合、読み込みが短いことを示します）。
      </entry>
     </row>
     <row>
@@ -11471,13 +9730,13 @@ arg6は実際に読み込んだバイト数、arg7はリクエストされた読
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.</entry>
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.</entry>
 -->
      <entry>
 リレーションへのブロック書き出しの開始を捕捉するプローブです。
 arg0とarg1はそのページのフォーク番号とブロック番号です。
 arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
-arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>InvalidBackendId</symbol>(-1)であれは共有バッファを指します。
+arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
      </entry>
     </row>
     <row>
@@ -11489,16 +9748,16 @@ arg5は一時テーブルをローカルバッファに作成していればそ�
       arg2, arg3, and arg4 contain the tablespace, database, and relation OIDs
       identifying the relation.
       arg5 is the ID of the backend which created the temporary relation for a
-      local buffer, or <symbol>InvalidBackendId</symbol> (-1) for a shared buffer.
+      local buffer, or <symbol>INVALID_PROC_NUMBER</symbol> (-1) for a shared buffer.
       arg6 is the number of bytes actually written, while arg7 is the number
-      requested (if these are different it indicates trouble).</entry>
+      requested (if these are different it indicates a short write).</entry>
 -->
      <entry>
 ブロックの書き出し終了を捕捉するプローブです。
 arg0とarg1はそのページのフォーク番号とブロック番号です。
 arg2、arg3、arg4は対象のリレーションを識別するテーブル空間、データベース、そしてリレーションのOIDです。
-arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>InvalidBackendId</symbol>(-1)であれは共有バッファを指します。
-arg6は実際に書き出したバイト数、arg7はリクエストされた書き出しバイト数です(もし、これらに差異があった場合、何らかの問題があることを示します)。
+arg5は一時テーブルをローカルバッファに作成していればそのバックエンドのIDであり、<symbol>INVALID_PROC_NUMBER</symbol>(-1)であれは共有バッファを指します。
+arg6は実際に書き出したバイト数、arg7はリクエストされた書き出しバイト数です（もし、これらに差異があった場合、書き込みが短いことを示します）。
      </entry>
     </row>
     <row>
@@ -11536,7 +9795,7 @@ arg5は、<literal>0</literal>ならばシリアル、<literal>1</literal>なら
      <entry>
 ソート処理の終了を捕捉するプローブです。
 arg0はtrueならば外部ソート、falseは内部ソートを示します。
-arg1は外部ソートで使用されたディスクブロック数、もしくは内部ソートで使用されたメモリーのキロバイト数を示します。
+arg1は外部ソートで使用されたディスクブロック数、もしくは内部ソートで使用されたメモリのキロバイト数を示します。
      </entry>
     </row>
     <row>
@@ -12003,6 +10262,213 @@ if (TRACE_POSTGRESQL_TRANSACTION_START_ENABLED())
 
   </sect2>
 
+ </sect1>
+
+ <sect1 id="diskusage">
+<!--
+  <title>Monitoring Disk Usage</title>
+-->
+  <title>ディスク使用量の監視</title>
+
+  <para>
+<!--
+   This section discusses how to monitor the disk usage of a
+   <productname>PostgreSQL</productname> database system.
+-->
+この節では、<productname>PostgreSQL</productname>データベースシステムのディスク使用量を監視する方法について説明します。
+  </para>
+
+  <sect2 id="disk-usage">
+<!--
+   <title>Determining Disk Usage</title>
+-->
+   <title>ディスク使用量の決定</title>
+
+   <indexterm zone="disk-usage">
+    <primary>disk usage</primary>
+   </indexterm>
+   <indexterm zone="disk-usage">
+    <primary>ディスク使用量</primary>
+   </indexterm>
+
+   <para>
+<!--
+    Each table has a primary heap disk file where most of the data is
+    stored. If the table has any columns with potentially-wide values,
+    there also might be a <acronym>TOAST</acronym> file associated with the table,
+    which is used to store values too wide to fit comfortably in the main
+    table (see <xref linkend="storage-toast"/>).  There will be one valid index
+    on the <acronym>TOAST</acronym> table, if present. There also might be indexes
+    associated with the base table.  Each table and index is stored in a
+    separate disk file &mdash; possibly more than one file, if the file would
+    exceed one gigabyte.  Naming conventions for these files are described
+    in <xref linkend="storage-file-layout"/>.
+-->
+各テーブルには、ほとんどのデータが格納される主要なヒープディスクファイルがあります。
+テーブルに広い値を持つ可能性のある列がある場合、テーブルに関連付けられた<acronym>TOAST</acronym>ファイルもあり、これはメインテーブルに収まりきらない広すぎる値を格納するために使用されます（<xref linkend="storage-toast"/>を参照してください）。
+<acronym>TOAST</acronym>テーブルに有効なインデックスが存在する場合、そのインデックスが1つ存在します。
+また、ベーステーブルに関連付けられたインデックスがある場合もあります。
+各テーブルとインデックスは、別々のディスクファイルに格納されます。
+ファイルが1ギガバイトを超える場合は、複数のファイルが格納されることもあります。
+これらのファイルの命名規則については<xref linkend="storage-file-layout"/>で説明します。
+   </para>
+
+   <para>
+<!--
+    You can monitor disk space in three ways:
+    using the SQL functions listed in <xref linkend="functions-admin-dbsize"/>,
+    using the <xref linkend="oid2name"/> module, or
+    using manual inspection of the system catalogs.
+    The SQL functions are the easiest to use and are generally recommended.
+    The remainder of this section shows how to do it by inspection of the
+    system catalogs.
+-->
+ディスク容量の監視は、次の3つの方法で行えます。
+<xref linkend="functions-admin-dbsize"/>にあるSQL関数を使用する方法、<xref linkend="oid2name"/>モジュールを使用する方法、およびシステムカタログを手動で調べる方法です。
+SQL関数を使用する方法が、一般的に一番簡単な方法です。
+この節の残りの部分では、システムカタログを調べる方法を示します。
+   </para>
+
+   <para>
+<!--
+    Using <application>psql</application> on a recently vacuumed or analyzed
+    database, you can issue queries to see the disk usage of any table:
+-->
+最近バキュームされたか、あるいは分析されたデータベースで<application>psql</application>を使用すると、任意のテーブルのディスク使用状況を調べるための問い合わせを発行できます。
+<programlisting>
+SELECT pg_relation_filepath(oid), relpages FROM pg_class WHERE relname = 'customer';
+
+ pg_relation_filepath | relpages
+----------------------+----------
+ base/16384/16806     |       60
+(1 row)
+</programlisting>
+<!--
+    Each page is typically 8 kilobytes. (Remember, <structfield>relpages</structfield>
+    is only updated by <command>VACUUM</command>, <command>ANALYZE</command>, and
+    a few DDL commands such as <command>CREATE INDEX</command>.)  The file path name
+    is of interest if you want to examine the table's disk file directly.
+-->
+1ページは通常8キロバイトです。
+（<structfield>relpages</structfield>は<command>VACUUM</command>と<command>ANALYZE</command>、さらに<command>CREATE INDEX</command>といったいくつかのDDLによってのみ更新されることに注意してください。）
+もしテーブルのディスクファイルを直接調べるときは、ファイルのパス名称に注目して下さい。
+   </para>
+
+   <para>
+<!--
+    To show the space used by <acronym>TOAST</acronym> tables, use a query
+    like the following:
+-->
+<acronym>TOAST</acronym>テーブルが使用している容量を表示するには、以下のような問い合わせを使用します。
+<programlisting>
+SELECT relname, relpages
+FROM pg_class,
+     (SELECT reltoastrelid
+      FROM pg_class
+      WHERE relname = 'customer') AS ss
+WHERE oid = ss.reltoastrelid OR
+      oid = (SELECT indexrelid
+             FROM pg_index
+             WHERE indrelid = ss.reltoastrelid)
+ORDER BY relname;
+
+       relname        | relpages
+----------------------+----------
+ pg_toast_16806       |        0
+ pg_toast_16806_index |        1
+</programlisting>
+   </para>
+
+   <para>
+<!--
+    You can easily display index sizes, too:
+-->
+インデックスサイズも簡単に表示できます。
+<programlisting>
+SELECT c2.relname, c2.relpages
+FROM pg_class c, pg_class c2, pg_index i
+WHERE c.relname = 'customer' AND
+      c.oid = i.indrelid AND
+      c2.oid = i.indexrelid
+ORDER BY c2.relname;
+
+      relname      | relpages
+-------------------+----------
+ customer_id_index |       26
+</programlisting>
+   </para>
+
+   <para>
+<!--
+    It is easy to find your largest tables and indexes using this
+    information:
+-->
+この情報を使用すると、最大のテーブルとインデックスを簡単に見つけられます。
+<programlisting>
+SELECT relname, relpages
+FROM pg_class
+ORDER BY relpages DESC;
+
+       relname        | relpages
+----------------------+----------
+ bigtable             |     3290
+ customer             |     3144
+</programlisting>
+   </para>
+  </sect2>
+
+  <sect2 id="disk-full">
+<!--
+   <title>Disk Full Failure</title>
+-->
+   <title>ディスク容量不足の障害</title>
+
+   <para>
+<!--
+    The most important disk monitoring task of a database administrator
+    is to make sure the disk doesn't become full.  A filled data disk will
+    not result in data corruption, but it might prevent useful activity
+    from occurring. If the disk holding the WAL files grows full, database
+    server panic and consequent shutdown might occur.
+-->
+データベース管理者の最も重要なディスク監視作業は、ディスクが容量不足になっていないことを確認することです。
+データディスクが容量不足になったなった場合、データの破損は発生しませんが、有用な活動が行われなくなる可能性があります。
+WALファイルを保持しているディスクがいっぱいになると、データベースサーバがパニックし、それに続くシャットダウンが発生する可能性があります。
+   </para>
+
+   <para>
+<!--
+    If you cannot free up additional space on the disk by deleting
+    other things, you can move some of the database files to other file
+    systems by making use of tablespaces. See <xref
+    linkend="manage-ag-tablespaces"/> for more information about that.
+-->
+他のデータを削除しても、ディスクに空き容量を用意できない場合、 テーブル空間を使用することによって、データベースファイルのいくつかを他のファイルシステムに移動できます。
+詳細は <xref linkend="manage-ag-tablespaces"/>を参照してください。
+   </para>
+
+   <tip>
+    <para>
+<!--
+     Some file systems perform badly when they are almost full, so do
+     not wait until the disk is completely full to take action.
+-->
+一部のファイルシステムは、容量がほぼ一杯になっている場合にパフォーマンスが悪くなります。
+ですから、ディスクがほぼ一杯になる前に余裕をもって対策を取ってください。
+    </para>
+   </tip>
+
+   <para>
+<!--
+    If your system supports per-user disk quotas, then the database
+    will naturally be subject to whatever quota is placed on the user
+    the server runs as.  Exceeding the quota will have the same bad
+    effects as running out of disk space entirely.
+-->
+システムでユーザ単位のディスククォータをサポートしている場合、当然ながらデータベースもサーバを実行するユーザに割り当てられたクォータに従います。
+クォータを超えた場合、ディスク容量が完全になくなった時と同じ悪影響が発生します。
+   </para>
+  </sect2>
  </sect1>
 
 </chapter>

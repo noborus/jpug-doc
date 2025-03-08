@@ -274,7 +274,7 @@ protocol to make nodes agree on a serializable transactional order.
 論理レプリケーションでは、テーブル単位でデータ変更をレプリケーションすることができます。
 さらに自分の変更をパブリッシュしているサーバは同時に他のサーバから変更をサブスクライブできるので、複数の方向にデータを流すことができます。
 論理レプリケーションの更なる情報については、<xref linkend="logical-replication"/>をご覧ください。
-なお、ロジカルデコーディングインタフェース(<xref linkend="logicaldecoding"/>)を使って、サードパーティー拡張は同様の機能を提供できます。
+なお、ロジカルデコーディングインタフェース(<xref linkend="logicaldecoding"/>)を使って、サードパーティ拡張は同様の機能を提供できます。
     </para>
    </listitem>
   </varlistentry>
@@ -899,7 +899,7 @@ WALファイル(16MB)は隣り合うシステム、同じサイトの別シス�
 結果としてこれは、高可用性を提供するウォームスタンバイ構成と呼ばれます。
 保管されたベースバックアップからサーバをリストアし、ロールフォワードを行うことはおそらく長時間かかりますので、これは高可用性のための解法とはいえず、災害からのリカバリのための解法です。
 スタンバイサーバは読み取り専用の問い合わせに使用することもできます。
-この場合<firstterm>ホットスタンバイy</firstterm>サーバと呼ばれます。
+この場合<firstterm>ホットスタンバイ</firstterm>サーバと呼ばれます。
 詳細については<xref linkend="hot-standby"/>を参照してください。
   </para>
 
@@ -935,7 +935,7 @@ WALファイル(16MB)は隣り合うシステム、同じサイトの別シス�
    <primary>witness server</primary>
   </indexterm>
   <indexterm zone="high-availability">
-   <primary>証明サーバ</primary>
+   <primary>witnessサーバ</primary>
   </indexterm>
 
   <indexterm zone="high-availability">
@@ -1050,13 +1050,13 @@ WALファイル(16MB)は隣り合うシステム、同じサイトの別シス�
     later disconnected, the standby goes back to step 1 and tries to
     restore the file from the archive again. This loop of retries from the
     archive, <filename>pg_wal</filename>, and via streaming replication goes on until the server
-    is stopped or failover is triggered by a trigger file.
+    is stopped or is promoted.
 -->
 起動時、スタンバイサーバは<varname>restore_command</varname>を呼び出して、アーカイブ場所にある利用可能なすべてのWALをリストアすることから始めます。
 そこで利用可能なWALの終端に達し、<varname>restore_command</varname>が失敗すると、<filename>pg_wal</filename>ディレクトリにある利用可能な任意のWALのリストアを試みます。
 ストリーミングレプリケーションが設定されている場合、これに失敗すると、スタンバイはプライマリサーバへの接続を試み、アーカイブまたは<filename>pg_wal</filename>内に存在した最終の有効レコードからWALのストリーミングを開始します。
 ストリーミングレプリケーションが未設定時にこれに失敗する場合、または、接続が後で切断される場合、スタンバイは最初に戻り、アーカイブからのファイルのリストアを繰り返し行います。
-このアーカイブ、<filename>pg_wal</filename>、ストリーミングレプリケーションからという再試行の繰り返しはサーバが停止する、あるいはトリガファイルによるフェイルオーバーが発行されるまで続きます。
+このアーカイブ、<filename>pg_wal</filename>、ストリーミングレプリケーションからという再試行の繰り返しはサーバが停止する、あるいは昇格するまで続きます。
    </para>
 
    <para>
@@ -1067,10 +1067,7 @@ WALファイル(16MB)は隣り合うシステム、同じサイトの別シス�
     any WAL immediately available in the archive or in <filename>pg_wal</filename>
     will be restored, but no attempt is made to connect to the primary.
 -->
-《マッチ度[71.384615]》<command>pg_ctl promote</command>が実行された時、<function>pg_promote()</function>が呼び出された時、またはトリガファイル(<varname>promote_trigger_file</varname>)が存在する時、スタンバイモードは終了し、サーバは通常の動作に切り替わります。
-フェイルオーバーの前に、アーカイブまたは<filename>pg_wal</filename>内の即座に利用可能なWALをすべてリストアします。
-しかし、プライマリへの接続を行おうとはしません。
-《機械翻訳》スタンバイモードは、<command>pg_ctl promote</command>が実行されたとき、または<function>pg_promote()</function>が呼び出されたときに終了し、サーバは通常の動作に切り替わります。
+スタンバイモードは、<command>pg_ctl promote</command>が実行されたとき、または<function>pg_promote()</function>が呼び出されたときに終了し、サーバは通常の動作に切り替わります。
 フェイルオーバーの前に、アーカイブまたは<filename>pg_wal</filename>内で直ちに使用可能なWALはすべてリストアされますが、プライマリへの接続は試みられません。
    </para>
   </sect2>
@@ -1475,14 +1472,15 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
    </indexterm>
    <para>
 <!--
-    Replication slots provide an automated way to ensure that the primary does
+    Replication slots provide an automated way to ensure that the
+    primary server does
     not remove WAL segments until they have been received by all standbys,
     and that the primary does not remove rows which could cause a
     <link linkend="hot-standby-conflict">recovery conflict</link> even when the
     standby is disconnected.
 -->
 レプリケーションスロットは、以下のことを保証する自動的な方法を提供します。
-全てのスタンバイがWALセグメントを受け取るまでは、プライマリがWALセグメントを削除しないこと、また、スタンバイが接続していない際にも、<link linkend="hot-standby-conflict">リカバリの競合</link>が発生する可能性がある行をプライマリが削除しないこと、です。
+全てのスタンバイがWALセグメントを受け取るまでは、プライマリサーバがWALセグメントを削除しないこと、また、スタンバイが接続していない際にも、<link linkend="hot-standby-conflict">リカバリの競合</link>が発生する可能性がある行をプライマリが削除しないこと、です。
    </para>
    <para>
 <!--
@@ -1490,30 +1488,38 @@ primary_conninfo = 'host=192.168.1.50 port=5432 user=foo password=foopass'
     of old WAL segments using <xref linkend="guc-wal-keep-size"/>, or by
     storing the segments in an archive using
     <xref linkend="guc-archive-command"/> or <xref linkend="guc-archive-library"/>.
-    However, these methods often result in retaining more WAL segments than
+    A disadvantage of these methods is that they
+    often result in retaining more WAL segments than
     required, whereas replication slots retain only the number of segments
-    known to be needed.  On the other hand, replication slots can retain so
-    many WAL segments that they fill up the space allocated
-    for <literal>pg_wal</literal>;
-    <xref linkend="guc-max-slot-wal-keep-size"/> limits the size of WAL files
-    retained by replication slots.
+    known to be needed.
 -->
 レプリケーションスロットを使う代わりに、<xref linkend="guc-wal-keep-size"/>を使う、あるいは<xref linkend="guc-archive-command"/>または <xref linkend="guc-archive-library"/>を使用してセグメントをアーカイブに保存することによっても、古いWALセグメントの削除を防ぐことができます。
-しかし、これらの方法はしばしば要求される以上のWALセグメントを残すことになってしまうのに対し、レプリケーションスロットは必要と判断されたセグメントのみを残します。
-一方で、レプリケーションスロットは<literal>pg_wal</literal>のための領域を埋め尽くす大量のWALセグメントを残してしまうかも知れません。
-<xref linkend="guc-max-slot-wal-keep-size"/>はレプリケーションスロットによって残されるWALファイルの大きさを制限します。
+これらの方法の欠点は、しばしば必要以上のWALセグメントを保持することで、これらに対してレプリケーションスロットは必要とされる数のセグメントしか保持しません。
    </para>
    <para>
 <!--
     Similarly, <xref linkend="guc-hot-standby-feedback"/> on its own, without
     also using a replication slot, provides protection against relevant rows
     being removed by vacuum, but provides no protection during any time period
-    when the standby is not connected.  Replication slots overcome these
-    disadvantages.
+    when the standby is not connected.
 -->
-《機械翻訳》同様に、<xref linkend="guc-hot-standby-feedback"/>は、レプリケーションスロットを使用しない場合、関連する行が真空によって削除されることに対して保護しますが、スタンバイが接続されていない間は保護しません。
-レプリケーションスロットはこれらの欠点を克服します。
+同様に、<xref linkend="guc-hot-standby-feedback"/>は、レプリケーションスロットを使用しない場合、関連する行がバキュームによって削除されることに対して保護しますが、スタンバイが接続されていない間は保護しません。
    </para>
+
+   <caution>
+    <para>
+<!--
+     Beware that replication slots can cause the server to retain so
+     many WAL segments that they fill up the space allocated for
+     <literal>pg_wal</literal>.
+     <xref linkend="guc-max-slot-wal-keep-size"/> can be used to limit the size
+     of WAL files retained by replication slots.
+-->
+レプリケーションスロットは、サーバが非常に多くのWALセグメントを保持し、<literal>pg_wal</literal>に割り当てられた領域を一杯にしてしまう可能性があることに注意してください。
+<xref linkend="guc-max-slot-wal-keep-size"/>は、レプリケーションスロットによって保持されるWALファイルのサイズを制限するために使用できます。
+    </para>
+   </caution>
+
    <sect3 id="streaming-replication-slots-manipulation">
 <!--
     <title>Querying and Manipulating Replication Slots</title>
@@ -1762,7 +1768,7 @@ primary_slot_name = 'node_a_slot'
 -->
 同期スタンバイは、物理レプリケーションのスタンバイでも、論理レプリケーションのサブスクライバーのどちらでも構いません。
 また同期スタンバイは、適切なフィードバックメッセージを送信する方法を知っている、物理あるいは論理WALレプリケーションストリームの消費者であっても構いません。
-組み込みの物理あるいは論理レプリケーションシステムを別にすると、<command>pg_receivewal</command>と<command>pg_recvlogical</command>、それにサードパーティーのレプリケーションシステムとカスタムプログラムが該当します。
+組み込みの物理あるいは論理レプリケーションシステムを別にすると、<command>pg_receivewal</command>と<command>pg_recvlogical</command>、それにサードパーティのレプリケーションシステムとカスタムプログラムが該当します。
 対応する同期レプリケーションのサポートの詳細に関するドキュメントを参照してください。
    </para>
 
@@ -2047,10 +2053,10 @@ synchronous_standby_names = 'ANY 2 (s1, s2, s3)'
     <varname>synchronous_commit</varname> is set to <literal>on</literal>,
     <literal>remote_apply</literal> or <literal>remote_write</literal> will wait for
     responses from. Such transaction commits may never be completed
-    if any one of synchronous standbys should crash.
+    if any one of the synchronous standbys should crash.
 -->
 <varname>synchronous_commit</varname>が、<literal>on</literal>、<literal>remote_apply</literal>、<literal>remote_write</literal>のいずれかに設定されている場合、<varname>synchronous_standby_names</varname>には、コミットされたトランザクションが応答を待つ同期スタンバイの数と名前を指定します。
-そのようなトランザクションのコミットは、同期スタンバイのどれかがクラッシュすると決して完了しないかもしれません。
+もし同期スタンバイのどれかがクラッシュした場合、そのようなトランザクションのコミットは決して完了しないかもしれません。
    </para>
 
    <para>
@@ -2152,12 +2158,12 @@ PostgreSQLは、WALデータをすべてのスタンバイが安全に受信し�
    <para>
 <!--
     If you need to re-create a standby server while transactions are
-    waiting, make sure that the commands pg_backup_start() and
-    pg_backup_stop() are run in a session with
+    waiting, make sure that the functions <function>pg_backup_start()</function>
+    and <function>pg_backup_stop()</function> are run in a session with
     <varname>synchronous_commit</varname> = <literal>off</literal>, otherwise those
     requests will wait forever for the standby to appear.
 -->
-トランザクションの待機中にスタンバイサーバを再作成する必要がある場合、pg_backup_start()およびpg_backup_stop()を実行するコマンドを<varname>synchronous_commit</varname> = <literal>off</literal>であるセッション内で確実に実行してください。
+トランザクションの待機中にスタンバイサーバを再作成する必要がある場合、<function>pg_backup_start()</function>関数および<function>pg_backup_stop()</function>関数を<varname>synchronous_commit</varname> = <literal>off</literal>であるセッション内で確実に実行してください。
 さもないとこれらの要求はスタンバイに現れるまで永遠に待機します。
    </para>
 
@@ -2284,7 +2290,7 @@ WALアーカイブがプライマリとスタンバイで共有されるケー�
 -->
 多くのフェイルオーバーシステムではプライマリとスタンバイといった２つのシステムを使用します。
 なんらかのハートビート機構でプライマリとスタンバイを接続し、両者の接続性とプライマリの実行能力を継続的に確認します。
-また、第３のシステム（証言サーバと呼ばれます）を使用して、不適切なフェイルオーバーなどの状況を防ぐこともできます。
+また、第３のシステム（witnessサーバと呼ばれます）を使用して、不適切なフェイルオーバーなどの状況を防ぐこともできます。
 しかし、さらに複雑になりますので、十分な注意と厳密な検証の元に設定を行わない限り行う意味がありません。
    </para>
 
@@ -2344,14 +2350,27 @@ WALアーカイブがプライマリとスタンバイで共有されるケー�
 
    <para>
 <!--
+    If you have opted for logical replication slot synchronization (see
+    <xref linkend="logicaldecoding-replication-slots-synchronization"/>),
+    then before switching to the standby server, it is recommended to check
+    if the logical slots synchronized on the standby server are ready
+    for failover. This can be done by following the steps described in
+    <xref linkend="logical-replication-failover"/>.
+-->
+論理レプリケーションスロットの同期（<xref linkend="logicaldecoding-replication-slots-synchronization"/>参照）を選択した場合、スタンバイサーバに切り替える前に、スタンバイサーバと同期している論理スロットがフェイルオーバーの準備ができていることを確認しておくことをおすすめします。
+これは、<xref linkend="logical-replication-failover"/>で説明されている手順に従って行うことができます。
+   </para>
+
+   <para>
+<!--
     To trigger failover of a log-shipping standby server, run
     <command>pg_ctl promote</command> or call <function>pg_promote()</function>.
     If you're setting up reporting servers that are only used to offload
     read-only queries from the primary, not for high availability purposes,
     you don't need to promote.
 -->
-《機械翻訳》ログ送信スタンバイサーバのフェイルオーバーをトリガするには、<command>pg_ctl promote</command>を実行するか、<function>pg_promote()</function>を呼び出します。
- 読み取り専用の問い合わせをプライマリからオフロードするためだけに使用されるレポートサーバを設定する場合は、プロモートする必要はありません。
+ログシッピングスタンバイサーバのフェイルオーバーを開始するには、<command>pg_ctl promote</command>を実行するか、<function>pg_promote()</function>を呼び出します。
+高可用性目的ではなく、 読み取り専用の問い合わせをプライマリからオフロードするためだけに使用するレポートサーバを設定する場合は、昇格する必要はありません。
    </para>
   </sect1>
 
@@ -2953,10 +2972,10 @@ WALに記録された操作はすでにプライマリで発生したもので�
     primary.  So it is possible that cleanup on the primary will remove row
     versions that are still visible to a transaction on the standby.
 -->
-スタンバイ側の問い合わせとWAL再生の間でもっともよくあるコンフリクト理由は<quote>早すぎる消去</quote>です。
-通常<productname>PostgreSQL</productname>はMVCC規則にしたがって正確なデータの可視性を確実にするために、古い行バージョンを参照するトランザクションが存在しない場合それらを消去することが許されています。
+スタンバイ側の問い合わせとWAL再生の間でもっともよくあるコンフリクト理由は<quote>早すぎるクリーンアップ</quote>です。
+通常<productname>PostgreSQL</productname>はMVCC規則にしたがって正確なデータの可視性を確実にするために、古い行バージョンを参照するトランザクションが存在しない場合それらをクリーンアップすることが許されています。
 しかし、この規則はプライマリ上で実行するトランザクションのみに適用させることができます。
-したがって、スタンバイ上のトランザクションでまだ可視である行バージョンを、プライマリ上の消去処理が削除してしまう可能性があります。
+したがって、スタンバイ上のトランザクションでまだ可視である行バージョンを、プライマリ上のクリーンアップ処理が削除してしまう可能性があります。
    </para>
 
    <para>
@@ -2972,11 +2991,10 @@ WALに記録された操作はすでにプライマリで発生したもので�
     <command>VACUUM</command> against a table with no updated or deleted rows
     requiring cleanup might lead to conflicts.
 -->
-《機械翻訳》スタンバイクエリとの競合の原因として、行バージョンのクリーンアップだけではありません。
-すべてのインデックスのみのスキャン(スタンバイで実行されるものも含む)は、<acronym>MVCC</acronym>スナップショットを使用しなければなりません。
-これは、<quote>同意</quote>ビューと一致するものです。
-したがって、すべてのスタンバイクエリに対して<command>VACUUM</command>が1行以上の<emphasis>非</emphasis>可視性マップにある行を含むページを<command>VACUUM</command>で<link linkend="vacuum-for-visibility-map">設定</link>するときは、競合が必要になります。
-したがって、更新や削除された行を含まないテーブルに対して<command>VACUUM</command>を実行しても競合が発生する可能性があります。
+スタンバイ問い合わせとの競合の潜在的な原因は、行バージョンのクリーンアップだけではありません。
+すべてのインデックスオンリースキャン（スタンバイで実行されるものも含む）は、可視性マップに<quote>同意する</quote><acronym>MVCC</acronym>スナップショットを使用しなければなりません。
+したがって、<command>VACUUM</command>が、すべてのスタンバイの問い合わせに対して1行以上の<emphasis>非</emphasis>可視行を含み、<link linkend="vacuum-for-visibility-map">一つのページがすべて可視であるような可視性マップを設定する時</link>には、必ず競合が必要になります。
+ですから、クリーンアップが必要で、更新や削除された行を含まないテーブルに対して<command>VACUUM</command>を実行しても競合が発生する可能性があります。
    </para>
 
    <para>
@@ -3015,9 +3033,9 @@ WALに記録された操作はすでにプライマリで発生したもので�
 -->
 スタンバイにおける問い合わせの中断が受け入れがたいほど多い場合、この問題を改善する方法が用意されています。
 １つ目の選択肢は、<varname>hot_standby_feedback</varname>パラメータを設定することです。
-これは<command>VACUUM</command>による最近不要になった行の削除を防止しますので、消去によるコンフリクトが発生しません。
-これを行う場合、プライマリで不要になった行の消去が遅延することに注意が必要です。望まないテーブルの膨張が発生してしまうかもしれません。
-しかし、スタンバイ側で行うべき問い合わせをプライマリサーバ上で直接実行することと比べ、こうした消去に関する問題を優先する価値はありません。
+これは<command>VACUUM</command>による最近不要になった行の削除を防止しますので、クリーンアップによるコンフリクトが発生しません。
+これを行う場合、プライマリで不要になった行のクリーンアップが遅延することに注意が必要です。望まないテーブルの膨張が発生してしまうかもしれません。
+しかし、スタンバイ側で行うべき問い合わせをプライマリサーバ上で直接実行することと比べ、こうしたクリーンアップに関する問題を優先する価値はありません。
 また、スタンバイに実行負荷を分散できるという利点があります。
 スタンバイサーバが接続、切断を頻繁に繰り返す場合、<varname>hot_standby_feedback</varname>によるフィードバックが提供されていなければ、その値を調整したいと思うでしょう。
 例えば、<varname>max_standby_archive_delay</varname>が増大し、切断している期間WALアーカイブのコンフリクト発生による問い合わせの中断が速やかに行われないことを考えてみてください。また、再接続後に速やかに問い合わせが中断されることを避けるために<varname>max_standby_streaming_delay</varname>を大きくすることを考えてみてください。
@@ -3247,6 +3265,7 @@ HINT:  You can then restart the server after making the necessary configuration 
 -->
 プライマリ側で「ヒントビット」として書き出されたトランザクション状態はWALに記録されません。
 このためスタンバイ側のデータはスタンバイ側でヒントを再度書き出すことになります。
+したがって、スタンバイサーバはすべてのユーザが読み取り専用であっても、ディスク書き込みを行います。データの値自体は変更されません。
 ユーザは大規模なソート用の一時ファイルを書き出し、relcache情報ファイルを再作成します。
 したがって、ホットスタンバイモードではデータベースのすべてが本当に読み取り専用ではありません。
 また、ローカルでは読み取り専用のトランザクションであっても<application>dblink</application>モジュールを使用したリモートデータベースへの書き出しや、その他のPL関数を使用したデータベース外部への操作が可能であることに注意してください。
@@ -3375,7 +3394,7 @@ HINT:  You can then restart the server after making the necessary configuration 
 <!--
     Dynamically loadable modules work, including <structname>pg_stat_statements</structname>.
 -->
-<structname>pg_stat_statements</structname>も含み、動的に読み込み可能なモジュールは稼働します。
+<structname>pg_stat_statements</structname>も含み、動的にロード可能なモジュールは稼働します。
    </para>
 
    <para>
@@ -3481,15 +3500,16 @@ WALの再実行はトリガに基づいたものではありません。
     The cumulative statistics system is active during recovery. All scans,
     reads, blocks, index usage, etc., will be recorded normally on the
     standby. However, WAL replay will not increment relation and database
-    specific counters. I.e. replay will not increment pg_stat_all_tables
-    columns (like n_tup_ins), nor will reads or writes performed by the
-    startup process be tracked in the pg_statio views, nor will associated
-    pg_stat_database columns be incremented.
+    specific counters. I.e. replay will not increment
+    <structname>pg_stat_all_tables</structname> columns (like <structfield>n_tup_ins</structfield>),
+    nor will reads or writes performed by the startup process be tracked in the
+    <structname>pg_statio_</structname> views, nor will associated
+    <structname>pg_stat_database</structname> columns be incremented.
 -->
 リカバリの間も累積統計システムはアクティブになります。
 すべてのスキャン、読み取り、ブロック、インデックスの使用などは、スタンバイサーバにおいて正常に記録されます。
 しかし、WAL再生はリレーションやデータベース固有のカウンタを増加させません。
-つまり、再生はpg_stat_all_tables列(n_tup_insなど)を増加させませんし、起動プロセスによって実行された読み取りや書き込みもpg_statioビューで追跡されませんし、関連するpg_stat_database列も増加されません。
+つまり、再生は<structname>pg_stat_all_tables</structname>列(<structfield>n_tup_ins</structfield>など)を増加させませんし、起動プロセスによって実行された読み取りや書き込みも<structname>pg_statio_</structname>ビューで追跡されませんし、関連する<structname>pg_stat_database</structname>列も増加されません。
    </para>
 
    <para>
@@ -3540,10 +3560,8 @@ WALの再実行はトリガに基づいたものではありません。
     <xref linkend="guc-max-standby-streaming-delay"/> have no effect if set on
     the primary.
 -->
-《マッチ度[65.887850]》プライマリサーバでは、<xref linkend="guc-wal-level"/>のパラメータを使用できます。
+プライマリサーバでは、<xref linkend="guc-wal-level"/>のパラメータを使用できます。
 プライマリサーバに<xref linkend="guc-max-standby-archive-delay"/>および<xref linkend="guc-max-standby-streaming-delay"/>を設定しても無効です。
-《機械翻訳》プライマリでは、<xref linkend="guc-wal-level"/>パラメータを使用できます。
- <xref linkend="guc-max-standby-archive-delay"/>と<xref linkend="guc-max-standby-streaming-delay"/>は、プライマリで設定されている場合には効果がありません。
    </para>
 
    <para>
@@ -3552,7 +3570,7 @@ WALの再実行はトリガに基づいたものではありません。
     <xref linkend="guc-max-standby-archive-delay"/> and
     <xref linkend="guc-max-standby-streaming-delay"/> can be used.
 -->
-《機械翻訳》スタンバイでは、パラメータ<xref linkend="guc-hot-standby"/>、<xref linkend="guc-max-standby-archive-delay"/>、<xref linkend="guc-max-standby-streaming-delay"/>を使用できます。
+スタンバイでは、パラメータ<xref linkend="guc-hot-standby"/>、<xref linkend="guc-max-standby-archive-delay"/>、<xref linkend="guc-max-standby-streaming-delay"/>を使用できます。
    </para>
   </sect2>
 

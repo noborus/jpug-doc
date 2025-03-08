@@ -12,7 +12,7 @@
 <!--
   <title>Server Configuration</title>
 -->
-  <title>サーバの設定</title>
+  <title>サーバ設定</title>
 
   <indexterm>
    <primary>configuration</primary>
@@ -318,14 +318,15 @@ shared_buffers = 128MB
 <!--
      External tools may also
      modify <filename>postgresql.auto.conf</filename>.  It is not
-     recommended to do this while the server is running, since a
+     recommended to do this while the server is running unless <xref
+     linkend="guc-allow-alter-system"/> is set to <literal>off</literal>, since a
      concurrent <command>ALTER SYSTEM</command> command could overwrite
      such changes.  Such tools might simply append new settings to the end,
      or they might choose to remove duplicate settings and/or comments
      (as <command>ALTER SYSTEM</command> will).
 -->
 外部ツールも<filename>postgresql.auto.conf</filename>を変更するかも知れません。
-<command>ALTER SYSTEM</command>が変更を上書きする可能性があるので、サーバが稼働中は外部ツールによる変更は推奨されません。
+<command>ALTER SYSTEM</command>が変更を上書きする可能性があるので、<xref linkend="guc-allow-alter-system"/>が<literal>off</literal>に設定されていない限り、サーバが稼働中は外部ツールによる変更は推奨されません。
 そのようなツールは、単に新しい設定を最後に追加するか、重複した設定あるいはコメント(<command>ALTER SYSTEM</command>が行います)を削除することを選択するかも知れません。
     </para>
 
@@ -393,7 +394,8 @@ shared_buffers = 128MB
       so cannot be set with these commands (or the ones listed below).
 -->
 <command>ALTER DATABASE</command>と<command>ALTER ROLE</command>による設定値は新しくデータベースセッションを開始した時にのみ適用されます。
-これらのコマンドは設定ファイルやサーバへのコマンド引数による設定値を上書きし、セッションの以後の状態に適用します。なお、一部の設定はサーバを起動した後では変更できず、これらのコマンドを使っては設定できません(以下に記述するコマンドでも同じことが言えます)。
+これらのコマンドは設定ファイルやサーバのコマンドラインから取得した値を上書きし、セッションの残りの部分のデフォルト値を構成します。
+なお、一部の設定はサーバを起動した後では変更できず、これらのコマンドを使っては設定できません（以下に記述するコマンドでも同じことが言えます）。
     </para>
 
      <para>
@@ -458,7 +460,7 @@ shared_buffers = 128MB
        to specify filter conditions or join against other relations.
 -->
 このビューを問い合わせるのは、<command>SHOW ALL</command>を使うのと同じですが、更に詳細な情報を提供します。
-フィルター条件を指定したり他のリレーションと結合ができるので、より柔軟です。
+フィルタ条件を指定したり他のリレーションと結合ができるので、より柔軟です。
       </para>
      </listitem>
 
@@ -511,11 +513,12 @@ UPDATE pg_settings SET setting = reset_val WHERE name = 'configuration_parameter
 <!--
        During server startup, parameter settings can be
        passed to the <command>postgres</command> command via the
-       <option>-c</option> command-line parameter.  For example,
+       <option>-c name=value</option> command-line parameter, or its equivalent
+       <option>&#45;-name=value</option> variation.  For example,
 -->
-サーバ起動時に、<option>-c</option>コマンドラインパラメータを使ってパラメータ設定値を<command>postgres</command>に渡すことができます。たとえば、
+サーバ起動時に、<option>-c</option>コマンドラインパラメータか、それと同等で別の形式の<option>--name=value</option>を使ってパラメータ設定値を<command>postgres</command>に渡すことができます。たとえば、
 <programlisting>
-postgres -c log_connections=yes -c log_destination='syslog'
+postgres -c log_connections=yes --log-destination='syslog'
 </programlisting>
 <!--
        Settings provided in this way override those set via
@@ -537,14 +540,14 @@ postgres -c log_connections=yes -c log_destination='syslog'
       of the session, but do not affect other sessions.
       For historical reasons, the format of <envar>PGOPTIONS</envar> is
       similar to that used when launching the <command>postgres</command>
-      command; specifically, the <option>-c</option> flag must be specified.
-      For example,
+      command; specifically, the <option>-c</option>, or prepended
+      <literal>&#45;-</literal>, before the name must be specified. For example,
 -->
 <application>libpq</application>を使ってクライアントセッションを開始するときに<envar>PGOPTIONS</envar>環境変数を使って設定値を指定できます。
 このようにして渡された設定値はセッションのデフォルトとなりますが、他のセッションには影響を与えません。
-歴史的な理由により、<envar>PGOPTIONS</envar>の形式は<command>postgres</command>を起動するときのものと似ています。たとえば、<option>-c</option>フラグを指定しなければならない点です。
+歴史的な理由により、<envar>PGOPTIONS</envar>の形式は<command>postgres</command>を起動するときのものと似ています。とりわけ、<option>-c</option>を指定するか、先頭に<literal>--</literal>を付加した名前を指定しなければならない点です。たとえば、
 <programlisting>
-env PGOPTIONS="-c geqo=off -c statement_timeout=5min" psql
+env PGOPTIONS="-c geqo=off --statement-timeout=5min" psql
 </programlisting>
      </para>
 
@@ -695,7 +698,7 @@ includeされるディレクトリにある複数ファイルはファイル名�
       them:
 -->
 includeされるファイルもしくはディレクトリは、大きな単一の<filename>postgresql.conf</filename>ファイルを使う代わりに、データベース設定の一部分を論理的に分離するために使用することが可能です。
-異なるメモリー容量を持つ二つのデータベースサーバを所有する会社を考えてみてください。
+異なるメモリ容量を持つ二つのデータベースサーバを所有する会社を考えてみてください。
 例えばログ取得のように、二つが共有する設定の要素があると思われます。
 しかし、サーバ上のメモリに関連したパラメータは二つの間では異なります。
 更に、サーバ特有のカスタマイズも存在することがあります。
@@ -715,7 +718,7 @@ include 'server.conf'
       configuration information in it.
 -->
 全てのシステムは同一の<filename>shared.conf</filename>を所有する様になるでしょう。
-特定のメモリー容量を所有するそれぞれのサーバは同じ<filename>memory.conf</filename>を共有できます。
+特定のメモリ容量を所有するそれぞれのサーバは同じ<filename>memory.conf</filename>を共有できます。
 RAMが8GBのすべてのサーバには共通の<filename>memory.conf</filename>を1つ使い、16GBのサーバ群には別のものを使う、ということもできるでしょう。
 そして最後の<filename>server.conf</filename>には、本当にサーバ固有となる設定情報を記載します。
      </para>
@@ -774,7 +777,7 @@ include_dir 'conf.d'
 -->
 こういった工夫で、設定ファイルのバリエーションに対して固有の名前を付与することができます。
 また、バージョン管理リポジトリのリポジトリに複数のサーバの設定ファイルを置く場合に生じる曖昧さを排除することができます。
-（データベース設定ファイルをバージョン管理することは、これもまた検討に値するやり方です）。
+（データベース設定ファイルをバージョン管理することは、これもまた検討に値するやり方です。）
      </para>
     </sect2>
    </sect1>
@@ -823,7 +826,7 @@ include_dir 'conf.d'
          This parameter can only be set at server start.
 -->
 データ格納に使用するディレクトリを指定します。
-このパラメータはサーバ起動時のみ設定可能です
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1010,10 +1013,25 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
          <literal>::</literal> allows listening for all IPv6 addresses.
          If the list is empty, the server does not listen on any IP interface
          at all, in which case only Unix-domain sockets can be used to connect
-         to it.
+         to it.  If the list is not empty, the server will start if it
+         can listen on at least one TCP/IP address.  A warning will be
+         emitted for any TCP/IP address which cannot be opened.
          The default value is <systemitem class="systemname">localhost</systemitem>,
          which allows only local TCP/IP <quote>loopback</quote> connections to be
-         made.  While client authentication (<xref
+         made.
+-->
+クライアントアプリケーションからの接続をサーバが監視するTCP/IPアドレスを指定します。
+この値は、ホスト名をカンマで区切ったリスト、そして/もしくは、数値によるIPアドレスです。
+<literal>*</literal>という特別なエントリは利用可能な全てのIPインタフェースに対応します。
+エントリ<literal>0.0.0.0</literal>は全てのIPv4アドレスの監視を、そしてエントリ<literal>::</literal>は全てのIPv6アドレスの監視を許容します。
+リストが空の場合、サーバはいかなるIPインタフェースも全く監視しないで、Unixドメインソケットのみを使用して接続が行われます。
+リストが空でない場合、少なくとも1つのTCP/IPアドレスがリスニングできる場合にサーバは起動します。
+開くことのできなかったすべてのTCP/IPアドレスに対して警告が発せられます。
+デフォルトの値は<systemitem class="systemname">localhost</systemitem>で、ローカルなTCP/IP <quote>loopback</quote>接続のみ許可します。
+       </para>
+       <para>
+<!--
+         While client authentication (<xref
          linkend="client-authentication"/>) allows fine-grained control
          over who can access the server, <varname>listen_addresses</varname>
          controls which interfaces accept connection attempts, which
@@ -1021,15 +1039,9 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
          insecure network interfaces.  This parameter can only be set
          at server start.
 -->
-クライアントアプリケーションからの接続をサーバが監視する TCP/IP アドレスを指定します。
-この値は、ホスト名をコンマで区切ったリスト、そして/もしくは、数値によるIPアドレスです。
-<literal>*</literal>という特別なエントリは利用可能な全てのIPインタフェースに対応します。
-エントリ<literal>0.0.0.0</literal>は全てのIPv4アドレスの監視を、そしてエントリ<literal>::</literal>は全てのIPv6アドレスの監視を許容します。
-リストが空の場合、サーバはいかなるIPインタフェースも全く監視しないで、Unixドメインソケットのみを使用して接続が行われます。
-デフォルトの値は<systemitem class="systemname">localhost</systemitem>で、ローカルなTCP/IP <quote>loopback</quote>接続のみ許可します。
-クライアント認証 (<xref linkend="client-authentication"/>)は誰がサーバにアクセス可能かをきめ細かく制御するのに対し、<varname>listen_addresses</varname>はどのインタフェースが接続を試みるかを制御します。
-これにより、安全でないネットワークインタフェース上において繰り返して行われる悪意のある接続要求の防止に役立ちます。
-このパラメータはサーバ起動時のみ設定可能です。
+クライアント認証(<xref linkend="client-authentication"/>)は、誰がサーバにアクセスできるかを細かく制御できますが、<varname>listen_addresses</varname>は接続要求を受け付けるインタフェースを制御します。
+これは、セキュアでないネットワークインタフェース上での悪意のある接続試行の繰り返しを防ぐのに役立ちます。
+このパラメータはサーバ起動時にのみ設定できます。
        </para>
       </listitem>
      </varlistentry>
@@ -1078,6 +1090,16 @@ dataディレクトリ以外の場所に設定ファイルを格納したいの�
 データベースサーバに同時接続する最大数を決定します。
 デフォルトは典型的に100接続ですが、カーネルの設定が（<application>initdb</application>の過程で）それをサポートしていない場合、もっと少なくなることがあります。
 このパラメータはサーバ起動時のみに設定可能です。
+       </para>
+
+       <para>
+<!--
+        PostgreSQL sizes certain resources based directly on the value of
+        <varname>max_connections</varname>. Increasing its value leads to
+        higher allocation of those resources, including shared memory.
+-->
+PostgreSQLは、<varname>max_connections</varname>の値に直接基づいてある種のリソースのサイズを設定します。
+その値を大きくすると、共有メモリを含み、より大きなリソースがアロケーションされます。
        </para>
 
        <para>
@@ -1279,7 +1301,8 @@ Windowsではデフォルトは空文字で、これはつまりUnixドメイン
         group of the server user.  This parameter can only be set at
         server start.
 -->
-Unixドメインソケット（複数も）を所有するグループを設定します（ソケットを所有するユーザは常にサーバを起動するユーザです）。
+Unixドメインソケット（複数も）を所有するグループを設定します。
+（ソケットを所有するユーザは常にサーバを起動するユーザです。）
 <varname>unix_socket_permissions</varname>パラメータとの組合せで、Unixドメインソケット接続の追加的アクセス管理機構として使うことができます。
 デフォルトでは空文字列で、サーバユーザのデフォルトグループを使用します。
 このパラメータはサーバ起動時のみ設定可能です。
@@ -1370,7 +1393,7 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
         Sockets in the abstract namespace have no file permissions, so this
         setting is also ignored in that case.
 -->
-抽象名前空間にあるソケットはパーミッションを持たないので、この設定も無視されます。
+抽象名前空間にあるソケットはファイルパーミッションを持たないので、この設定も無視されます。
        </para>
       </listitem>
      </varlistentry>
@@ -1391,7 +1414,8 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
         <productname>Bonjour</productname>.  The default is off.
         This parameter can only be set at server start.
 -->
-<productname>Bonjour</productname>によりサーバの存在を公表することを可能にします。デフォルトはoffです。このパラメータはサーバ起動時のみ設定可能です。
+<productname>Bonjour</productname>によりサーバの存在を公表することを可能にします。デフォルトはoffです。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1418,7 +1442,7 @@ Unixドメインソケットは通常のUnixファイルシステムパーミッ
 <productname>Bonjour</productname>サービス名を指定します。
 このパラメータが空文字列<literal>''</literal>（デフォルトです）に設定されていると、コンピュータ名が使用されます。
 サーバが<productname>Bonjour</productname>サポート付でコンパイルでされていない場合は無視されます。
-このオプションはサーバ起動時のみに設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1586,7 +1610,7 @@ UNIXドメインソケットで接続しているセッションではこのパ�
         and the BSD family of operating systems, and is not currently available
         on other systems.
 -->
-このオプションは、Linux、macOS、illumos、BSDファミリーのオペレーティングシステムによって公開されるカーネルイベントに依存しており、現在他のシステムでは利用できません。
+このオプションは、Linux、macOS、illumos、BSD系のオペレーティングシステムによって公開されるカーネルイベントに依存しており、現在他のシステムでは利用できません。
        </para>
        <para>
 <!--
@@ -1656,7 +1680,7 @@ UNIXドメインソケットで接続しているセッションではこのパ�
 これはハングしたクライアントが接続を永久に占有することを防ぎます。
 この値が単位なしで指定された場合は、秒単位であるとみなします。
 デフォルトは1分（<literal>1m</literal>）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1749,12 +1773,12 @@ SCRAM-SHA-256を使用してパスワードを暗号化するときに実行さ�
         <filename>postgresql.conf</filename> file or on the server command line.
         See <xref linkend="gssapi-auth"/> for more information.
 -->
-Kerberosサーバーキーファイルの場所を設定します。
+Kerberosサーバキーファイルの場所を設定します。
 デフォルトは<filename>FILE:/usr/local/pgsql/etc/krb5.keytab</filename>です。
 （ディレクトリ部分は構築時に<varname>sysconfdir</varname>で指定されたものです。
 <literal>pg_config --sysconfdir</literal>を使って確認してください。）
 このパラメータが空文字列に設定されると、それは無視されてシステム依存のデフォルトが使用されます。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
 詳細は<xref linkend="gssapi-auth"/>をご覧ください。
        </para>
       </listitem>
@@ -1779,7 +1803,7 @@ Kerberosサーバーキーファイルの場所を設定します。
 -->
 GSSAPIユーザ名を大文字小文字の区別なく取り扱うかどうかを設定します。
 デフォルトは<literal>off</literal>（大文字小文字を区別する）です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -1806,87 +1830,8 @@ GSSAPIユーザ名を大文字小文字の区別なく取り扱うかどうか�
 デフォルトは<literal>off</literal>です。
 これは、クライアントからの資格証明が受け入れ<emphasis>られない</emphasis>ことを意味します。
 これを<literal>on</literal>に変更すると、サーバは、クライアントから委任された資格証明を受け入れます。
-このパラメータは、<filename>postgresql.conf</filename>ファイルまたはサーバコマンドラインでのみ設定できます。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry id="guc-db-user-namespace" xreflabel="db_user_namespace">
-      <term><varname>db_user_namespace</varname> (<type>boolean</type>)
-      <indexterm>
-       <primary><varname>db_user_namespace</varname> configuration parameter</primary>
-      </indexterm>
-      <indexterm>
-       <primary><varname>db_user_namespace</varname>設定パラメータ</primary>
-      </indexterm>
-      </term>
-      <listitem>
-       <para>
-<!--
-        This parameter enables per-database user names.  It is off by default.
-        This parameter can only be set in the <filename>postgresql.conf</filename>
-        file or on the server command line.
--->
-このパラメータはデータベース毎のユーザ名を可能にします。
-デフォルトはオフです。
-このパラメータは<filename>postgresql.conf</filename>ファイル、またはサーバのコマンドラインでのみ設定可能です。
-       </para>
-
-       <para>
-<!--
-        If this is on, you should create users as <replaceable>username@dbname</replaceable>.
-        When <replaceable>username</replaceable> is passed by a connecting client,
-        <literal>@</literal> and the database name are appended to the user
-        name and that database-specific user name is looked up by the
-        server. Note that when you create users with names containing
-        <literal>@</literal> within the SQL environment, you will need to
-        quote the user name.
--->
-これがオンの場合、<replaceable>username@dbname</replaceable>の様にしてユーザを作成しなければなりません。
-<replaceable>username</replaceable>が接続中のクライアントより渡された時、 <literal>@</literal>およびデータベース名がユーザ名に付加され、そのデータベース特有のユーザ名をサーバが見に行きます。
-SQL環境下で<literal>@</literal>を含む名前のユーザを作成する場合、そのユーザ名は引用符で括られなければならないことに注意してください。
-       </para>
-
-       <para>
-<!--
-        With this parameter enabled, you can still create ordinary global
-        users.  Simply append <literal>@</literal> when specifying the user
-        name in the client, e.g., <literal>joe@</literal>.  The <literal>@</literal>
-        will be stripped off before the user name is looked up by the
-        server.
--->
-このパラメータを有効にしていても通常の広域ユーザを作成することができます。
-クライアントにユーザ名を指定する時に、たとえば<literal>joe@</literal>のように単に<literal>@</literal>を付け加えてください。
-<literal>@</literal>はサーバがユーザ名を検索する以前に取り去られます。
-       </para>
-
-       <para>
-<!--
-        <varname>db_user_namespace</varname> causes the client's and
-        server's user name representation to differ.
-        Authentication checks are always done with the server's user name
-        so authentication methods must be configured for the
-        server's user name, not the client's.  Because
-        <literal>md5</literal> uses the user name as salt on both the
-        client and server, <literal>md5</literal> cannot be used with
-        <varname>db_user_namespace</varname>.
--->
-<varname>db_user_namespace</varname>はクライアントとサーバのユーザ名の表示を区別することができます。
-認証検査は常にサーバのユーザ名で行われるので、認証方式はクライアントのではなくサーバのユーザ名で構成されなければなりません。
-<literal>md5</literal>では、クライアントおよびサーバの両方でユーザ名をソルトとして使用するので、<literal>md5</literal>を<varname>db_user_namespace</varname>と一緒に使用することはできません。
-       </para>
-
-       <note>
-        <para>
-<!--
-         This feature is intended as a temporary measure until a
-         complete solution is found.  At that time, this option will
-         be removed.
--->
-この機能は完全な解決方法が見つかるまでの一時的なものです。
-完全な解決方法が見つかったら、このオプションは削除される予定です。
-        </para>
-       </note>
       </listitem>
      </varlistentry>
      </variablelist>
@@ -2218,7 +2163,7 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
 <productname>OpenSSL</productname>のバージョンにより、利用可能な暗号スイートの詳細は異なります。
 <literal>openssl ciphers -v 'HIGH:MEDIUM:+3DES:!aNULL'</literal>
 コマンドを使って現在インストールされている<productname>OpenSSL</productname>のバージョンに関する詳細情報を得てください。
-ここで得られるリストは、サーバキータイプにより実行時にフィルターされることに注意してください。
+ここで得られるリストは、サーバキータイプにより実行時にフィルタされることに注意してください。
        </para>
       </listitem>
      </varlistentry>
@@ -2248,13 +2193,13 @@ TLSバージョン1.2あるいはそれ以下のバージョンを使用する�
 
        <para>
 <!--
-        Older PostgreSQL versions do not have this setting and always use the
-        client's preferences.  This setting is mainly for backward
-        compatibility with those versions.  Using the server's preferences is
-        usually better because it is more likely that the server is appropriately
-        configured.
+        <productname>PostgreSQL</productname> versions before 9.4 do not have
+        this setting and always use the client's preferences.  This setting is
+        mainly for backward compatibility with those versions.  Using the
+        server's preferences is usually better because it is more likely that
+        the server is appropriately configured.
 -->
-古いバージョンのPostgreSQLにはこの設定がなく、常にクライアントの設定を使います。
+バージョン9.4より前の<productname>PostgreSQL</productname>にはこの設定がなく、常にクライアントの設定が使用されます。
 この設定は、主に古いバージョンとの互換性のために設けられています。
 通常サーバの設定に従うほうが良いです。大抵の場合、サーバはより適切に設定されているからです。
        </para>
@@ -2474,7 +2419,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2512,7 +2457,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         This parameter can only be set in the <filename>postgresql.conf</filename>
         file or on the server command line.
 -->
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -2565,7 +2510,7 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
 しかし、良い性能を引き出すためには、最小値よりかなり高い値の設定が通例必要です。
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 （<symbol>BLCKSZ</symbol>がデフォルト値と異なる場合、この最小値も異なる値になります。）
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -2619,13 +2564,16 @@ TLS 1.0より前のプロトコルバージョン、すなわちSSLバージョ�
         server will try to request huge pages, but fall back to the default if
         that fails. With <literal>on</literal>, failure to request huge pages
         will prevent the server from starting up. With <literal>off</literal>,
-        huge pages will not be requested.
+        huge pages will not be requested. The actual state of huge pages is
+        indicated by the server variable
+        <xref linkend="guc-huge-pages-status"/>.
 -->
 主共有メモリ領域に対してhuge pageを要求するかどうかを管理します。
 可能な値は<literal>try</literal> (デフォルト)、<literal>on</literal>、<literal>off</literal>です。
 <varname>huge_pages</varname>を<literal>try</literal>に設定すると、サーバはhuge pageの要求を試み、失敗したらデフォルトに戻します。
 <literal>on</literal>にすると、要求に失敗した場合にサーバの起動ができなくなることになります。
 <literal>off</literal>ならhuge pageの要求は行いません。
+huge pageの実際の状態は、サーバ変数<xref linkend="guc-huge-pages-status"/>で示されています。
        </para>
 
        <para>
@@ -2715,7 +2663,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 <xref linkend="guc-huge-pages"/>が有効なときにhuge pageのサイズを制御します。
 デフォルトはゼロ(<literal>0</literal>)です。
 <literal>0</literal>に設定すると、システムのデフォルトのhuge pageのサイズが使われます。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
        <para>
 <!--
@@ -2809,7 +2757,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 -->
 同時に<quote>プリペアド</quote>状態にできるトランザクションの最大数を設定します（<xref linkend="sql-prepare-transaction"/>を参照してください）。
 このパラメータをゼロ（これがデフォルトです）に設定すると、プリペアドトランザクション機能が無効になります。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
 
        <para>
@@ -2852,9 +2800,10 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         (such as a sort or hash table) before writing to temporary disk files.
         If this value is specified without units, it is taken as kilobytes.
         The default value is four megabytes (<literal>4MB</literal>).
-        Note that for a complex query, several sort or hash operations might be
-        running in parallel; each operation will generally be allowed
-        to use as much memory as this value specifies before it starts
+        Note that a complex query might perform several sort and hash
+        operations at the same time, with each operation generally being
+        allowed to use as much memory as this value specifies before
+        it starts
         to write data into temporary files.  Also, several running
         sessions could be doing such operations concurrently.
         Therefore, the total memory used could be many times the value
@@ -2865,21 +2814,22 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         Hash tables are used in hash joins, hash-based aggregation, memoize
         nodes and hash-based processing of <literal>IN</literal> subqueries.
 -->
-一時ディスクファイルに書き込むようになる前に、問い合わせ操作（たとえば並べ替えとハッシュテーブル操作）が使用する基本的な最大のメモリ容量を指定します。
+一時ディスクファイルに書き込む前に、問い合わせ操作（ソートやハッシュなど）で使用される最大メモリ量を設定します。
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
-デフォルト値は4メガバイト（<literal>4MB</literal>）です。
-複雑な問い合わせの場合、いくつかの並べ替えもしくはハッシュ操作が並行して実行されることに注意してください。
-一時ファイルへの書き込み開始の前に、それぞれの操作にこの値が指定するのと同じメモリ容量の使用が許容されます。
-さらに、いくつかの実行中のセッションはこれらの動作を同時に行います。
-したがって、使用されるメモリの合計は、<varname>work_mem</varname>の数倍になります。値を選択する時には、この事実に留意することが必要です。
-並べ替え操作は<literal>ORDER BY</literal>、<literal>DISTINCT</literal>、およびマージ結合に対して使われます。
+デフォルト値は4MB(<literal>4MB</literal>)です。
+複雑な問い合わせでは、同時に複数のソート操作とハッシュ操作が実行される可能性があります。
+各操作は通常、データを一時ファイルに書き込む前にこの値で指定された量のメモリを使用できます。
+また、複数の実行中のセッションが同時にこのような操作を実行することもあります。
+したがって、使用されるメモリの合計量は<varname>work_mem</varname>の数倍になる可能性があります。
+値を選択する時には、この事実に留意することが必要です。
+ソート操作は<literal>ORDER BY</literal>、<literal>DISTINCT</literal>、およびマージ結合に対して使われます。
 ハッシュテーブルはハッシュ結合、ハッシュに基づいた集約、メモ化（memoize）ノードおよび<literal>IN</literal>副問い合わせのハッシュに基づいた処理で使用されます。
        </para>
        <para>
 <!--
         Hash-based operations are generally more sensitive to memory
         availability than equivalent sort-based operations.  The
-        memory available for hash tables is computed by multiplying
+        memory limit for a hash table is computed by multiplying
         <varname>work_mem</varname> by
         <varname>hash_mem_multiplier</varname>.  This makes it
         possible for hash-based operations to use an amount of memory
@@ -2887,7 +2837,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         amount.
 -->
 一般的に、ハッシュに基づく操作はソートに基づく操作よりも利用可能なメモリに敏感です。
-ハッシュテーブルが利用可能なメモリは<varname>work_mem</varname>に<varname>hash_mem_multiplier</varname>を掛けて計算します。
+ハッシュテーブルのメモリ制限は、<varname>work_mem</varname>に<varname>hash_mem_multiplier</varname>を乗算することで計算されます。
 これにより、ハッシュに基づく操作では通常の<varname>work_mem</varname>に基づく量を超える量のメモリが使用される可能性があります。
        </para>
       </listitem>
@@ -2977,14 +2927,6 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 自動バキュームが稼働すると、最大でこのメモリの<xref linkend="guc-autovacuum-max-workers"/>倍が配分されるので、デフォルトの値をあまり高く設定しないよう注意してください。
 別の設定項目<xref linkend="guc-autovacuum-work-mem"/>で制御するのが良いかもしれません。
        </para>
-       <para>
-<!--
-        Note that for the collection of dead tuple identifiers,
-        <command>VACUUM</command> is only able to utilize up to a maximum of
-        <literal>1GB</literal> of memory.
--->
-無効タプル識別子の集合に対しては、<command>VACUUM</command>は最大でも<literal>1GB</literal>までしか使用することができないことに注意してください。
-       </para>
       </listitem>
      </varlistentry>
 
@@ -3015,18 +2957,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
 デフォルトは-1で、<xref linkend="guc-maintenance-work-mem"/>が代わりに使われる設定になります。
 別の文脈で実行される<command>VACUUM</command>にはこの設定は影響しません。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
-       </para>
-       <para>
-<!--
-        For the collection of dead tuple identifiers, autovacuum is only able
-        to utilize up to a maximum of <literal>1GB</literal> of memory, so
-        setting <varname>autovacuum_work_mem</varname> to a value higher than
-        that has no effect on the number of dead tuples that autovacuum can
-        collect while scanning a table.
--->
-無効タプル識別子の集合に対しては、自動バキュームは最大でも<literal>1GB</literal>までしか使用することができません。
-ですから<varname>autovacuum_work_mem</varname>をそれ以上に指定しても、自動バキュームがテーブルを走査して収集できる無効タプルの数には影響を与えません。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3052,7 +2983,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
         valid sizes range from <literal>128 kB</literal> to
         <literal>16 GB</literal>.  If the specified size would exceed 1/8 the
         size of <varname>shared_buffers</varname>, the size is silently capped
-        to that value.  The default value is <literal>256 kB</literal>.  If
+        to that value.  The default value is <literal>2MB</literal>.  If
         this value is specified without units, it is taken as kilobytes.  This
         parameter can be set at any time.  It can be overridden for
         <xref linkend="sql-vacuum"/> and <xref linkend="sql-analyze"/>
@@ -3066,7 +2997,7 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 <literal>0</literal>を設定すると、それらの操作で任意の数の<varname>shared_buffers</varname>を使用できることになります。
 それ以外の場合は、有効なサイズは<literal>128 kB</literal>から<literal>16 GB</literal>までの範囲です。
 指定されたサイズが<varname>shared_buffers</varname>のサイズの1/8を超える場合、サイズは黙ってその値に制限されます。
-デフォルト値は<literal>256 kB</literal>です。
+デフォルト値は<literal>2MB</literal>です。
 この値が単位なしで指定された場合は、キロバイト単位であるとみなします。
 このパラメータはいつでも設定できます。
 このパラメータは、<option>BUFFER_USAGE_LIMIT</option>オプションを渡すことによって、<xref linkend="sql-vacuum"/>および<xref linkend="sql-analyze"/>に対して上書きできます。
@@ -3101,6 +3032,208 @@ Linuxでは、これは<quote>transparent huge pages</quote><indexterm><primary>
 これにより、ロジカルストリーミングレプリケーションの接続が使用する最大メモリが制限されます。
 デフォルトは64メガバイト(<literal>64MB</literal>)です。
 個々のレプリケーション接続がここで指定した単一のバッファだけを使用し、インストールは通常たくさんの接続を並行して使わないので（<varname>max_wal_senders</varname>で制限されます）、この値を<varname>work_mem</varname>よりもずっと大きくしても安全で、それによってデコードされた更新がディスクに書かれる量が削減されます。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-commit-timestamp-buffers" xreflabel="commit_timestamp_buffers">
+      <term><varname>commit_timestamp_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>commit_timestamp_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>commit_timestamp_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of memory to use to cache the contents of
+        <literal>pg_commit_ts</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_commit_ts</literal>の内容をキャッシュするために使用するメモリ量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-multixact-member-buffers" xreflabel="multixact_member_buffers">
+      <term><varname>multixact_member_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>multixact_member_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>multixact_member_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_multixact/members</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>32</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_multixact/members</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>32</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-multixact-offset-buffers" xreflabel="multixact_offset_buffers">
+      <term><varname>multixact_offset_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>multixact_offset_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>multixact_offset_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_multixact/offsets</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>16</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_multixact/offsets</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>16</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-notify-buffers" xreflabel="notify_buffers">
+      <term><varname>notify_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>notify_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>notify_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_notify</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>16</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_notify</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>16</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-serializable-buffers" xreflabel="serializable_buffers">
+      <term><varname>serializable_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>serializable_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>serializable_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_serial</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>32</literal>.
+        This parameter can only be set at server start.
+-->
+<literal>pg_serial</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>32</literal>です。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-subtransaction-buffers" xreflabel="subtransaction_buffers">
+      <term><varname>subtransaction_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>subtransaction_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>subtransaction_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_subtrans</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_subtrans</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="guc-transaction-buffers" xreflabel="transaction_buffers">
+      <term><varname>transaction_buffers</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>transaction_buffers</varname> configuration parameter</primary>
+      </indexterm>
+      <indexterm>
+       <primary><varname>transaction_buffers</varname>設定パラメータ</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the amount of shared memory to use to cache the contents
+        of <literal>pg_xact</literal> (see
+        <xref linkend="pgdata-contents-table"/>).
+        If this value is specified without units, it is taken as blocks,
+        that is <symbol>BLCKSZ</symbol> bytes, typically 8kB.
+        The default value is <literal>0</literal>, which requests
+        <varname>shared_buffers</varname>/512 up to 1024 blocks,
+        but not fewer than 16 blocks.
+        This parameter can only be set at server start.
+-->
+<literal>pg_xact</literal>の内容をキャッシュするために使用する共有メモリの量を指定します（<xref linkend="pgdata-contents-table"/>を参照してください）。
+この値が単位なしで指定された場合、ブロック、つまり<symbol>BLCKSZ</symbol>バイト、通常は8キロバイトとして扱われます。
+デフォルト値は<literal>0</literal>で、最大1024ブロック、16ブロック以上の<varname>shared_buffers</varname>/512を要求します。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3320,6 +3453,27 @@ huge pageを自動管理するオペレーティングシステム上でより�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="guc-max-notify-queue-pages" xreflabel="max_notify_queue_pages">
+      <term><varname>max_notify_queue_pages</varname> (<type>integer</type>)
+      <indexterm>
+       <primary><varname>max_notify_queue_pages</varname> configuration parameter</primary>
+      </indexterm>
+      </term>
+      <listitem>
+       <para>
+<!--
+        Specifies the maximum amount of allocated pages for
+        <xref linkend="sql-notify"/> / <xref linkend="sql-listen"/> queue.
+        The default value is 1048576. For 8 KB pages it allows to consume
+        up to 8 GB of disk space.
+-->
+<xref linkend="sql-notify"/>/<xref linkend="sql-listen"/>キューのために割り当てられたページの最大量を指定します。
+デフォルト値は1048576です。
+8キロバイトページの場合、最大8ギガバイトのディスクスペースが消費されます。
+       </para>
+      </listitem>
+     </varlistentry>
+
      </variablelist>
      </sect2>
 
@@ -3356,7 +3510,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
 デフォルトは1000ファイルです。
 もしもカーネルがプロセス毎の安全制限を強要している場合、この設定を気にかける必要はありません。
 しかし、いくつかのプラットフォーム（特にほとんどのBSDシステム）では、もし多くのプロセス全てがそれだけ多くのファイルを開くことを試みたとした場合、実際にサポートできるファイル数より多くのファイルを開くことを許しています。もしも<quote>Too many open files</quote>エラーが発生した場合、この設定を削減してみてください。
-このパラメータはサーバ起動時にのみ設定可能です。
+このパラメータはサーバ起動時のみ設定可能です。
        </para>
       </listitem>
      </varlistentry>
@@ -3480,7 +3634,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
          the shared hash table and scan the content of the page. The
          default value is one.
 -->
-共有バッファキャッシュの中のバッファにvacuumを掛ける予測コストです。バッファプールのロック、共有ハッシュテーブルの検索、およびページ内容走査のコストを示します。デフォルトの値は1です。
+共有バッファキャッシュの中のバッファにvacuumを掛ける予測コストです。バッファプールのロック、共有ハッシュテーブルの検索、およびページ内容のスキャンのコストを示します。デフォルトの値は1です。
         </para>
        </listitem>
       </varlistentry>
@@ -3502,7 +3656,7 @@ huge pageを自動管理するオペレーティングシステム上でより�
          lookup the shared hash table, read the desired block in from
          the disk and scan its content. The default value is 2.
 -->
-ディスクから読み込まれなければならないバッファにvacuumを掛ける予測コストです。これが示すものは、バッファプールロックの試み、共有ハッシュテーブルの参照、ディスクから目的ブロックの読み込み、そしてその内容走査です。デフォルトの値は2です。
+ディスクから読み込まれなければならないバッファにvacuumを掛ける予測コストです。これが示すものは、バッファプールロックの試み、共有ハッシュテーブルの参照、ディスクから目的ブロックの読み込み、そしてその内容のスキャンです。デフォルトの値は2です。
         </para>
        </listitem>
       </varlistentry>
@@ -3542,10 +3696,10 @@ vacuumが、先だって掃除したブロックを変更するのに必要な�
        <listitem>
         <para>
 <!--
-         The accumulated cost that will cause the vacuuming process to sleep.
-         The default value is 200.
+         This is the accumulated cost that will cause the vacuuming process to sleep
+         for <varname>vacuum_cost_delay</varname>.  The default is 200.
 -->
-vacuumを掛けるプロセスをスリープさせることになる累計されたコストです。
+vacuumを掛けるプロセスを<varname>vacuum_cost_delay</varname>の間スリープさせることになる累計されたコストです。
 デフォルトの値は200です。
         </para>
        </listitem>
@@ -3627,7 +3781,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          <varname>bgwriter_delay</varname>.
          If this value is specified without units, it is taken as milliseconds.
          The default value is 200
-         milliseconds (<literal>200ms</literal>). Note that on many systems, the
+         milliseconds (<literal>200ms</literal>). Note that on some systems, the
          effective resolution of sleep delays is 10 milliseconds; setting
          <varname>bgwriter_delay</varname> to a value that is not a multiple of 10
          might have the same results as setting it to the next higher multiple
@@ -3640,7 +3794,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 しかし、バッファプールにダーティバッファが存在しない場合、<varname>bgwriter_delay</varname>に係わらずより長くスリープします。
 この値が単位なしで指定された場合は、ミリ秒単位であるとみなします。
 デフォルトの値は200ミリ秒（<literal>200ms</literal>）です。
-多くのシステムで、スリープ遅延の実精度は10ミリ秒です。
+ある種のシステムでは、スリープ遅延の実精度は10ミリ秒です。
 <varname>bgwriter_delay</varname>の値の設定を10の倍数としない場合、次に大きい10の倍数に設定した結果と同一になるかもしれないことを覚えておいてください。
 このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインで設定可能です。
         </para>
@@ -3671,7 +3825,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 ゼロに設定することでバックグラウンド書き込みは無効になります。
 （分離し、そして専用の補助プロセスにより管理されるチェックポイントは影響を受けません。）
 デフォルト値は100バッファです。
-このパラメータは<filename>postgresql.conf</filename>ファイル内、またはサーバのコマンドラインのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3713,7 +3867,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 より大きな値は突発的な要求に対する多少の緩衝材を提供します。
 より小さな値はサーバプロセスでなされる書き込みを意図的に残します。
 デフォルトは2.0です。
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3758,8 +3912,8 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な設定値は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は、Linuxでは<literal>512kB</literal>で、それ以外は<literal>0</literal>です。
-(<symbol>BLCKSZ</symbol>が8kBでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
-このパラメータは<filename>postgresql.conf</filename>ファイル、または、サーバのコマンドラインでのみで設定可能です。
+（<symbol>BLCKSZ</symbol>が8kBでなければ、この設定のデフォルト値と最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
+このパラメータは、<filename>postgresql.conf</filename>ファイルか、サーバのコマンドラインでのみ設定可能です。
         </para>
        </listitem>
       </varlistentry>
@@ -3822,7 +3976,7 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
 この値が単位なしで指定された場合は、ブロック単位であるとみなします。すなわち、<symbol>BLCKSZ</symbol>バイト、一般的には8kBです。
 有効な範囲は、この強制書き込み機能が無効になる<literal>0</literal>から、<literal>2MB</literal>までです。
 デフォルト値は<literal>0</literal>です(すなわち書き出し制御を行いません)。
-(<symbol>BLCKSZ</symbol>が8kBでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。)
+（<symbol>BLCKSZ</symbol>が8kBでなければ、最大値が<symbol>BLCKSZ</symbol>に比例して変更されます。）
         </para>
        </listitem>
       </varlistentry>
@@ -3866,10 +4020,11 @@ vacuumを掛けるプロセスをスリープさせることになる累計さ�
          SSDs and other memory-based storage can often process many
          concurrent requests, so the best value might be in the hundreds.
 -->
-磁気ディスクドライブにおいては、データベースに使用されるRAID 0ストライプ、RAID 1ミラーを構成する個々のドライブ数から始めると良いでしょう。（RAID 5ではパリティ用のドライブを数に含めません）
+磁気ディスクドライブにおいては、データベースに使用されるRAID 0ストライプ、RAID 1ミラーを構成する個々のドライブ数から始めると良いでしょう。
+（RAID 5ではパリティ用のドライブを数に含めません。）
 しかし、同時実行セッションで発行される複数の問い合わせでデータベースが頻繁にビジーとなる場合、小さめの値で十分ディスクアレイがビジーになるかもしれません。
 ディスクをビジーにするのに必要な値より大きな値を設定しても、余計なCPUオーバーヘッドを発生させるだけです。
-SSDやそれ以外のメモリーベースの記憶装置は、多くの同時リクエストをこなすことができるので、最適な値は数百になるかもしれません。
+SSDやそれ以外のメモリベースの記憶装置は、多くの同時リクエストをこなすことができるので、最適な値は数百になるかもしれません。
         </para>
 
         <para>
@@ -3894,7 +4049,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          <xref linkend="sql-altertablespace"/>).
 -->
 デフォルトは、サポートされているシステムでは1、そうでなければ0です。
-この値は、テーブルスペースパラメータの同じ名前のパラメータを設定することで、特定のテーブルスペース内のテーブルに対して上書きできます。
+この値は、テーブル空間パラメータの同じ名前のパラメータを設定することで、特定のテーブル空間内のテーブルに対して上書きできます。
 (<xref linkend="sql-altertablespace"/>を参照ください)。
         </para>
        </listitem>
@@ -3930,6 +4085,24 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        </listitem>
       </varlistentry>
 
+      <varlistentry id="guc-io-combine-limit" xreflabel="io_combine_limit">
+       <term><varname>io_combine_limit</varname> (<type>integer</type>)
+       <indexterm>
+        <primary><varname>io_combine_limit</varname> configuration parameter</primary>
+       </indexterm>
+       </term>
+       <listitem>
+        <para>
+<!--
+         Controls the largest I/O size in operations that combine I/O.
+         The default is 128kB.
+-->
+I/Oを結合する操作で最大のI/Oサイズを制御します。
+デフォルトは128キロバイトです。
+        </para>
+       </listitem>
+      </varlistentry>
+
       <varlistentry id="guc-max-worker-processes" xreflabel="max_worker_processes">
        <term><varname>max_worker_processes</varname> (<type>integer</type>)
        <indexterm>
@@ -3942,12 +4115,12 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        <listitem>
         <para>
 <!--
-         Sets the maximum number of background processes that the system
+         Sets the maximum number of background processes that the cluster
          can support.  This parameter can only be set at server start.  The
          default is 8.
 -->
-システムがサポートするバックグラウンドプロセスの最大数を指定します。
-このパラメータはサーバ起動時にのみ設定できます。
+クラスタがサポートするバックグラウンドプロセスの最大数を指定します。
+このパラメータはサーバ起動時のみ設定可能です。
 デフォルトは8です。
         </para>
 
@@ -4105,7 +4278,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
        <listitem>
         <para>
 <!--
-         Sets the maximum number of workers that the system can support for
+         Sets the maximum number of workers that the cluster can support for
          parallel operations.  The default value is 8.  When increasing or
          decreasing this value, consider also adjusting
          <xref linkend="guc-max-parallel-maintenance-workers"/> and
@@ -4115,7 +4288,7 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
          since parallel workers are taken from the pool of worker processes
          established by that setting.
 -->
-パラレルクエリ操作用にシステムがサポートできる最大のワーカー数を設定します。
+パラレルクエリ操作用にクラスタがサポートできる最大のワーカー数を設定します。
 デフォルト値は8です。
 この値を増減するときは、<xref linkend="guc-max-parallel-maintenance-workers"/>と<xref linkend="guc-max-parallel-workers-per-gather"/>を調整することを考慮してください。
 また、この設定値を<xref linkend="guc-max-worker-processes"/>よりも高い値にしても効果がないことに注意してください。
@@ -4155,6 +4328,9 @@ SSDやそれ以外のメモリーベースの記憶装置は、多くの同時�
         </para>
        </listitem>
       </varlistentry>
+     </variablelist>
+    </sect2>
+   </sect1>
 
 &config1;
 &config2;

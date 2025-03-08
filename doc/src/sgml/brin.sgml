@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/brin.sgml -->
 
-<chapter id="brin">
+<sect1 id="brin">
 <!--
 <title>BRIN Indexes</title>
 -->
@@ -11,7 +11,7 @@
     <secondary>BRIN</secondary>
    </indexterm>
 
-<sect1 id="brin-intro">
+<sect2 id="brin-intro">
 <!--
  <title>Introduction</title>
 -->
@@ -64,7 +64,7 @@
 すなわち、インデックス内のレンジ要約情報が検索条件と<firstterm>一致</firstterm>すれば、<acronym>BRIN</acronym>インデックスは、レンジ内の全タプルを返します。
 クエリエグゼキュータの役割は、検索条件を再チェックし、条件に合致しないタプルを捨てることです。
 つまり言い換えると、<acronym>BRIN</acronym>インデックスには損失性があります。
-<acronym>BRIN</acronym>インデックスは非常に小さいため、それに対するスキャンは順スキャンに比べると小さなオーバーヘッドしか与えません。しかし、あらかじめ条件に合致しないと分かっているテーブルの多くの部分をスキャンすることを避けることができます。
+<acronym>BRIN</acronym>インデックスは非常に小さいため、それに対するスキャンはシーケンシャルスキャンに比べると小さなオーバーヘッドしか与えません。しかし、あらかじめ条件に合致しないと分かっているテーブルの多くの部分をスキャンすることを避けることができます。
  </para>
 
  <para>
@@ -94,10 +94,10 @@
 -->
 ブロックレンジの大きさは、ストレージパラメータ<literal>pages_per_range</literal>でインデックス作成時に決定されます。
 インデックスエントリの数は、リレーションのページ数を<literal>pages_per_range</literal>に設定した数で割ったものと等しくなります。
-ですから、<literal>pages_per_range</literal>の設定値が小さいほど、インデックスは大きくなります(より多くのインデックスエントリを格納する必要があるので)が、反面、格納されたサマリーデータはより精密になり、インデックススキャンの際により多くのデータブロックをスキップすることができるようになります。
+ですから、<literal>pages_per_range</literal>の設定値が小さいほど、インデックスは大きくなります(より多くのインデックスエントリを格納する必要があるので)が、反面、格納されたサマリデータはより精密になり、インデックススキャンの際により多くのデータブロックをスキップすることができるようになります。
  </para>
 
- <sect2 id="brin-operation">
+ <sect3 id="brin-operation">
 <!--
   <title>Index Maintenance</title>
 -->
@@ -117,10 +117,10 @@
    those tuples remain unsummarized until a summarization run is
    invoked later, creating the initial summary for that range.
 -->
-インデックスを作成した当初は、すべてのヒープページがスキャンされ、終端が不完全なものも含め、各々のレンジに対してサマリーインデックスタプルが作成されます。
-新しいページにデータが登録されると、新しいタプルのデータを元に、すでにサマリー済みのページレンジのサマリー情報が更新されます。
-最終サマリーレンジに適合しない新しいページが作成されると、そのレンジに対して自動的にはサマリータプルが作成されません。
-これらのタプルは、後でサマリー処理が走って初期サマリー情報が作成されるまではサマリーされません。
+インデックスを作成した当初は、すべてのヒープページがスキャンされ、終端が不完全なものも含め、各々のレンジに対してサマリインデックスタプルが作成されます。
+新しいページにデータが登録されると、新しいタプルのデータを元に、すでにサマリ済みのページレンジのサマリ情報が更新されます。
+最終サマリレンジに適合しない新しいページが作成されると、そのレンジに対して自動的にはサマリタプルが作成されません。
+これらのタプルは、後でサマリ処理が走って初期サマリ情報が作成されるまではサマリされません。
   </para>
 
   <para>
@@ -136,24 +136,26 @@
    unsummarized page ranges that have been filled,
    regardless of whether the table itself is processed by autovacuum; see below.
 -->
-ページレンジの初期サマリー処理を起動する複数の方法があります。
+ページレンジの初期サマリ処理を起動する複数の方法があります。
 手動あるいは<link linkend="autovacuum">autovacuum</link>のどちらでも良いですが、テーブルがバキュームされるとすべてのまだサマライズされていないページレンジがサマライズされます。
-また、インデックスの<xref linkend="index-reloption-autosummarize"/>パラメータが有効なら、これはデフォルトでは有効ではありませんが、そのデータベースに対してバキュームが実行されると、自動バキュームによってそのテーブル自体が処理されるかどうかにかかわらず、すべての挿入された未サマリーページレンジに対してサマリー処理が実行されます。
+また、インデックスの<xref linkend="index-reloption-autosummarize"/>パラメータが有効なら、これはデフォルトでは有効ではありませんが、そのデータベースに対してバキュームが実行されると、自動バキュームによってそのテーブル自体が処理されるかどうかにかかわらず、すべての挿入された未サマリページレンジに対してサマリ処理が実行されます。
 以下を見てください。
   </para>
 
   <para>
 <!--
-   Lastly, the following functions can be used:
+   Lastly, the following functions can be used (while these functions run,
+   <xref linkend="guc-search-path"/> is temporarily changed to
+   <literal>pg_catalog, pg_temp</literal>):
 -->
-最後に、次の関数が利用できます。
+最後に、次の関数を使用できます（これらの関数の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます）。
    <simplelist>
     <member>
 <!--
      <function>brin_summarize_new_values(regclass)</function>
      which summarizes all unsummarized ranges;
 -->
-すべての未サマリーレンジをサマライズする<function>brin_summarize_new_values(regclass)</function>
+すべての未サマリレンジをサマライズする<function>brin_summarize_new_values(regclass)</function>
     </member>
     <member>
 <!--
@@ -177,7 +179,7 @@
    same database.  If the request queue is full, the request is not recorded
    and a message is sent to the server log:
 -->
-自動サマリー機能が有効な場合、次のブロックレンジの最初のページの最初の項目の挿入が検出されると、同じデータベースで実行中の自動バキュームワーカーの次の実行の終了時に処理されるブロックレンジをターゲットとするサマリー機能を実行する要求が<literal>autovacuum</literal>に送信されます。
+自動サマリ機能が有効な場合、次のブロックレンジの最初のページの最初の項目の挿入が検出されると、同じデータベースで実行中の自動バキュームワーカーの次の実行の終了時に処理されるブロックレンジをターゲットとするサマリ機能を実行する要求が<literal>autovacuum</literal>に送信されます。
 もしリクエストキューが満杯ならばそのリクエストは記録されず、次のメッセージがサーバのログに送信されます。
 <screen>
 LOG:  request for BRIN range summarization for index "brin_wi_idx" page 128 was not recorded
@@ -198,15 +200,15 @@ LOG:  request for BRIN range summarization for index "brin_wi_idx" page 128 was 
    representation because the existing values have changed.
    See <xref linkend="functions-admin-index"/> for details.
 -->
-反対に、レンジは<function>brin_desummarize_range(regclass, bigint)</function>関数で非サマリー化できます。
+反対に、レンジは<function>brin_desummarize_range(regclass, bigint)</function>関数で非サマリ化できます。
 これは、既存の値が変更されたためにインデックスタプルがもはや値の表現としては適当でなくなった場合に有効です。
 詳細は<xref linkend="functions-admin-index"/>を見てください。
   </para>
 
- </sect2>
-</sect1>
+ </sect3>
+</sect2>
 
-<sect1 id="brin-builtin-opclasses">
+<sect2 id="brin-builtin-opclasses">
 <!--
  <title>Built-in Operator Classes</title>
 -->
@@ -829,7 +831,7 @@ LOG:  request for BRIN range summarization for index "brin_wi_idx" page 128 was 
   </tgroup>
  </table>
 
-  <sect2 id="brin-builtin-opclasses--parameters">
+  <sect3 id="brin-builtin-opclasses--parameters">
 <!--
    <title>Operator Class Parameters</title>
 -->
@@ -923,11 +925,11 @@ minmax-multi演算子クラスでは次のパラメータを受け取ります�
    </varlistentry>
 
    </variablelist>
-  </sect2>
+  </sect3>
 
-</sect1>
+</sect2>
 
-<sect1 id="brin-extensibility">
+<sect2 id="brin-extensibility">
 <!--
  <title>Extensibility</title>
 -->
@@ -1155,7 +1157,7 @@ ScanKeyがある範囲のインデックス値と一致しているかどうか�
   All operator class members (functions and operators) are mandatory.
 -->
 <xref linkend="brin-extensibility-minmax-table"/>で示すように、全順序集合を実装するデータ型のための演算子クラスを書くために、関連する演算子とともにminmaxサポート関数を使うことができます。
-演算子クラスのメンバー(関数と演算子)はすべて必須です。
+演算子クラスのメンバ(関数と演算子)はすべて必須です。
  </para>
 
  <table id="brin-extensibility-minmax-table">
@@ -1172,7 +1174,7 @@ ScanKeyがある範囲のインデックス値と一致しているかどうか�
      <entry>Operator class member</entry>
      <entry>Object</entry>
 -->
-     <entry>演算子クラスメンバー</entry>
+     <entry>演算子クラスメンバ</entry>
      <entry>オブジェクト</entry>
     </row>
    </thead>
@@ -1267,7 +1269,7 @@ ScanKeyがある範囲のインデックス値と一致しているかどうか�
      <entry>Object</entry>
      <entry>Dependency</entry>
 -->
-     <entry>演算子クラスメンバー</entry>
+     <entry>演算子クラスメンバ</entry>
      <entry>オブジェクト</entry>
      <entry>依存性</entry>
     </row>
@@ -1475,7 +1477,7 @@ BRINフレームワークは和が変化しない時に操作を省略するこ�
   All operator class members (procedures and operators) are mandatory.
 -->
 <xref linkend="brin-extensibility-bloom-table"/>で示すように、等号演算子のみを実装しハッシュをサポートするデータ型の演算子クラスを書くために、関連する演算子とともにbloomがサポートするプロシージャを使うことができます。
-演算子クラスのメンバー(プロシージャと演算子)はすべて必須です。
+演算子クラスのメンバ(プロシージャと演算子)はすべて必須です。
  </para>
 
  <table id="brin-extensibility-bloom-table">
@@ -1490,7 +1492,7 @@ BRINフレームワークは和が変化しない時に操作を省略するこ�
      <entry>Operator class member</entry>
      <entry>Object</entry>
 -->
-     <entry>演算子クラスメンバー</entry>
+     <entry>演算子クラスメンバ</entry>
      <entry>オブジェクト</entry>
     </row>
    </thead>
@@ -1579,7 +1581,7 @@ BRINフレームワークは和が変化しない時に操作を省略するこ�
 minmax-multi演算子クラスもまた、全順序集合を実装するデータ型を対象としており、minmax演算子クラスの単純な拡張と見なすことができます。
 minmax演算子クラスは各ブロックの範囲を一つの連続した区間にまとめますが、minmax-multiはより小さな複数の区間にまとめることで、外れ値の扱いを改善します。
 <xref linkend="brin-extensibility-minmax-multi-table"/>で示すように、関連する演算子とともにminmax-multiがサポートするプロシージャを使うことができます。
-演算子クラスのメンバー(プロシージャと演算子)はすべて必須です。
+演算子クラスのメンバ(プロシージャと演算子)はすべて必須です。
  </para>
 
  <table id="brin-extensibility-minmax-multi-table">
@@ -1594,7 +1596,7 @@ minmax演算子クラスは各ブロックの範囲を一つの連続した区�
      <entry>Operator class member</entry>
      <entry>Object</entry>
 -->
-     <entry>演算子クラスメンバー</entry>
+     <entry>演算子クラスメンバ</entry>
      <entry>オブジェクト</entry>
     </row>
    </thead>
@@ -1696,5 +1698,5 @@ minmax演算子クラスは、両方の引数がデータ型が同じ型であ�
 演算子クラスは、依存演算子が<literal>STORAGE</literal>データ型とともにサポートするデータ型の左辺引数、他のサポートするデータ型をサポートする演算子の右辺引数として定義される必要があります。
 minmaxの例として<literal>float4_minmax_ops</literal>、inclusionの例として<literal>box_inclusion_ops</literal>を参照してください。
  </para>
+</sect2>
 </sect1>
-</chapter>

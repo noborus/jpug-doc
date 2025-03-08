@@ -3,7 +3,7 @@
  * blutils.c
  *		Bloom index utilities.
  *
- * Portions Copyright (c) 2016-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 2016-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1990-1993, Regents of the University of California
  *
  * IDENTIFICATION
@@ -122,6 +122,7 @@ blhandler(PG_FUNCTION_ARGS)
 	amroutine->amclusterable = false;
 	amroutine->ampredlocks = false;
 	amroutine->amcanparallel = false;
+	amroutine->amcanbuildparallel = false;
 	amroutine->amcaninclude = false;
 	amroutine->amusemaintenanceworkmem = false;
 	amroutine->amparallelvacuumoptions =
@@ -131,6 +132,7 @@ blhandler(PG_FUNCTION_ARGS)
 	amroutine->ambuild = blbuild;
 	amroutine->ambuildempty = blbuildempty;
 	amroutine->aminsert = blinsert;
+	amroutine->aminsertcleanup = NULL;
 	amroutine->ambulkdelete = blbulkdelete;
 	amroutine->amvacuumcleanup = blvacuumcleanup;
 	amroutine->amcanreturn = NULL;

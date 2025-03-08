@@ -620,10 +620,14 @@ SQL標準では、ある分離レベルで発生しては<emphasis>ならない<
     conditions for each action are re-evaluated on the updated version of
     the row, starting from the first action, even if the action that had
     originally matched appears later in the list of actions.
-    On the other hand, if the row is concurrently updated or deleted so
-    that the join condition fails, then <command>MERGE</command> will
-    evaluate the condition's <literal>NOT MATCHED</literal> actions next,
-    and execute the first one that succeeds.
+    On the other hand, if the row is concurrently updated so that the join
+    condition fails, then <command>MERGE</command> will evaluate the
+    command's <literal>NOT MATCHED BY SOURCE</literal> and
+    <literal>NOT MATCHED [BY TARGET]</literal> actions next, and execute
+    the first one of each kind that succeeds.
+    If the row is concurrently deleted, then <command>MERGE</command>
+    will evaluate the command's <literal>NOT MATCHED [BY TARGET]</literal>
+    actions, and execute the first one that succeeds.
     If <command>MERGE</command> attempts an <command>INSERT</command>
     and a unique index is present and a duplicate row is concurrently
     inserted, then a uniqueness violation error is raised;
@@ -631,12 +635,13 @@ SQL標準では、ある分離レベルで発生しては<emphasis>ならない<
     errors by restarting evaluation of <literal>MATCHED</literal>
     conditions.
 -->
-<command>MERGE</command>を使用すると、ユーザーは<command>INSERT</command>、<command>UPDATE</command>および<command>DELETE</command>サブコマンドの様々な組み合わせを指定できます。
+<command>MERGE</command>を使用すると、ユーザは<command>INSERT</command>、<command>UPDATE</command>および<command>DELETE</command>サブコマンドの様々な組み合わせを指定できます。
 <command>INSERT</command>および<command>UPDATE</command>サブコマンドを指定した<command>MERGE</command>コマンドは、<literal>ON CONFLICT DO UPDATE</literal>句を指定した<command>INSERT</command>に似ていますが、<command>INSERT</command>または<command>UPDATE</command>のいずれかが発生することを保証するものではありません。
 <command>MERGE</command>が<command>UPDATE</command>または<command>DELETE</command>を試行し、行が同時に更新されるものの、結合条件が現在のターゲットタプルと現在のソースタプルに適用される場合、<command>MERGE</command>は<command>UPDATE</command>または<command>DELETE</command>コマンドと同じように動作し、更新された行バージョンに対してアクションを実行します。
 ただし、<command>MERGE</command>は複数のアクションを指定でき、それらは条件付きにすることができるため、各アクションの条件は更新されたバージョンの行に対して最初のアクションから再評価されます。
 最初に一致したアクションがアクションリストの後の方に現れる場合でも同様です。
-一方、行が同時に更新または削除されて結合条件が失敗した場合、<command>MERGE</command>は条件の<literal>NOT MATCHED</literal>アクションを次に評価し、成功した最初のアクションを実行します。
+一方、行が同時に更新されて結合条件が失敗した場合、<command>MERGE</command>は次に<literal>NOT MATCHED BY SOURCE</literal>および<literal>NOT MATCHED [BY TARGET]</literal>アクションを評価し、それぞれの種類で最初に成功するアクションを実行します。
+行が同時に削除された場合、<command>MERGE</command>は<literal>NOT MATCHED [BY TARGET]</literal>アクションを評価し、その中で最初に成功するアクションを実行します。
 <command>MERGE</command>が<command>INSERT</command>を試行し、一意なインデックスが存在し、重複した行が同時に挿入された場合、一意性違反エラーが発生します。<command>MERGE</command>は<literal>MATCHED</literal>条件の評価を再開してこのようなエラーを回避しようとはしません。
    </para>
 
@@ -1863,7 +1868,7 @@ ERROR:  could not serialize access due to read/write dependencies among transact
 これにより、それらは現在のトランザクションが終わるまで、他のトランザクションがロック、変更、削除できなくなります。
 すなわち、これらの行に対して<command>UPDATE</command>、<command>DELETE</command>、<command>SELECT FOR UPDATE</command>、<command>SELECT FOR NO KEY UPDATE</command>、<command>SELECT FOR SHARE</command>、<command>SELECT FOR KEY SHARE</command>をしようとする他のトランザクションは現在のトランザクションが終わるまでブロックされます。逆に言えば、<command>SELECT FOR UPDATE</command>は同じ行に対して上記のコマンドを実行している同時実行トランザクションを待ち、それから更新された行をロックして返します(行が削除されていれば、行は返しません)。
 しかし、<literal>REPEATABLE READ</literal>もしくは<literal>SERIALIZABLE</literal>トランザクション内では、ロックする行がトランザクションの開始した後に変更された場合にはエラーが返ります。
-これ以上の議論は<xref linkend="applevel-consistency"/>を参照してください。
+これ以上の説明は<xref linkend="applevel-consistency"/>を参照してください。
         </para>
         <para>
 <!--
@@ -2630,7 +2635,7 @@ SQLSTATEコード<literal>40P01</literal>(<literal>deadlock_detected</literal>)�
 場合によっては、SQLSTATEコード<literal>23505</literal>(<literal>unique_violation</literal>)を持つ一意キーの失敗、およびSQLSTATEコード<literal>23P01</literal>(<literal>exclusion_violation</literal>)を持つ排他制約の失敗を再試行することも適切です。
 たとえば、現在格納されているキーを検査した後にアプリケーションが主キー列に新しい値を選択した場合、別のアプリケーション・インスタンスが同じ新しいキーを同時に選択したため、一意キーの失敗が発生する可能性があります。
 これは実質的に直列化の失敗ですが、サーバは挿入された値と前の読み取りとの間の関係を<quote>参照</quote>できないため、直列化の失敗を検出しません。
-また、原則として直列化の問題が根本原因であると判断するのに十分な情報があるにもかかわらず、サーバーが一意キーまたは排他制約のエラーを発行する場合もあります。
+また、原則として直列化の問題が根本原因であると判断するのに十分な情報があるにもかかわらず、サーバが一意キーまたは排他制約のエラーを発行する場合もあります。
 <literal>serialization_failure</literal>エラーを無条件に再試行することをお薦めしますが、これらの他のエラー・コードを再試行する場合は、一時的な失敗ではなく永続的なエラー条件を表す可能性があるため、より注意が必要です。
    </para>
 

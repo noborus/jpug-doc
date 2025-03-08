@@ -3,7 +3,7 @@
  * snapbuild.h
  *	  Exports from replication/logical/snapbuild.c.
  *
- * Copyright (c) 2012-2023, PostgreSQL Global Development Group
+ * Copyright (c) 2012-2024, PostgreSQL Global Development Group
  *
  * src/include/replication/snapbuild.h
  *
@@ -43,7 +43,7 @@ typedef enum
 	 * were running at that point finished. Till we reach that we hold off
 	 * calling any commit callbacks.
 	 */
-	SNAPBUILD_CONSISTENT = 2
+	SNAPBUILD_CONSISTENT = 2,
 } SnapBuildState;
 
 /* forward declare so we don't have to expose the struct to the public */
@@ -62,6 +62,7 @@ extern void CheckPointSnapBuild(void);
 extern SnapBuild *AllocateSnapshotBuilder(struct ReorderBuffer *reorder,
 										  TransactionId xmin_horizon, XLogRecPtr start_lsn,
 										  bool need_full_snapshot,
+										  bool in_slot_creation,
 										  XLogRecPtr two_phase_at);
 extern void FreeSnapshotBuilder(SnapBuild *builder);
 
@@ -90,5 +91,7 @@ extern void SnapBuildProcessNewCid(SnapBuild *builder, TransactionId xid,
 extern void SnapBuildProcessRunningXacts(SnapBuild *builder, XLogRecPtr lsn,
 										 struct xl_running_xacts *running);
 extern void SnapBuildSerializationPoint(SnapBuild *builder, XLogRecPtr lsn);
+
+extern bool SnapBuildSnapshotExists(XLogRecPtr lsn);
 
 #endif							/* SNAPBUILD_H */

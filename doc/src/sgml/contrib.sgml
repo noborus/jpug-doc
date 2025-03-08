@@ -186,7 +186,6 @@ CREATE EXTENSION <replaceable>extension_name</replaceable>;
 各コンポーネントの詳細はドキュメントを参照してください。
  </para>
 
- &adminpack;
  &amcheck;
  &auth-delay;
  &auto-explain;
@@ -209,7 +208,6 @@ CREATE EXTENSION <replaceable>extension_name</replaceable>;
  &isn;
  &lo;
  &ltree;
- &oldsnapshot;
  &pageinspect;
  &passwordcheck;
  &pgbuffercache;
@@ -262,7 +260,7 @@ pages.
   specifically.
 -->
 この付録と前の付録には、<productname>PostgreSQL</productname>配布物の<literal>contrib</literal>ディレクトリにあるモジュールに関する情報があります。
-<literal>contrib</literal>セクションの概要や、特に<literal>contrib</literal>にあるサーバエクステンションやプラグインに関する情報は、<xref linkend="contrib"/>を参照してください。
+<literal>contrib</literal>節の概要や、特に<literal>contrib</literal>にあるサーバエクステンションやプラグインに関する情報は、<xref linkend="contrib"/>を参照してください。
  </para>
 
  <para>
@@ -292,7 +290,7 @@ pages.
    applications that are part of the core <productname>PostgreSQL</productname>
    distribution.
 -->
-このセクションでは、<literal>contrib</literal>にある<productname>PostgreSQL</productname>のクライアントアプリケーションを説明します。それらは、データベースサーバがどこで稼働しているかに依存せず、どこからでも実行することが出来ます。
+この節では、<literal>contrib</literal>にある<productname>PostgreSQL</productname>のクライアントアプリケーションを説明します。それらは、データベースサーバがどこで稼働しているかに依存せず、どこからでも実行することが出来ます。
 <productname>PostgreSQL</productname>のコア配布物に含まれるクライアントアプリケーションに関する情報は、<xref linkend="reference-client"/>を参照してください。
   </para>
 
@@ -314,7 +312,7 @@ pages.
    linkend="reference-server"/> for information about server applications that
    are part of the core <productname>PostgreSQL</productname> distribution.
 -->
-一部のアプリケーションは、<productname>PostgreSQL</productname>サーバー自体で実行されます。
+一部のアプリケーションは、<productname>PostgreSQL</productname>サーバ自体で実行されます。
 現在、そのようなアプリケーションは<literal>contrib</literal>ディレクトリに含まれていません。
 コア<productname>PostgreSQL</productname>ディストリビューションの一部であるサーバアプリケーションについては、<xref linkend="reference-server"/>も参照してください。
   </para>

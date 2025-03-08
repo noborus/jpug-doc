@@ -27,11 +27,12 @@ PostgreSQL documentation
 
  <refsynopsisdiv>
 <synopsis>
-CLUSTER [VERBOSE] <replaceable class="parameter">table_name</replaceable> [ USING <replaceable class="parameter">index_name</replaceable> ]
-CLUSTER ( <replaceable class="parameter">option</replaceable> [, ...] ) <replaceable class="parameter">table_name</replaceable> [ USING <replaceable class="parameter">index_name</replaceable> ]
-CLUSTER [VERBOSE]
+CLUSTER [ ( <replaceable class="parameter">option</replaceable> [, ...] ) ] [ <replaceable class="parameter">table_name</replaceable> [ USING <replaceable class="parameter">index_name</replaceable> ] ]
 
+<!--
 <phrase>where <replaceable class="parameter">option</replaceable> can be one of:</phrase>
+-->
+<phrase>ここで<replaceable class="parameter">option</replaceable>は以下のいずれかです。</phrase>
 
     VERBOSE [ <replaceable class="parameter">boolean</replaceable> ]
 </synopsis>
@@ -97,11 +98,10 @@ CLUSTER [VERBOSE]
    <command>CLUSTER</command> without a
    <replaceable class="parameter">table_name</replaceable> reclusters all the
    previously-clustered tables in the current database that the calling user
-   owns, or all such tables if called by a superuser.  This
-   form of <command>CLUSTER</command> cannot be executed inside a transaction
-   block.
+   has privileges for.  This form of <command>CLUSTER</command> cannot be
+   executed inside a transaction block.
 -->
-<replaceable class="parameter">table_name</replaceable>を指定しないで<command>CLUSTER</command>を実行した場合、現在のデータベース内の以前にクラスタ化されたテーブルのうち、呼び出したユーザが所有するすべてのテーブルを（スーパーユーザが実行する場合はすべてのテーブルを）再クラスタ化します。
+<replaceable class="parameter">table_name</replaceable>を指定しないで<command>CLUSTER</command>を実行した場合、現在のデータベース内の以前にクラスタ化されたテーブルのうち、呼び出したユーザが権限を持つすべてのテーブルを再クラスタ化します。
 この形式の<command>CLUSTER</command>を、トランザクションブロック内では実行できません。
   </para>
 
@@ -189,6 +189,14 @@ CLUSTER [VERBOSE]
 
    <para>
 <!--
+    To cluster a table, one must have the <literal>MAINTAIN</literal> privilege
+    on the table.
+-->
+テーブルをクラスタ化するには、テーブルに対する<literal>MAINTAIN</literal>権限が必要です。
+   </para>
+
+   <para>
+<!--
     In cases where you are accessing single rows randomly
     within a table, the actual order of the data in the
     table is unimportant. However, if you tend to access some
@@ -217,6 +225,15 @@ CLUSTER [VERBOSE]
 -->
 <command>CLUSTER</command>は、指定されたインデックスによるインデックススキャン、または（インデックスがB-Treeの場合）シーケンシャルスキャン後のソートのいずれかを用いて、テーブルを再ソートすることができます。
 プランナのコストパラメータと利用可能な統計情報に基づき、より高速な方式の選択を試みます。
+   </para>
+
+   <para>
+<!--
+    While <command>CLUSTER</command> is running, the <xref
+    linkend="guc-search-path"/> is temporarily changed to <literal>pg_catalog,
+    pg_temp</literal>.
+-->
+<command>CLUSTER</command>の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます。
    </para>
 
    <para>
@@ -354,16 +371,24 @@ CLUSTER;
 
   <para>
 <!--
-   The syntax
+   The following syntax was used before <productname>PostgreSQL</productname>
+   17 and is still supported:
 -->
+次の構文は、<productname>PostgreSQL</productname> 17より前のバージョンで使われていたもので、今でもサポートされています。
+<synopsis>
+CLUSTER [ VERBOSE ] [ <replaceable class="parameter">table_name</replaceable> [ USING <replaceable class="parameter">index_name</replaceable> ] ]
+</synopsis>
+  </para>
+
+  <para>
+<!--
+   The following syntax was used before <productname>PostgreSQL</productname>
+   8.3 and is still supported:
+-->
+次の構文は、<productname>PostgreSQL</productname> 8.3より前のバージョンで使われていたもので、今でもサポートされています。
 <synopsis>
 CLUSTER <replaceable class="parameter">index_name</replaceable> ON <replaceable class="parameter">table_name</replaceable>
 </synopsis>
-<!--
-  is also supported for compatibility with pre-8.3 <productname>PostgreSQL</productname>
-  versions.
--->
-という構文も、8.3より前のバージョンの<productname>PostgreSQL</productname>との互換性のためサポートされます。
   </para>
  </refsect1>
 

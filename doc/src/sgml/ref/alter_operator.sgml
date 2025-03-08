@@ -36,7 +36,11 @@ ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</repla
 ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</replaceable> | NONE } , <replaceable>right_type</replaceable> )
     SET ( {  RESTRICT = { <replaceable class="parameter">res_proc</replaceable> | NONE }
            | JOIN = { <replaceable class="parameter">join_proc</replaceable> | NONE }
-         } [, ... ] )
+           | COMMUTATOR = <replaceable class="parameter">com_op</replaceable>
+           | NEGATOR = <replaceable class="parameter">neg_op</replaceable>
+           | HASHES
+           | MERGES
+          } [, ... ] )
 </synopsis>
  </refsynopsisdiv>
 
@@ -166,7 +170,94 @@ ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</repla
      </listitem>
    </varlistentry>
 
+   <varlistentry>
+    <term><replaceable class="parameter">com_op</replaceable></term>
+    <listitem>
+     <para>
+<!--
+      The commutator of this operator. Can only be changed if the operator
+      does not have an existing commutator.
+-->
+《機械翻訳》この演算子の交換子。
+演算子に既存の交換子がない場合にのみ変更できます。
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><replaceable class="parameter">neg_op</replaceable></term>
+    <listitem>
+     <para>
+<!--
+      The negator of this operator. Can only be changed if the operator does
+      not have an existing negator.
+-->
+《機械翻訳》この演算子の否定子。
+演算子に既存の否定子がない場合にのみ変更できます。
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>HASHES</literal></term>
+    <listitem>
+     <para>
+<!--
+      Indicates this operator can support a hash join. Can only be enabled and
+      not disabled.
+-->
+《機械翻訳》この演算子がハッシュ結合をサポートできることを示します。
+有効にできるだけで、無効にはできません。
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><literal>MERGES</literal></term>
+    <listitem>
+     <para>
+<!--
+      Indicates this operator can support a merge join. Can only be enabled
+      and not disabled.
+-->
+《機械翻訳》この演算子がマージ結合をサポートできることを示します。
+使用可能にするだけで、無効にはできません。
+     </para>
+    </listitem>
+   </varlistentry>
+
   </variablelist>
+ </refsect1>
+
+ <refsect1>
+<!--
+  <title>Notes</title>
+-->
+  <title>注釈</title>
+
+  <para>
+<!--
+   Refer to <xref linkend="xoper"/> and
+   <xref linkend="xoper-optimization"/> for further information.
+-->
+《機械翻訳》詳細は<xref linkend="xoper"/>と<xref linkend="xoper-optimization"/>を参照してください。
+  </para>
+
+  <para>
+<!--
+   Since commutators come in pairs that are commutators of each other,
+   <literal>ALTER OPERATOR SET COMMUTATOR</literal> will also set the
+   commutator of the <replaceable class="parameter">com_op</replaceable>
+   to be the target operator.  Likewise, <literal>ALTER OPERATOR SET
+   NEGATOR</literal> will also set the negator of
+   the <replaceable class="parameter">neg_op</replaceable> to be the
+   target operator.  Therefore, you must own the commutator or negator
+   operator as well as the target operator.
+-->
+《機械翻訳》交換子は互いに交換子であるペアで、<literal>ALTER OPERATOR SET COMMUTATOR</literal>は<replaceable class="parameter">com_op</replaceable>の交換子を対象演算子に設定します。
+同様に、<literal>ALTER OPERATOR SET NEGATOR</literal>は<replaceable class="parameter">neg_op</replaceable>の交換子を対象演算子に設定します。
+したがって、対象演算子と同様に交換子または否定子演算子を所有する必要があります。
+  </para>
  </refsect1>
 
  <refsect1>
@@ -182,16 +273,31 @@ ALTER OPERATOR <replaceable>name</replaceable> ( { <replaceable>left_type</repla
 <type>text</type>型用の独自の演算子<literal>a @@ b</literal>の所有者を変更します。
 <programlisting>
 ALTER OPERATOR @@ (text, text) OWNER TO joe;
-</programlisting></para>
+</programlisting>
+  </para>
 
   <para>
 <!--
-    Change the restriction and join selectivity estimator functions of a custom operator <literal>a &amp;&amp; b</literal> for type <type>int[]</type>:
+   Change the restriction and join selectivity estimator functions of a
+   custom operator <literal>a &amp;&amp; b</literal> for
+   type <type>int[]</type>:
 -->
-<type>int[]</type>型用の独自の演算子<literal>a &amp;&amp; b</literal>の制約および結合選択評価関数を変更します。
+《マッチ度[97.278912]》<type>int[]</type>型用の独自の演算子<literal>a &amp;&amp; b</literal>の制約および結合選択評価関数を変更します。
 <programlisting>
-ALTER OPERATOR &amp;&amp; (_int4, _int4) SET (RESTRICT = _int_contsel, JOIN = _int_contjoinsel);
-</programlisting></para>
+ALTER OPERATOR &amp;&amp; (int[], int[]) SET (RESTRICT = _int_contsel, JOIN = _int_contjoinsel);
+</programlisting>
+  </para>
+
+  <para>
+<!--
+   Mark the <literal>&amp;&amp;</literal> operator as being its own
+   commutator:
+-->
+《機械翻訳》<literal>&amp;&amp;</literal>演算子をそれ自身の交換子としてマークする。
+<programlisting>
+ALTER OPERATOR &amp;&amp; (int[], int[]) SET (COMMUTATOR = &amp;&amp;);
+</programlisting>
+  </para>
 
  </refsect1>
 

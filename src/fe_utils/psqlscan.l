@@ -24,7 +24,7 @@
  * See psqlscan_int.h for additional commentary.
  *
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  * IDENTIFICATION
@@ -149,16 +149,16 @@ extern void psql_yyset_column(int column_no, yyscan_t yyscanner);
  * versions of Postgres failed to recognize -- as a comment if the input
  * did not end with a newline.
  *
- * XXX perhaps \f (formfeed) should be treated as a newline as well?
+ * non_newline_space tracks all space characters except newlines.
  *
  * XXX if you change the set of whitespace characters, fix scanner_isspace()
  * to agree.
  */
 
-space			[ \t\n\r\f]
-horiz_space		[ \t\f]
-newline			[\n\r]
-non_newline		[^\n\r]
+space				[ \t\n\r\f\v]
+non_newline_space	[ \t\f\v]
+newline				[\n\r]
+non_newline			[^\n\r]
 
 comment			("--"{non_newline}*)
 
@@ -172,8 +172,8 @@ whitespace		({space}+|{comment})
  */
 
 special_whitespace		({space}+|{comment}{newline})
-horiz_whitespace		({horiz_space}|{comment})
-whitespace_with_newline	({horiz_whitespace}*{newline}{special_whitespace}*)
+non_newline_whitespace	({non_newline_space}|{comment})
+whitespace_with_newline	({non_newline_whitespace}*{newline}{special_whitespace}*)
 
 quote			'
 /* If we see {quote} then {quotecontinue}, the quoted string continues */
@@ -343,20 +343,35 @@ octfail			0[oO]_?
 binfail			0[bB]_?
 
 numeric			(({decinteger}\.{decinteger}?)|(\.{decinteger}))
-numericfail		{decdigit}+\.\.
+numericfail		{decinteger}\.\.
 
 real			({decinteger}|{numeric})[Ee][-+]?{decinteger}
 realfail		({decinteger}|{numeric})[Ee][-+]
 
-decinteger_junk	{decinteger}{ident_start}
-hexinteger_junk	{hexinteger}{ident_start}
-octinteger_junk	{octinteger}{ident_start}
-bininteger_junk	{bininteger}{ident_start}
-numeric_junk	{numeric}{ident_start}
-real_junk		{real}{ident_start}
+/* Positional parameters don't accept underscores. */
+param			\${decdigit}+
 
-param			\${decinteger}
-param_junk		\${decinteger}{ident_start}
+/*
+ * An identifier immediately following an integer literal is disallowed because
+ * in some cases it's ambiguous what is meant: for example, 0x1234 could be
+ * either a hexinteger or a decinteger "0" and an identifier "x1234".  We can
+ * detect such problems by seeing if integer_junk matches a longer substring
+ * than any of the XXXinteger patterns (decinteger, hexinteger, octinteger,
+ * bininteger).  One "junk" pattern is sufficient because
+ * {decinteger}{identifier} will match all the same strings we'd match with
+ * {hexinteger}{identifier} etc.
+ *
+ * Note that the rule for integer_junk must appear after the ones for
+ * XXXinteger to make this work correctly: 0x1234 will match both hexinteger
+ * and integer_junk, and we need hexinteger to be chosen in that case.
+ *
+ * Also disallow strings matched by numeric_junk, real_junk and param_junk
+ * for consistency.
+ */
+integer_junk	{decinteger}{identifier}
+numeric_junk	{numeric}{identifier}
+real_junk		{real}{identifier}
+param_junk		\${decdigit}+{identifier}
 
 /* psql-specific: characters allowed in variable names */
 variable_char	[A-Za-z\200-\377_0-9]
@@ -897,16 +912,7 @@ other			.
 {realfail}		{
 					ECHO;
 				}
-{decinteger_junk}	{
-					ECHO;
-				}
-{hexinteger_junk}	{
-					ECHO;
-				}
-{octinteger_junk}	{
-					ECHO;
-				}
-{bininteger_junk}	{
+{integer_junk}	{
 					ECHO;
 				}
 {numeric_junk}	{

@@ -20,7 +20,7 @@ env:
   MTEST_ARGS: --print-errorlogs --no-rebuild -C build
   PGCTLTIMEOUT: 120 # avoids spurious failures during parallel tests
   TEMP_CONFIG: ${CIRRUS_WORKING_DIR}/src/tools/ci/pg_ci_base.conf
-  PG_TEST_EXTRA: kerberos ldap ssl load_balance
+  PG_TEST_EXTRA: kerberos ldap ssl libpq_encryption load_balance
 
 
 # What files to preserve in case tests fail
@@ -65,7 +65,7 @@ task:
     CPUS: 4
     BUILD_JOBS: 8
     TEST_JOBS: 8
-    IMAGE_FAMILY: pg-ci-bullseye
+    IMAGE_FAMILY: pg-ci-bookworm
     CCACHE_DIR: ${CIRRUS_WORKING_DIR}/ccache_dir
     # no options enabled, should be small
     CCACHE_MAXSIZE: "150M"
@@ -109,8 +109,9 @@ task:
   test_minimal_script: |
     su postgres <<-EOF
       ulimit -c unlimited
+      meson test $MTEST_ARGS --suite setup
       meson test $MTEST_ARGS --num-processes ${TEST_JOBS} \
-        tmp_install cube/regress pg_ctl/001_start_stop
+        cube/regress pg_ctl/001_start_stop
     EOF
 
   on_failure:
@@ -125,17 +126,17 @@ task:
   name: FreeBSD - 13 - Meson
 
   env:
-    # FreeBSD on GCP is slow when running with larger number of CPUS /
-    # jobs. Using one more job than cpus seems to work best.
-    CPUS: 2
-    BUILD_JOBS: 3
-    TEST_JOBS: 3
+    CPUS: 4
+    BUILD_JOBS: 4
+    TEST_JOBS: 8
     IMAGE_FAMILY: pg-ci-freebsd-13
     DISK_SIZE: 50
 
     CCACHE_DIR: /tmp/ccache_dir
-    CPPFLAGS: -DRELCACHE_FORCE_RELEASE -DCOPY_PARSE_PLAN_TREES -DWRITE_READ_PARSE_PLAN_TREES -DRAW_EXPRESSION_COVERAGE_TEST
+    CPPFLAGS: -DRELCACHE_FORCE_RELEASE -DCOPY_PARSE_PLAN_TREES -DWRITE_READ_PARSE_PLAN_TREES -DRAW_EXPRESSION_COVERAGE_TEST -DENFORCE_REGRESSION_TEST_NAME_RESTRICTIONS
     CFLAGS: -Og -ggdb
+
+    PG_TEST_PG_UPGRADE_MODE: --link
 
   <<: *freebsd_task_template
 
@@ -171,7 +172,8 @@ task:
     su postgres <<-EOF
       meson setup \
         --buildtype=debug \
-        -Dcassert=true -Duuid=bsd -Dtcl_version=tcl86 -Ddtrace=auto \
+        -Dcassert=true -Dinjection_points=true \
+        -Duuid=bsd -Dtcl_version=tcl86 -Ddtrace=auto \
         -DPG_TEST_EXTRA="$PG_TEST_EXTRA" \
         -Dextra_lib_dirs=/usr/local/lib -Dextra_include_dirs=/usr/local/include/ \
         build
@@ -241,7 +243,7 @@ task:
     CPUS: 4
     BUILD_JOBS: 4
     TEST_JOBS: 8 # experimentally derived to be a decent choice
-    IMAGE_FAMILY: pg-ci-bullseye
+    IMAGE_FAMILY: pg-ci-bookworm
 
     CCACHE_DIR: /tmp/ccache_dir
     DEBUGINFOD_URLS: "https://debuginfod.debian.net"
@@ -312,7 +314,7 @@ task:
     #DEBIAN_FRONTEND=noninteractive apt-get -y install ...
 
   matrix:
-    - name: Linux - Debian Bullseye - Autoconf
+    - name: Linux - Debian Bookworm - Autoconf
 
       env:
         SANITIZER_FLAGS: -fsanitize=address
@@ -326,8 +328,8 @@ task:
       configure_script: |
         su postgres <<-EOF
           ./configure \
-            --enable-cassert --enable-debug --enable-tap-tests \
-            --enable-nls \
+            --enable-cassert --enable-injection-points --enable-debug \
+            --enable-tap-tests --enable-nls \
             --with-segsize-blocks=6 \
             \
             ${LINUX_CONFIGURE_FEATURES} \
@@ -346,7 +348,7 @@ task:
       on_failure:
         <<: *on_failure_ac
 
-    - name: Linux - Debian Bullseye - Meson
+    - name: Linux - Debian Bookworm - Meson
 
       env:
         CCACHE_MAXSIZE: "400M" # tests two different builds
@@ -356,7 +358,7 @@ task:
         su postgres <<-EOF
           meson setup \
             --buildtype=debug \
-            -Dcassert=true \
+            -Dcassert=true -Dinjection_points=true \
             ${LINUX_MESON_FEATURES} \
             -DPG_TEST_EXTRA="$PG_TEST_EXTRA" \
             build
@@ -369,11 +371,11 @@ task:
           export CC='ccache gcc -m32'
           meson setup \
             --buildtype=debug \
-            -Dcassert=true \
+            -Dcassert=true -Dinjection_points=true \
             ${LINUX_MESON_FEATURES} \
             -Dllvm=disabled \
             --pkg-config-path /usr/lib/i386-linux-gnu/pkgconfig/ \
-            -DPERL=perl5.32-i386-linux-gnu \
+            -DPERL=perl5.36-i386-linux-gnu \
             -DPG_TEST_EXTRA="$PG_TEST_EXTRA" \
             build-32
         EOF
@@ -409,7 +411,7 @@ task:
 
 
 task:
-  name: macOS - Ventura - Meson
+  name: macOS - Sonoma - Meson
 
   env:
     CPUS: 4 # always get that much for cirrusci macOS instances
@@ -418,7 +420,7 @@ task:
     # work OK. See
     # https://postgr.es/m/20220927040208.l3shfcidovpzqxfh%40awork3.anarazel.de
     TEST_JOBS: 8
-    IMAGE: ghcr.io/cirruslabs/macos-ventura-base:latest
+    IMAGE: ghcr.io/cirruslabs/macos-runner:sonoma
 
     CIRRUS_WORKING_DIR: ${HOME}/pgsql/
     CCACHE_DIR: ${HOME}/ccache
@@ -428,6 +430,8 @@ task:
     CXX: ccache c++
     CFLAGS: -Og -ggdb
     CXXFLAGS: -Og -ggdb
+
+    PG_TEST_PG_UPGRADE_MODE: --clone
 
   <<: *macos_task_template
 
@@ -456,6 +460,13 @@ task:
   # updates macports every time.
   macports_cache:
     folder: ${MACPORTS_CACHE}
+    fingerprint_script: |
+      # Include the OS major version in the cache key.  If the OS image changes
+      # to a different major version, we need to reinstall.
+      sw_vers -productVersion | sed 's/\..*//'
+      # Also start afresh if we change our MacPorts install script.
+      md5 src/tools/ci/ci_macports_packages.sh
+    reupload_on_changes: true
   setup_additional_packages_script: |
     sh src/tools/ci/ci_macports_packages.sh \
       ccache \
@@ -467,8 +478,11 @@ task:
       openssl \
       p5.34-io-tty \
       p5.34-ipc-run \
+      python312 \
       tcl \
       zstd
+    # system python doesn't provide headers
+    sudo /opt/local/bin/port select python3 python312
     # Make macports install visible for subsequent steps
     echo PATH=/opt/local/sbin/:/opt/local/bin/:$PATH >> $CIRRUS_ENV
   upload_caches: macports
@@ -481,7 +495,7 @@ task:
       --buildtype=debug \
       -Dextra_include_dirs=/opt/local/include \
       -Dextra_lib_dirs=/opt/local/lib \
-      -Dcassert=true \
+      -Dcassert=true -Dinjection_points=true \
       -Duuid=e2fs -Ddtrace=auto \
       -DPG_TEST_EXTRA="$PG_TEST_EXTRA" \
       build
@@ -513,6 +527,7 @@ WINDOWS_ENVIRONMENT_BASE: &WINDOWS_ENVIRONMENT_BASE
     PG_TEST_USE_UNIX_SOCKETS: 1
     PG_REGRESS_SOCK_DIR: "c:/cirrus/"
     DISK_SIZE: 50
+    IMAGE_FAMILY: pg-ci-windows-ci
 
   sysinfo_script: |
     chcp
@@ -536,7 +551,6 @@ task:
     # given that it explicitly prevents crash dumps from working...
     # 0x8001 is SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX
     CIRRUS_WINDOWS_ERROR_MODE: 0x8001
-    IMAGE_FAMILY: pg-ci-windows-ci-vs-2019
 
   <<: *windows_task_template
 
@@ -555,7 +569,7 @@ task:
   # Use /DEBUG:FASTLINK to avoid high memory usage during linking
   configure_script: |
     vcvarsall x64
-    meson setup --backend ninja --buildtype debug -Dc_link_args=/DEBUG:FASTLINK -Dcassert=true -Db_pch=true -Dextra_lib_dirs=c:\openssl\1.1\lib -Dextra_include_dirs=c:\openssl\1.1\include -DTAR=%TAR% -DPG_TEST_EXTRA="%PG_TEST_EXTRA%" build
+    meson setup --backend ninja --buildtype debug -Dc_link_args=/DEBUG:FASTLINK -Dcassert=true -Dinjection_points=true -Db_pch=true -Dextra_lib_dirs=c:\openssl\1.1\lib -Dextra_include_dirs=c:\openssl\1.1\include -DTAR=%TAR% -DPG_TEST_EXTRA="%PG_TEST_EXTRA%" build
 
   build_script: |
     vcvarsall x64
@@ -597,7 +611,6 @@ task:
     # Start bash in current working directory
     CHERE_INVOKING: 1
     BASH: C:\msys64\usr\bin\bash.exe -l
-    IMAGE_FAMILY: pg-ci-windows-ci-mingw64
 
   <<: *windows_task_template
 
@@ -615,7 +628,7 @@ task:
 
   # disable -Dnls as the number of files it creates cause a noticable slowdown
   configure_script: |
-    %BASH% -c "meson setup -Ddebug=true -Doptimization=g -Dcassert=true -Db_pch=true -Dnls=disabled -DTAR=%TAR% build"
+    %BASH% -c "meson setup -Ddebug=true -Doptimization=g -Dcassert=true -Dinjection_points=true -Db_pch=true -Dnls=disabled -DTAR=%TAR% build"
 
   build_script: |
     %BASH% -c "ninja -C build"
@@ -645,7 +658,7 @@ task:
   env:
     CPUS: 4
     BUILD_JOBS: 4
-    IMAGE_FAMILY: pg-ci-bullseye
+    IMAGE_FAMILY: pg-ci-bookworm
 
     # Use larger ccache cache, as this task compiles with multiple compilers /
     # flag combinations

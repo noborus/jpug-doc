@@ -1,6 +1,6 @@
 <!-- doc/src/sgml/gist.sgml -->
 
-<chapter id="gist">
+<sect1 id="gist">
 <!--
 <title>GiST Indexes</title>
 -->
@@ -15,7 +15,7 @@
     <secondary>GiST</secondary>
    </indexterm>
 
-<sect1 id="gist-intro">
+<sect2 id="gist-intro">
 <!--
  <title>Introduction</title>
 -->
@@ -61,9 +61,9 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
 そして、彼らの<ulink url="http://www.sai.msu.su/~megera/postgres/gist/">ウェブサイト</ulink>にも多くの情報があります。
   </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="gist-builtin-opclasses">
+<sect2 id="gist-builtin-opclasses">
 <!--
  <title>Built-in Operator Classes</title>
 -->
@@ -104,9 +104,9 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
     </thead>
     <tbody>
      <row>
-      <entry valign="middle" morerows="13"><literal>box_ops</literal></entry>
+      <entry valign="middle" morerows="11"><literal>box_ops</literal></entry>
       <entry><literal>&lt;&lt; (box, box)</literal></entry>
-      <entry valign="middle" morerows="13"><literal>&lt;-&gt; (box, point)</literal></entry>
+      <entry valign="middle" morerows="11"><literal>&lt;-&gt; (box, point)</literal></entry>
      </row>
      <row><entry><literal>&amp;&lt; (box, box)</literal></entry></row>
      <row><entry><literal>&amp;&amp; (box, box)</literal></entry></row>
@@ -119,13 +119,11 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
      <row><entry><literal>&lt;&lt;| (box, box)</literal></entry></row>
      <row><entry><literal>|&gt;&gt; (box, box)</literal></entry></row>
      <row><entry><literal>|&amp;&gt; (box, box)</literal></entry></row>
-     <row><entry><literal>~ (box, box)</literal></entry></row>
-     <row><entry><literal>@ (box, box)</literal></entry></row>
 
      <row>
-      <entry valign="middle" morerows="13"><literal>circle_ops</literal></entry>
+      <entry valign="middle" morerows="11"><literal>circle_ops</literal></entry>
       <entry><literal>&lt;&lt; (circle, circle)</literal></entry>
-      <entry valign="middle" morerows="13"><literal>&lt;-&gt; (circle, point)</literal></entry>
+      <entry valign="middle" morerows="11"><literal>&lt;-&gt; (circle, point)</literal></entry>
      </row>
      <row><entry><literal>&amp;&lt; (circle, circle)</literal></entry></row>
      <row><entry><literal>&amp;&gt; (circle, circle)</literal></entry></row>
@@ -138,8 +136,6 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
      <row><entry><literal>&lt;&lt;| (circle, circle)</literal></entry></row>
      <row><entry><literal>&amp;&lt;| (circle, circle)</literal></entry></row>
      <row><entry><literal>|&amp;&gt; (circle, circle)</literal></entry></row>
-     <row><entry><literal>@ (circle, circle)</literal></entry></row>
-     <row><entry><literal>~ (circle, circle)</literal></entry></row>
 
      <row>
       <entry valign="middle" morerows="10"><literal>inet_ops</literal></entry>
@@ -194,9 +190,9 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
      <row><entry><literal>&lt;@ (point, circle)</literal></entry></row>
 
      <row>
-      <entry valign="middle" morerows="13"><literal>poly_ops</literal></entry>
+      <entry valign="middle" morerows="11"><literal>poly_ops</literal></entry>
       <entry><literal>&lt;&lt; (polygon, polygon)</literal></entry>
-      <entry valign="middle" morerows="13"><literal>&lt;-&gt; (polygon, point)</literal></entry>
+      <entry valign="middle" morerows="11"><literal>&lt;-&gt; (polygon, point)</literal></entry>
      </row>
      <row><entry><literal>&amp;&lt; (polygon, polygon)</literal></entry></row>
      <row><entry><literal>&amp;&gt; (polygon, polygon)</literal></entry></row>
@@ -209,8 +205,6 @@ B-tree、R-treeやその他多くのインデックスの枠組みを<acronym>Gi
      <row><entry><literal>&amp;&lt;| (polygon, polygon)</literal></entry></row>
      <row><entry><literal>|&amp;&gt; (polygon, polygon)</literal></entry></row>
      <row><entry><literal>|&gt;&gt; (polygon, polygon)</literal></entry></row>
-     <row><entry><literal>@ (polygon, polygon)</literal></entry></row>
-     <row><entry><literal>~ (polygon, polygon)</literal></entry></row>
 
      <row>
       <entry valign="middle" morerows="17"><literal>range_ops</literal></entry>
@@ -265,9 +259,9 @@ CREATE INDEX ON my_table USING GIST (my_inet_column inet_ops);
 </programlisting>
  </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="gist-extensibility">
+<sect2 id="gist-extensibility">
 <!--
  <title>Extensibility</title>
 -->
@@ -409,7 +403,7 @@ CREATE INDEX ON my_table USING GIST (my_inet_column inet_ops);
 -->
 インデックス項目<literal>p</literal>と問い合わせ値<literal>q</literal>が与えられると、この関数はインデックス項目が問い合わせと<quote>一貫性</quote>があるかどうか、つまり、述語<quote><replaceable>indexed_column</replaceable><replaceable>indexable_operator</replaceable> <literal>q</literal></quote>が、インデックス項目で表現される行に対して真かどうかを決定します。
 リーフインデックス項目では、これはインデックス付条件の試験と等価です。
-一方で内部ツリーノードでは、これはツリーノードで表現されるインデックスの副ツリーを走査する必要があるかどうかを決定します。
+一方で内部ツリーノードでは、これはツリーノードで表現されるインデックスの副ツリーをスキャンする必要があるかどうかを決定します。
 結果が<literal>true</literal>ならば、<literal>recheck</literal>フラグも返されなければなりません。
 これは、述語が確実に真なのか一部のみ真なのかを示します。
 <literal>recheck</literal> = <literal>false</literal>ならば、インデックスは述語条件を正確に試験されたことを示し、<literal>recheck</literal>= <literal>true</literal>ならば行が単に一致候補であることを示します。
@@ -911,7 +905,7 @@ my_picksplit(PG_FUNCTION_ARGS)
 <!--
     /* Initialize the raw entry vector. */
 -->
-    /* 項目自体のベクタの初期化 */
+    /* 項目自体のベクトルの初期化 */
     raw_entryvec = (GISTENTRY **) malloc(entryvec-&gt;n * sizeof(void *));
     for (i = FirstOffsetNumber; i &lt;= maxoff; i = OffsetNumberNext(i))
         raw_entryvec[i] = &amp;(entryvec-&gt;vector[i]);
@@ -1074,7 +1068,7 @@ my_same(PG_FUNCTION_ARGS)
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-この関数の<acronym>SQL</acronym>宣言は以下のようにならなければなりません。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 
 <programlisting>
 CREATE OR REPLACE FUNCTION my_distance(internal, data_type, smallint, oid, internal)
@@ -1086,7 +1080,7 @@ LANGUAGE C STRICT;
 <!--
         And the matching code in the C module could then follow this skeleton:
 -->
-Cモジュールにおける対応するコードは次の骨格に従うことになります。
+そして、Cモジュール内の対応するコードは以下のような骨格に従うことになります。
 
 <programlisting>
 PG_FUNCTION_INFO_V1(my_distance);
@@ -1181,7 +1175,7 @@ my_distance(PG_FUNCTION_ARGS)
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-この関数の<acronym>SQL</acronym>宣言は以下のようにならなければなりません。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 
 <programlisting>
 CREATE OR REPLACE FUNCTION my_fetch(internal)
@@ -1275,7 +1269,7 @@ compressメソッドがリーフエントリに対してデータ損失がある
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+この関数の<acronym>SQL</acronym>宣言は以下のようになります。
 
 <programlisting>
 CREATE OR REPLACE FUNCTION my_options(internal)
@@ -1521,7 +1515,7 @@ Datumはインデックス付けされる値2つで、インデックスに格�
 <!--
         The matching code in the C module could then follow this skeleton:
 -->
-そして、Cモジュール内の対応するコードは以下のような骨格に従うことになります。
+Cモジュールにおける対応するコードは次の骨格に従うことになります。
 
 <programlisting>
 PG_FUNCTION_INFO_V1(my_sortsupport);
@@ -1578,15 +1572,15 @@ my_sortsupport(PG_FUNCTION_ARGS)
 さもないと操作の間リークが蓄積されます。
   </para>
 
-</sect1>
+</sect2>
 
-<sect1 id="gist-implementation">
+<sect2 id="gist-implementation">
 <!--
  <title>Implementation</title>
 -->
  <title>実装</title>
 
- <sect2 id="gist-buffering-build">
+ <sect3 id="gist-buffering-build">
 <!--
   <title>GiST Index Build Methods</title>
 -->
@@ -1664,10 +1658,10 @@ GiSTインデックスを構築する一番簡単な方法は、全項目を単�
 しかし、入力データが順序付けされている場合、バッファ処理を無効にすることで構築が多少高速になります。
   </para>
 
- </sect2>
-</sect1>
+ </sect3>
+</sect2>
 
-<sect1 id="gist-examples">
+<sect2 id="gist-examples">
 <!--
  <title>Examples</title>
 -->
@@ -1762,6 +1756,6 @@ GiSTインデックスを構築する一番簡単な方法は、全項目を単�
  </variablelist>
  </para>
 
-</sect1>
+</sect2>
 
-</chapter>
+</sect1>

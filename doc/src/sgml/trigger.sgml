@@ -4,7 +4,7 @@
 <!--
   <title>Triggers</title>
 -->
-<title>トリガ</title>
+  <title>トリガ</title>
 
   <indexterm zone="triggers">
    <primary>trigger</primary>
@@ -202,34 +202,23 @@
 
    <para>
 <!--
-    A statement that targets a parent table in an inheritance or partitioning
-    hierarchy does not cause the statement-level triggers of affected child
-    tables to be fired; only the parent table's statement-level triggers are
-    fired.  However, row-level triggers of any affected child tables will be
-    fired.
+    If an <command>INSERT</command> contains an <literal>ON CONFLICT
+    DO UPDATE</literal> clause, it is possible for row-level
+    <literal>BEFORE</literal> <command>INSERT</command> and then
+    <literal>BEFORE</literal> <command>UPDATE</command> triggers
+    to be executed on triggered rows.  Such interactions can be
+    complex if the triggers are not idempotent because change made by
+    <literal>BEFORE</literal> <command>INSERT</command> triggers will be
+    seen by <literal>BEFORE</literal> <command>UPDATE</command> triggers,
+    including changes to <varname>EXCLUDED</varname> columns.
 -->
-継承あるいはパーティショニング階層において、親テーブルをターゲットとする文は、影響を受けた子テーブルの文レベルトリガを発動しません。
-すなわち、親テーブルの文レベルトリガのみが発動します。
-しかし、影響を受けた子テーブルの行レベルトリガは発動します。
+《機械翻訳》<command>INSERT</command>包含が<literal>ON CONFLICT DO UPDATE</literal>句の場合、行-レベル<literal>前</literal><command>INSERT</command>と<literal>前</literal><command>UPDATE</command>のトリガをトリガされたローで実行できます。
+<literal>前</literal><command>INSERT</command>トリガによって行われた変更は、<varname>EXCLUDED</varname>列への変更を含めて、<literal>前</literal><command>UPDATE</command>トリガによって見られるため、トリガがべき等でない場合、このような相互作用は複雑になる可能性があります。
    </para>
 
    <para>
 <!--
-    If an <command>INSERT</command> contains an <literal>ON CONFLICT
-    DO UPDATE</literal> clause, it is possible that the effects of
-    row-level <literal>BEFORE</literal> <command>INSERT</command> triggers and
-    row-level <literal>BEFORE</literal> <command>UPDATE</command> triggers can
-    both be applied in a way that is apparent from the final state of
-    the updated row, if an <varname>EXCLUDED</varname> column is referenced.
-    There need not be an <varname>EXCLUDED</varname> column reference for
-    both sets of row-level <literal>BEFORE</literal> triggers to execute,
-    though.  The
-    possibility of surprising outcomes should be considered when there
-    are both <literal>BEFORE</literal> <command>INSERT</command> and
-    <literal>BEFORE</literal> <command>UPDATE</command> row-level triggers
-    that change a row being inserted/updated (this can be
-    problematic even if the modifications are more or less equivalent, if
-    they're not also idempotent).  Note that statement-level
+    Note that statement-level
     <command>UPDATE</command> triggers are executed when <literal>ON
     CONFLICT DO UPDATE</literal> is specified, regardless of whether or not
     any rows were affected by the <command>UPDATE</command> (and
@@ -243,11 +232,24 @@
     statement-level <literal>AFTER</literal> <command>INSERT</command>
     triggers.
 -->
-<command>INSERT</command>が<literal>ON CONFLICT DO UPDATE</literal>句を含む場合、<varname>EXCLUDED</varname>列が参照されていると、行レベルの<literal>BEFORE</literal> <command>INSERT</command>トリガおよび行レベルの<literal>BEFORE</literal> <command>UPDATE</command>トリガの両方の効果が適用され、それが更新後の行の最後の状態から明らかな場合がありえます。
-ただし、両方の行レベルの<literal>BEFORE</literal>トリガを実行するために<varname>EXCLUDED</varname>の参照が必要なわけではありません。
-驚くような結果の可能性について、<literal>BEFORE</literal> <command>INSERT</command>と<literal>BEFORE</literal> <command>UPDATE</command>の両方の行レベルのトリガがあり、それらがいずれも挿入あるいは更新対象の行に影響を与える場合に考慮すべきです（これは更新が冪等ではないが、ほぼ同等であるときには、それでも問題になります）。
-文レベルの<command>UPDATE</command>トリガは<literal>ON CONFLICT DO UPDATE</literal>が指定されたとき、その<command>UPDATE</command>によって行が影響を受けたかどうかに関わらず（そしてその代替である<command>UPDATE</command>部分が実行されたかどうかに関わらず）実行されることに注意してください。
-<literal>ON CONFLICT DO UPDATE</literal>句のある<command>INSERT</command>では、まず文レベルの<literal>BEFORE</literal> <command>INSERT</command>トリガ、次に文レベルの<literal>BEFORE</literal> <command>UPDATE</command>トリガ、次いで文レベルの<literal>AFTER</literal> <command>UPDATE</command>トリガ、最後に文レベルの<literal>AFTER</literal> <command>INSERT</command>トリガを実行します。
+《機械翻訳》ステートメント-レベル<command>UPDATE</command>がトリガするノートは、<literal>ON CONFLICT DO UPDATE</literal>が指定された場合に実行されます。
+<command>UPDATE</command>の影響を受けたローがあるかどうかは関係ありません。
+<command>UPDATE</command>パスが選択されたかどうかも関係ありません。
+<literal>ON CONFLICT DO UPDATE</literal>句付きの<command>INSERT</command>は、最初に実行ステートメント-レベル<literal>前</literal><command>INSERT</command>トリガー、次にステートメントレベル<literal>前</literal><command>UPDATE</command>トリガー、続いてステートメント-レベル<literal>AFTER</literal><command>UPDATE</command>トリガー、最後にステートメント-<literal>AFTER</literal><command>INSERT</command>トリガーとなります。
+レベル
+   </para>
+
+   <para>
+<!--
+    A statement that targets a parent table in an inheritance or partitioning
+    hierarchy does not cause the statement-level triggers of affected child
+    tables to be fired; only the parent table's statement-level triggers are
+    fired.  However, row-level triggers of any affected child tables will be
+    fired.
+-->
+継承あるいはパーティショニング階層において、親テーブルをターゲットとする文は、影響を受けた子テーブルの文レベルトリガを発動しません。
+すなわち、親テーブルの文レベルトリガのみが発動します。
+しかし、影響を受けた子テーブルの行レベルトリガは発動します。
    </para>
 
    <para>
@@ -519,6 +521,23 @@ C言語インタフェースでは、この時点では列の内容は未定義�
 カスケードの場合、同じトリガを再帰的に呼び出すことが可能です。
 例えば、<command>INSERT</command>トリガで同じテーブルに追加の行を挿入する問い合わせが実行された場合、その結果として<command>INSERT</command>トリガが再度発行されます。
 こうした状況で無限再帰を防ぐのは、トリガプログラマの責任です。
+   </para>
+
+   <para>
+<!--
+    If a foreign key constraint specifies referential actions (that
+    is, cascading updates or deletes), those actions are performed via
+    ordinary SQL update or delete commands on the referencing table.
+    In particular, any triggers that exist on the referencing table
+    will be fired for those changes.  If such a trigger modifies or
+    blocks the effect of one of these commands, the end result could
+    be to break referential integrity.  It is the trigger programmer's
+    responsibility to avoid that.
+-->
+《機械翻訳》外部キー制約が参照アクション（カスケード更新または削除）を指定している場合、これらのアクションは、参照テーブル上の通常のSQL更新または削除コマンドを介して実行されます。
+特に、参照テーブルに存在するトリガーは、これらの変更に対して起動されます。
+このようなトリガがこれらのコマンドのいずれかの効果を変更またはブロックすると、最終的に参照整合性を破壊する可能性があります。
+それを回避するのはトリガプログラマの責任です。
    </para>
 
    <para>
@@ -1209,7 +1228,7 @@ C言語で作成したトリガ関数に関するとても簡単な例をここ�
     <structfield>x</structfield>. (So the trigger acts as a not-null constraint but
     doesn't abort the transaction.)
 -->
-<function>trigf</function>関数は、<structname>ttest</structname>テーブル内にある行数を報告し、問い合わせが<structfield>x</structfield>にNULL値を挿入しようとしていた場合は、その操作を飛ばします
+<function>trigf</function>関数は、<structname>ttest</structname>テーブル内にある行数を報告し、問い合わせが<structfield>x</structfield>にNULL値を挿入しようとしていた場合は、その操作をスキップします
 （つまり、このトリガは、トランザクションを中断させないNOT NULL制約のような動作をします。）
    </para>
 

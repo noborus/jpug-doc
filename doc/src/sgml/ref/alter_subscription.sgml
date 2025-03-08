@@ -69,7 +69,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
 サブスクリプションの名前を変更したり、所有者を変更したりするには、データベースに対する<literal>CREATE</literal>権限が必要です。
 さらに、所有者を変更するには、新しい所有者ロールに対して<literal>SET ROLE</literal>ができなければなりません。
 所有者を変更するには、また、そのロールは型のスキーマにおいて<literal>CREATE</literal>権限を持たなければなりません。
-サブスクリプションが<literal>password_required=false</literal>である場合、スーパーユーザーのみが変更できます。
+サブスクリプションが<literal>password_required=false</literal>である場合、スーパーユーザのみが変更できます。
   </para>
 
   <para>
@@ -92,23 +92,29 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
 
   <para>
 <!--
+   Commands <command>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</command>,
+   <command>ALTER SUBSCRIPTION ... {SET|ADD|DROP} PUBLICATION ...</command>
+   with <literal>refresh</literal> option as <literal>true</literal> and
+   <command>ALTER SUBSCRIPTION ... SET (failover = true|false)</command>
+   cannot be executed inside a transaction block.
+-->
+コマンド<command>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</command>と<literal>refresh</literal>オプションが<literal>true</literal>の<command>ALTER SUBSCRIPTION ... {SET|ADD|DROP} PUBLICATION ...</command>、そして<command>ALTER SUBSCRIPTION ... SET (failover = true|false)</command>は、トランザクションブロック内では実行できません。
+  </para>
+
+  <para>
+<!--
    Commands <command>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</command> and
    <command>ALTER SUBSCRIPTION ... {SET|ADD|DROP} PUBLICATION ...</command>
-   with <literal>refresh</literal> option as <literal>true</literal> cannot be
-   executed inside a transaction block.
--->
-コマンド<command>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</command>と<literal>refresh</literal>オプションが<literal>true</literal>の<command>ALTER SUBSCRIPTION ... {SET|ADD|DROP} PUBLICATION ...</command>は、トランザクションブロック内では実行できません。
-
-<!--
-   These commands also cannot be executed when the subscription has
-   <link linkend="sql-createsubscription-with-two-phase"><literal>two_phase</literal></link>
+   with <literal>refresh</literal> option as <literal>true</literal> also cannot
+   be executed when the subscription has
+   <link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>
    commit enabled, unless
-   <link linkend="sql-createsubscription-with-copy-data"><literal>copy_data</literal></link>
+   <link linkend="sql-createsubscription-params-with-copy-data"><literal>copy_data</literal></link>
    is <literal>false</literal>. See column <structfield>subtwophasestate</structfield>
    of <link linkend="catalog-pg-subscription"><structname>pg_subscription</structname></link>
    to know the actual two-phase state.
 -->
-サブスクリプションが<link linkend="sql-createsubscription-with-two-phase"><literal>two_phase</literal></link>コミットを有効にしている場合でも、<link linkend="sql-createsubscription-with-copy-data"><literal>copy_data</literal></link>が<literal>false</literal>でない限り、これらのコマンドは実行できません。
+サブスクリプションが<link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>コミットを有効にしている場合でも、<link linkend="sql-createsubscription-params-with-copy-data"><literal>copy_data</literal></link>が<literal>false</literal>でない限り、コマンド<command>ALTER SUBSCRIPTION ... REFRESH PUBLICATION</command>と<literal>refresh</literal>オプションが<literal>true</literal>の<command>ALTER SUBSCRIPTION ... {SET|ADD|DROP} PUBLICATION ...</command>は実行できません。
 実際の2相状態を知るには、<link linkend="catalog-pg-subscription"><structname>pg_subscription</structname></link>の<structfield>subtwophasestate</structfield>列を参照してください。
   </para>
  </refsect1>
@@ -120,7 +126,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
   <title>パラメータ</title>
 
   <variablelist>
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-name">
     <term><replaceable class="parameter">name</replaceable></term>
     <listitem>
      <para>
@@ -132,7 +138,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-connection">
     <term><literal>CONNECTION '<replaceable class="parameter">conninfo</replaceable>'</literal></term>
     <listitem>
      <para>
@@ -147,7 +153,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-setadddrop-publication">
     <term><literal>SET PUBLICATION <replaceable class="parameter">publication_name</replaceable></literal></term>
     <term><literal>ADD PUBLICATION <replaceable class="parameter">publication_name</replaceable></literal></term>
     <term><literal>DROP PUBLICATION <replaceable class="parameter">publication_name</replaceable></literal></term>
@@ -167,7 +173,7 @@ ALTER SUBSCRIPTION <replaceable class="parameter">name</replaceable> RENAME TO <
 -->
 この形式はサブスクライブするパブリケーションのリストを変更します。
 <literal>SET</literal>はパブリケーションのリスト全体を新しいリストで置き換え、<literal>ADD</literal>は追加のパブリケーションをパブリケーションのリストに追加し、<literal>DROP</literal>はパブリケーションをパブリケーションのリストから削除します。
-ユーザーが後から追加できるよう存在しないパブリケーションを<literal>ADD</literal>や<literal>SET</literal>で指定することを許容します。
+ユーザが後から追加できるよう存在しないパブリケーションを<literal>ADD</literal>や<literal>SET</literal>で指定することを許容します。
 詳細は<xref linkend="sql-createsubscription"/>を参照してください。
 デフォルトでは、このコマンドは<literal>REFRESH PUBLICATION</literal>のような動作もします。
      </para>
@@ -208,18 +214,19 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-refresh-publication">
     <term><literal>REFRESH PUBLICATION</literal></term>
     <listitem>
      <para>
 <!--
       Fetch missing table information from publisher.  This will start
       replication of tables that were added to the subscribed-to publications
-      since <command>CREATE SUBSCRIPTION</command> or
+      since <link linkend="sql-createsubscription">
+      <command>CREATE SUBSCRIPTION</command></link> or
       the last invocation of <command>REFRESH PUBLICATION</command>.
 -->
 不足しているテーブル情報をパブリッシャーから取得します。
-<command>CREATE SUBSCRIPTION</command>、あるいは最後の<command>REFRESH PUBLICATION</command>の実行の後でサブスクライブ対象のパブリケーションに追加されたテーブルの複製が、これにより開始されます。
+<link linkend="sql-createsubscription"><command>CREATE SUBSCRIPTION</command></link>、あるいは最後の<command>REFRESH PUBLICATION</command>の実行の後でサブスクライブ対象のパブリケーションに追加されたテーブルの複製が、これにより開始されます。
      </para>
 
      <para>
@@ -248,25 +255,25 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
           Previously subscribed tables are not copied, even if a table's row
           filter <literal>WHERE</literal> clause has since been modified.
 -->
-テーブルの行フィルター<literal>WHERE</literal>句が変更されていても、以前にサブスクライブされたテーブルはコピーされません。
+テーブルの行フィルタ<literal>WHERE</literal>句が変更されていても、以前にサブスクライブされたテーブルはコピーされません。
          </para>
          <para>
 <!--
           See <xref linkend="sql-createsubscription-notes"/> for details of
           how <literal>copy_data = true</literal> can interact with the
-          <link linkend="sql-createsubscription-with-origin"><literal>origin</literal></link>
+          <link linkend="sql-createsubscription-params-with-origin"><literal>origin</literal></link>
           parameter.
 -->
-<literal>copy_data = true</literal>が<link linkend="sql-createsubscription-with-origin"><literal>origin</literal></link>パラメータとどのように相互作用するかの詳細については、<xref linkend="sql-createsubscription-notes"/>を参照してください。
+<literal>copy_data = true</literal>が<link linkend="sql-createsubscription-params-with-origin"><literal>origin</literal></link>パラメータとどのように相互作用するかの詳細については、<xref linkend="sql-createsubscription-notes"/>を参照してください。
          </para>
          <para>
 <!--
           See the
-          <link linkend="sql-createsubscription-with-binary"><literal>binary</literal></link>
+          <link linkend="sql-createsubscription-params-with-binary"><literal>binary</literal></link>
           parameter of <command>CREATE SUBSCRIPTION</command> for details about
           copying pre-existing data in binary format.
 -->
-バイナリ形式の既存のデータをコピーする詳細については、<command>CREATE SUBSCRIPTION</command>の<link linkend="sql-createsubscription-with-binary"><literal>binary</literal></link>パラメータを参照してください。
+バイナリ形式の既存のデータをコピーする詳細については、<command>CREATE SUBSCRIPTION</command>の<link linkend="sql-createsubscription-params-with-binary"><literal>binary</literal></link>パラメータを参照してください。
          </para>
         </listitem>
        </varlistentry>
@@ -274,7 +281,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-enable">
     <term><literal>ENABLE</literal></term>
     <listitem>
      <para>
@@ -287,7 +294,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-disable">
     <term><literal>DISABLE</literal></term>
     <listitem>
      <para>
@@ -300,7 +307,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-set">
     <term><literal>SET ( <replaceable class="parameter">subscription_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
@@ -308,34 +315,62 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
       This clause alters parameters originally set by
       <xref linkend="sql-createsubscription"/>.  See there for more
       information.  The parameters that can be altered are
-      <link linkend="sql-createsubscription-with-slot-name"><literal>slot_name</literal></link>,
-      <link linkend="sql-createsubscription-with-synchronous-commit"><literal>synchronous_commit</literal></link>,
-      <link linkend="sql-createsubscription-with-binary"><literal>binary</literal></link>,
-      <link linkend="sql-createsubscription-with-streaming"><literal>streaming</literal></link>,
-      <link linkend="sql-createsubscription-with-disable-on-error"><literal>disable_on_error</literal></link>,
-      <link linkend="sql-createsubscription-with-password-required"><literal>password_required</literal></link>,
-      <link linkend="sql-createsubscription-with-run-as-owner"><literal>run_as_owner</literal></link>, and
-      <link linkend="sql-createsubscription-with-origin"><literal>origin</literal></link>.
+      <link linkend="sql-createsubscription-params-with-slot-name"><literal>slot_name</literal></link>,
+      <link linkend="sql-createsubscription-params-with-synchronous-commit"><literal>synchronous_commit</literal></link>,
+      <link linkend="sql-createsubscription-params-with-binary"><literal>binary</literal></link>,
+      <link linkend="sql-createsubscription-params-with-streaming"><literal>streaming</literal></link>,
+      <link linkend="sql-createsubscription-params-with-disable-on-error"><literal>disable_on_error</literal></link>,
+      <link linkend="sql-createsubscription-params-with-password-required"><literal>password_required</literal></link>,
+      <link linkend="sql-createsubscription-params-with-run-as-owner"><literal>run_as_owner</literal></link>,
+      <link linkend="sql-createsubscription-params-with-origin"><literal>origin</literal></link>, and
+      <link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>.
       Only a superuser can set <literal>password_required = false</literal>.
 -->
 この句では、元は<xref linkend="sql-createsubscription"/>により設定されたパラメータを変更します。
 詳細な情報はそちらを参照してください。
 変更できるパラメータは、
-<link linkend="sql-createsubscription-with-slot-name"><literal>slot_name</literal></link>、
-<link linkend="sql-createsubscription-with-synchronous-commit"><literal>synchronous_commit</literal></link>、
-<link linkend="sql-createsubscription-with-binary"><literal>binary</literal></link>、
-<link linkend="sql-createsubscription-with-streaming"><literal>streaming</literal></link>、
-<link linkend="sql-createsubscription-with-disable-on-error"><literal>disable_on_error</literal></link>、
-<link linkend="sql-createsubscription-with-password-required"><literal>password_required</literal></link>、
-<link linkend="sql-createsubscription-with-run-as-owner"><literal>run_as_owner</literal></link>、
-<link linkend="sql-createsubscription-with-origin"><literal>origin</literal></link>
+<link linkend="sql-createsubscription-params-with-slot-name"><literal>slot_name</literal></link>、
+<link linkend="sql-createsubscription-params-with-synchronous-commit"><literal>synchronous_commit</literal></link>、
+<link linkend="sql-createsubscription-params-with-binary"><literal>binary</literal></link>、
+<link linkend="sql-createsubscription-params-with-streaming"><literal>streaming</literal></link>、
+<link linkend="sql-createsubscription-params-with-disable-on-error"><literal>disable_on_error</literal></link>、
+<link linkend="sql-createsubscription-params-with-password-required"><literal>password_required</literal></link>、
+<link linkend="sql-createsubscription-params-with-run-as-owner"><literal>run_as_owner</literal></link>、
+<link linkend="sql-createsubscription-params-with-origin"><literal>origin</literal></link>、
+<link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>
 です。
 スーパーユーザだけが<literal>password_required = false</literal>を設定できます。
+     </para>
+
+     <para>
+<!--
+      When altering the
+      <link linkend="sql-createsubscription-params-with-slot-name"><literal>slot_name</literal></link>,
+      the <literal>failover</literal> and <literal>two_phase</literal> property
+      values of the named slot may differ from the counterpart
+      <link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>
+      and <link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>
+      parameters specified in the subscription. When creating the slot, ensure
+      the slot properties <literal>failover</literal> and <literal>two_phase</literal>
+      match their counterpart parameters of the subscription.
+      Otherwise, the slot on the publisher may behave differently from what these
+      subscription options say: for example, the slot on the publisher could either be
+      synced to the standbys even when the subscription's
+      <link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>
+      option is disabled or could be disabled for sync
+      even when the subscription's
+      <link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>
+      option is enabled.
+-->
+<link linkend="sql-createsubscription-params-with-slot-name"><literal>slot_name</literal></link>を変更する際、指定されたスロットの<literal>failover</literal>と<literal>two_phase</literal>の値が、サブスクリプションで指定された対応する<link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>および<link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>パラメータと異なる可能性があります。
+スロットを作成する際、スロットプロパティの<literal>failover</literal>および<literal>two_phase</literal>が対応するサブスクリプションパラメータと一致することを確認してください。
+そうしないと、パブリッシャー上のスロットがこれらサブスクリプションオプションで指定されている内容とは異なる動作をする場合があります。
+例えば、サブスクリプションオプションの<link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>が無効になっていても、パブリッシャー上のスロットがスタンバイと同期されたり、逆にサブスクリプションオプションの<link linkend="sql-createsubscription-params-with-failover"><literal>failover</literal></link>が有効になっている場合でも、同期が行われなかったりする可能性があります。
      </para>
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-skip">
     <term><literal>SKIP ( <replaceable class="parameter">skip_option</replaceable> = <replaceable class="parameter">value</replaceable> )</literal></term>
     <listitem>
      <para>
@@ -346,7 +381,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
       the logical replication worker skips all data modification changes within
       the transaction.  This option has no effect on the transactions that are
       already prepared by enabling
-      <link linkend="sql-createsubscription-with-two-phase"><literal>two_phase</literal></link>
+      <link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>
       on the subscriber.
       After the logical replication worker successfully skips the transaction or
       finishes a transaction, the LSN (stored in
@@ -357,7 +392,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
 リモートトランザクションのすべての変更の適用をスキップします。
 受信データが何らかの制約に違反している場合、解決されるまで論理レプリケーションは停止します。
 <command>ALTER SUBSCRIPTION ... SKIP</command>コマンドを使用すると、論理レプリケーションワーカーはトランザクション内のすべてのデータ修正変更をスキップします。
-このオプションは、サブスクライバで<link linkend="sql-createsubscription-with-two-phase"><literal>two_phase</literal></link>を有効にしてすでに準備されているトランザクションには影響しません。
+このオプションは、サブスクライバで<link linkend="sql-createsubscription-params-with-two-phase"><literal>two_phase</literal></link>を有効にしてすでに準備されているトランザクションには影響しません。
 論理レプリケーションワーカーがトランザクションをスキップするかトランザクションを終了ことに成功した後、LSN(<structname>pg_subscription</structname>.<structfield>subskiplsn</structfield>に格納されています)がクリアされます。
 論理レプリケーションの競合の詳細については<xref linkend="logical-replication-conflicts"/>を参照してください。
      </para>
@@ -393,7 +428,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-new-owner">
     <term><replaceable class="parameter">new_owner</replaceable></term>
     <listitem>
      <para>
@@ -405,7 +440,7 @@ falseにすると、このコマンドはテーブルを情報を更新しませ
     </listitem>
    </varlistentry>
 
-   <varlistentry>
+   <varlistentry id="sql-altersubscription-params-new-name">
     <term><replaceable class="parameter">new_name</replaceable></term>
     <listitem>
      <para>

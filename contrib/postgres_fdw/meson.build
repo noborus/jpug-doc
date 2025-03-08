@@ -1,4 +1,4 @@
-# Copyright (c) 2022-2023, PostgreSQL Global Development Group
+# Copyright (c) 2022-2024, PostgreSQL Global Development Group
 
 postgres_fdw_sources = files(
   'connection.c',
@@ -36,6 +36,7 @@ tests += {
   'regress': {
     'sql': [
       'postgres_fdw',
+      'query_cancel',
     ],
     'regress_args': ['--dlpath', meson.build_root() / 'src/test/regress'],
   },

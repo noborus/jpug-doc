@@ -123,7 +123,7 @@ SQL文によりますが、グローバルレベル、または関数内で記�
    Of course, the C part of the program follows C quoting rules.
 -->
 埋め込み<acronym>SQL</acronym>文における大文字小文字の区別の有無は、Cコードではなく、通常の<acronym>SQL</acronym>コードの規則に従います。
-また、SQL標準に従い入れ子のC形式のコメントを許します。
+また、標準SQLに従い入れ子のC形式のコメントを許します。
 しかし、プログラムのCの部分では、入れ子のコメントを受け付けないというC標準に従います。
 同様に、埋め込み<acronym>SQL</acronym>文は引用符付きの文字列や識別子の解析に、Cの規則ではなく、SQLの規則を使います。
 (それぞれ<xref linkend="sql-syntax-strings"/>と<xref linkend="sql-syntax-identifiers"/>を参照してください。
@@ -408,7 +408,7 @@ EXEC SQL CONNECT TO :target USER :user USING :passwd;
    an application needs to manage multiple connections, then there are
    three ways to handle this.
 -->
-前節で示したSQL文は現在の接続、つまり、最も最近に開いた接続上で実行されます。
+埋め込みSQLプログラム内のSQL文はデフォルトで現在の接続、つまり、最も最近に開いた接続上で実行されます。
 複数の接続を管理する必要があるアプリケーションでは、これを処理する3つの方法があります。
   </para>
 
@@ -595,12 +595,6 @@ EXEC SQL DISCONNECT <optional><replaceable>connection</replaceable></optional>;
     <listitem>
      <simpara>
       <literal><replaceable>connection-name</replaceable></literal>
-     </simpara>
-    </listitem>
-
-    <listitem>
-     <simpara>
-      <literal>DEFAULT</literal>
      </simpara>
     </listitem>
 
@@ -1060,7 +1054,7 @@ EXEC SQL DEALLOCATE PREPARE <replaceable>name</replaceable>;
    applications is the use of SQL descriptors, described
    in <xref linkend="ecpg-descriptors"/>.
 -->
-PostgreSQLバックエンドとECPGアプリケーションの間で値をやり取りするその他の方法は、 <xref linkend="ecpg-descriptors"/> で説明されているSQLデスクリプタを使う方法です。
+PostgreSQLバックエンドとECPGアプリケーションの間で値をやり取りするその他の方法は、<xref linkend="ecpg-descriptors"/>で説明されているSQL記述子を使う方法です。
   </para>
 
   <sect2 id="ecpg-variables-overview">
@@ -1511,9 +1505,9 @@ struct varchar_var { int len; char arr[180]; } var;
      and <structfield>len</structfield> are different, the shorter one
      is used.
 -->
-     メンバー変数 <structfield>arr</structfield> は終端のゼロの1バイトを含む文字列を保持します。
+     メンバ変数 <structfield>arr</structfield> は終端のゼロの1バイトを含む文字列を保持します。
      よって、文字列を <type>VARCHAR</type> ホスト変数に格納する場合には、ホスト変数はゼロ終端を含んだ長さで宣言されなければなりません。
-     メンバー変数 <structfield>len</structfield> は <structfield>arr</structfield> に格納された文字列のゼロ終端を含まない長さを保持します。
+     メンバ変数 <structfield>len</structfield> は <structfield>arr</structfield> に格納された文字列のゼロ終端を含まない長さを保持します。
      ホスト変数をクエリの入力として使用する際、<literal>strlen(arr)</literal> と <structfield>len</structfield> が違った場合には短いものが使用されます。
     </para>
 
@@ -1814,7 +1808,7 @@ struct bytea_var { int len; char arr[180]; } var;
       The data is converted from/to hex format and sent/received by
       ecpglib.
 -->
-メンバ変数<structfield>arr</structfield>はバイナリフォーマットデータを保持します
+メンバ変数<structfield>arr</structfield>はバイナリフォーマットデータを保持します。
 <type>VARCHAR</type>とは異なり、<literal>'\0'</literal>をデータの一部として扱うこともできます。
 データは、ecpglibによりhex書式から、またはhex書式に変換されて、送信または受信されます。
      </para>
@@ -1870,7 +1864,7 @@ struct bytea_var { int len; char arr[180]; } var;
 二つ目の使い方は、カーソルを用いずに複数行を返却するクエリ結果を受け取るために使う方法です。
 配列を使わない場合、複数行からなるクエリの実行結果を処理するには、カーソルと <command>FETCH</command> コマンドを使用する必要があります。
 しかし、配列のホスト変数を使うと、複数行を一括して受け取ることができます。
-配列の長さはすべての行を受け入れられるように定義されなければなりません。でなければバッファーオーバーフローが発生するでしょう。
+配列の長さはすべての行を受け入れられるように定義されなければなりません。でなければバッファオーバーフローが発生するでしょう。
      </para>
 
      <para>
@@ -1941,7 +1935,7 @@ oid=0, dbname=
       structure enables handling multiple column values in a single
       host variable.
 -->
-メンバー変数の名前がクエリ結果のカラム名に合致する構造体は、複数のカラムを一括して受け取るために利用することができます。
+メンバ変数の名前がクエリ結果のカラム名に合致する構造体は、複数のカラムを一括して受け取るために利用することができます。
 構造体は複数のカラムの値を単一のホスト変数で扱うことを可能にします。
      </para>
 
@@ -1958,7 +1952,7 @@ oid=0, dbname=
       the <literal>FETCH</literal> statement.
 -->
 以下の例は、<literal>pg_database</literal>システムテーブルおよび<function>pg_database_size()</function>関数を使って、利用可能なデータベースのOID、名前、サイズを取得します。
-この例では、メンバー変数の名前が<literal>SELECT</literal>結果の各カラムに合致する構造体<varname>dbinfo_t</varname>が、複数のホスト変数に格納することなく<literal>FETCH</literal>文の一行の結果を受け取るために使用されています。
+この例では、メンバ変数の名前が<literal>SELECT</literal>結果の各カラムに合致する構造体<varname>dbinfo_t</varname>が、複数のホスト変数に格納することなく<literal>FETCH</literal>文の一行の結果を受け取るために使用されています。
 <programlisting>
 EXEC SQL BEGIN DECLARE SECTION;
     typedef struct
@@ -2102,19 +2096,18 @@ EXEC SQL TYPE serial_t IS long;
       This declaration does not need to be part of a declare section;
       that is, you can also write typedefs as normal C statements.
 -->
-《マッチ度[]》この宣言は、宣言セクションの一部である必要はありません。
-《機械翻訳》この宣言は、宣言セクションの一部である必要はありません。
-つまり、typedef を通常の C ステートメントとしても書くことができます。
+この宣言は、宣言セクションの一部である必要はありません。
+つまり、typedefを通常のCステートメントとしても書けます。
      </para>
 
      <para>
 <!--
-      Any word you declare as a typedef cannot be used as an SQL keyword
-      in <literal>EXEC SQL</literal> commands later in the same program.
-      For example, this won't work:
+      Any word you declare as a <literal>typedef</literal> cannot be used as
+      an SQL keyword in <literal>EXEC SQL</literal> commands later in the same
+      program. For example, this won't work:
 -->
-《機械翻訳》typedefとして宣言したワードは、同じSQL内で後で<literal>EXEC SQL</literal>コマンドのプログラムキーワードとして使用することはできません。
-例の場合、これは機能しません。
+<literal>typedef</literal>として宣言したワードは、同じプログラム内で後で<literal>EXEC SQL</literal>コマンドのSQLキーワードとして使用できません。
+例えば、これは機能しません。
 <programlisting>
 EXEC SQL BEGIN DECLARE SECTION;
     typedef int start;
@@ -2131,9 +2124,9 @@ EXEC SQL START TRANSACTION;
       seems impractical, you could write the SQL command
       using <link linkend="ecpg-dynamic">dynamic SQL</link>.)
 -->
-ECPGは、<literal>スタートトランザクション</literal>の構文エラーをレポートにします。
-なぜなら、それはもはやのキーワードとしてではなく、typedefとしてのみ認識<literal>スタート</literal>であるからです。
-（もしあなたがそのようなを持っていて、typedefの名前を変更することが実用的でないと思われる場合は、<link linkend="ecpg-dynamic">dynamic</link>を使用してを書くことができます。）
+ECPGは、<literal>START TRANSACTION</literal>の構文エラーを報告します。
+なぜなら、それはもはやSQLのキーワードとしてではなく、typedefとして認識する<literal>START</literal>であるからです。
+（もし、 競合があり、typedefの名前を変更することが現実的でないと思われる場合は、<link linkend="ecpg-dynamic">動的SQL</link>を使用して書くことができます。）
      </para>
 
      <note>
@@ -2147,8 +2140,8 @@ ECPGは、<literal>スタートトランザクション</literal>の構文エラ
        a new <productname>PostgreSQL</productname> release with new
        keywords.
 -->
-《機械翻訳》<productname>PostgreSQL</productname>リリース前v16では、typedef名としてSQLキーワードを使用すると、構文キーワードとして自分自身を使用するのではなく、typedef名前の使用に関連するSQLエラーが発生する可能性がありました。
-新しい動作では、既存のECPGアプリケーションが新しいキーワードを使用して新しい<productname>PostgreSQL</productname>リリースで再コンパイルされる場合に問題が発生する可能性が低くなりました。
+<productname>PostgreSQL</productname> v16より前では、typedef名としてSQLキーワードを使用すると、構文キーワードとして自分自身を使用するのではなく、typedef名前の使用に関連するSQLエラーが発生する可能性がありました。
+新しい動作では、既存のECPGアプリケーションが新しいキーワードを使用して新しい<productname>PostgreSQL</productname>のリリースで再コンパイルされる場合に問題が発生する可能性が低くなりました。
       </para>
      </note>
     </sect4>
@@ -2196,8 +2189,8 @@ EXEC SQL END DECLARE SECTION;
     this is distinct from the handling of host variables of
     nonprimitive types, described in the previous section.
 -->
-本節では、非スカラー型およびユーザ定義のSQLデータ型をECPGアプリケーションで扱う方法を示します。
-この内容は、前の説で説明した非プリミティブ型のホスト変数の扱い方とは別のものです。
+本節では、非スカラ型およびユーザ定義のSQLデータ型をECPGアプリケーションで扱う方法を示します。
+これは、前節で説明した非プリミティブ型のホスト変数の扱い方とは異なります。
    </para>
 
    <sect3 id="ecpg-variables-nonprimitive-sql-arrays">
@@ -2446,7 +2439,7 @@ EXEC SQL CLOSE cur1;
      この例を拡張して、 <command>FETCH</command> コマンドの値を格納するホスト変数を一つの構造体にまとめることができます。
      構造体の形のホスト変数の詳細については <xref linkend="ecpg-variables-struct"/> を参照してください。
      構造体に変更するために、この例は以下のように変更することができます。
-     二つのホスト変数 <varname>intval</varname> と <varname>textval</varname> を <structname>comp_t</structname> 構造体のメンバー変数とし、構造体を <command>FETCH</command> コマンドで指定します。
+     二つのホスト変数 <varname>intval</varname> と <varname>textval</varname> を <structname>comp_t</structname> 構造体のメンバ変数とし、構造体を <command>FETCH</command> コマンドで指定します。
 <programlisting>
 EXEC SQL BEGIN DECLARE SECTION;
 typedef struct
@@ -2712,8 +2705,8 @@ EXEC SQL SELECT b INTO :val :val_ind FROM test1;
     for integer types as the lowest possible value for type (for
     example, <symbol>INT_MIN</symbol> for <type>int</type>).
 -->
-    プリプロセッサ <command>ecpg</command> に引数 <literal>-r no_indicator</literal> が渡された場合、<quote>no-indicator</quote> モードで動作します。
-    no-indicator モードでは、指示子変数が指定されなかった場合、（入力および出力において）文字列型に対して空の文字列としてnull値が、整数型に対してはもっとも小さな値が割り当てられます（例えば、<type>int</type> の場合 <symbol>INT_MIN</symbol> です）。
+プリプロセッサ<command>ecpg</command>に引数<literal>-r no_indicator</literal>が渡された場合、<quote>no-indicator</quote>モードで動作します。
+no-indicatorモードでは、指示子変数が指定されなかった場合、（入力および出力において）文字列型に対して空の文字列としてNULL値が、integer型に対してはもっとも小さな値が割り当てられます（例えば、<type>int</type>の場合<symbol>INT_MIN</symbol>です）。
    </para>
   </sect2>
  </sect1>
@@ -2770,7 +2763,7 @@ EXEC SQL EXECUTE IMMEDIATE :stmt;
 -->
 <command>EXECUTE IMMEDIATE</command>は結果セットを返却しないSQL文（例えば、DDL、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>）に使用することができます。
 結果を受け取るSQL文（例えば、<command>SELECT</command>）をこの方法で実行することはできません。
-次の節で、その実行方法を説明します。
+次節で、その実行方法を説明します。
    </para>
   </sect2>
 
@@ -3059,7 +3052,7 @@ char *PGTYPESnumeric_to_asc(numeric *num, int dscale);
        digits, with rounding applied if necessary.
        The result must be freed with <function>PGTYPESchar_free()</function>.
 -->
-numeric の値は、必要に応じて四捨五入され、<literal>dscale</literal> 桁の十進数で出力されます。
+numericの値は、必要に応じて四捨五入され、<literal>dscale</literal>桁の10進数で出力されます。
 結果は<function>PGTYPESchar_free()</function>で解放しなければなりません。
       </para>
      </listitem>
@@ -3247,7 +3240,7 @@ int PGTYPESnumeric_from_long(signed long int long_val, numeric *var);
        in the numeric variable <literal>var</literal>. Upon success, 0 is returned and
        -1 in case of a failure.
 -->
-この関数は符号付long int型の変数を受付け、numeric 型変数<literal>var</literal>内に格納します。
+この関数はsigned long int型の変数を受付け、numeric型変数<literal>var</literal>内に格納します。
 成功時0、失敗時-1が返ります。
       </para>
      </listitem>
@@ -3329,7 +3322,7 @@ int PGTYPESnumeric_to_double(numeric *nv, double *dp)
 <!--
        Convert a variable of type numeric to int.
 -->
-numeric 型変数をint型に変換します。
+numeric型変数をint型に変換します。
 <synopsis>
 int PGTYPESnumeric_to_int(numeric *nv, int *ip);
 </synopsis>
@@ -3340,7 +3333,7 @@ int PGTYPESnumeric_to_int(numeric *nv, int *ip);
        overflow. On overflow, the global variable <literal>errno</literal> will be set
        to <literal>PGTYPES_NUM_OVERFLOW</literal> additionally.
 -->
-この関数は<literal>nv</literal>が指し示す numeric 型変数の値を<literal>ip</literal>が指し示す整数型変数に変換します。
+この関数は<literal>nv</literal>が指し示すnumeric型変数の値を<literal>ip</literal>が指し示すinteger型変数に変換します。
 成功時0、オーバーフローを含むエラーが発生した時-1が返ります。
 オーバーフローが発生した場合はさらに、グローバル変数<literal>errno</literal>は<literal>PGTYPES_NUM_OVERFLOW</literal>に設定されます。
       </para>
@@ -3362,13 +3355,14 @@ int PGTYPESnumeric_to_long(numeric *nv, long *lp);
        The function converts the numeric value from the variable that
        <literal>nv</literal> points to into the long integer variable that
        <literal>lp</literal> points to. It returns 0 on success and -1 if an error
-       occurs, including overflow. On overflow, the global variable
+       occurs, including overflow and underflow. On overflow, the global variable
        <literal>errno</literal> will be set to <literal>PGTYPES_NUM_OVERFLOW</literal>
-       additionally.
+       and on underflow <literal>errno</literal> will be set to
+       <literal>PGTYPES_NUM_UNDERFLOW</literal>.
 -->
-この関数は<literal>nv</literal>が指し示す numeric 型変数の値を<literal>lp</literal>が指し示すlong変数に変換します。
-成功時0、オーバーフローを含むエラーが発生した時-1が返ります。
-オーバーフローが発生した場合はさらに、グローバル変数<literal>errno</literal>は<literal>PGTYPES_NUM_OVERFLOW</literal>に設定されます。
+この関数は<literal>nv</literal>が指し示すnumeric型の変数の値を<literal>lp</literal>が指し示すlong integer値に変換します。
+成功時0、オーバーフローおよびアンダーフローを含むエラーが発生した時-1が返ります。
+オーバーフローが発生した場合は、グローバル変数<literal>errno</literal>は<literal>PGTYPES_NUM_OVERFLOW</literal>に設定され、アンダーフローが発生した場合は、<literal>errno</literal>は<literal>PGTYPES_NUM_UNDERFLOW</literal>に設定されます。
       </para>
      </listitem>
     </varlistentry>
@@ -3588,7 +3582,7 @@ date PGTYPESdate_from_asc(char *str, char **endptr);
 <!--
             <entry><literal>Julian day</literal></entry>
 -->
-            <entry><literal>Jユリウス日</literal></entry>
+            <entry><literal>ユリウス日</literal></entry>
            </row>
            <row>
             <entry><literal>January 8, 99 BC</literal></entry>
@@ -3782,7 +3776,7 @@ void PGTYPESdate_today(date *d);
         Convert a variable of type date to its textual representation using a
         format mask.
 -->
-date型変数を書式マスクを使用したテキスト表現に変換します。
+書式マスクを使用してdate型変数をテキスト表現に変換します。
 <synopsis>
 int PGTYPESdate_fmt_asc(date dDate, char *fmtstring, char *outbuf);
 </synopsis>
@@ -4698,11 +4692,11 @@ int PGTYPEStimestamp_fmt_asc(timestamp *ts, char *output, int str_len, char *fmt
            <literal>%z</literal> - is replaced by the time zone offset from
            UTC; a leading plus sign stands for east of UTC, a minus sign for
            west of UTC, hours and minutes follow with two digits each and no
-           delimiter between them (common form for <ulink url="https://tools.ietf.org/html/rfc822">RFC 822</ulink> date headers).
+           delimiter between them (common form for <ulink url="https://datatracker.ietf.org/doc/html/rfc822">RFC 822</ulink> date headers).
 -->
 <literal>%z</literal> - UTCからの時間帯オフセットに置換されます。
 UTCより東では正符号が先頭に付き、西では負符号が付きます。
-それぞれ2桁の時間と分がその後に続きますが、その区切りはありません。（この形式は<ulink url="https://tools.ietf.org/html/rfc822">RFC 822</ulink>の日付ヘッダでよく使用されます。）
+それぞれ2桁の時間と分がその後に続きますが、その区切りはありません。（この形式は<ulink url="https://datatracker.ietf.org/doc/html/rfc822">RFC 822</ulink>の日付ヘッダでよく使用されます。）
           </para>
          </listitem>
          <listitem>
@@ -5446,7 +5440,7 @@ EXEC SQL GET DESCRIPTOR <replaceable>name</replaceable> :<replaceable>hostvar</r
 今のところ、<replaceable>COUNT</replaceable>というヘッダフィールドが1つだけ定義されています。
 これは、記述子領域に存在する項目数を表すものです
 （つまり、結果内に含まれる列数です）。
-このホスト変数は整数型でなければなりません。
+このホスト変数はinteger型でなければなりません。
 項目記述子領域からフィールドを取り出すには、以下のコマンドを使用します。
 <programlisting>
 EXEC SQL GET DESCRIPTOR <replaceable>name</replaceable> VALUE <replaceable>num</replaceable> :<replaceable>hostvar</replaceable> = <replaceable>field</replaceable>;
@@ -5455,7 +5449,7 @@ EXEC SQL GET DESCRIPTOR <replaceable>name</replaceable> VALUE <replaceable>num</
     <replaceable>num</replaceable> can be a literal integer or a host
     variable containing an integer. Possible fields are:
 -->
-<replaceable>num</replaceable>はリテラル整数、もしくは整数を持つホスト変数を取ることができます。
+<replaceable>num</replaceable>は整数リテラル、もしくは整数を持つホスト変数を取ることができます。
 取り得るフィールドは以下の通りです。
 
     <variablelist>
@@ -6327,7 +6321,7 @@ sqlda2->sqln = 2; /* 入力変数の個数 */
 -->
 メモリを割り当てた後、<literal>sqlvar[]</literal>配列にパラメータ値を格納します。
 （これは、SQLDAが結果セットを受け取る時に列値を取り出すために使用した配列と同じです。）
-この例では、入力パラメータは文字列型を持つ<literal>"postgres"</literal>と整数型を持つ<literal>1</literal>です。
+この例では、入力パラメータは文字列型を持つ<literal>"postgres"</literal>とinteger型を持つ<literal>1</literal>です。
 <programlisting>
 sqlda2->sqlvar[0].sqltype = ECPGt_char;
 sqlda2->sqlvar[0].sqldata = "postgres";
@@ -6766,6 +6760,7 @@ datdba = 10 (type: 1)
 encoding = 0 (type: 5)
 datistemplate = t (type: 1)
 datallowconn = t (type: 1)
+dathasloginevt = f (type: 1)
 datconnlimit = -1 (type: 5)
 datfrozenxid = 379 (type: 1)
 dattablespace = 1663 (type: 1)
@@ -6790,6 +6785,7 @@ datdba = 10 (type: 1)
 encoding = 0 (type: 5)
 datistemplate = f (type: 1)
 datallowconn = t (type: 1)
+dathasloginevt = f (type: 1)
 datconnlimit = -1 (type: 5)
 datfrozenxid = 379 (type: 1)
 dattablespace = 1663 (type: 1)
@@ -8201,6 +8197,18 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
 埋め込みSQL問い合わせで使用する予定の定数に<literal>#define</literal>を使用することはできませんので注意してください。
 この場合、埋め込みSQLプリプロセッサがこの宣言を参照することができないためです。
    </para>
+
+   <para>
+<!--
+    If multiple input files are named on the <command>ecpg</command>
+    preprocessor's command line, the effects of <literal>EXEC SQL
+    DEFINE</literal> and <literal>EXEC SQL UNDEF</literal> do not carry
+    across files: each file starts with only the symbols defined
+    by <option>-D</option> switches on the command line.
+-->
+<command>ecpg</command>プリプロセッサのコマンドラインに複数の入力ファイルが指定されている場合、<literal>EXEC SQL DEFINE</literal>および<literal>EXEC SQL UNDEF</literal>の効果はファイル間で引き継がれません。
+各ファイルはコマンドラインの<option>-D</option>スイッチで定義されたシンボルのみで始まります。
+   </para>
   </sect2>
 
   <sect2 id="ecpg-ifdef">
@@ -8260,7 +8268,7 @@ EXEC SQL UPDATE Tbl SET col = MYNUMBER;
 -->
 <literal>EXEC SQL ifdef <replaceable>name</replaceable></literal>または<literal>EXEC SQL ifndef <replaceable>name</replaceable></literal>指示子の後で省略可能な代替セクションを開始します。
 <literal>elif</literal>セクションはいくつでも現れることがあり得ます。
-<literal>elif</literal>に続く行は、<replaceable>name</replaceable>が定義されていて、<emphasis>かつ</emphasis>、同じ<literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>構文の前のセクションが処理されていない場合に、処理されます。
+<literal>elif</literal>に続く行は、<replaceable>name</replaceable>が定義されていて、<emphasis>かつ</emphasis>、同じ<literal>ifdef</literal>/<literal>ifndef</literal>...<literal>endif</literal>構文の前節が処理されていない場合に、処理されます。
      </para>
      </listitem>
     </varlistentry>
@@ -10034,7 +10042,6 @@ EXEC SQL DEALLOCATE DESCRIPTOR mydesc;
 <synopsis>
 DISCONNECT <replaceable class="parameter">connection_name</replaceable>
 DISCONNECT [ CURRENT ]
-DISCONNECT DEFAULT
 DISCONNECT ALL
 </synopsis>
    </refsynopsisdiv>
@@ -10091,18 +10098,6 @@ DISCONNECT ALL
       </listitem>
      </varlistentry>
 
-     <varlistentry id="ecpg-sql-disconnect-default">
-      <term><literal>DEFAULT</literal></term>
-      <listitem>
-       <para>
-<!--
-        Close the default connection.
--->
-デフォルトの接続を閉ざします。
-       </para>
-      </listitem>
-     </varlistentry>
-
      <varlistentry id="ecpg-sql-disconnect-all">
       <term><literal>ALL</literal></term>
       <listitem>
@@ -10127,19 +10122,16 @@ DISCONNECT ALL
 int
 main(void)
 {
-    EXEC SQL CONNECT TO testdb AS DEFAULT USER testuser;
     EXEC SQL CONNECT TO testdb AS con1 USER testuser;
     EXEC SQL CONNECT TO testdb AS con2 USER testuser;
     EXEC SQL CONNECT TO testdb AS con3 USER testuser;
 
 <!--
     EXEC SQL DISCONNECT CURRENT;  /* close con3          */
-    EXEC SQL DISCONNECT DEFAULT;  /* close DEFAULT       */
     EXEC SQL DISCONNECT ALL;      /* close con2 and con1 */
 -->
-    EXEC SQL DISCONNECT CURRENT;  /* con3を閉じる       */
-    EXEC SQL DISCONNECT DEFAULT;  /* DEFAULTを閉じる    */
-    EXEC SQL DISCONNECT ALL;      /* con2とcon1を閉じる */
+    EXEC SQL DISCONNECT CURRENT;  /* con3を閉じる        */
+    EXEC SQL DISCONNECT ALL;      /* con2とcon1を閉じる  */
 
     return 0;
 }
@@ -10950,14 +10942,14 @@ SET CONNECTION [ TO | = ] <replaceable class="parameter">connection_name</replac
       </listitem>
      </varlistentry>
 
-     <varlistentry id="ecpg-sql-set-connection-default">
-      <term><literal>DEFAULT</literal></term>
+     <varlistentry id="ecpg-sql-set-connection-current">
+      <term><literal>CURRENT</literal></term>
       <listitem>
        <para>
 <!--
-        Set the connection to the default connection.
+        Set the connection to the current connection (thus, nothing happens).
 -->
-接続をデフォルトの接続に設定します。
+接続を現在の接続に設定します（したがって、何も起こりません）。
        </para>
       </listitem>
      </varlistentry>
@@ -12432,7 +12424,7 @@ int decmul(decimal *n1, decimal *n2, decimal *result);
 <!--
         Subtract one decimal value from another.
 -->
-10進数型値同士の引算を行います。
+decimal型の値同士の引算を行います。
 <synopsis>
 int decsub(decimal *n1, decimal *n2, decimal *result);
 </synopsis>
@@ -12486,7 +12478,7 @@ int dectoasc(decimal *np, char *cp, int len, int right)
 -->
 この関数はdecimal型変数(<literal>np</literal>)のポインタを受け付け、テキスト表現に変換します。
 <literal>cp</literal>は変換結果を格納するためのバッファです。
-<literal>right</literal>パラメータは、decimal小数点の右側の何桁を出力するかを指定します。
+<literal>right</literal>パラメータは、10進小数点の右側の何桁を出力するかを指定します。
 結果はこの10進桁数で丸められます。
 <literal>right</literal>を-1にすることで、すべての有効な桁数が出力されるようになります。
 <literal>len</literal>で示す出力バッファ長が、最後のNULL文字を含むテキスト表現を格納するのには不十分であった場合、結果には<literal>*</literal>という1文字が格納され、-1が返されます。
@@ -12536,9 +12528,9 @@ int dectodbl(decimal *np, double *dblp);
       <listitem>
        <para>
 <!--
-        Convert a variable to type decimal to an integer.
+        Convert a variable of type decimal to an integer.
 -->
-decimal型変数を整数型に変換します。
+decimal型変数をinteger型に変換します。
 <synopsis>
 int dectoint(decimal *np, int *ip);
 </synopsis>
@@ -12547,7 +12539,7 @@ int dectoint(decimal *np, int *ip);
         (<literal>np</literal>) and a pointer to the integer variable that
         should hold the result of the operation (<literal>ip</literal>).
 -->
-この関数は変換対象のdecimal型変数(<literal>np</literal>)のポインタと処理結果を格納するint型変数(<literal>ip</literal>)へのポインタを受け付けます。
+この関数は変換対象のdecimal型変数(<literal>np</literal>)のポインタと処理結果を格納するinteger型変数(<literal>ip</literal>)へのポインタを受け付けます。
        </para>
        <para>
 <!--
@@ -12566,7 +12558,7 @@ int dectoint(decimal *np, int *ip);
         architecture (<literal>INT_MIN .. INT_MAX</literal>).
 -->
 このECPGの実装は<productname>Informix</productname>の実装と異なることに注意してください。
-<productname>Informix</productname>では、整数範囲に-32767から32767までという制限をしていますが、ECPGでの制限はアーキテクチャに依存(<literal>INT_MIN .. INT_MAX</literal>)します。
+<productname>Informix</productname>では、integer範囲に-32767から32767までという制限をしていますが、ECPGでの制限はアーキテクチャに依存(<literal>INT_MIN .. INT_MAX</literal>)します。
        </para>
       </listitem>
      </varlistentry>
@@ -12576,9 +12568,9 @@ int dectoint(decimal *np, int *ip);
       <listitem>
        <para>
 <!--
-        Convert a variable to type decimal to a long integer.
+        Convert a variable of type decimal to a long integer.
 -->
-decimal型変数をlong型に変換します。
+decimal型変数をlong integer型に変換します。
 <synopsis>
 int dectolong(decimal *np, long *lngp);
 </synopsis>
@@ -12607,7 +12599,7 @@ int dectolong(decimal *np, long *lngp);
         LONG_MAX</literal>).
 -->
 このECPGの実装は<productname>Informix</productname>の実装と異なることに注意してください。
-<productname>Informix</productname>では、整数範囲に-2,147,483,647から2,147,483,647までという制限をしていますが、ECPGでの制限はアーキテクチャに依存(<literal>-LONG_MAX .. LONG_MAX</literal>)します。
+<productname>Informix</productname>では、long integer範囲に-2,147,483,647から2,147,483,647までという制限をしていますが、ECPGでの制限はアーキテクチャに依存(<literal>-LONG_MAX .. LONG_MAX</literal>)します。
        </para>
       </listitem>
      </varlistentry>

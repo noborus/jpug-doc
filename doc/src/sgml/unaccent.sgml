@@ -64,7 +64,7 @@
      Its name must end in <literal>.rules</literal> (which is not to be included in
      the <literal>RULES</literal> parameter).
 -->
-<literal>RULES</literal>は翻訳規則の一覧を含むファイルのベースネームです。
+<literal>RULES</literal>は変換規則の一覧を含むファイルのベースネームです。
 このファイルは<filename>$SHAREDIR/tsearch_data/</filename>内に格納しなければなりません。（ここで<literal>$SHAREDIR</literal>は<productname>PostgreSQL</productname>インストレーションの共有データディレクトリを意味します。）
 この名前は<literal>.rules</literal>で終わらなければなりません。（<literal>.rules</literal>は<literal>RULES</literal>パラメータには含まれません。）
     </para>
@@ -123,6 +123,28 @@ rulesファイルの書式は以下の通りです。
      other sorts of substring substitutions besides diacritic removal.
 -->
 実のところ、各<quote>文字</quote>は空白を含まなければいかなる文字列でも良いので、<filename>unaccent</filename>辞書は発音区別符号の除去に加えて、部分文字列の置換などに使うこともできます。
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+<!--
+     Some characters, like numeric symbols, may require whitespaces in their
+     translation rule. It is possible to use double quotes around the translated
+     characters in this case. A double quote needs to be escaped with a second
+     double quote when including one in the translated character. For example:
+-->
+数字などの一部の文字では、変換規則に空白が必要な場合があります。
+この場合、変換された文字を囲むのに二重引用符が使えます。
+変換された文字に二重引用符を含める場合は、もう一つの二重引用符でエスケープすることが必要です。
+例えば以下の通りです。
+<programlisting>
+&frac14;      " 1/4"
+&frac12;      " 1/2"
+&frac34;      " 3/4"
+&ldquo;       """"
+&rdquo;       """"
+</programlisting>
     </para>
    </listitem>
 

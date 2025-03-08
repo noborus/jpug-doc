@@ -1,9 +1,9 @@
 
-# Copyright (c) 2021-2023, PostgreSQL Global Development Group
+# Copyright (c) 2021-2024, PostgreSQL Global Development Group
 
 # Test streaming of transaction containing subtransactions
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 use PostgreSQL::Test::Cluster;
 use PostgreSQL::Test::Utils;
 use Test::More;
@@ -36,24 +36,24 @@ sub test_streaming
 	$node_publisher->safe_psql(
 		'postgres', q{
 	BEGIN;
-	INSERT INTO test_tab SELECT i, md5(i::text) FROM generate_series(3, 5) s(i);
-	UPDATE test_tab SET b = md5(b) WHERE mod(a,2) = 0;
+	INSERT INTO test_tab SELECT i, sha256(i::text::bytea) FROM generate_series(3, 5) s(i);
+	UPDATE test_tab SET b = sha256(b) WHERE mod(a,2) = 0;
 	DELETE FROM test_tab WHERE mod(a,3) = 0;
 	SAVEPOINT s1;
-	INSERT INTO test_tab SELECT i, md5(i::text) FROM generate_series(6, 8) s(i);
-	UPDATE test_tab SET b = md5(b) WHERE mod(a,2) = 0;
+	INSERT INTO test_tab SELECT i, sha256(i::text::bytea) FROM generate_series(6, 8) s(i);
+	UPDATE test_tab SET b = sha256(b) WHERE mod(a,2) = 0;
 	DELETE FROM test_tab WHERE mod(a,3) = 0;
 	SAVEPOINT s2;
-	INSERT INTO test_tab SELECT i, md5(i::text) FROM generate_series(9, 11) s(i);
-	UPDATE test_tab SET b = md5(b) WHERE mod(a,2) = 0;
+	INSERT INTO test_tab SELECT i, sha256(i::text::bytea) FROM generate_series(9, 11) s(i);
+	UPDATE test_tab SET b = sha256(b) WHERE mod(a,2) = 0;
 	DELETE FROM test_tab WHERE mod(a,3) = 0;
 	SAVEPOINT s3;
-	INSERT INTO test_tab SELECT i, md5(i::text) FROM generate_series(12, 14) s(i);
-	UPDATE test_tab SET b = md5(b) WHERE mod(a,2) = 0;
+	INSERT INTO test_tab SELECT i, sha256(i::text::bytea) FROM generate_series(12, 14) s(i);
+	UPDATE test_tab SET b = sha256(b) WHERE mod(a,2) = 0;
 	DELETE FROM test_tab WHERE mod(a,3) = 0;
 	SAVEPOINT s4;
-	INSERT INTO test_tab SELECT i, md5(i::text) FROM generate_series(15, 17) s(i);
-	UPDATE test_tab SET b = md5(b) WHERE mod(a,2) = 0;
+	INSERT INTO test_tab SELECT i, sha256(i::text::bytea) FROM generate_series(15, 17) s(i);
+	UPDATE test_tab SET b = sha256(b) WHERE mod(a,2) = 0;
 	DELETE FROM test_tab WHERE mod(a,3) = 0;
 	COMMIT;
 	});
@@ -84,18 +84,18 @@ $node_publisher->start;
 
 # Create subscriber node
 my $node_subscriber = PostgreSQL::Test::Cluster->new('subscriber');
-$node_subscriber->init(allows_streaming => 'logical');
+$node_subscriber->init;
 $node_subscriber->start;
 
 # Create some preexisting content on publisher
 $node_publisher->safe_psql('postgres',
-	"CREATE TABLE test_tab (a int primary key, b varchar)");
+	"CREATE TABLE test_tab (a int primary key, b bytea)");
 $node_publisher->safe_psql('postgres',
 	"INSERT INTO test_tab VALUES (1, 'foo'), (2, 'bar')");
 
 # Setup structure on subscriber
 $node_subscriber->safe_psql('postgres',
-	"CREATE TABLE test_tab (a int primary key, b text, c timestamptz DEFAULT now(), d bigint DEFAULT 999)"
+	"CREATE TABLE test_tab (a int primary key, b bytea, c timestamptz DEFAULT now(), d bigint DEFAULT 999)"
 );
 
 # Setup logical replication

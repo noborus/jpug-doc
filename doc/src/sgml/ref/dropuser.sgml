@@ -39,7 +39,7 @@ PostgreSQL documentation
 <!--
   <title>Description</title>
 -->
-<title>説明</title>
+  <title>説明</title>
 
   <para>
 <!--
@@ -72,7 +72,7 @@ PostgreSQL documentation
 <!--
   <title>Options</title>
 -->
-<title>オプション</title>
+  <title>オプション</title>
 
   <para>
 <!--
@@ -281,7 +281,7 @@ PostgreSQL documentation
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry>
@@ -309,7 +309,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -321,7 +321,7 @@ PostgreSQL documentation
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>
@@ -355,7 +355,7 @@ PostgreSQL documentation
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
 
    <para>
 <!--
@@ -389,7 +389,7 @@ Are you sure? (y/n) </computeroutput><userinput>y</userinput>
 <!--
   <title>See Also</title>
 -->
-<title>関連項目</title>
+  <title>関連項目</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-createuser"/></member>

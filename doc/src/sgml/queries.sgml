@@ -616,11 +616,11 @@ T1の各行R1に対して、T2において行R1との結合条件を満たして
         input tables.  As with <literal>USING</literal>, these columns appear
         only once in the output table.  If there are no common
         column names, <literal>NATURAL JOIN</literal> behaves like
-        <literal>JOIN ... ON TRUE</literal>, producing a cross-product join.
+        <literal>CROSS JOIN</literal>.
 -->
 最後に、<literal>NATURAL</literal>は<literal>USING</literal>の略記形式で、２つの入力テーブルの両方に含まれているすべての列名で構成される<literal>USING</literal>リストを形成します。
 <literal>USING</literal>と同様、これらの列は出力テーブルに一度だけ現れます。
-共通する列が存在しない場合、<literal>NATURAL JOIN</literal>は<literal>JOIN ... ON TRUE</literal>と同様に動作し、クロス積結合を生成します。
+共通する列名が存在しない場合、<literal>NATURAL JOIN（自然結合）</literal>は<literal>CROSS JOIN（クロス結合）</literal>のように動作します。
        </para>
 
        <note>
@@ -1184,7 +1184,7 @@ ROWS FROM( ... <replaceable>function_call</replaceable> AS (<replaceable>column_
 -->
 <literal>ROWS FROM()</literal>構文を使用しない場合は、<replaceable>column_definition</replaceable>のリストが<literal>FROM</literal>項目に取り付けることができる列の別名の代わりとなります。
 列の定義内の名前は、列の別名として機能します。
-<literal>ROWS FROM()</literal>構文を使用する場合は、<replaceable>column_definition</replaceable>リストを個別に各メンバー関数に添付することができます。
+<literal>ROWS FROM()</literal>構文を使用する場合は、<replaceable>column_definition</replaceable>リストを個別に各メンバ関数に添付することができます。
 またはメンバ関数が1つだけしかなく、かつ<literal>WITH ORDINALITY</literal>句がない場合は、<replaceable>column_definition</replaceable>リストを、<literal>ROWS FROM()</literal>の後ろの列別名のリストの場所に書くことができます。
     </para>
 
@@ -1999,10 +1999,10 @@ GROUPING SETS (
    <para>
 <!--
     If multiple grouping items are specified in a single <literal>GROUP BY</literal>
-    clause, then the final list of grouping sets is the cross product of the
+    clause, then the final list of grouping sets is the Cartesian product of the
     individual items.  For example:
 -->
-複数の集約項目が<literal>GROUP BY</literal>句一つで指定されている場合、グループ化セットの最終的なリストは、個々の項目の外積（クロス積）です。
+複数の集約項目が<literal>GROUP BY</literal>句一つで指定されている場合、グループ化セットの最終的なリストは、個々の項目のデカルト積です。
 例えば
 <programlisting>
 GROUP BY a, CUBE (b, c), GROUPING SETS ((d), (e))
@@ -2838,7 +2838,8 @@ SELECT a + b AS sum, c FROM table1 ORDER BY sum + c;          -- 間違い
 SELECT <replaceable>select_list</replaceable>
     FROM <replaceable>table_expression</replaceable>
     <optional> ORDER BY ... </optional>
-    <optional> LIMIT { <replaceable>number</replaceable> | ALL } </optional> <optional> OFFSET <replaceable>number</replaceable> </optional>
+    <optional> LIMIT { <replaceable class="parameter">count</replaceable> | ALL } </optional>
+    <optional> OFFSET <replaceable class="parameter">start</replaceable> </optional>
 </synopsis>
   </para>
 
@@ -3067,14 +3068,15 @@ SELECT <replaceable>select_list</replaceable> FROM <replaceable>table_expression
    Table Expressions or <acronym>CTE</acronym>s, can be thought of as defining
    temporary tables that exist just for one query.  Each auxiliary statement
    in a <literal>WITH</literal> clause can be a <command>SELECT</command>,
-   <command>INSERT</command>, <command>UPDATE</command>, or <command>DELETE</command>; and the
+   <command>INSERT</command>, <command>UPDATE</command>, <command>DELETE</command>,
+   or <command>MERGE</command>; and the
    <literal>WITH</literal> clause itself is attached to a primary statement that can
-   be a <command>SELECT</command>, <command>INSERT</command>, <command>UPDATE</command>,
+   also be a <command>SELECT</command>, <command>INSERT</command>, <command>UPDATE</command>,
    <command>DELETE</command>, or <command>MERGE</command>.
 -->
 <literal>WITH</literal>は、より大規模な問い合わせで使用される補助文を記述する方法を提供します。
 これらの文は共通テーブル式(Common Table Expressions)または<acronym>CTE</acronym>とよく呼ばれるものであり、１つの問い合わせのために存在する一時テーブルを定義すると考えることができます。
-<literal>WITH</literal>句内の補助文はそれぞれ<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>または<command>DELETE</command>を取ることができます。
+<literal>WITH</literal>句内の補助文はそれぞれ<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>を取ることができます。
 そして<literal>WITH</literal>句自身は、これも<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>を取ることができる主文に付与されます。
   </para>
 
@@ -3814,14 +3816,15 @@ SELECT * FROM w AS w1 JOIN w AS w2 ON w1.f = w2.f;
 
    <para>
 <!--
-    You can use most data-modifying statements (<command>INSERT</command>,
-    <command>UPDATE</command>, or <command>DELETE</command>, but not
+    You can use data-modifying statements (<command>INSERT</command>,
+    <command>UPDATE</command>, <command>DELETE</command>, or
     <command>MERGE</command>) in <literal>WITH</literal>.  This
     allows you to perform several different operations in the same query.
     An example is:
 -->
-ほとんどのデータ変更文（<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>は使用できますが、<command>MERGE</command>は使用できません）は、<literal>WITH</literal>内で使用できます。
+データ変更文（<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>）は、<literal>WITH</literal>内で使用できます。
 これにより同じ問い合わせ内で複数の異なる操作を行うことができます。
+以下に例を示します。
 
 <programlisting>
 WITH moved_rows AS (

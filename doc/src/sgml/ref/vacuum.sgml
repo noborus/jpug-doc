@@ -30,7 +30,6 @@ PostgreSQL documentation
  <refsynopsisdiv>
 <synopsis>
 VACUUM [ ( <replaceable class="parameter">option</replaceable> [, ...] ) ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
-VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
 
 <!--
 <phrase>where <replaceable class="parameter">option</replaceable> can be one of:</phrase>
@@ -50,7 +49,7 @@ VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="paramet
     PARALLEL <replaceable class="parameter">integer</replaceable>
     SKIP_DATABASE_STATS [ <replaceable class="parameter">boolean</replaceable> ]
     ONLY_DATABASE_STATS [ <replaceable class="parameter">boolean</replaceable> ]
-    BUFFER_USAGE_LIMIT [ <replaceable class="parameter">size</replaceable> ]
+    BUFFER_USAGE_LIMIT <replaceable class="parameter">size</replaceable>
 
 <!--
 <phrase>and <replaceable class="parameter">table_and_columns</replaceable> is:</phrase>
@@ -132,21 +131,6 @@ VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="paramet
 この機能を無効にするには、<literal>PARALLEL</literal>オプションでパラレルワーカーの数をゼロに指定します。
 <command>VACUUM FULL</command>では、テーブルの内容全体を新しいディスクファイルに領域を余すことなく書き換えるため、オペレーティングシステムに未使用の領域を返すことができます。
 この形式では、実行速度がかなり低速になります。また、処理中のテーブルに対する<literal>ACCESS EXCLUSIVE</literal>ロックが必要になります。
-  </para>
-
-  <para>
-<!--
-   When the option list is surrounded by parentheses, the options can be
-   written in any order.  Without parentheses, options must be specified
-   in exactly the order shown above.
-   The parenthesized syntax was added in
-   <productname>PostgreSQL</productname> 9.0;  the unparenthesized
-   syntax is deprecated.
--->
-オプションリストが括弧でくくられていた場合、オプションを任意の順序で記述することができます。
-括弧がないと、オプションは上で示した通りの順番で指定しなければなりません。
-括弧付きの構文は<productname>PostgreSQL</productname> 9.0で追加されました。
-カッコがない構文は廃止予定です。
   </para>
  </refsect1>
 
@@ -559,12 +543,12 @@ VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="paramet
 <!--
       Specifies an amount of memory in kilobytes.  Sizes may also be specified
       as a string containing the numerical size followed by any one of the
-      following memory units: <literal>kB</literal> (kilobytes),
-      <literal>MB</literal> (megabytes), <literal>GB</literal> (gigabytes), or
-      <literal>TB</literal> (terabytes).
+      following memory units: <literal>B</literal> (bytes),
+      <literal>kB</literal> (kilobytes), <literal>MB</literal> (megabytes),
+      <literal>GB</literal> (gigabytes), or <literal>TB</literal> (terabytes).
 -->
 メモリの量をキロバイト単位で指定します。
-サイズは、数値のサイズに続いて、<literal>kB</literal>(キロバイト)、<literal>MB</literal>(メガバイト)、<literal>GB</literal>(ギガバイト)または<literal>TB</literal>(テラバイト)のいずれか1つのメモリ単位を含む文字列として指定することもできます。
+サイズは、数値のサイズに続いて、<literal>B</literal>(バイト)、<literal>kB</literal>(キロバイト)、<literal>MB</literal>(メガバイト)、<literal>GB</literal>(ギガバイト)または<literal>TB</literal>(テラバイト)のいずれか1つのメモリ単位を含む文字列として指定することもできます。
      </para>
     </listitem>
    </varlistentry>
@@ -627,18 +611,24 @@ VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="paramet
 
    <para>
 <!--
-    To vacuum a table, one must ordinarily be the table's owner or a
-    superuser.  However, database owners are allowed to
+    To vacuum a table, one must ordinarily have the <literal>MAINTAIN</literal>
+    privilege on the table.  However, database owners are allowed to
     vacuum all tables in their databases, except shared catalogs.
-    (The restriction for shared catalogs means that a true database-wide
-    <command>VACUUM</command> can only be performed by a superuser.)
     <command>VACUUM</command> will skip over any tables that the calling user
     does not have permission to vacuum.
 -->
-テーブルをバキュームするためには、通常はテーブルの所有者もしくはスーパーユーザでなければなりません。
+テーブルをバキュームするためには、通常はテーブルに対して<literal>MAINTAIN</literal>権限を持っていなければなりません。
 しかしデータベースの所有者は共有カタログを除くデータベース内の全テーブルをバキュームすることができます。
-（共有カタログに関する制限は、データベース全体の<command>VACUUM</command>はスーパーユーザのみが実行可能であることを意味します。）
-<command>VACUUM</command>は、呼び出したユーザがバキュームするための権限を持たないテーブルはすべて飛ばします。
+<command>VACUUM</command>は、呼び出したユーザがバキュームするための権限を持たないテーブルはすべてスキップします。
+   </para>
+
+   <para>
+<!--
+    While <command>VACUUM</command> is running, the <xref
+    linkend="guc-search-path"/> is temporarily changed to <literal>pg_catalog,
+    pg_temp</literal>.
+-->
+<command>VACUUM</command>の実行中、<xref linkend="guc-search-path"/>は一時的に<literal>pg_catalog, pg_temp</literal>に変更されます。
    </para>
 
    <para>
@@ -756,6 +746,22 @@ VACUUM (VERBOSE, ANALYZE) onek;
    There is no <command>VACUUM</command> statement in the SQL standard.
 -->
 標準SQLには<command>VACUUM</command>文はありません。
+  </para>
+
+  <para>
+<!--
+   The following syntax was used before <productname>PostgreSQL</productname>
+   version 9.0 and is still supported:
+-->
+<productname>PostgreSQL</productname>バージョン9.0より前では次の構文が使われていましたが、今でもサポートされています。
+<synopsis>
+VACUUM [ FULL ] [ FREEZE ] [ VERBOSE ] [ ANALYZE ] [ <replaceable class="parameter">table_and_columns</replaceable> [, ...] ]
+</synopsis>
+<!--
+   Note that in this syntax, the options must be specified in exactly the order
+   shown.
+-->
+この構文では、オプションは、示した通りの順番で正確に指定しなければならないことに注意してください。
   </para>
  </refsect1>
 

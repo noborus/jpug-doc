@@ -3,7 +3,7 @@
  * lockcmds.c
  *	  LOCK command support code
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  * Portions Copyright (c) 1994, Regents of the University of California
  *
  *
@@ -21,7 +21,6 @@
 #include "commands/lockcmds.h"
 #include "miscadmin.h"
 #include "nodes/nodeFuncs.h"
-#include "parser/parse_clause.h"
 #include "rewrite/rewriteHandler.h"
 #include "storage/lmgr.h"
 #include "utils/acl.h"
@@ -284,7 +283,7 @@ LockTableAclCheck(Oid reloid, LOCKMODE lockmode, Oid userid)
 	AclMode		aclmask;
 
 	/* any of these privileges permit any lock mode */
-	aclmask = ACL_UPDATE | ACL_DELETE | ACL_TRUNCATE;
+	aclmask = ACL_MAINTAIN | ACL_UPDATE | ACL_DELETE | ACL_TRUNCATE;
 
 	/* SELECT privileges also permit ACCESS SHARE and below */
 	if (lockmode <= AccessShareLock)

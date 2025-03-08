@@ -204,12 +204,15 @@ SQL文のプラン生成に費やした総時間（ミリ秒単位）
       </para>
       <para>
 <!--
-       Minimum time spent planning the statement, in milliseconds
-       (if <varname>pg_stat_statements.track_planning</varname> is enabled,
-       otherwise zero)
+       Minimum time spent planning the statement, in milliseconds.
+       This field will be zero if <varname>pg_stat_statements.track_planning</varname>
+       is disabled, or if the counter has been reset using the
+       <function>pg_stat_statements_reset</function> function with the
+       <structfield>minmax_only</structfield> parameter set to <literal>true</literal>
+       and never been planned since.
 -->
-SQL文のプラン生成に費やした最小時間（ミリ秒単位）
-（<varname>pg_stat_statements.track_planning</varname>が有効な場合。無効であればゼロ）
+《機械翻訳》ステートメントの計画に費やされた最小時間（ミリ秒単位）。
+このフィールドは、<varname>pg_stat_statements.track_planning</varname>が無効な場合、またはカウンタが<function>pg_stat_statements_reset</function>関数を使用してリセットであり、<structfield>minmax_only</structfield>パラメータが<literal>true</literal>に設定されており、それ以降計画されていない場合にゼロになります。
       </para></entry>
      </row>
 
@@ -219,12 +222,15 @@ SQL文のプラン生成に費やした最小時間（ミリ秒単位）
       </para>
       <para>
 <!--
-       Maximum time spent planning the statement, in milliseconds
-       (if <varname>pg_stat_statements.track_planning</varname> is enabled,
-       otherwise zero)
+       Maximum time spent planning the statement, in milliseconds.
+       This field will be zero if <varname>pg_stat_statements.track_planning</varname>
+       is disabled, or if the counter has been reset using the
+       <function>pg_stat_statements_reset</function> function with the
+       <structfield>minmax_only</structfield> parameter set to <literal>true</literal>
+       and never been planned since.
 -->
-SQL文のプラン生成に費やした最大時間（ミリ秒単位）
-（<varname>pg_stat_statements.track_planning</varname>が有効な場合。無効であればゼロ）
+《機械翻訳》ステートメントの計画に費やされた最大時間（ミリ秒単位）。
+このフィールドは、<varname>pg_stat_statements.track_planning</varname>が無効な場合、またはカウンタが<function>pg_stat_statements_reset</function>関数を使用してリセットであり、<structfield>minmax_only</structfield>パラメータが<literal>true</literal>に設定されており、それ以降計画されていない場合にはゼロになります。
       </para></entry>
      </row>
 
@@ -289,9 +295,14 @@ SQL文の実行に費やした総時間（ミリ秒単位）
       </para>
       <para>
 <!--
-       Minimum time spent executing the statement, in milliseconds
+       Minimum time spent executing the statement, in milliseconds,
+       this field will be zero until this statement
+       is executed first time after reset performed by the
+       <function>pg_stat_statements_reset</function> function with the
+       <structfield>minmax_only</structfield> parameter set to <literal>true</literal>
 -->
-SQL文の実行に費やした最小時間（ミリ秒単位）
+《機械翻訳》文を実行するために費やされた最小時間。
+このフィールドは、<function>pg_stat_statements_reset</function>関数が<structfield>minmax_only</structfield>パラメータを<literal>true</literal>に設定して実行した後、この文が最初に実行されるまでゼロになります。
       </para></entry>
      </row>
 
@@ -301,9 +312,14 @@ SQL文の実行に費やした最小時間（ミリ秒単位）
       </para>
       <para>
 <!--
-       Maximum time spent executing the statement, in milliseconds
+       Maximum time spent executing the statement, in milliseconds,
+       this field will be zero until this statement
+       is executed first time after reset performed by the
+       <function>pg_stat_statements_reset</function> function with the
+       <structfield>minmax_only</structfield> parameter set to <literal>true</literal>
 -->
-SQL文の実行に費やした最大時間（ミリ秒単位）
+《機械翻訳》文を実行するために費やされた最大時間（ミリ秒）。
+このフィールドは、<function>pg_stat_statements_reset</function>関数が<structfield>minmax_only</structfield>パラメータを<literal>true</literal>に設定して実行した後、この文が最初に実行されるまではゼロです。
       </para></entry>
      </row>
 
@@ -465,29 +481,61 @@ SQL文によって書き込まれた一時ブロックの総数
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>blk_read_time</structfield> <type>double precision</type>
+       <structfield>shared_blk_read_time</structfield> <type>double precision</type>
       </para>
       <para>
 <!--
-       Total time the statement spent reading data file blocks, in milliseconds
+       Total time the statement spent reading shared blocks, in milliseconds
        (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-SQL文がデータファイルブロックの読み取りに費やした総時間（ミリ秒単位）
+《マッチ度[84.172662]》SQL文がデータファイルブロックの読み取りに費やした総時間（ミリ秒単位）
 （<xref linkend="guc-track-io-timing"/>が有効な場合。無効であればゼロ）
+《機械翻訳》共有ブロックの読み込みにかかった合計時間 （ミリ秒単位） （<xref linkend="guc-track-io-timing"/>が有効な場合、それ以外の場合はゼロ）。
       </para></entry>
      </row>
 
      <row>
       <entry role="catalog_table_entry"><para role="column_definition">
-       <structfield>blk_write_time</structfield> <type>double precision</type>
+       <structfield>shared_blk_write_time</structfield> <type>double precision</type>
       </para>
       <para>
 <!--
-       Total time the statement spent writing data file blocks, in milliseconds
+       Total time the statement spent writing shared blocks, in milliseconds
        (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
 -->
-SQL文がデータファイルブロックの書き出しに費やした総時間（ミリ秒単位）
+《マッチ度[84.172662]》SQL文がデータファイルブロックの書き出しに費やした総時間（ミリ秒単位）
 （<xref linkend="guc-track-io-timing"/>が有効な場合。無効であればゼロ）
+《機械翻訳》共有ブロックの書き込みにかかった合計時間 （ミリ秒単位） （<xref linkend="guc-track-io-timing"/>が有効な場合、それ以外の場合はゼロ）。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blk_read_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+<!--
+       Total time the statement spent reading local blocks, in milliseconds
+       (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
+-->
+《マッチ度[84.782609]》SQL文がデータファイルブロックの読み取りに費やした総時間（ミリ秒単位）
+（<xref linkend="guc-track-io-timing"/>が有効な場合。無効であればゼロ）
+《機械翻訳》ステートメントがローカルブロックを読み取るのに費やした合計時間 （ミリ秒単位） （<xref linkend="guc-track-io-timing"/> が有効な場合、それ以外の場合はゼロ）。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>local_blk_write_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+<!--
+       Total time the statement spent writing local blocks, in milliseconds
+       (if <xref linkend="guc-track-io-timing"/> is enabled, otherwise zero)
+-->
+《マッチ度[84.782609]》SQL文がデータファイルブロックの書き出しに費やした総時間（ミリ秒単位）
+（<xref linkend="guc-track-io-timing"/>が有効な場合。無効であればゼロ）
+《機械翻訳》ローカルブロックの書き込みにかかった合計時間 （ミリ秒単位） （<xref linkend="guc-track-io-timing"/>が有効な場合、それ以外の場合はゼロ）。
       </para></entry>
      </row>
 
@@ -652,6 +700,61 @@ SQL文の最適化に費やした総時間（ミリ秒単位）
 SQL文のコードを出力するのに費やした総時間（ミリ秒単位）
       </para></entry>
      </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>jit_deform_count</structfield> <type>bigint</type>
+      </para>
+      <para>
+<!--
+       Total number of tuple deform functions JIT-compiled by the statement
+-->
+《マッチ度[70.588235]》SQL文がJITコンパイルされた関数の総数
+《機械翻訳》文によってJITコンパイルされたタプル変形関数の合計数
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>jit_deform_time</structfield> <type>double precision</type>
+      </para>
+      <para>
+<!--
+       Total time spent by the statement on JIT-compiling tuple deform
+       functions, in milliseconds
+-->
+《マッチ度[67.777778]》SQL文が関数のインライン化に費やした総時間（ミリ秒単位）
+《機械翻訳》タプルのJITコンパイルに要した時間（ミリ秒単位）。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>stats_since</structfield> <type>timestamp with time zone</type>
+      </para>
+      <para>
+<!--
+       Time at which statistics gathering started for this statement
+-->
+《機械翻訳》この文に対して統計情報の収集が開始された時刻。
+      </para></entry>
+     </row>
+
+     <row>
+      <entry role="catalog_table_entry"><para role="column_definition">
+       <structfield>minmax_stats_since</structfield> <type>timestamp with time zone</type>
+      </para>
+      <para>
+<!--
+       Time at which min/max statistics gathering started for this
+       statement (fields <structfield>min_plan_time</structfield>,
+       <structfield>max_plan_time</structfield>,
+       <structfield>min_exec_time</structfield> and
+       <structfield>max_exec_time</structfield>)
+-->
+《機械翻訳》この文に対して最小/最大統計情報収集が開始された時刻（フィールド<structfield>min_plan_time</structfield>、<structfield>max_plan_time</structfield>、<structfield>min_exec_time</structfield>、<structfield>max_exec_time</structfield>）。
+      </para></entry>
+     </row>
     </tbody>
    </tgroup>
   </table>
@@ -782,20 +885,29 @@ SQL文のコードを出力するのに費やした総時間（ミリ秒単位�
 
   <para>
 <!--
-   As a rule of thumb, <structfield>queryid</structfield> values can be assumed to be
-   stable and comparable only so long as the underlying server version and
-   catalog metadata details stay exactly the same.  Two servers
-   participating in replication based on physical WAL replay can be expected
-   to have identical <structfield>queryid</structfield> values for the same query.
-   However, logical replication schemes do not promise to keep replicas
-   identical in all relevant details, so <structfield>queryid</structfield> will
-   not be a useful identifier for accumulating costs across a set of logical
-   replicas.  If in doubt, direct testing is recommended.
+   Two servers participating in replication based on physical WAL replay can
+   be expected to have identical <structfield>queryid</structfield> values for
+   the same query.  However, logical replication schemes do not promise to
+   keep replicas identical in all relevant details, so
+   <structfield>queryid</structfield> will not be a useful identifier for
+   accumulating costs across a set of logical replicas.
+   If in doubt, direct testing is recommended.
 -->
-経験上、<structfield>queryid</structfield>値は、基礎となるサーバのバージョンとカタログメタデータの詳細が全く同じである限り、安定していて比較可能とみなすことができます。
 物理WAL再生に基づくレプリケーションに参加する2つのサーバでは、同じ問い合わせに対して同一の<structfield>queryid</structfield>値を持つことが期待できます。
-しかし、論理レプリケーションの仕組みは、レプリカが対応する詳細すべてで同一であることを約束しません。そのため、論理レプリカの集まりで増えるコストを識別するのに<structfield>queryid</structfield>は有用ではありません。
+しかし、論理レプリケーションの仕組みは、レプリカが対応する詳細すべてで同一であることを約束しません。そのため、論理レプリカの集まりで増えるコストを識別するのに<structfield>queryid</structfield>は有用な識別子ではないでしょう。
 疑わしければ、直接テストすることを薦めます。
+  </para>
+
+  <para>
+<!--
+   Generally, it can be assumed that <structfield>queryid</structfield> values
+   are stable between minor version releases of <productname>PostgreSQL</productname>,
+   providing that instances are running on the same machine architecture and
+   the catalog metadata details match.  Compatibility will only be broken
+   between minor versions as a last resort.
+-->
+一般に、<structfield>queryid</structfield>値は、インスタンスが同じマシンアーキテクチャで動作し、カタログメタデータの詳細が一致する場合、<productname>PostgreSQL</productname>のマイナーバージョンリリース間で安定していると仮定できます。
+マイナーバージョン間で互換性が破壊されるのは、最後の手段としてのみでしょう。
   </para>
 
   <para>
@@ -940,7 +1052,8 @@ SQL文のコードを出力するのに費やした総時間（ミリ秒単位�
   <variablelist>
    <varlistentry>
     <term>
-     <function>pg_stat_statements_reset(userid Oid, dbid Oid, queryid bigint) returns void</function>
+     <function>pg_stat_statements_reset(userid Oid, dbid Oid, queryid
+     bigint, minmax_only boolean) returns timestamp with time zone</function>
      <indexterm>
       <primary>pg_stat_statements_reset</primary>
      </indexterm>
@@ -960,15 +1073,34 @@ SQL文のコードを出力するのに費やした総時間（ミリ秒単位�
       If all statistics in the <filename>pg_stat_statements</filename>
       view are discarded, it will also reset the statistics in the
       <structname>pg_stat_statements_info</structname> view.
+      When <structfield>minmax_only</structfield> is <literal>true</literal> only the
+      values of minimum and maximum planning and execution time will be reset (i.e.
+      <structfield>min_plan_time</structfield>, <structfield>max_plan_time</structfield>,
+      <structfield>min_exec_time</structfield> and <structfield>max_exec_time</structfield>
+      fields). The default value for <structfield>minmax_only</structfield> parameter is
+      <literal>false</literal>. Time of last min/max reset performed is shown in
+      <structfield>minmax_stats_since</structfield> field of the
+      <structname>pg_stat_statements</structname> view.
+      This function returns the time of a reset. This time is saved to
+      <structfield>stats_reset</structfield> field of
+      <structname>pg_stat_statements_info</structname> view or to
+      <structfield>minmax_stats_since</structfield> field of the
+      <structname>pg_stat_statements</structname> view if the corresponding reset was
+      actually performed.
       By default, this function can only be executed by superusers.
       Access may be granted to others using <command>GRANT</command>.
 -->
-<function>pg_stat_statements_reset</function>は指定された<structfield>userid</structfield>、<structfield>dbid</structfield>、<structfield>queryid</structfield>に対応する<filename>pg_stat_statements</filename>によってこれまでに収集したすべての統計情報を削除します。
-いずれかのパラメータを指定しないのであれば、デフォルト値<literal>0</literal>（無効）を使ってください。他のパラメータに一致する統計情報がリセットされます。
-どのパラメータも指定しない、または、すべての指定されたパラメータが<literal>0</literal>（無効）ならば、すべての統計情報を削除します。
-<filename>pg_stat_statements</filename>ビューのすべての統計情報が破棄された場合、<structname>pg_stat_statements_info</structname>ビューの統計情報もリセットされます。
-デフォルトでは、この関数はスーパーユーザのみ実行できます。
-<command>GRANT</command>を使ってアクセス権を他のユーザに付与できます。
+《機械翻訳》<function>pg_stat_statements_reset</function>は、指定された<structfield>userid</structfield>、<structfield>dbid</structfield>、<structfield>queryid</structfield>に対応する<filename>pg_stat_statements</filename>までに収集された統計処理を破棄します。
+いずれかのパラメータが指定されていない場合、各パラメータにはデフォルト値<literal>0</literal>（無効）が使用され、他のパラメータを持つマッチの統計処理はリセットになります。
+パラメータが指定されていない場合、または指定したパラメータがすべて<literal>0</literal>（無効）の場合は、すべての統計処理が破棄されます。
+<filename>pg_stat_statements</filename>統計処理のすべてのビューが破棄された場合、<structname>pg_stat_statements_info</structname>リセットの統計処理も破棄されます。
+ビュー<structfield>minmax_only</structfield>が<literal>true</literal>の場合、最小および最大の計画および実行時間の値のみがリセットになります（<structfield>min_plan_time</structfield>、<structfield>max_plan_time</structfield>、<structfield>min_exec_time</structfield>、および<structfield>max_exec_time</structfield>フィールド）。
+<structfield>minmax_のみ</structfield>パラメータのデフォルト値は<literal>false</literal>です。
+最後に実行された分/最大リセットの時刻は、<structname>pg_stat_statements</structname>フィールドの<structfield>minmax_stats_since</structfield> ビューに表示されます。
+この関数は、リセットの時刻を返します。
+対応するリセットが実際に実行された場合、この時間は<structname>pg_stat_statements_info</structname>フィールドの<structfield>minmax_stats_since</structfield>ビュー、または<structname>pg_stat_statements</structname>フィールドの<structfield>minmax_stats_since</structfield>ビューに保存されます。
+デフォルトでは、この関数はスーパーユーザのみが実行できます。
+アクセスは、<command>GRANT</command>を使用して他者に付与することができる。
      </para>
     </listitem>
    </varlistentry>

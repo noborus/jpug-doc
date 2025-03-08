@@ -870,9 +870,21 @@ Europe &amp; Russia*@ &amp; !Transportation
      <literal>&lt;</literal>, <literal>&lt;=</literal>, <literal>=</literal>,
      <literal>&gt;=</literal>, <literal>&gt;</literal>
 -->
-<type>ltree</type>に対するB-treeインデックス：<literal>&lt;</literal>、<literal>&lt;=</literal>、<literal>=</literal>、<literal>&gt;=</literal>、<literal>&gt;</literal>
+<type>ltree</type>に対するB-treeインデックス：
+<literal>&lt;</literal>、<literal>&lt;=</literal>、<literal>=</literal>、<literal>&gt;=</literal>、<literal>&gt;</literal>
     </para>
    </listitem>
+   <listitem>
+    <para>
+<!--
+     Hash index over <type>ltree</type>:
+     <literal>=</literal>
+-->
+<type>ltree</type>に対するハッシュインデックス：
+<literal>=</literal>
+    </para>
+   </listitem>
+
    <listitem>
     <para>
 <!--
@@ -901,7 +913,7 @@ Europe &amp; Russia*@ &amp; !Transportation
 オプションの整数パラメータ<literal>siglen</literal>は、署名の長さをバイト単位で決定します。
 デフォルトの署名の長さは8バイトです。
 長さは、<type>int</type>整列(ほとんどのマシンで4バイト)の正の倍数であり、最大で2024であることが必要です。
-長い署名では、インデックスはより大きくなってしまいますが、(インデックスのより小さな部分とより少ないヒープページを走査することで)検索がより正確になります。
+長い署名では、インデックスはより大きくなってしまいますが、(インデックスのより小さな部分とより少ないヒープページをスキャンすることで)検索がより正確になります。
     </para>
     <para>
 <!--
@@ -1001,6 +1013,7 @@ INSERT INTO test VALUES ('Top.Collections.Pictures.Astronomy.Galaxies');
 INSERT INTO test VALUES ('Top.Collections.Pictures.Astronomy.Astronauts');
 CREATE INDEX path_gist_idx ON test USING GIST (path);
 CREATE INDEX path_idx ON test USING BTREE (path);
+CREATE INDEX path_hash_idx ON test USING HASH (path);
 </programlisting>
 
   <para>

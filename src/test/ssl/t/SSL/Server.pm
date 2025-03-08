@@ -1,5 +1,5 @@
 
-# Copyright (c) 2021-2023, PostgreSQL Global Development Group
+# Copyright (c) 2021-2024, PostgreSQL Global Development Group
 
 =pod
 
@@ -64,11 +64,17 @@ specific infrastructure. Currently only OpenSSL is supported.
 package SSL::Server;
 
 use strict;
-use warnings;
+use warnings FATAL => 'all';
 use PostgreSQL::Test::Cluster;
 use PostgreSQL::Test::Utils;
 use Test::More;
 use SSL::Backend::OpenSSL;
+
+# Force SSL tests nodes to begin in TCP mode. They won't work in Unix Socket
+# mode and this way they will find a port to run on in a more robust way.
+# Use an INIT block so it runs after the BEGIN block in Utils.pm.
+
+INIT { $PostgreSQL::Test::Utils::use_unix_sockets = 0; }
 
 =pod
 
@@ -191,7 +197,7 @@ sub configure_test_server_for_ssl
 	}
 
 	# enable logging etc.
-	open my $conf, '>>', "$pgdata/postgresql.conf";
+	open my $conf, '>>', "$pgdata/postgresql.conf" or die $!;
 	print $conf "fsync=off\n";
 	print $conf "log_connections=on\n";
 	print $conf "log_hostname=on\n";
@@ -204,7 +210,7 @@ sub configure_test_server_for_ssl
 	close $conf;
 
 	# SSL configuration will be placed here
-	open my $sslconf, '>', "$pgdata/sslconfig.conf";
+	open my $sslconf, '>', "$pgdata/sslconfig.conf" or die $!;
 	close $sslconf;
 
 	# Perform backend specific configuration
@@ -290,7 +296,7 @@ sub switch_server_cert
 	my %params = @_;
 	my $pgdata = $node->data_dir;
 
-	open my $sslconf, '>', "$pgdata/sslconfig.conf";
+	open my $sslconf, '>', "$pgdata/sslconfig.conf" or die $!;
 	print $sslconf "ssl=on\n";
 	print $sslconf $backend->set_server_cert(\%params);
 	print $sslconf "ssl_passphrase_command='"
@@ -315,7 +321,7 @@ sub _configure_hba_for_ssl
 	# but seems best to keep it as narrow as possible for security reasons.
 	#
 	# When connecting to certdb, also check the client certificate.
-	open my $hba, '>', "$pgdata/pg_hba.conf";
+	open my $hba, '>', "$pgdata/pg_hba.conf" or die $!;
 	print $hba
 	  "# TYPE  DATABASE        USER            ADDRESS                 METHOD             OPTIONS\n";
 	print $hba
@@ -337,7 +343,7 @@ sub _configure_hba_for_ssl
 	close $hba;
 
 	# Also set the ident maps. Note: fields with commas must be quoted
-	open my $map, ">", "$pgdata/pg_ident.conf";
+	open my $map, ">", "$pgdata/pg_ident.conf" or die $!;
 	print $map
 	  "# MAPNAME       SYSTEM-USERNAME                           PG-USERNAME\n",
 	  "dn             \"CN=ssltestuser-dn,OU=Testing,OU=Engineering,O=PGDG\"    ssltestuser\n",

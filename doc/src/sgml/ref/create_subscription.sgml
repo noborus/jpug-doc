@@ -73,7 +73,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
 
   <para>
 <!--
-   To be able to create a subscription, you must have the privileges of the
+   To be able to create a subscription, you must have the privileges of
    the <literal>pg_create_subscription</literal> role, as well as
    <literal>CREATE</literal> privileges on the current database.
 -->
@@ -98,7 +98,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
   <title>パラメータ</title>
 
   <variablelist>
-   <varlistentry id="sql-createsubscription-name">
+   <varlistentry id="sql-createsubscription-params-name">
     <term><replaceable class="parameter">subscription_name</replaceable></term>
     <listitem>
      <para>
@@ -110,7 +110,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createsubscription-connection">
+   <varlistentry id="sql-createsubscription-params-connection">
     <term><literal>CONNECTION '<replaceable class="parameter">conninfo</replaceable>'</literal></term>
     <listitem>
      <para>
@@ -125,7 +125,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createsubscription-publication">
+   <varlistentry id="sql-createsubscription-params-publication">
     <term><literal>PUBLICATION <replaceable class="parameter">publication_name</replaceable> [, ...]</literal></term>
     <listitem>
      <para>
@@ -137,7 +137,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
     </listitem>
    </varlistentry>
 
-   <varlistentry id="sql-createsubscription-with">
+   <varlistentry id="sql-createsubscription-params-with">
     <term><literal>WITH ( <replaceable class="parameter">subscription_parameter</replaceable> [= <replaceable class="parameter">value</replaceable>] [, ... ] )</literal></term>
     <listitem>
      <para>
@@ -155,7 +155,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
 
       <variablelist>
 
-       <varlistentry id="sql-createsubscription-with-connect">
+       <varlistentry id="sql-createsubscription-params-with-connect">
         <term><literal>connect</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -182,18 +182,19 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
           Since no connection is made when this option is
           <literal>false</literal>, no tables are subscribed. To initiate
           replication, you must manually create the replication slot, enable
-          the subscription, and refresh the subscription. See
+          the failover if required, enable the subscription, and refresh the
+          subscription. See
           <xref linkend="logical-replication-subscription-examples-deferred-slot"/>
           for examples.
 -->
 このオプションが<literal>false</literal>に設定されると接続が行われないため、テーブルはサブスクライブされません。
-レプリケーションを開始するには、レプリケーションスロットを手動で作成し、サブスクリプションを有効にして、サブスクリプションをリフレッシュする必要があります。
+レプリケーションを開始するには、レプリケーションスロットを手動で作成し、必要に応じてfailoverオプションを有効にしたうえで、サブスクリプションを有効にして、サブスクリプションをリフレッシュする必要があります。
 例については<xref linkend="logical-replication-subscription-examples-deferred-slot"/>を参照してください。
          </para>
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-create-slot">
+       <varlistentry id="sql-createsubscription-params-with-create-slot">
         <term><literal>create_slot</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -217,7 +218,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-enabled">
+       <varlistentry id="sql-createsubscription-params-with-enabled">
         <term><literal>enabled</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -232,7 +233,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-slot-name">
+       <varlistentry id="sql-createsubscription-params-with-slot-name">
         <term><literal>slot_name</literal> (<type>string</type>)</term>
         <listitem>
          <para>
@@ -260,6 +261,27 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
 これはレプリケーションスロットを後で手作業で作成する場合に使用してください。
 例については<xref linkend="logical-replication-subscription-examples-deferred-slot"/>を参照してください。
          </para>
+
+         <para>
+<!--
+          When setting <literal>slot_name</literal> to a valid name and
+          <literal>create_slot</literal> to false, the
+          <literal>failover</literal> property value of the named slot may
+          differ from the counterpart <literal>failover</literal> parameter
+          specified in the subscription. Always ensure the slot property
+          <literal>failover</literal> matches the counterpart parameter of the
+          subscription and vice versa. Otherwise, the slot on the publisher may
+          behave differently from what these subscription options say: for
+          example, the slot on the publisher could either be synced to the
+          standbys even when the subscription's <literal>failover</literal>
+          option is disabled or could be disabled for sync even when the
+          subscription's <literal>failover</literal> option is enabled.
+-->
+<literal>slot_name</literal>に有効な名前を設定し、かつ<literal>create_slot</literal>をfalseに設定した場合、指定されたスロットに設定された<literal>failover</literal>の値はサブスクリプションで指定した<literal>failover</literal>パラメータの値と異なる場合があります。
+スロットの<literal>failover</literal>がサブスクリプションのパラメータと一致すること、およびその逆も常に確認してください。
+そうしないと、パブリッシャー上のスロットがこれらサブスクリプションオプションので指定されている内容とは異なる動作をする場合があります。
+例えば、サブスクリプションオプションの<literal>failover</literal>が無効になっていても、パブリッシャー上のスロットがスタンバイと同期されたり、逆にサブスクリプションオプションの<literal>failover</literal>が有効になっている場合でも、同期が行われなかったりする可能性があります。
+         </para>
         </listitem>
        </varlistentry>
       </variablelist>
@@ -274,7 +296,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
 
       <variablelist>
 
-       <varlistentry id="sql-createsubscription-with-binary">
+       <varlistentry id="sql-createsubscription-params-with-binary">
         <term><literal>binary</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -328,7 +350,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-copy-data">
+       <varlistentry id="sql-createsubscription-params-with-copy-data">
         <term><literal>copy_data</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -360,7 +382,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-streaming">
+       <varlistentry id="sql-createsubscription-params-with-streaming">
         <term><literal>streaming</literal> (<type>enum</type>)</term>
         <listitem>
          <para>
@@ -395,12 +417,12 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
 -->
 <literal>parallel</literal>に設定すると、受信した変更は、可能であれば、パラレル適用ワーカーの1つを介して直接適用されます。
 ストリーミングトランザクションを扱えるパラレル適用ワーカーがない場合、変更は一時ファイルに書き込まれ、トランザクションがコミットされた後に適用されます。
-パラレル適用ワーカーでエラーが発生した場合、リモートトランザクションの終了LSNがサーバーログで報告されない場合があることに注意してください。
+パラレル適用ワーカーでエラーが発生した場合、リモートトランザクションの終了LSNがサーバログで報告されない場合があることに注意してください。
          </para>
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-synchronous-commit">
+       <varlistentry id="sql-createsubscription-params-with-synchronous-commit">
         <term><literal>synchronous_commit</literal> (<type>enum</type>)</term>
         <listitem>
          <para>
@@ -446,7 +468,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-two-phase">
+       <varlistentry id="sql-createsubscription-params-with-two-phase">
         <term><literal>two_phase</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -490,7 +512,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-disable-on-error">
+       <varlistentry id="sql-createsubscription-params-with-disable-on-error">
         <term><literal>disable_on_error</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -506,18 +528,19 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-password-required">
+       <varlistentry id="sql-createsubscription-params-with-password-required">
         <term><literal>password_required</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
 <!--
-          Specifies whether connections to the publisher made as a result
-          of this subscription must use password authentication. This setting
-          is ignored when the subscription is owned by a superuser.
-          The default is <literal>true</literal>. Only superusers can set
-          this value to <literal>false</literal>.
+          If set to <literal>true</literal>, connections to the publisher made
+          as a result of this subscription must use password authentication
+          and the password must be specified as a part of the connection
+          string. This setting is ignored when the subscription is owned by a
+          superuser.  The default is <literal>true</literal>. Only superusers
+          can set this value to <literal>false</literal>.
 -->
-このパブリッシャーの結果として行われたサブスクリプションへの接続で、パスワード認証を使用する必要があるかどうかを指定します。
+<literal>true</literal>に設定すると、このサブスクリプションの結果として行われるパブリッシャーへの接続はパスワード認証を使用しなければならず、パスワードは接続文字列の一部として指定されなければなりません。
 サブスクリプションがスーパーユーザによって所有されている場合、この設定は無視されます。
 デフォルトは<literal>true</literal>です。
 スーパーユーザのみがこの値を<literal>false</literal>に設定できます。
@@ -525,7 +548,7 @@ CREATE SUBSCRIPTION <replaceable class="parameter">subscription_name</replaceabl
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-run-as-owner">
+       <varlistentry id="sql-createsubscription-params-with-run-as-owner">
         <term><literal>run_as_owner</literal> (<type>boolean</type>)</term>
         <listitem>
          <para>
@@ -545,7 +568,7 @@ falseの場合、レプリケーションワーカーは各テーブルでその
         </listitem>
        </varlistentry>
 
-       <varlistentry id="sql-createsubscription-with-origin">
+       <varlistentry id="sql-createsubscription-params-with-origin">
         <term><literal>origin</literal> (<type>string</type>)</term>
         <listitem>
          <para>
@@ -573,6 +596,22 @@ falseの場合、レプリケーションワーカーは各テーブルでその
          </para>
         </listitem>
        </varlistentry>
+
+       <varlistentry id="sql-createsubscription-params-with-failover">
+        <term><literal>failover</literal> (<type>boolean</type>)</term>
+        <listitem>
+         <para>
+<!--
+          Specifies whether the replication slots associated with the subscription
+          are enabled to be synced to the standbys so that logical
+          replication can be resumed from the new primary after failover.
+          The default is <literal>false</literal>.
+-->
+フェイルオーバー後に新しいプライマリから論理レプリケーションを再開できるように、サブスクリプションに関連付けられたレプリケーションスロットがスタンバイと同期できるようにするかどうかを指定します。
+デフォルトは<literal>false</literal>です。
+         </para>
+        </listitem>
+       </varlistentry>
       </variablelist></para>
 
     </listitem>
@@ -592,9 +631,11 @@ falseの場合、レプリケーションワーカーは各テーブルでその
 
 <!--
  <refsect1 id="sql-createsubscription-notes" xreflabel="Notes">
-  <title>Notes</title>
 -->
  <refsect1 id="sql-createsubscription-notes" xreflabel="注釈">
+<!--
+  <title>Notes</title>
+-->
   <title>注釈</title>
 
   <para>
@@ -647,8 +688,8 @@ falseの場合、レプリケーションワーカーは各テーブルでその
    the case of different <literal>WHERE</literal> clauses, if one of the
    publications has no <literal>WHERE</literal> clause (referring to that
    publish operation) or the publication is declared as
-   <link linkend="sql-createpublication-for-all-tables"><literal>FOR ALL TABLES</literal></link>
-   or <link linkend="sql-createpublication-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>,
+   <link linkend="sql-createpublication-params-for-all-tables"><literal>FOR ALL TABLES</literal></link>
+   or <link linkend="sql-createpublication-params-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>,
    rows are always published regardless of the definition of the other
    expressions. If the subscriber is a <productname>PostgreSQL</productname>
    version before 15, then any row filtering is ignored during the initial data
@@ -656,17 +697,17 @@ falseの場合、レプリケーションワーカーは各テーブルでその
    deleting any initially copied data that would be incompatible with
    subsequent filtering. Because initial data synchronization does not take
    into account the publication
-   <link linkend="sql-createpublication-with-publish"><literal>publish</literal></link>
+   <link linkend="sql-createpublication-params-with-publish"><literal>publish</literal></link>
    parameter when copying existing table data, some rows may be copied that
    would not be replicated using DML. See
    <xref linkend="logical-replication-subscription-examples"/> for examples.
 -->
 パブリケーション内のテーブルに<literal>WHERE</literal>句がある場合、<replaceable class="parameter">expression</replaceable>が偽またはNULLと評価される行はパブリッシュされません。
 サブスクリプションに、同じテーブルが異なる<literal>WHERE</literal>句でパブリッシュされた複数のパブリケーションがある場合、(パブリッシュ操作を参照する)式のいずれかが満たされると行がパブリッシュされます。
-<literal>WHERE</literal>句が異なる場合、パブリケーションのいずれかに<literal>WHERE</literal>句がないか(パブリッシュ操作を参照する)パブリケーションが<link linkend="sql-createpublication-for-all-tables"><literal>FOR ALL TABLES</literal></link>または<link linkend="sql-createpublication-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>として宣言されている場合、行は他の式の定義に関係なく常にパブリッシュされます。
+<literal>WHERE</literal>句が異なる場合、パブリケーションのいずれかに<literal>WHERE</literal>句がないか(パブリッシュ操作を参照する)パブリケーションが<link linkend="sql-createpublication-params-for-all-tables"><literal>FOR ALL TABLES</literal></link>または<link linkend="sql-createpublication-params-for-tables-in-schema"><literal>FOR TABLES IN SCHEMA</literal></link>として宣言されている場合、行は他の式の定義に関係なく常にパブリッシュされます。
 サブスクライバーのバージョンが<productname>PostgreSQL</productname> 15より前の場合、最初のデータ同期フェーズでは行のフィルタリングは無視されます。
 この場合、後続のフィルタリングと互換性のない最初にコピーされたデータの削除を検討したくなるでしょう。
-最初のデータ同期では、既存のテーブルデータをコピーする際にパブリケーション<link linkend="sql-createpublication-with-publish"><literal>publish</literal></link>パラメータが考慮されないため、DMLを使用してレプリケートされない行がコピーされる場合があります。
+最初のデータ同期では、既存のテーブルデータをコピーする際にパブリケーション<link linkend="sql-createpublication-params-with-publish"><literal>publish</literal></link>パラメータが考慮されないため、DMLを使用してレプリケートされない行がコピーされる場合があります。
 例については<xref linkend="logical-replication-subscription-examples"/>を参照してください。
   </para>
 
@@ -704,7 +745,7 @@ falseの場合、レプリケーションワーカーは各テーブルでその
 サブスクリプションパラメータの<literal>copy_data = true</literal>と<literal>origin = NONE</literal>の組合せを使用する場合、初期同期テーブルデータはパブリッシャーから直接コピーされます。これは、そのデータの真のオリジンを認識できないことを意味します。
 そのパブリッシャーにもサブスクリプションがある場合、コピーされたテーブルデータはさらに上流から発生した可能性があります。
 このシナリオは検出され、警告がユーザに向けて記録されますが、警告は潜在的な問題を示しているだけです。
-コピーされたデータの発生元が本当に望んだものであること、またはそうでないことを保証する必要ななチェックを行うのは、ユーザの責任です。
+コピーされたデータの発生元が本当に望んだものであること、またはそうでないことを保証する必要なチェックを行うのは、ユーザの責任です。
   </para>
 
   <para>

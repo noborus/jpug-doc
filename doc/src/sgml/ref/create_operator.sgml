@@ -75,11 +75,12 @@ CREATE OPERATOR <replaceable>name</replaceable> (
 名前の選択には以下に示すいくつかの制約があります。
    <itemizedlist>
     <listitem>
+     <para>
 <!--
-     <para><literal>&#45;-</literal> and <literal>/*</literal> cannot appear anywhere in an operator name,
+     <literal>&#45;-</literal> and <literal>/*</literal> cannot appear anywhere in an operator name,
      since they will be taken as the start of a comment.
 -->
-<para><literal>--</literal>と<literal>/*</literal>はコメントの開始とみなされてしまうため、演算子名の一部として使うことができません。
+<literal>--</literal>と<literal>/*</literal>はコメントの開始とみなされてしまうため、演算子名の一部として使うことができません。
      </para>
     </listitem>
     <listitem>
@@ -106,11 +107,10 @@ CREATE OPERATOR <replaceable>name</replaceable> (
     <listitem>
      <para>
 <!--
-     The use of <literal>=&gt;</literal> as an operator name is deprecated.  It may
-     be disallowed altogether in a future release.
+     The symbol <literal>=&gt;</literal> is reserved by the SQL grammar,
+     so it cannot be used as an operator name.
 -->
-演算子名として<literal>=&gt;</literal>を使用することは廃止される予定です。
-将来のリリースで完全に許されなくなるかもしれません。
+記号<literal>=&gt;</literal>はSQL文法で予約されているため、演算子名として使用できません。
      </para>
     </listitem>
    </itemizedlist>
@@ -159,10 +159,10 @@ CREATE OPERATOR <replaceable>name</replaceable> (
 
   <para>
 <!--
-   The other clauses specify optional operator optimization clauses.
+   The other clauses specify optional operator optimization attributes.
    Their meaning is detailed in <xref linkend="xoper-optimization"/>.
 -->
-他の句は演算子最適化用の句(省略可能)です。
+《マッチ度[90.370370]》他の句は演算子最適化用の句(省略可能)です。
 これらの意味は<xref linkend="xoper-optimization"/>で説明されています。
   </para>
 
@@ -171,9 +171,9 @@ CREATE OPERATOR <replaceable>name</replaceable> (
    To be able to create an operator, you must have <literal>USAGE</literal>
    privilege on the argument types and the return type, as well
    as <literal>EXECUTE</literal> privilege on the underlying function.  If a
-   commutator or negator operator is specified, you must own these operators.
+   commutator or negator operator is specified, you must own those operators.
 -->
-演算子を作成するためには、
+《マッチ度[95.017794]》演算子を作成するためには、
 引数の型と戻り値の型に対する<literal>USAGE</literal>権限と背後にある関数に対する<literal>EXECUTE</literal>権限を持たなければなりません。
 交代演算子または否定子演算子を指定する場合は、これらの演算子を所有していなければなりません。
   </para>
@@ -340,9 +340,97 @@ COMMUTATOR = OPERATOR(myschema.===) ,
 
   <para>
 <!--
-   Refer to <xref linkend="xoper"/> for further information.
+   Refer to <xref linkend="xoper"/> and <xref linkend="xoper-optimization"/>
+   for further information.
 -->
-詳細については<xref linkend="xoper"/>を参照してください。
+《機械翻訳》詳細については<xref linkend="xoper"/>と<xref linkend="xoper-optimization"/>を参照してください。
+  </para>
+
+  <para>
+<!--
+   When you are defining a self-commutative operator, you just do it.
+   When you are defining a pair of commutative operators, things are
+   a little trickier: how can the first one to be defined refer to the
+   other one, which you haven't defined yet?  There are three solutions
+   to this problem:
+-->
+《機械翻訳》自己可換演算子を定義するときは、単にそれを行います。
+可換演算子のペアを定義するときは、少し厄介です。
+最初に定義されたものが、まだ定義されていないもう一方を参照できるようにするには、どうすればよいのでしょうか?この問題には3つの解決策があります。
+
+   <itemizedlist>
+    <listitem>
+     <para>
+<!--
+      One way is to omit the <literal>COMMUTATOR</literal> clause in the
+      first operator that you define, and then provide one in the second
+      operator's definition.  Since <productname>PostgreSQL</productname>
+      knows that commutative operators come in pairs, when it sees the
+      second definition it will automatically go back and fill in the
+      missing <literal>COMMUTATOR</literal> clause in the first
+      definition.
+-->
+《機械翻訳》1つ目の方法は、最初の演算子を定義する際に<literal>COMMUTATOR</literal>句を省略し、2番目の演算子の定義では、<literal>COMMUTATOR</literal>句に最初の演算子を与えるという方法です。
+<productname>PostgreSQL</productname>は交代演算子が対になっていることがわかっていますので、2番目の定義を見た時に、自動的に最初の定義に戻ってその未定義になっている<literal>COMMUTATOR</literal>句を設定します。
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+<!--
+      Another, more straightforward way is just to
+      include <literal>COMMUTATOR</literal> clauses in both definitions.
+      When <productname>PostgreSQL</productname> processes the first
+      definition and realizes that <literal>COMMUTATOR</literal> refers to
+      a nonexistent operator, the system will make a dummy entry for that
+      operator in the system catalog.  This dummy entry will have valid
+      data only for the operator name, left and right operand types, and
+      owner, since that's all that <productname>PostgreSQL</productname>
+      can deduce at this point.  The first operator's catalog entry will
+      link to this dummy entry.  Later, when you define the second
+      operator, the system updates the dummy entry with the additional
+      information from the second definition.  If you try to use the dummy
+      operator before it's been filled in, you'll just get an error
+      message.
+-->
+《機械翻訳》もう 1 つの、より単純な方法は、両方の定義に<literal>COMMUTATOR</literal>句を含めることです。
+<productname>PostgreSQL</productname>が最初の定義を処理し、<literal>COMMUTATOR</literal>が存在しない演算子を参照していることに気付いた場合、システムカタログ内にその演算子のダミーエントリを作成します。
+このダミーエントリは、演算子名、左右のオペランド型、および所有者に対してのみ有効なデータを持ちます。
+<productname>PostgreSQL</productname>が現時点で推論できるのはこれだけです。
+最初のオペレータのカタログエントリは、このダミーエントリにリンクします。
+後で2番目の演算子を定義すると、システムは2番目の定義からの追加情報でダミー・エントリを更新します。
+ダミーオペレータを使用する前に入力しようとすると、エラーメッセージが表示されます。
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+<!--
+      Alternatively, both operators can be defined
+      without <literal>COMMUTATOR</literal> clauses
+      and then <command>ALTER OPERATOR</command> can be used to set their
+      commutator links.  It's sufficient to <command>ALTER</command>
+      either one of the pair.
+-->
+《機械翻訳》あるいは、両方の演算子を<literal>COMMUTATOR</literal>句なしで定義し、その後で<command>ALTER OPERATOR</command>を使用してそれらの交換子リンクを設定することができます。
+どちらか一方のペアを<command>ALTER</command>することで十分です。
+     </para>
+    </listitem>
+   </itemizedlist>
+
+<!--
+   In all three cases, you must own both operators in order to mark
+   them as commutators.
+-->
+《機械翻訳》3つの場合すべてにおいて、オーダーで両方の演算子を所有して、それらを交換子としてマークする必要があります。
+  </para>
+
+  <para>
+<!--
+   Pairs of negator operators can be defined using the same methods
+   as for commutator pairs.
+-->
+《機械翻訳》否定演算子のペアは、交換演算子のペアと同じ方法で定義できます。
   </para>
 
   <para>

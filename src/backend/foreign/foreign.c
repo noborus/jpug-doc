@@ -3,7 +3,7 @@
  * foreign.c
  *		  support for foreign-data wrappers, servers and user mappings.
  *
- * Portions Copyright (c) 1996-2023, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1996-2024, PostgreSQL Global Development Group
  *
  * IDENTIFICATION
  *		  src/backend/foreign/foreign.c
@@ -21,8 +21,8 @@
 #include "foreign/fdwapi.h"
 #include "foreign/foreign.h"
 #include "funcapi.h"
-#include "lib/stringinfo.h"
 #include "miscadmin.h"
+#include "tcop/tcopprot.h"
 #include "utils/builtins.h"
 #include "utils/memutils.h"
 #include "utils/rel.h"
@@ -217,10 +217,14 @@ GetUserMapping(Oid userid, Oid serverid)
 	}
 
 	if (!HeapTupleIsValid(tp))
+	{
+		ForeignServer *server = GetForeignServer(serverid);
+
 		ereport(ERROR,
 				(errcode(ERRCODE_UNDEFINED_OBJECT),
-				 errmsg("user mapping not found for \"%s\"",
-						MappingUserName(userid))));
+				 errmsg("user mapping not found for user \"%s\", server \"%s\"",
+						MappingUserName(userid), server->servername)));
+	}
 
 	um = (UserMapping *) palloc(sizeof(UserMapping));
 	um->umid = ((Form_pg_user_mapping) GETSTRUCT(tp))->oid;
@@ -322,6 +326,15 @@ GetFdwRoutine(Oid fdwhandler)
 {
 	Datum		datum;
 	FdwRoutine *routine;
+
+	/* Check if the access to foreign tables is restricted */
+	if (unlikely((restrict_nonsystem_relation_kind & RESTRICT_RELKIND_FOREIGN_TABLE) != 0))
+	{
+		/* there must not be built-in FDW handler  */
+		ereport(ERROR,
+				(errcode(ERRCODE_OBJECT_NOT_IN_PREREQUISITE_STATE),
+				 errmsg("access to non-system foreign table is restricted")));
+	}
 
 	datum = OidFunctionCall0(fdwhandler);
 	routine = (FdwRoutine *) DatumGetPointer(datum);

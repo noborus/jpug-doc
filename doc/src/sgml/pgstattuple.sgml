@@ -722,7 +722,7 @@ approx_free_percent  | 2.09
       statistics along with an approximation of the number and
       size of live tuples and free space.
 -->
-<function>pgstattuple</function>が常に全件走査を実行し、有効タプルと無効タプルの正確な数（およびそのサイズ）と空き領域を返すのに対し、<function>pgstattuple_approx</function>は全件走査を避けようとし、無効タプルの正確な統計情報および有効タプルと空き領域の数とサイズの近似値を返します。
+<function>pgstattuple</function>が常に全件スキャンを実行し、有効タプルと無効タプルの正確な数（およびそのサイズ）と空き領域を返すのに対し、<function>pgstattuple_approx</function>は全件スキャンを避けようとし、無効タプルの正確な統計情報および有効タプルと空き領域の数とサイズの近似値を返します。
      </para>
 
      <para>
@@ -746,7 +746,7 @@ approx_free_percent  | 2.09
       live tuples based on the number of pages and tuples scanned (in the
       same way that VACUUM estimates pg_class.reltuples).
 -->
-スキップできないページについては、各タプルをスキャンし、その存在とサイズを適切なカウンターに記録し、ページ上の空き領域を加算します。
+スキップできないページについては、各タプルをスキャンし、その存在とサイズを適切なカウンタに記録し、ページ上の空き領域を加算します。
 最後に有効タプルの合計数をスキャンしたページとタプルの数に基づいて推定します（VACUUMがpg_class.reltuplesを推定するのと同じ方法です）。
      </para>
 

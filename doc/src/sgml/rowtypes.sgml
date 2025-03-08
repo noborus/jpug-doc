@@ -159,8 +159,8 @@ CREATE TABLE inventory_item (
    a composite constant is the following:
 -->
 複合型をリテラル定数として記述するには、フィールド値をカンマで区切り、それらを括弧で括ります。
-フィールド値を二重引用符で括ることができ、また、値にカンマや括弧を含む場合は二重引用符で括らなければなりません
-（より詳細については<link linkend="rowtypes-io-syntax">後</link>で説明します）。
+フィールド値を二重引用符で括ることができ、また、値にカンマや括弧を含む場合は二重引用符で括らなければなりません。
+（より詳細については<link linkend="rowtypes-io-syntax">後</link>で説明します。）
 したがって、複合型の定数の一般的な書式は以下のようになります。
 <synopsis>
 '( <replaceable>val1</replaceable> , <replaceable>val2</replaceable> , ... )'
@@ -531,7 +531,7 @@ SELECT m.* FROM some_table, LATERAL myfunc(x) AS m;
    column expansion of this kind when it appears at the top level of
    a <link linkend="queries-select-lists"><command>SELECT</command> output
    list</link>, a <link linkend="dml-returning"><literal>RETURNING</literal>
-   list</link> in <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>,
+   list</link> in <command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>,
    a <link linkend="queries-values"><literal>VALUES</literal> clause</link>, or
    a <link linkend="sql-syntax-row-constructors">row constructor</link>.
    In all other contexts (including when nested inside one of those
@@ -541,7 +541,7 @@ SELECT m.* FROM some_table, LATERAL myfunc(x) AS m;
    if <function>somefunc()</function> accepts a composite-valued argument,
    these queries are the same:
 -->
-<replaceable>composite_value</replaceable><literal>.*</literal>の構文は、それが<link linkend="queries-select-lists"><command>SELECT</command>の出力リスト</link>、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>の<link linkend="dml-returning"><literal>RETURNING</literal>リスト</link>、<link linkend="queries-values"><literal>VALUES</literal>句</link>あるいは<link linkend="sql-syntax-row-constructors">行コンストラクタ</link>の最上位に記述された場合、この種の列展開がされます。
+<replaceable>composite_value</replaceable><literal>.*</literal>の構文は、それが<link linkend="queries-select-lists"><command>SELECT</command>の出力リスト</link>、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>/<command>MERGE</command>の<link linkend="dml-returning"><literal>RETURNING</literal>リスト</link>、<link linkend="queries-values"><literal>VALUES</literal>句</link>あるいは<link linkend="sql-syntax-row-constructors">行コンストラクタ</link>の最上位に記述された場合、この種の列展開がされます。
 それ以外の場合（これらの構文の内側に入れ子になっている場合を含みます）は、複合型の値に<literal>.*</literal>を付加しても、値は変わりません。
 なぜなら、それは<quote>すべての列</quote>を意味するため、同じ複合型の値が繰り返し生成されるからです。
 例えば、<function>somefunc()</function>が複合型の値の引数をとるとして、以下の問い合わせは同じです。
@@ -760,8 +760,8 @@ NULLではなく空文字列を値として記述するには <literal>""</liter
    is not essential, but aids legibility.)  Double quotes and backslashes
    embedded in field values will be doubled.
 -->
-複合型の出力処理では、もしフィールド値が空文字列の場合や括弧、カンマ、二重引用符、バックスラッシュ、空白文字を含む場合には、そのフィールド値を二重引用符で括って出力します
-（空白文字に対するこの処理は重要ではありませんが、可読性を高めます）。
+複合型の出力処理では、もしフィールド値が空文字列の場合や括弧、カンマ、二重引用符、バックスラッシュ、空白文字を含む場合には、そのフィールド値を二重引用符で括って出力します。
+（空白文字に対するこの処理は重要ではありませんが、可読性を高めます。）
 フィールド値内に埋め込まれた二重引用符やバックスラッシュは二重化されます。
   </para>
 
@@ -794,8 +794,8 @@ INSERT ... VALUES ('("\"\\")');
    used to avoid the need to double backslashes.
 -->
 文字列リテラルプロセッサが第1レベルのバックスラッシュを取り除くため、複合型値のパーサに渡されるものは <literal>("\"\\")</literal> のようになります。
-そして、<type>text</type>データ型の入力関数に渡される文字列は<literal>"\</literal>になります
-（もし、例えば<type>bytea</type>といった、その入力関数もバックスラッシュを特別に扱うデータ型を扱っている場合、1つのバックスラッシュを複合型のフィールドに格納するためにコマンド内に8個ものバックスラッシュが必要になります）。
+そして、<type>text</type>データ型の入力関数に渡される文字列は<literal>"\</literal>になります。
+（もし、例えば<type>bytea</type>といった、その入力関数もバックスラッシュを特別に扱うデータ型を扱っている場合、1つのバックスラッシュを複合型のフィールドに格納するためにコマンド内に8個ものバックスラッシュが必要になります。）
 ドル引用符付け（<xref linkend="sql-syntax-dollar-quoting"/>を参照）を使用して、このバックスラッシュの二重化を防ぐことができます。
   </para>
  </note>

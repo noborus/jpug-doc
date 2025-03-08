@@ -33,7 +33,7 @@ B128	ルーチン言語 SQL			YES
 B200	多相型テーブル関数(PTF)			NO	
 B201	2つ以上のPTFジェネリックテーブルパラメータ			NO	
 B202	PTFコパーティション			NO	
-B203	2つ以上のパーティション指定			NO	
+B203	2つ以上のコパーティション指定			NO	
 B204	PRUNE WHEN EMPTY			NO	
 B205	パススルー列			NO	
 B206	PTF記述子パラメータ			NO	
@@ -223,7 +223,7 @@ F261	CASE式	02	探索CASE	YES
 F261	CASE式	03	NULLIF	YES	
 F261	CASE式	04	COALESCE	YES	
 F262	拡張CASE式			YES	
-F263	単純CASE式におけるコンマ区切り述語			NO	
+F263	単純CASE式におけるカンマ区切り述語			NO	
 F271	複合文字リテラル			YES	
 F281	LIKE強化			YES	
 F291	UNIQUE述語			NO	
@@ -260,7 +260,7 @@ F393	リテラル内のUnicodeエスケープ			YES
 F394	省略可能な標準フォーム指定			YES	
 F401	拡張結合テーブル			YES	
 F402	LOB、配列、複数集合と結合する名前付きの列			YES	
-F403	分割結合されたテーブル			NO
+F403	分割結合されたテーブル			NO	
 F404	共通の列名に対する範囲変数			YES	
 F405	NATURAL JOIN			YES	
 F406	FULL OUTER JOIN			YES	
@@ -548,15 +548,15 @@ T811	基本SQL/JSON構築関数			YES
 T812	SQL/JSON: JSON_OBJECTAGG			YES	
 T813	SQL/JSON: ORDER BY付きのJSON_ARRAYAGG			YES	
 T814	JSON_OBJECTやJSON_OBJECTAGGでのコロン			YES	
-T821	基本SQL/JSON問い合わせ演算子			NO	
+T821	基本SQL/JSON問い合わせ演算子			YES	
 T822	SQL/JSON: IS JSON WITH UNIQUE KEYS述語			YES	
-T823	SQL/JSON: PASSING句			NO	
+T823	SQL/JSON: PASSING句			YES	
 T824	JSON_TABLE: 特定のPLAN句			NO	
-T825	SQL/JSON: ON EMPTYとON ERROR句			NO	
-T826	ON ERRORまたはON EMPTY句での一般値式			NO	
-T827	JSON_TABLE: 兄弟のNESTED COLUMNS句			NO	
-T828	JSON_QUERY			NO	
-T829	JSON_QUERY: 配列ラッパオプション			NO	
+T825	SQL/JSON: ON EMPTYとON ERROR句			YES	
+T826	ON ERRORまたはON EMPTY句での一般値式			YES	
+T827	JSON_TABLE: 兄弟のNESTED COLUMNS句			YES	
+T828	JSON_QUERY			YES	
+T829	JSON_QUERY: 配列ラッパオプション			YES	
 T830	SQL/JSON構築関数内での一意キーの強制			YES	
 T831	SQL/JSONパス言語: 厳密モード			YES	
 T832	SQL/JSONパス言語: 項目メソッド			YES	
@@ -574,19 +574,19 @@ T861	SQL/JSON単純化アクセサ: 大文字小文字を区別するJSONメン�
 T862	SQL/JSON単純化アクセサ: ワイルドカードメンバアクセサ			NO	
 T863	SQL/JSON単純化アクセサ: メンバアクセサとしての単一引用符で括られた文字列リテラル			NO	
 T864	SQL/JSON単純化アクセサ			NO	
-T865	SQL/JSON項目メソッド: bigint()			NO	
-T866	SQL/JSON項目メソッド: boolean()			NO	
-T867	SQL/JSON項目メソッド: date()			NO	
-T868	SQL/JSON項目メソッド: decimal()			NO	
-T869	SQL/JSON項目メソッド: 精度と位取りを持つdecimal()			NO	
-T870	SQL/JSON項目メソッド: integer()			NO	
-T871	SQL/JSON項目メソッド: number()			NO	
-T872	SQL/JSON項目メソッド: string()			NO	
-T873	SQL/JSON項目メソッド: time()			NO	
-T874	SQL/JSON項目メソッド: time_tz()			NO	
-T875	SQL/JSON項目メソッド: time精度			NO	
-T876	SQL/JSON項目メソッド: timestamp()			NO	
-T877	SQL/JSON項目メソッド: timestamp_tz()			NO	
+T865	SQL/JSON項目メソッド: bigint()			YES	
+T866	SQL/JSON項目メソッド: boolean()			YES	
+T867	SQL/JSON項目メソッド: date()			YES	
+T868	SQL/JSON項目メソッド: decimal()			YES	
+T869	SQL/JSON項目メソッド: 精度と位取りを持つdecimal()			YES	
+T870	SQL/JSON項目メソッド: integer()			YES	
+T871	SQL/JSON項目メソッド: number()			YES	
+T872	SQL/JSON項目メソッド: string()			YES	
+T873	SQL/JSON項目メソッド: time()			YES	
+T874	SQL/JSON項目メソッド: time_tz()			YES	
+T875	SQL/JSON項目メソッド: time精度			YES	
+T876	SQL/JSON項目メソッド: timestamp()			YES	
+T877	SQL/JSON項目メソッド: timestamp_tz()			YES	
 T878	SQL/JSON項目メソッド: timestamp精度			NO	
 T879	等価演算でのJSON			YES	jsonbにて
 T880	グループ化演算でのJSON			YES	jsonbにて
@@ -633,7 +633,7 @@ X034	XMLAgg			YES
 X035	XMLAgg: ORDER BYオプション			YES	
 X036	XMLComment			YES	
 X037	XMLPI			YES	
-X038	XMLText			NO	
+X038	XMLText			YES	RETURNINGを除いてサポート
 X040	基本テーブル対応付け			YES	
 X041	基本テーブル対応付け: NULLがない			YES	
 X042	基本テーブル対応付け: NULLをnilとして扱う			YES	

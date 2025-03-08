@@ -209,7 +209,7 @@ PostgreSQL documentation
 <!--
   <title>Options</title>
 -->
-<title>オプション</title>
+  <title>オプション</title>
 
    <para>
     <variablelist>
@@ -224,7 +224,7 @@ PostgreSQL documentation
         and <literal>local</literal> lines).  See <xref linkend="auth-pg-hba-conf"/>
         for an overview of valid values.
 -->
-このオプションは、<filename>pg_hba.conf</filename>で使用されるローカルユーザーのデフォルトの認証方法（<literal>host</literal>および<literal>local</literal>行）を指定します。
+このオプションは、<filename>pg_hba.conf</filename>で使用されるローカルユーザのデフォルトの認証方法（<literal>host</literal>および<literal>local</literal>行）を指定します。
 有効な値の概要については<xref linkend="auth-pg-hba-conf"/>を参照してください。
        </para>
 
@@ -413,6 +413,15 @@ I/Oシステムによる破損検知を補助するために、データペー�
 このオプションを指定しない場合は、<command>initdb</command>を実行している環境のロケールが継承されます。
 ロケールサポートについては<xref linkend="locale"/>で説明します。
        </para>
+       <para>
+<!--
+        If <option>&#45;-locale-provider</option> is <literal>builtin</literal>,
+        <option>&#45;-locale</option> or <option>&#45;-builtin-locale</option> must be
+        specified and set to <literal>C</literal> or
+        <literal>C.UTF-8</literal>.
+-->
+《機械翻訳》<option>--locale-provider</option>が<literal>builtin</literal>の場合、<option>--locale</option>または<option>--builtin-locale</option>を指定し、<literal>C</literal>または<literal>C.UTF-8</literal>に設定する必要があります。
+       </para>
       </listitem>
      </varlistentry>
 
@@ -447,8 +456,24 @@ I/Oシステムによる破損検知を補助するために、データペー�
       </listitem>
      </varlistentry>
 
+     <varlistentry id="app-initdb-builtin-locale">
+      <term><option>--builtin-locale=<replaceable>locale</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        Specifies the locale name when the builtin provider is used. Locale support
+        is described in <xref linkend="locale"/>.
+-->
+《マッチ度[73.504274]》ICUロケールプロバイダを使用する場合に、ICUロケールを指定します。
+ロケールサポートは<xref linkend="locale"/>に記載されています。
+《機械翻訳》組み込みプロバイダを使用する場合にロケール名を指定します。
+ロケールのサポートについては<xref linkend="locale"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+
      <varlistentry id="app-initdb-option-locale-provider">
-      <term><option>--locale-provider={<literal>libc</literal>|<literal>icu</literal>}</option></term>
+      <term><option>--locale-provider={<literal>builtin</literal>|<literal>libc</literal>|<literal>icu</literal>}</option></term>
       <listitem>
        <para>
 <!--
@@ -465,44 +490,6 @@ I/Oシステムによる破損検知を補助するために、データペー�
       </listitem>
      </varlistentry>
 
-     <varlistentry id="app-initdb-option-no-sync">
-      <term><option>-N</option></term>
-      <term><option>--no-sync</option></term>
-      <listitem>
-       <para>
-<!--
-        By default, <command>initdb</command> will wait for all files to be
-        written safely to disk.  This option causes <command>initdb</command>
-        to return without waiting, which is faster, but means that a
-        subsequent operating system crash can leave the data directory
-        corrupt.  Generally, this option is useful for testing, but should not
-        be used when creating a production installation.
--->
-デフォルトでは<command>initdb</command>はすべてのファイルが安全にディスクに書き出されるまで待機します。
-このオプションを使うと<command>initdb</command>は待機せずに返るようになり、より高速になりますが、後でオペレーティングシステムがクラッシュした場合にデータディレクトリが破損状態になってしまう可能性があります。
-通常、このオプションは試験用では有用ですが、実用のインストレーションを作成する際に使用すべきではありません。
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry id="app-initdb-option-no-instructions">
-      <term><option>--no-instructions</option></term>
-      <listitem>
-       <para>
-<!--
-        By default, <command>initdb</command> will write instructions for how
-        to start the cluster at the end of its output. This option causes
-        those instructions to be left out. This is primarily intended for use
-        by tools that wrap <command>initdb</command> in platform-specific
-        behavior, where those instructions are likely to be incorrect.
--->
-デフォルトでは<command>initdb</command>は出力の最後にクラスタを起動する手順を表示します。
-このオプションを使うと、これらの手順が省略されます。
-これは主に<command>initdb</command>をプラットフォーム固有の動作でラップするツールで、これらの手順が間違っている可能性がある場合に使用することを目的としています。
-       </para>
-      </listitem>
-     </varlistentry>
-
      <varlistentry id="app-initdb-option-pwfile">
       <term><option>--pwfile=<replaceable>filename</replaceable></option></term>
       <listitem>
@@ -513,25 +500,6 @@ I/Oシステムによる破損検知を補助するために、データペー�
 -->
 <command>initdb</command>はブートストラップスーパーユーザのパスワードをこのファイルから読み取ります。
 このファイルの最初の行がパスワードとして解釈されます。
-       </para>
-      </listitem>
-     </varlistentry>
-
-     <varlistentry id="app-initdb-option-sync-only">
-      <term><option>-S</option></term>
-      <term><option>--sync-only</option></term>
-      <listitem>
-       <para>
-<!--
-        Safely write all database files to disk and exit.  This does not
-        perform any of the normal <application>initdb</application> operations.
-        Generally, this option is useful for ensuring reliable recovery after
-        changing <xref linkend="guc-fsync"/> from <literal>off</literal> to
-        <literal>on</literal>.
--->
-すべてのデータベースファイルを安全にディスクに書き出し、終了します。
-これは通常の<application>initdb</application>の操作をまったく行いません。
-通常、このオプションは、<xref linkend="guc-fsync"/>を<literal>off</literal>から<literal>on</literal>に変更した後の信頼できるリカバリを確実にするのに有用です。
        </para>
       </listitem>
      </varlistentry>
@@ -557,13 +525,13 @@ I/Oシステムによる破損検知を補助するために、データペー�
       <listitem>
        <para>
 <!--
-        Selects the user name of the
+        Sets the user name of the
         <glossterm linkend="glossary-bootstrap-superuser">bootstrap superuser</glossterm>.
-        This defaults to the name of the
-        <glossterm linkend="glossary-cluster-owner">cluster owner</glossterm>.
+        This defaults to the name of the operating-system user running
+        <command>initdb</command>.
 -->
-<glossterm linkend="glossary-bootstrap-superuser">ブートストラップスーパーユーザ</glossterm>のユーザ名を選択します。
-デフォルトは<glossterm linkend="glossary-cluster-owner">クラスタ所有者</glossterm>の名前です。
+<glossterm linkend="glossary-bootstrap-superuser">ブートストラップスーパーユーザ</glossterm>のユーザ名を設定します。
+デフォルトは、<command>initdb</command>を実行するオペレーティングシステムユーザの名前です。
        </para>
       </listitem>
      </varlistentry>
@@ -733,6 +701,112 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
        </para>
       </listitem>
      </varlistentry>
+
+     <varlistentry id="app-initdb-option-no-sync">
+      <term><option>-N</option></term>
+      <term><option>--no-sync</option></term>
+      <listitem>
+       <para>
+<!--
+        By default, <command>initdb</command> will wait for all files to be
+        written safely to disk.  This option causes <command>initdb</command>
+        to return without waiting, which is faster, but means that a
+        subsequent operating system crash can leave the data directory
+        corrupt.  Generally, this option is useful for testing, but should not
+        be used when creating a production installation.
+-->
+デフォルトでは<command>initdb</command>はすべてのファイルが安全にディスクに書き出されるまで待機します。
+このオプションを使うと<command>initdb</command>は待機せずに返るようになり、より高速になりますが、後でオペレーティングシステムがクラッシュした場合にデータディレクトリが破損状態になってしまう可能性があります。
+通常、このオプションは試験用では有用ですが、実用のインストレーションを作成する際に使用すべきではありません。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="app-initdb-option-no-instructions">
+      <term><option>--no-instructions</option></term>
+      <listitem>
+       <para>
+<!--
+        By default, <command>initdb</command> will write instructions for how
+        to start the cluster at the end of its output. This option causes
+        those instructions to be left out. This is primarily intended for use
+        by tools that wrap <command>initdb</command> in platform-specific
+        behavior, where those instructions are likely to be incorrect.
+-->
+デフォルトでは<command>initdb</command>は出力の最後にクラスタを起動する手順を表示します。
+このオプションを使うと、これらの手順が省略されます。
+これは主に<command>initdb</command>をプラットフォーム固有の動作でラップするツールで、これらの手順が間違っている可能性がある場合に使用することを目的としています。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="app-initdb-option-show">
+      <term><option>-s</option></term>
+      <term><option>--show</option></term>
+      <listitem>
+       <para>
+<!--
+        Show internal settings and exit, without doing anything else.  This
+        can be used to debug the <application>initdb</application>
+        installation.
+-->
+《機械翻訳》何もせずに内部設定を表示して終了します。
+これは<application>initdb</application>インストールをデバッグするために使用できます。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="app-initdb-option-sync-method">
+      <term><option>--sync-method=<replaceable>method</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        When set to <literal>fsync</literal>, which is the default,
+        <command>initdb</command> will recursively open and synchronize all
+        files in the data directory.  The search for files will follow symbolic
+        links for the WAL directory and each configured tablespace.
+-->
+《機械翻訳》デフォルトの<literal>fsync</literal>に設定すると、<command>initdb</command>はデータディレクトリ内の全てのファイルを再帰的に開いて同期します。
+ファイルの検索はWALディレクトリと設定された各テーブル空間のシンボリックリンクをたどります。
+       </para>
+       <para>
+<!--
+        On Linux, <literal>syncfs</literal> may be used instead to ask the
+        operating system to synchronize the whole file systems that contain the
+        data directory, the WAL files, and each tablespace.  See
+        <xref linkend="guc-recovery-init-sync-method"/> for information about
+        the caveats to be aware of when using <literal>syncfs</literal>.
+-->
+《機械翻訳》Linuxでは、<literal>syncfs</literal>を代わりに使用して、オペレーティングシステム、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求できます。
+<literal>syncfs</literal>を使用する際に注意すべき点については、<xref linkend="guc-recovery-init-sync-method"/>を参照してください。
+       </para>
+       <para>
+<!--
+        This option has no effect when <option>&#45;-no-sync</option> is used.
+-->
+《機械翻訳》このオプションは<option>--no-sync</option>が使われている場合は効果がありません。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry id="app-initdb-option-sync-only">
+      <term><option>-S</option></term>
+      <term><option>--sync-only</option></term>
+      <listitem>
+       <para>
+<!--
+        Safely write all database files to disk and exit.  This does not
+        perform any of the normal <application>initdb</application> operations.
+        Generally, this option is useful for ensuring reliable recovery after
+        changing <xref linkend="guc-fsync"/> from <literal>off</literal> to
+        <literal>on</literal>.
+-->
+すべてのデータベースファイルを安全にディスクに書き出し、終了します。
+これは通常の<application>initdb</application>の操作をまったく行いません。
+通常、このオプションは、<xref linkend="guc-fsync"/>を<literal>off</literal>から<literal>on</literal>に変更した後の信頼できるリカバリを確実にするのに有用です。
+       </para>
+      </listitem>
+     </varlistentry>
     </variablelist>
    </para>
 
@@ -779,7 +853,7 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry id="app-initdb-environment-pgdata">
@@ -807,7 +881,7 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -828,15 +902,6 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
     </listitem>
    </varlistentry>
   </variablelist>
-
-  <para>
-<!--
-   This utility, like most other <productname>PostgreSQL</productname> utilities,
-   also uses the environment variables supported by <application>libpq</application>
-   (see <xref linkend="libpq-envars"/>).
--->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
-  </para>
 
  </refsect1>
 
@@ -859,7 +924,7 @@ WALファイルの大きさを増やせば、WALファイルの数は減るで�
 <!--
   <title>See Also</title>
 -->
-<title>関連項目</title>
+  <title>関連項目</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-pg-ctl"/></member>

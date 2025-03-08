@@ -394,6 +394,39 @@ WALファイルが<filename>pg_wal</filename>ディレクトリにもはや存�
      </varlistentry>
 
      <varlistentry>
+      <term><option>--sync-method=<replaceable class="parameter">method</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        When set to <literal>fsync</literal>, which is the default,
+        <command>pg_rewind</command> will recursively open and synchronize all
+        files in the data directory.  The search for files will follow symbolic
+        links for the WAL directory and each configured tablespace.
+-->
+デフォルトの<literal>fsync</literal>に設定すると、<command>pg_rewind</command>はデータディレクトリ内のすべてのファイルを再帰的に開いて同期します。
+ファイルの検索はWALディレクトリと設定された各テーブル空間のシンボリックリンクをたどります。
+       </para>
+       <para>
+<!--
+        On Linux, <literal>syncfs</literal> may be used instead to ask the
+        operating system to synchronize the whole file systems that contain the
+        data directory, the WAL files, and each tablespace.  See
+        <xref linkend="guc-recovery-init-sync-method"/> for information about
+        the caveats to be aware of when using <literal>syncfs</literal>.
+-->
+Linuxでは、<literal>syncfs</literal>を代わりに使用して、データディレクトリ、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます。
+<literal>syncfs</literal>を使用する際に注意すべき点については、<xref linkend="guc-recovery-init-sync-method"/>を参照してください。
+       </para>
+       <para>
+<!--
+        This option has no effect when <option>&#45;-no-sync</option> is used.
+-->
+このオプションは<option>--no-sync</option>が使われている場合は効果がありません。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><option>-V</option></term>
       <term><option>--version</option></term>
 <!--
@@ -439,7 +472,7 @@ WALファイルが<filename>pg_wal</filename>ディレクトリにもはや存�
    <literal>never</literal>.
 -->
 環境変数<envar>PG_COLOR</envar>は診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
   </para>
  </refsect1>
 
@@ -531,14 +564,15 @@ WALファイルの中にもう存在しないものがある場合は、失わ�
       <filename>backup_label</filename>,
       <filename>tablespace_map</filename>,
       <filename>pg_internal.init</filename>,
-      <filename>postmaster.opts</filename>, and
-      <filename>postmaster.pid</filename>, as well as any file or directory
+      <filename>postmaster.opts</filename>,
+      <filename>postmaster.pid</filename> and
+      <filename>.DS_Store</filename> as well as any file or directory
       beginning with <filename>pgsql_tmp</filename>, are omitted.
 -->
 新しいリレーションファイルやWALセグメント、<filename>pg_xact</filename>や設定ファイルなどを含めて、それ以外のファイルをすべてソースクラスタからターゲットクラスタにコピーします。
 ベースバックアップと同様に、ディレクトリ<filename>pg_dynshmem/</filename>、<filename>pg_notify/</filename>、<filename>pg_replslot/</filename>、<filename>pg_serial/</filename>、<filename>pg_snapshots/</filename>、<filename>pg_stat_tmp/</filename>、および、<filename>pg_subtrans/</filename>の内容は、ソースクラスタからコピーされるデータから省かれます。
 <filename>pgsql_tmp</filename>で始まるすべてのファイルやディレクトリは省かれます。
-ファイル<filename>backup_label</filename>、<filename>tablespace_map</filename>、<filename>pg_internal.init</filename>、<filename>postmaster.opts</filename>、および、<filename>postmaster.pid</filename>も同様です。
+ファイル<filename>backup_label</filename>、<filename>tablespace_map</filename>、<filename>pg_internal.init</filename>、<filename>postmaster.opts</filename>、<filename>postmaster.pid</filename>および<filename>.DS_Store</filename>も同様です。
      </para>
     </step>
     <step>

@@ -78,7 +78,7 @@ PostgreSQL documentation
 <!--
   <title>Options</title>
 -->
-<title>オプション</title>
+  <title>オプション</title>
 
   <para>
 <!--
@@ -207,6 +207,20 @@ PostgreSQL documentation
      </varlistentry>
 
      <varlistentry>
+      <term><option>--builtin-locale=<replaceable class="parameter">locale</replaceable></option></term>
+      <listitem>
+       <para>
+<!--
+        Specifies the locale name when the builtin provider is used. Locale support
+        is described in <xref linkend="locale"/>.
+-->
+組み込みプロバイダを使用する場合にロケール名を指定します。
+ロケールのサポートについては<xref linkend="locale"/>で説明します。
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
       <term><option>--icu-locale=<replaceable class="parameter">locale</replaceable></option></term>
       <listitem>
        <para>
@@ -234,7 +248,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
      </varlistentry>
 
      <varlistentry>
-      <term><option>--locale-provider={<literal>libc</literal>|<literal>icu</literal>}</option></term>
+      <term><option>--locale-provider={<literal>builtin</literal>|<literal>libc</literal>|<literal>icu</literal>}</option></term>
       <listitem>
        <para>
 <!--
@@ -261,7 +275,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
      </varlistentry>
 
      <varlistentry>
-      <term><option>-S <replaceable class="parameter">template</replaceable></option></term>
+      <term><option>-S <replaceable class="parameter">strategy</replaceable></option></term>
       <term><option>--strategy=<replaceable class="parameter">strategy</replaceable></option></term>
       <listitem>
        <para>
@@ -464,7 +478,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
 <!--
   <title>Environment</title>
 -->
-<title>環境</title>
+  <title>環境</title>
 
   <variablelist>
    <varlistentry>
@@ -508,7 +522,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -520,7 +534,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>
@@ -530,7 +544,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
 <!--
   <title>Diagnostics</title>
 -->
-<title>診断</title>
+  <title>診断</title>
 
   <para>
 <!--
@@ -554,7 +568,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
 <!--
   <title>Examples</title>
 -->
-<title>例</title>
+  <title>例</title>
 
    <para>
 <!--
@@ -586,7 +600,7 @@ ICUロケールプロバイダを選択した場合に、このデータベー�
 <!--
   <title>See Also</title>
 -->
-<title>関連項目</title>
+  <title>関連項目</title>
 
   <simplelist type="inline">
    <member><xref linkend="app-dropdb"/></member>
