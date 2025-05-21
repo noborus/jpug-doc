@@ -38,7 +38,7 @@
 -->
 バックアップマニフェストはUTF-8でエンコードされたJSONドキュメントです。
 （一般にJSONドキュメントはユニコードであることを必要としますが、PostgreSQLは<type>json</type>および<type>jsonb</type>データ型にサポートされる全てのサーバエンコーディングを用いることを許しています。バックアップマニフェストに同様の例外はありません。）
-このJSONドキュメントは常に単一オブジェクトです。オブジェクトにあるキーについて、次章で説明します。
+このJSONドキュメントは常に単一オブジェクトです。オブジェクトにあるキーについて、次節で説明します。
   </para>
 
  <sect1 id="backup-manifest-toplevel">
@@ -64,8 +64,8 @@
       <productname>PostgreSQL</productname> <literal>17</literal>,
       it is <literal>2</literal>; in older versions, it is <literal>1</literal>.
 -->
-《機械翻訳》対応する値は整数です。
-<productname>PostgreSQL</productname> <literal>17</literal>以降では<literal>2</literal>、それ以前のバージョンでは<literal>1</literal>です。
+関連付けられた値は整数です。
+<productname>PostgreSQL</productname><literal>17</literal>以降は<literal>2</literal>で、古いバージョンでは<literal>1</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -81,7 +81,7 @@
       <literal>PostgreSQL-Backup-Manifest-Version</literal> is
       <literal>2</literal>.
 -->
-《機械翻訳》バックアップが取られた<productname>PostgreSQL</productname>インスタンスのデータベースシステム識別子。
+バックアップが取得された<productname>PostgreSQL</productname>インスタンスのデータベースシステム識別子。
 このフィールドは、<literal>PostgreSQL-Backup-Manifest-Version</literal>が<literal>2</literal>の場合にのみ存在します。
      </para>
     </listitem>

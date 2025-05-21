@@ -15,7 +15,7 @@
   <firstterm>shared library</firstterm> needs to be
   created.<indexterm><primary>shared library</primary></indexterm>
 -->
-Cで書かれた<productname>PostgreSQL</productname>の拡張関数を使うためには、サーバが動的にロードできるように特別な方法でコンパイルとリンクを行う必要があります。
+Cで書かれた<productname>PostgreSQL</productname>の拡張関数を使うためには、それらを特別な方法でコンパイルとリンクをして、サーバが動的にロードできるファイルを作る必要があります。
 正確には<firstterm>共有ライブラリ</firstterm>を作る必要があります。
 <indexterm><primary>共有ライブラリ</primary></indexterm>
 
@@ -56,8 +56,8 @@ Cで書かれた<productname>PostgreSQL</productname>の拡張関数を使うた
 まずソースファイルがオブジェクトファイルにコンパイルされ、そのオブジェクトファイル同士がリンクされます。
 これらのオブジェクトファイルは<firstterm>位置独立なコード</firstterm>（<acronym>PIC</acronym>）として作られる必要があります。
 <indexterm><primary>PIC</primary></indexterm>
-それは概念的には、実行プログラムから呼び出される時にメモリの適当な場所に置くことができるということです
-（実行プログラム用として作られたオブジェクトファイルはそのようにはコンパイルされません）。
+それは概念的には、実行プログラムから呼び出される時にメモリの適当な場所に置くことができるということです。
+（実行プログラム用として作られたオブジェクトファイルはそのようにはコンパイルされません。）
 共有ライブラリをリンクするコマンドは実行プログラムのリンクと区別するための特別なフラグがあります（少なくとも理論上ではそのようになっています。システムによってはもっと醜い実際が見受けられます）。
  </para>
 
@@ -106,9 +106,7 @@ cc -shared -o foo.so foo.o
       <systemitem class="osname">FreeBSD</systemitem>, older versions used
       the <filename>gcc</filename> compiler.
 -->
-《マッチ度[51.351351]》これは<systemitem class="osname">FreeBSD</systemitem>のバージョン3.0に適用されます。
-《機械翻訳》これは<systemitem class="osname">FreeBSD</systemitem>のバージョン13.0から適用されます。
-以前のバージョンでは<filename>gcc</filename>コンパイラを使用していました。
+これは<systemitem class="osname">FreeBSD</systemitem>のバージョン13.0に適用されます。古いバージョンでは<filename>gcc</filename>コンパイラを使用していました。
      </para>
     </listitem>
    </varlistentry>

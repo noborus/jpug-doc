@@ -253,9 +253,9 @@
 -->
 目的リストは問い合わせの結果を定義する式のリストです。
 <command>SELECT</command>の場合、この式は問い合わせの最終結果を構築するものです。
-これらは<command>SELECT</command>と<command>FROM</command>キーワードの間にある式に対応します
+これらは<command>SELECT</command>と<command>FROM</command>キーワードの間にある式に対応します。
 （<literal>*</literal>は単にリレーションの全ての列名の省略です。
-これはパーサによって個別の列に展開されますので、ルールシステムが見ることはありません）。
+これはパーサによって個別の列に展開されますので、ルールシステムが見ることはありません。）
     </para>
 
     <para>
@@ -440,7 +440,7 @@
     So a view like
 -->
 <productname>PostgreSQL</productname>におけるビューはルールシステムを使って実装されています。
-ビューは基本的に、<literal>ON SELECT DO INSTEAD</literal>ルールのある空のテーブルです(実際の記憶域はありません)。
+ビューは基本的に、<literal>ON SELECT DO INSTEAD</literal>ルールのある空のテーブルです（実際の記憶域はありません）。
 慣例的に、そのルールは<literal>_RETURN</literal>という名前です。
 ですので、以下のようなビューは
 
@@ -534,7 +534,8 @@ CREATE RULE "_RETURN" AS ON SELECT TO myview DO INSTEAD
 -->
 本章の例として挙げているのは、ちょっとした演算をする2つの結合のビューと、次にこれらの機能を利用するいくつかのビューです。
 初めの2つのビューのうちの1つは、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>操作に対するルールを後で追加することでカスタマイズされ、最終結果は何らかの魔法の機能によりあたかも実テーブルのように振舞うビューになります。
-初めて学ぶための例としては決して簡単ではなく先に進むことを躊躇させるかもしれませんが、多くの別々の例を持ち出して頭の混乱を招くよりも、全ての論点をステップごとに追う1つの例を挙げる方が良いでしょう。
+初めて学ぶための例としては決して簡単ではなく先に進むことを躊躇させるかもしれません。
+しかし、多くの別々の例を持ち出して頭の混乱を招くよりも、全ての論点をステップごとに追う1つの例を挙げる方が良いでしょう。
 </para>
 
 <para>
@@ -808,9 +809,9 @@ SELECT shoelace.sl_name, shoelace.sl_avail,
 -->
 これが最初に適用されるルールです。
 ルールシステムは最上位の問い合わせの残り（この例ではこれ以上ありません）の範囲テーブルの項目をチェックし続けます。
-そしてルールシステムは、追加された副問い合わせの範囲テーブルの項目がビューを参照するかを再帰的に確認します
+そしてルールシステムは、追加された副問い合わせの範囲テーブルの項目がビューを参照するかを再帰的に確認します。
 （しかし<literal>old</literal>や<literal>new</literal>は展開しません。
-そうでなければ無限再帰になってしまいます！）。
+そうでなければ無限再帰になってしまいます！）
 この例では<literal>shoelace_data</literal>や<literal>unit</literal>用の書き換えルールはありません。
 ですから書き換えは完結し、上記がプランナに渡される最終的な結果となります。
 </para>
@@ -958,7 +959,7 @@ SELECT shoe_ready.shoename, shoe_ready.sh_avail,
 <command>SELECT</command>と他のコマンドに対する問い合わせツリーの間には大きな違いはありません。
 明らかに、それらは違うコマンドタイプを持っていて、<command>SELECT</command>以外のコマンドでは、結果リレーションは結果の格納先となる範囲テーブルの項目を指し示します。
 それ以外ではまったく同じです。
-ですから、<literal>a</literal>と<literal>b</literal>の列を持つテーブル<literal>t1</literal>、<literal>t2</literal>に対する以下の2つの文の問い合わせツリーは、ほとんど同じです。
+ですから、<literal>a</literal>と<literal>b</literal>の列を持つテーブル<literal>t1</literal>、<literal>t2</literal>に対する以下の2つの文の問い合わせツリーは、
 
 <programlisting>
 SELECT t2.b FROM t1, t2 WHERE t1.a = t2.a;
@@ -969,6 +970,7 @@ UPDATE t1 SET b = t2.b FROM t2 WHERE t1.a = t2.a;
 <!--
     are nearly identical.  In particular:
 -->
+ほとんど同じです。
 以下に、具体的に示します。
 
     <itemizedlist>
@@ -1172,16 +1174,10 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     or rewrite the query per a user-defined rule.
     These options are discussed below.
 -->
-《マッチ度[89.233038]》ビューが<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>などの目的リレーションとして名付けられた場合はどうなるのでしょうか？
+ビューが<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>などの対象リレーションとして名付けられた場合はどうなるのでしょうか？
 上で説明したような置換をすると、結果リレーションが副問い合わせの範囲テーブル項目を指す問い合わせツリーができてしまい、それは上手く機能しません。しかし、いくつかのケースでは<productname>PostgreSQL</productname>はビューの更新をサポートする事ができます。
-ユーザーエクスペリエンスの複雑さの順に、ビューから参照されているテーブルでの自動的な置換、ユーザ定義トリガの実行、ユーザ定義ルールごとの問い合わせの書き換えがあります。
+ユーザエクスペリエンスの複雑さの順に、ビューから参照されているテーブルでの自動的な置換、ユーザ定義トリガの実行、ユーザ定義ルールごとの問い合わせの書き換えがあります。
 これらのオプションについては、以下で説明します。
-《機械翻訳》ビューが<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>のターゲットリレーションとして指定された場合、どうなりますか。
-上記の置換を行うと、結果リレーションが副問い合わせ範囲テーブルエントリを指すクエリツリーが得られますが、これは動作しません。
-しかし、<productname>PostgreSQL</productname>はビューの更新をサポートする方法がいくつかあります。
-ユーザーが経験する複雑さの順に並べると、それらは次のとおりです。
-ビューを基礎となるテーブルに自動的に置き換える、ユーザー定義のトリガーを実行する、またはユーザー定義のルールに従ってクエリーを書き換える。
-これらのオプションについては、後述します。
 </para>
 
 <para>
@@ -1196,12 +1192,9 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     information on the kinds of view that can be automatically updated, see
     <xref linkend="sql-createview"/>.
 -->
-《マッチ度[88.536155]》副問い合わせが単一の基底リレーションを参照しかつ十分に単純である時、リライタは副問い合わせを基となる基底リレーションに自動的に置き換え、したがって、<command>INSERT</command>、<command>UPDATE</command>あるいは<command>DELETE</command>を適切な方法で基底リレーションに適用する事ができます。
-この場合の<quote>十分に単純</quote>なビューは<firstterm>自動的に更新可能</firstterm>であると呼ばれます。自動的に更新可能なビューに関するより詳細な情報については、<xref linkend="sql-createview"/>を参照してください。
-《機械翻訳》副問い合わせが単一の基本リレーションから選択し、十分に単純である場合、書き換えプログラムは副問い合わせを基本リレーションに自動的に置き換えることができます。
-これにより、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>が適切な方法で基本リレーションに適用されます。
-このために十分に<quote>単純</quote>であるビューは、<firstterm>自動更新可能</firstterm>と呼ばれます。
-自動更新されるビューの種類の詳細については<xref linkend="sql-createview"/>を参照してください。
+副問い合わせが単一の基底リレーションを参照しかつ十分に単純である時、リライタは副問い合わせを基となる基底リレーションに自動的に置き換え、したがって、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>あるいは<command>MERGE</command>を適切な方法で基底リレーションに適用できます。
+この場合の<quote>十分に単純</quote>なビューは<firstterm>自動的に更新可能</firstterm>であると呼ばれます。
+自動的に更新可能なビューに関するより詳細な情報については、<xref linkend="sql-createview"/>を参照してください。
 </para>
 
 <para>
@@ -1219,17 +1212,11 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     but another unexpanded range-table entry is added to the query
     to represent the view in its capacity as the result relation.
 -->
-《マッチ度[87.603306]》もう一つの方法として、ビューに対するユーザ定義の<literal>INSTEAD OF</literal>トリガによってこれらのコマンドを処理する事ができます。この場合、書き換えは少々違う形で行われます
-（<xref linkend="sql-createtrigger"/>を参照してください）。
+もう一つの方法として、ビューに対するユーザ定義の<literal>INSTEAD OF</literal>トリガによってこれらのコマンドを処理できます（<xref linkend="sql-createtrigger"/>を参照してください）。
+この場合、書き換えは少々違う形で行われます
 <command>INSERT</command>に対しては、リライタはビューに全く何もせず、問い合わせの結果リレーションをそのままにします。
-<command>UPDATE</command>と<command>DELETE</command>に対しては、コマンドが更新もしくは削除しようとする<quote>古い</quote>行を生成するためにビュー問い合わせを展開する必要がまだあります。
+<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>に対しては、コマンドが更新、削除もしくはマージしようとする<quote>古い</quote>行を生成するためにビュー問い合わせを展開する必要がまだあります。
 そのため、ビューは通常通り展開されますが、もう一つの展開されない範囲テーブル項目が結果リレーションとしてビューを表す問い合わせに追加されます。
-《機械翻訳》あるいは、ビューに対するユーザ提供の<literal>INSTEAD OF</literal>トリガによって操作を処理することもできます（<xref linkend="sql-createtrigger"/>を参照してください）。
-この場合、書き換えは少し異なります。
-<command>INSERT</command>の場合、書き換えはビューに対してまったく何も行いません。
-クエリの結果リレーションとして残ります。
-<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>の場合、コマンドが更新、削除、またはマージしようとする<quote>古い</quote>行を生成するために、ビュー問い合わせを展開する必要があります。
-したがって、ビューは通常どおりに拡張されますが、別の展開されていない範囲テーブル・エントリがクエリに追加され、結果リレーションとしてビューを表します。
 </para>
 
 <para>
@@ -1248,10 +1235,10 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     <literal>INSTEAD OF</literal> trigger.  It is up to the trigger to work
     out what to update based on the old and new row values.
 -->
-《マッチ度[90.697674]》ここで起こる問題はビューで更新される行をどのように特定するかということです。
+ここで起こる問題はビューで更新される行をどのように特定するかということです。
 結果リレーションがテーブルの場合、更新する行の物理的な位置を特定するために特別な<acronym>CTID</acronym>項目が目的リストに追加されることを思い出して下さい。
 ビューの行には実際の物理的な位置がないため、ビューには<acronym>CTID</acronym>がありませんので、これは結果リレーションがビューの場合には上手くいきません。
-その代わり、<command>UPDATE</command>や<command>DELETE</command>操作では、特別な<literal>行全体</literal>の項目が目的リストに追加されていて、それはビューからすべての列を含むように展開されています。
+その代わり、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>操作では、特別な<literal>行全体</literal>の項目が目的リストに追加されていて、それはビューからすべての列を含むように展開されています。
 エグゼキュータはこの値を使って<quote>古い</quote>行を<literal>INSTEAD OF</literal>トリガに提供します。
 新旧の行の値に基づいて更新するものを計算するのはトリガの責任です。
 </para>
@@ -1267,14 +1254,10 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     <command>MERGE</command>, which currently does not support rules on
     the target relation other than <command>SELECT</command> rules.
 -->
-《マッチ度[65.579710]》別の方法としては、ビューに対する<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>コマンドに代替の動作を指定する<literal>INSTEAD</literal>ルールを定義する事です。
+別の方法としては、ビューに対する<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>コマンドに代替の動作を指定する<literal>INSTEAD</literal>ルールを定義する事です。
 これらのルールは、ビューではなくコマンドを、通常は1つもしくは複数のテーブルを更新するコマンドに書き換えます。
 それが<xref linkend="rules-update"/>の論題になります。
-《機械翻訳》もう1つの可能性は、ビューに対する<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>コマンドに対して代替アクションを指定する<literal>INSTEAD</literal>ルールをユーザが定義することです。
-これらのルールは、通常、ビューではなく、1つ以上のテーブルを更新するコマンドにコマンドを書き換えます。
-これが<xref linkend="rules-update"/>の話題です。
-これは<command>MERGE</command>では動作しないことに注意してください。
-現在のところ、<command>SELECT</command>ルール以外のターゲットリレーションに関するルールはサポートされていません。
+これは<command>MERGE</command>では機能しないことに注意してください。現在、<command>SELECT</command>ルール以外の対象リレーションでのルールをサポートしていません。
 </para>
 
 <para>
@@ -1299,9 +1282,8 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     triggers, they will override the default behavior of automatically
     updatable views.
 -->
-《マッチ度[82.828283]》単純なビューに対する<command>INSERT</command>、<command>UPDATE</command>あるいは<command>DELETE</command>コマンドの自動書き換えは常に最後に試みられます。したがって、ビューがルールもしくはトリガを持っていた場合、これらは更新可能ビューのデフォルト動作を上書きします。
-《機械翻訳》単純なビューに対する<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>クエリの自動書き換えは、常に最後に試みられます。
-したがって、ビューにルールまたはトリガがある場合、それらは自動更新可能ビューのデフォルト動作を上書きします。
+単純なビューに対する<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>あるいは<command>MERGE</command>問い合わせの自動書き換えは常に最後に試みられます。
+したがって、ビューがルールもしくはトリガを持っていた場合、これらは自動的に更新可能なビューのデフォルト動作を上書きします。
 </para>
 
 <para>
@@ -1358,6 +1340,7 @@ SELECT t1.a, t2.b, t1.ctid FROM t1, t2 WHERE t1.a = t2.a;
     The main differences between:
 -->
 <productname>PostgreSQL</productname>におけるマテリアライズドビューはビューのようにルールシステムを使用しますが、あたかもテーブルであるかのような形態で結果を保持します。
+以下の
 
 <programlisting>
 CREATE MATERIALIZED VIEW mymatview AS SELECT * FROM mytab;
@@ -1501,7 +1484,8 @@ VACUUM ANALYZE wrd;
 <!--
     Now let's spell-check a word.  Using <literal>file_fdw</literal> directly:
 -->
-<literal>file_fdw</literal>を直接用いて字句のスペルチェックをしてみましょう。
+字句のスペルチェックをしてみましょう。
+直接<literal>file_fdw</literal>を使って：
 
 <programlisting>
 SELECT count(*) FROM words WHERE word = 'caterpiler';
@@ -1712,8 +1696,8 @@ SELECT word FROM words ORDER BY word &lt;-&gt; 'caterpiler' LIMIT 10;
   functions may get executed more times than expected in the process of
   carrying out the rules.
 -->
-多くの場合、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>におけるルールによって実行できるタスクは、トリガーで実行した方が良いでしょう。
-トリガーは概念としては少し複雑ですが、意味を理解するにはとても単純です。
+多くの場合、<command>INSERT</command>/<command>UPDATE</command>/<command>DELETE</command>におけるルールによって実行できるタスクは、トリガで実行した方が良いでしょう。
+トリガは概念としては少し複雑ですが、意味を理解するにはとても単純です。
 元の問い合わせにvolatile関数を含む場合、ルールは驚かせる結果を返すことがよくあります。（volatile関数はルールを遂行する過程で予期していた回数より多く実行されてしまうかもしれません）
  </para>
 
@@ -2182,7 +2166,7 @@ UPDATE shoelace_data SET sl_avail = 6
     The substitutions and the added qualifications
     ensure that, if the original query would be, say:
 -->
-元の問い合わせが例えば下記のような場合に、置換と追加された条件は、ログには何も書かれないことを確実にします。
+元の問い合わせが例えば下記のような場合に、置換と追加された条件は、
 
 <programlisting>
 UPDATE shoelace_data SET sl_color = 'green'
@@ -2196,6 +2180,7 @@ UPDATE shoelace_data SET sl_color = 'green'
     replaced by <literal>shoelace_data.sl_avail</literal>.  Thus, the extra
     command generated by the rule is:
 -->
+ログには何も書かれないことを確実にします。
 この場合、元の問い合わせツリーの目的リストには<literal>sl_avail</literal>の項目がありませんので、<literal>NEW.sl_avail</literal>が<literal>shoelace_data.sl_avail</literal>に置き換えられます。
 その結果、このルールによって以下のような特別の問い合わせが生成されます。
 
@@ -2251,7 +2236,7 @@ SELECT shoelace_data.sl_name, 0,
     three new log entries. And that's absolutely correct.
 -->
 この構文解析ツリーは確実に3つの新しいログ項目を挿入します。
-これはまったく正しい動作です
+これはまったく正しい動作です。
 [訳注：sl3行はWHERE 0 != shoelace_data.sl_avail条件を満たさない（0!=0）ので、実際に更新される4行-1の3行分のログ項目が挿入されます]。
 </para>
 
@@ -2679,7 +2664,7 @@ Nested Loop
 <!--
     while omitting the extra range table entry would result in a
 -->
-一方、余計な範囲テーブル項目を省略することで、以下のようにログテーブルにまったく同じ項目が作られます。
+一方、余計な範囲テーブル項目を省略することで、
 
 <literallayout class="monospaced">
 Merge Join
@@ -2699,6 +2684,7 @@ Merge Join
     <command>UPDATE</command>. But it was a really hard job to make
     that all possible at all.
 -->
+ログテーブルにまったく同じ項目が作られます。
 ですから、ルールシステムは、まったく必要のない<literal>shoelace_data</literal>リレーションに対する余計なスキャンを一度行うことになります。
 そして<command>UPDATE</command>でも同様な不要なスキャンが再度実行されます。
 しかしながら、これらを全て可能にするのは大変な仕事です。
@@ -2938,8 +2924,8 @@ GRANT SELECT ON phone_number TO assistant;
 ですから秘書だけが今のところ公開の電話番号を参照することができます。
 しかし、秘書は別のビューを作成し、それにPUBLICに対するアクセス許可を与えることができます。
 こうすると秘書のビューを通して誰もが<literal>phone_number</literal>データを見ることができます。
-秘書ができないことは<literal>phone_data</literal>に直接アクセスするビューを作ることです
-（実際には作成はできますが、アクセスは全て、権限チェックで拒絶されます）。
+秘書ができないことは<literal>phone_data</literal>に直接アクセスするビューを作ることです。
+（実際には作成はできますが、アクセスは全て、権限チェックで拒絶されます。）
 そして、秘書が独自の<literal>phone_number</literal>ビューを開いたことにユーザが気付いた時点で、秘書の権限を取り上げることができます。
 秘書のビューへのアクセスは即座に失敗に終わります。
 </para>
@@ -3148,7 +3134,7 @@ CREATE VIEW phone_number WITH (security_barrier) AS
        number of rows it processes, and if so the reported status will
        be affected.)
 -->
-問い合わせに無条件の<literal>INSTEAD</literal>ルールが使用されていない場合、元々与えられていた問い合わせが実行され、そのコマンド状態は通常通り返されます
+問い合わせに無条件の<literal>INSTEAD</literal>ルールが使用されていない場合、元々与えられていた問い合わせが実行され、そのコマンド状態は通常通り返されます。
 （しかし、条件付き<literal>INSTEAD</literal>ルールが使用されている場合、その条件の否定が元の問い合わせに追加されることに注意してください。
 これにより、処理する行の数が減り、その結果報告される状態が影響を受けるかもしれません）。
       </para>
@@ -3226,8 +3212,9 @@ CREATE VIEW phone_number WITH (security_barrier) AS
 -->
 トリガによって行われる多くの操作は<productname>PostgreSQL</productname>のルールシステムで実装可能です。
 ルールで実装できないものの1つはある種の制約、特に外部キーに関してです。
-もし他のテーブルに列の値がなかった場合、条件ルールでコマンドを<literal>NOTHING</literal>に書き換えてしまうことも可能ですが、これではデータがだまって消去されてしまい、良いアイディアとは言えません。
-有効な値かどうかのチェックが必要で、無効な値についてはエラーメッセージを表示する必要があるなら、このことは今のところトリガを使って行わなければなりません。
+もし他のテーブルに列の値がなかった場合、条件ルールでコマンドを<literal>NOTHING</literal>に書き換えてしまうことも可能です。
+しかし、これではデータがだまって消去されてしまい、良いアイディアとは言えません。
+有効な値のチェックが必要で、無効な値の場合にエラーメッセージを生成する必要がある場合、トリガで行う必要があります。
 </para>
 
 <para>
@@ -3327,7 +3314,7 @@ CREATE RULE computer_del AS ON DELETE TO computer
 <!--
     Now we look at different types of deletes. In the case of a:
 -->
-ここで別の類の削除を考えてみましょう。
+ここで別の類の削除を考えてみましょう。以下のような場合には、
 
 <programlisting>
 DELETE FROM computer WHERE hostname = 'mypc.local.net';
@@ -3338,7 +3325,7 @@ DELETE FROM computer WHERE hostname = 'mypc.local.net';
     command issued by the trigger would also use an index scan (also fast).
     The extra command from the rule would be:
 -->
-上のような場合では、<literal>computer</literal>はインデックスにより（高速に）スキャンされます。
+<literal>computer</literal>はインデックスにより（高速に）スキャンされます。
 トリガによってこのコマンドが発行された場合もインデックススキャンが使用されます（高速です）。
 ルールによる追加コマンドは以下のようになります。
 
@@ -3374,7 +3361,8 @@ Nestloop
     is:
 -->
 次の削除処理では<structfield>hostname</structfield>が<literal>old</literal>で始まる2,000台全てのcomputerを削除しようと思います。
-方法として2つの有効な問い合わせがあって、1つは以下のようなものです。
+方法として2つの有効な問い合わせがあります。
+1つは以下のようなものです。
 
 <programlisting>
 DELETE FROM computer WHERE hostname &gt;= 'old'

@@ -277,7 +277,7 @@
 -->
 <literal>program</literal>オプションが指定されたとき、オプションの文字列がシェルによって実行されることに注意してください。
 信頼できないソースをコマンド引数に渡す場合、シェルにとって特別な意味を持つ可能性のある文字を取り除くかエスケープするように注意する必要があります。
-セキュリティ上の理由から、固定のコマンド文字列を使用するか、少なくともユーザー入力を渡さないようにすることをお勧めします。
+セキュリティ上の理由から、固定のコマンド文字列を使用するか、少なくともユーザ入力を渡さないようにすることをお勧めします。
  </para>
 
  <para>
@@ -387,7 +387,7 @@ OPTIONS ( filename 'log/pglog.csv', format 'csv' );
    To set the <literal>force_null</literal> option for a column, use the
    <literal>OPTIONS</literal> keyword.
 -->
-《機械翻訳》列に対して<literal>force_null</literal>オプションを設定するには、<literal>OPTIONS</literal>キーワードを使用します。
+列に<literal>force_null</literal>オプションを設定するには、<literal>OPTIONS</literal>キーワードを使用します。
   </para>
 <programlisting>
 CREATE FOREIGN TABLE films (

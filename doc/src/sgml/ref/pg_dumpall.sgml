@@ -56,7 +56,7 @@ PostgreSQL documentation
 スクリプトファイルには、データベースのリストアのために<xref linkend="app-psql"/>への入力として使うことのできる<acronym>SQL</acronym>コマンドが含まれています。
 これはクラスタ内の各データベースに対して<xref linkend="app-pgdump"/>を呼び出すことで行われます。
 さらに、<application>pg_dumpall</application>は、全てのデータベースに共通するグローバルオブジェクト、すなわちデータベースロール、テーブル空間、および権限パラメータに対する設定許可をダンプします。
-（<application>pg_dump</application>はこれらのオブジェクトを保存しません）。
+（<application>pg_dump</application>はこれらのオブジェクトを保存しません。）
   </para>
 
   <para>
@@ -192,7 +192,7 @@ SQLスクリプトは標準出力に書き込まれます。
         databases, and can also be specified more than once for multiple filter
         files.
 -->
-《機械翻訳》ダンプから除外するデータベースのパターンを読み込むファイル名を指定します。
+ダンプから除外するデータベースのパターンを読み込むファイル名を指定します。
 パターンは<option>--exclude-database</option>と同じ規則に従って解釈されます。
 <literal>STDIN</literal>から読み込むには、ファイル名として<filename>-</filename>を使用します。
 <option>--filter</option>オプションは、データベースを除外するために<option>--exclude-database</option>と一緒に指定でき、複数のフィルタファイルに対して複数回指定することもできます。
@@ -202,7 +202,7 @@ SQLスクリプトは標準出力に書き込まれます。
 <!--
         The file lists one database pattern per row, with the following format:
 -->
-《機械翻訳》ファイルには、1 行に 1 つのデータベース パターンがリストされ、次の形式になります。
+ファイルには、1行に1つのデータベースパターンがリストされ、次の形式になります。
 <synopsis>
 exclude database <replaceable class="parameter">PATTERN</replaceable>
 </synopsis>
@@ -215,10 +215,10 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
         Blank lines are also ignored. See <xref linkend="app-psql-patterns"/>
         for how to perform quoting in patterns.
 -->
-《機械翻訳》<literal>#</literal>で始まる行はコメントと見なされ、無視されます。
+<literal>#</literal>で始まる行はコメントと見なされ、無視されます。
 コメントはオブジェクトパターン行の後にも置くことができます。
 空行も無視されます。
-パターン内のクォートの実行方法については<xref linkend="app-psql-patterns"/>を参照してください。
+パターン内の引用方法については<xref linkend="app-psql-patterns"/>を参照してください。
        </para>
 
       </listitem>
@@ -301,8 +301,8 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
         resulting script as superuser.)
 -->
 トリガを無効にする際に使用するスーパーユーザのユーザ名を指定します。
-これは<option>--disable-triggers</option>を使用する場合にのみ使用されます
-（通常はこのオプションを使うよりも、出力されたスクリプトをスーパーユーザ権限で実行する方が良いでしょう）。
+これは<option>--disable-triggers</option>を使用する場合にのみ使用されます。
+（通常はこのオプションを使うよりも、出力されたスクリプトをスーパーユーザ権限で実行する方が良いでしょう。）
        </para>
       </listitem>
      </varlistentry>
@@ -701,7 +701,7 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
         With this option, all columns will be restored with the default
         compression setting.
 -->
-<acronym>TOAST</acronym>圧縮手法を設定するコマンドを出力しません。
+<acronym>TOAST</acronym>圧縮方式を設定するコマンドを出力しません。
 このオプションにより、列はすべてデフォルトの圧縮の設定でリストアされます。
        </para>
       </listitem>
@@ -756,7 +756,7 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
         such issues, at the price of a harder-to-read dump script.
 -->
 強制的にすべての識別子に引用符を付与します。
-このオプションは、<application>pg_dumpall</application>のメジャーバージョンとは異なるメジャーバージョンの<productname>PostgreSQL</productname>のサーバーからデータベースをダンプするとき、あるいは出力を異なるメジャーバージョンのサーバにロードする予定であるときに推奨されます。
+このオプションは、<application>pg_dumpall</application>のメジャーバージョンとは異なるメジャーバージョンの<productname>PostgreSQL</productname>のサーバからデータベースをダンプするとき、あるいは出力を異なるメジャーバージョンのサーバにロードする予定であるときに推奨されます。
 デフォルトでは、<application>pg_dumpall</application>は、それ自身のメジャーバージョンにおける予約語である識別子に対してのみ引用符を付与します。
 これは、他のバージョンのサーバを処理するときに互換性の問題を引き起こす場合があります。
 他のバージョンのサーバでは予約語の集合が多少、異なる場合があるからです。
@@ -869,7 +869,8 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
 -->
 データベースサーバが稼働しているマシンのホスト名を指定します。
 この値がスラッシュから始まる場合、Unixドメインソケット用のディレクトリとして使用されます。
-デフォルトは、設定されていれば環境変数<envar>PGHOST</envar>から取得されます。設定されていなければ、Unixドメインソケット接続とみなされます。
+デフォルトは、設定されていれば環境変数<envar>PGHOST</envar>から取得されます。
+設定されていなければ、Unixドメインソケット接続とみなされます。
        </para>
       </listitem>
      </varlistentry>
@@ -904,7 +905,7 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
         set, or a compiled-in default.
 -->
 サーバが接続を監視するTCPポートもしくはローカルUnixドメインソケットファイルの拡張子を指定します。
-デフォルトは、設定されている場合、環境変数<envar>PGPORT</envar>の値になります。設定されていなければ、コンパイル時のデフォルト値となります。
+デフォルトは、設定されている場合、環境変数<envar>PGPORT</envar>の値となります。設定されていなければ、コンパイル時のデフォルト値となります。
        </para>
       </listitem>
      </varlistentry>
@@ -1041,7 +1042,7 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -1053,7 +1054,7 @@ exclude database <replaceable class="parameter">PATTERN</replaceable>
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>

@@ -265,7 +265,7 @@ createdb <replaceable class="parameter">dbname</replaceable>
 -->
 <command>createdb</command>は魔法ではありません。
 これは<literal>postgres</literal>データベースに接続し、先に解説した通りに<command>CREATE DATABASE</command>コマンドを実行します。
-<xref linkend="app-createdb"/>のマニュアルページに実行方法の詳細が説明されています。
+<xref linkend="app-createdb"/>のリファレンスページに実行方法の詳細が説明されています。
 引数のない<command>createdb</command>は現在のユーザ名のデータベースを作成しますので、注意してください。
   </para>
 
@@ -288,14 +288,13 @@ createdb <replaceable class="parameter">dbname</replaceable>
 -->
 他のユーザのためにデータベースを作成し、そのユーザ自身が設定、管理できるように新しいデータベースの所有者にさせたい場合も考えられます。
 そのためには、次のコマンドのいずれかを使用します。
-SQL環境からは
 <programlisting>
 CREATE DATABASE <replaceable>dbname</replaceable> OWNER <replaceable>rolename</replaceable>;
 </programlisting>
 <!--
    from the SQL environment, or:
 -->
-シェルからは
+をSQL環境から実行するか、または
 <programlisting>
 createdb -O <replaceable>rolename</replaceable> <replaceable>dbname</replaceable>
 </programlisting>
@@ -304,6 +303,7 @@ createdb -O <replaceable>rolename</replaceable> <replaceable>dbname</replaceable
    Only the superuser is allowed to create a database for
    someone else (that is, for a role you are not a member of).
 -->
+をシェルから実行します。
 他のユーザのために（つまり、自身がメンバではないロールのために）データベースを作成できるのはスーパーユーザだけです。
   </para>
  </sect1>
@@ -803,8 +803,8 @@ CREATE TABLE foo(i int);
    overridden by a <literal>TABLESPACE</literal> clause in <command>CREATE
    DATABASE</command>).
 -->
-《マッチ度[93.939394]》データベースクラスタが初期化される時に2つのテーブル空間が自動的に作成されます。
-<literal>pg_global</literal>テーブル空間は共有システムカタログ用に使用されます。
+データベースクラスタが初期化される時に2つのテーブル空間が自動的に作成されます。
+<literal>pg_global</literal>テーブル空間は共有システムカタログ用にのみ使用されます。
 <literal>pg_default</literal>テーブル空間は<literal>template1</literal>と<literal>template0</literal>データベースのデフォルトテーブル空間です
 （したがって、<command>CREATE DATABASE</command>の<literal>TABLESPACE</literal>句で変更されない限り、このテーブル空間が同様に他のデータベースに対するデフォルトのテーブル空間になります）。
   </para>

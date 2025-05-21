@@ -1234,7 +1234,7 @@ CREATE INDEX people_names ON people ((first_name || ' ' || last_name));
    query.  Thus, indexes on expressions are useful when retrieval speed
    is more important than insertion and update speed.
 -->
-《マッチ度[95.040000]》派生した式が、行挿入と<link linkend="storage-hot">非HOT更新</link>の度に計算されなければなりませんので、インデックス式は相対的に見て維持が高価です。
+派生した式が、行挿入と<link linkend="storage-hot">非HOT更新</link>の度に計算されなければならないので、インデックス式は相対的に見て維持が高価です。
 しかし、インデックス式はインデックス内にすでに格納されているため、インデックスを使用する検索の間は再計算<emphasis>されません</emphasis>。
 上の両方の例では、システムは問い合わせを単なる<literal>WHERE indexedcolumn = 'constant'</literal>と理解しますので、この検索速度は他の単純なインデックス問い合わせと同じです。
 したがって、式に対するインデックスは取り出し速度が挿入、更新速度より重要な場合に有用です。
@@ -2377,7 +2377,7 @@ CREATE INDEX test1c_content_y_index ON test1c (content COLLATE "y");
    The rest of this section gives some tips for that:
 -->
 どのインデックスを作成すべきかを判断するための一般的な手順を定めることは困難です。
-これまでの節では、例として典型的なケースをいくつか記述してきました。
+前節では、例として典型的なケースをいくつか記述してきました。
 十分な検証がしばしば必要です。
 本節の残りで、検証のためのヒントをいくつか説明しておきます。
   </para>

@@ -22,7 +22,7 @@ PostgreSQL documentation
 <!--
   <refpurpose>enable, disable or check data checksums in a <productname>PostgreSQL</productname> database cluster</refpurpose>
 -->
-<refpurpose><productname>PostgreSQL</productname>データベースクラスタのデータチェックサムを有効化、無効化、あるいは検査する。</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname>データベースクラスタのデータチェックサムを有効化、無効化、あるいは検査する</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -201,7 +201,7 @@ PostgreSQL documentation
         all files in the data directory.  The search for files will follow
         symbolic links for the WAL directory and each configured tablespace.
 -->
-《機械翻訳》デフォルトの<literal>fsync</literal>に設定すると、<command>pg_checksums</command>はデータディレクトリ内の全てのファイルを再帰的に開いて同期します。
+デフォルトの<literal>fsync</literal>に設定すると、<command>pg_checksums</command>はデータディレクトリ内のすべてのファイルを再帰的に開いて同期します。
 ファイルの検索はWALディレクトリと設定された各テーブル空間のシンボリックリンクをたどります。
        </para>
        <para>
@@ -212,14 +212,14 @@ PostgreSQL documentation
         <xref linkend="guc-recovery-init-sync-method"/> for information about
         the caveats to be aware of when using <literal>syncfs</literal>.
 -->
-《機械翻訳》Linuxでは、<literal>syncfs</literal>を使用して、データディレクトリ、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます。
-<xref linkend="guc-recovery-init-sync-method"/>を参照してください。
+Linuxでは、<literal>syncfs</literal>を代わりに使用して、データディレクトリ、WALファイル、各テーブル空間を含むファイルシステム全体を同期させるようにオペレーティングシステムに要求することもできます
+<literal>syncfs</literal>を使用する際に注意すべき点については、<xref linkend="guc-recovery-init-sync-method"/>を参照してください。
        </para>
        <para>
 <!--
         This option has no effect when <option>&#45;-no-sync</option> is used.
 -->
-《機械翻訳》このオプションは<option>--no-sync</option>が使われている場合は効果がありません。
+このオプションは<option>--no-sync</option>が使われている場合には効果がありません。
        </para>
       </listitem>
      </varlistentry>
@@ -299,7 +299,7 @@ PostgreSQL documentation
       are <literal>always</literal>, <literal>auto</literal> and
       <literal>never</literal>.
 -->
-対話的メッセージで色を使用するかを指定します。
+診断メッセージで色を使うかどうかを指定します。
 指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>

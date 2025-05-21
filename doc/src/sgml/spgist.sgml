@@ -407,7 +407,7 @@
 <!--
       The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_config(internal, internal) RETURNS void ...
 </programlisting>
@@ -525,7 +525,7 @@ typedef struct spgConfigOut
 <!--
       The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_choose(internal, internal) RETURNS void ...
 </programlisting>
@@ -547,7 +547,7 @@ typedef struct spgChooseIn
 -->
     Datum       datum;          /* インデックス付けされる元のデータ */
     Datum       leafDatum;      /* リーフに保存されている現在のデータ */
-    int         level;          /* (0から数えた)現在のレベル */
+    int         level;          /* （0から数えた）現在のレベル */
 
 <!--
     /* Data from current inner tuple */
@@ -558,11 +558,11 @@ typedef struct spgChooseIn
     Datum      *nodeLabels;     /* node label values (NULL if none) */
 -->
     /* 現在の内部タプルからのデータ */
-    bool        allTheSame;     /* タプルはall-the-sameの印を付けられているか */
-    bool        hasPrefix;      /* タプルは接頭辞を持っているか */
-    Datum       prefixDatum;    /* そうであれば、接頭辞の値 */
-    int         nNodes;         /* 内部タプル内のノード数 */
-    Datum      *nodeLabels;     /* ノードのラベルの値(なければNULL) */
+    bool        allTheSame;     /* タプルはall-the-sameと印が付けられているか？ */
+    bool        hasPrefix;      /* タプルは接頭辞を持つか？ */
+    Datum       prefixDatum;    /* もしそうなら、接頭辞の値 */
+    int         nNodes;         /* 内部タプルの中のノード数 */
+    Datum      *nodeLabels;     /* ノードのラベルの値（なければNULL） */
 } spgChooseIn;
 
 typedef enum spgChooseResultType
@@ -795,7 +795,7 @@ typedef struct spgChooseOut
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_picksplit(internal, internal) RETURNS void ...
 </programlisting>
@@ -941,7 +941,7 @@ typedef struct spgPickSplitOut
 <!--
        The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_inner_consistent(internal, internal) RETURNS void ...
 </programlisting>
@@ -991,11 +991,11 @@ typedef struct spgInnerConsistentIn
     Datum      *nodeLabels;     /* node label values (NULL if none) */
 -->
     /* 現在の内部タプルからのデータ */
-    bool        allTheSame;     /* タプルはall-the-sameと印が付けられているか */
-    bool        hasPrefix;      /* タプルは接頭辞を持つか */
+    bool        allTheSame;     /* タプルはall-the-sameと印が付けられているか？ */
+    bool        hasPrefix;      /* タプルは接頭辞を持つか？ */
     Datum       prefixDatum;    /* もしそうなら、接頭辞の値 */
     int         nNodes;         /* 内部タプルの中のノード数 */
-    Datum      *nodeLabels;     /* ノードのラベルの値(なければNULL) */
+    Datum      *nodeLabels;     /* ノードのラベルの値（なければNULL） */
 } spgInnerConsistentIn;
 
 typedef struct spgInnerConsistentOut
@@ -1144,7 +1144,7 @@ typedef struct spgInnerConsistentOut
 <!--
        The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 <programlisting>
 CREATE FUNCTION my_leaf_consistent(internal, internal) RETURNS bool ...
 </programlisting>
@@ -1329,7 +1329,7 @@ typedef struct spgLeafConsistentOut
 <!--
         The <acronym>SQL</acronym> declaration of the function must look like this:
 -->
-関数の<acronym>SQL</acronym>宣言は以下のようになります。
+このこのこのこのこのこの関数の<acronym>SQL</acronym>宣言は以下のようになります。
 
 <programlisting>
 CREATE OR REPLACE FUNCTION my_options(internal)

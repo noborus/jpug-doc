@@ -52,12 +52,9 @@
      and <literal>sql_drop</literal>.
      Support for additional events may be added in future releases.
 -->
-《マッチ度[84.196891]》イベントトリガは、関連づけられたイベントが、定義されたデータベースで起こるたびに実行されます。
-現在の所サポートされているイベントは、<literal>ddl_command_start</literal>、<literal>ddl_command_end</literal>、<literal>table_rewrite</literal>、<literal>sql_drop</literal>です。
+イベントトリガは、関連づけられたイベントが、定義されたデータベースで起こるたびに実行されます。
+今のところサポートされているイベントは、<literal>login</literal>、<literal>ddl_command_start</literal>、<literal>ddl_command_end</literal>、<literal>table_rewrite</literal>、<literal>sql_drop</literal>です。
 今後のリリースで新たなイベントが追加されるかもしれません。
-《機械翻訳》イベントトリガは、関連付けられたイベントが定義されているデータベースで発生するたびに起動します。
-現在サポートされているイベントは、<literal>login</literal>、<literal>ddl_command_start</literal>、<literal>ddl_command_end</literal>、<literal>table_rewrite</literal>、<literal>sql_drop</literal>のみです。
-将来のリリースでは、追加のイベントがサポートされる可能性があります。
    </para>
 
    <para>
@@ -78,15 +75,15 @@
      canceling a connection in <application>psql</application> will not cancel
      the in-progress <literal>login</literal> trigger.
 -->
-《機械翻訳》<literal>login</literal>イベントは、認証されたユーザがシステムにログインした時に発生します。
-このイベントのトリガプロシージャにバグがあると、システムへのログインが失敗する可能性があります。
+<literal>login</literal>イベントは、認証されたユーザがシステムにログインするときに発生します。
+このイベントのトリガプロシージャにおけるバグは、システムへのログインの成功を妨げる可能性があります。
 このようなバグは、接続文字列または設定ファイルで<xref linkend="guc-event-triggers"/>を<literal>false</literal>に設定することで回避できます。
-または、単一ユーザー・モードでシステムを再起動することもできます（このモードではイベント・トリガーが無効になります）。
-シングルユーザモードの使用法については<xref linkend="app-postgres"/>の参照ページを参照してください。
-<literal>login</literal>イベントはスタンバイサーバでも起動します。
-サーバがアクセス不能になるのを防ぐために、このようなトリガーは、スタンバイで実行するときにデータベースに何も書き込まないようにする必要があります。
-また、<literal>login</literal>イベントトリガ内の長時間実行されるクエリは避けることをお勧めします。
-例えば、<application>psql</application>で接続をキャンセルしても、進行中の<literal>login</literal>トリガはキャンセルされません。
+あるいは、シングルユーザモードでシステムを再起動することでも回避できます（このモードではイベントトリガが無効になっているため）。
+シングルユーザモードの使用方法の詳細については、<xref linkend="app-postgres"/>のリファレンスページを参照してください。
+<literal>login</literal>イベントはスタンバイサーバでも実行されます。
+サーバがアクセスできなくなるのを防ぐために、このようなトリガは、スタンバイで実行されているときにはデータベースに何も書き込まないようにする必要があります。
+また、<literal>login</literal>イベントトリガでの長時間実行する問い合わせは避けることをお勧めします。
+例えば、<application>psql</application>で接続を取り消しても進行中の<literal>login</literal>トリガを中断しないことに注意してください。
    </para>
 
    <para>
@@ -1296,11 +1293,8 @@ typedef struct EventTriggerData
         See <xref linkend="event-trigger-definition"/> for the meaning of these
         events.
 -->
-《マッチ度[80.830671]》その関数が呼び出されたイベント、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のうちの１つを記述します。
+その関数が呼び出されたイベント、<literal>"login"</literal>、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のうちの１つを記述します。
 これらのイベントの内容は、<xref linkend="event-trigger-definition"/>を参照してください。
-《機械翻訳》関数が呼び出されるイベントを記述します。
-<literal>"login"</literal>、<literal>"ddl_command_start"</literal>、<literal>"ddl_command_end"</literal>、<literal>"sql_drop"</literal>、<literal>"table_rewrite"</literal>のいずれかです。
-これらのイベントの意味については<xref linkend="event-trigger-definition"/>を参照してください。
        </para>
       </listitem>
      </varlistentry>
@@ -1358,7 +1352,8 @@ typedef struct EventTriggerData
     (Examples of triggers written in procedural languages can be found in
     the documentation of the procedural languages.)
 -->
-C言語で作成したイベントトリガ関数に関するとても簡単な例をここに示します（手続き言語で作成したトリガの例は、その手続き言語の文書に記載されています）。
+C言語で作成したイベントトリガ関数に関するとても簡単な例をここに示します。
+（手続き言語で作成したトリガの例は、その手続き言語の文書に記載されています。）
    </para>
 
    <para>
@@ -1551,16 +1546,16 @@ CREATE EVENT TRIGGER no_rewrite_allowed
       in recovery before performing any writes. Writing to a standby server
       will make it inaccessible.
 -->
-《機械翻訳》<literal>login</literal>イベントのイベントトリガは、ユーザログインのログ記録、現在の状況に応じた接続の検証やロールの割り当て、セッションデータの初期化などに有用です。
-<literal>login</literal>イベントを使用するイベントトリガは、書き込みを行う前にデータベースがリカバリ状態にあるかどうかをチェックすることが非常に重要です。
-スタンバイサーバに書き込みを行うと、アクセスできなくなります。
+<literal>login</literal>イベントのイベントトリガは、ユーザログインの記録、接続の検証と現在の状況に応じたロールの割り当て、あるいは、セッションデータの初期設定に有用です。
+<literal>login</literal>イベントを使用するイベントトリガは、書き込みを実行する前にデータベースがリカバリ中であるかどうかを確認することが非常に重要です。
+スタンバイサーバに書き込むとアクセスできなくなります。
     </para>
 
     <para>
 <!--
       The following example demonstrates these options.
 -->
-《機械翻訳》次の例は、これらのオプションを示しています。
+以下は、これらの機能付加を示す例です。
 <programlisting>
 -- create test tables and roles
 CREATE TABLE user_login_log (

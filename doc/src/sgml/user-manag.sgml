@@ -477,7 +477,7 @@ CREATE USER <replaceable>name</replaceable>;
     and <xref linkend="sql-alterrole"/> commands for details.
 -->
 ロール属性は、ロールを作成した後でも<command>ALTER ROLE</command><indexterm><primary>ALTER ROLE</primary></indexterm>コマンドで変更できます。
-詳細は<xref linkend="sql-createrole"/>と<xref linkend="sql-alterrole"/>のマニュアルページを参照してください。
+詳細は<xref linkend="sql-createrole"/>と<xref linkend="sql-alterrole"/>のリファレンスページを参照してください。
    </para>
 
   <para>
@@ -540,12 +540,12 @@ ALTER ROLE myname SET enable_indexscan TO off;
    users have <literal>ADMIN OPTION</literal> on a role at any given time
    can administer it.
 -->
-《マッチ度[95.462280]》非スーパーユーザが<literal>CREATEROLE</literal>権限を使用してロールを作成すると、作成されたロールは自動的に作成元のユーザに再度付与されます。これは、ブートストラップスーパーユーザがコマンド<literal>GRANT created_user TO creating_user WITH ADMIN OPTION, SET FALSE, INHERIT FALSE</literal>を実行した場合と同じです。
+非スーパーユーザが<literal>CREATEROLE</literal>権限を使用してロールを作成すると、作成されたロールは自動的に作成元のユーザに再度付与されます。これは、ブートストラップスーパーユーザがコマンド<literal>GRANT created_user TO creating_user WITH ADMIN OPTION, SET FALSE, INHERIT FALSE</literal>を実行した場合と同じです。
 <literal>CREATEROLE</literal>ユーザが、既存のロールに関して特別な権限を行使できるのは、そのロールに対する<literal>ADMIN OPTION</literal>権限がある場合のみですので、この権限は、<literal>CREATEROLE</literal>ユーザが作成したロールを管理するのに十分なだけです。
 一方、<literal>INHERIT FALSE, SET FALSE</literal>で作成されたため、この<literal>CREATEROLE</literal>ユーザは作成されたロールの権限をデフォルトで継承していませんし、<literal>SET ROLE</literal>を使ってそのロールの権限にアクセスできません。
 しかし、ロールに対する<literal>ADMIN OPTION</literal>を持つユーザは、そのロールのメンバシップを他のユーザに付与できるため、<literal>CREATEROLE</literal>ユーザは、そのロールを自分自身に<literal>INHERIT</literal>または<literal>SET</literal>オプションで付与するだけで、作成したロールへのアクセス権を獲得できます。
 したがって、権限がデフォルトで継承されないこと、またはデフォルトで<literal>SET ROLE</literal>が付与されないことは、事故に対する安全策であり、セキュリティ機能ではありません。
-また、この自動的な付与はブートストラップユーザによって与えられるため、<literal>CREATEROLE</literal>ユーザによって削除または変更することはできないことに注意してください。しかし、スーパーユーザはそれを取り消したり、修正したり、他の<literal>CREATEROLE</literal>ユーザに対してそのようなグラントを追加したりすることができます。
+また、この自動的な付与はブートストラップスーパーユーザによって与えられるため、<literal>CREATEROLE</literal>ユーザによって削除または変更することはできないことに注意してください。しかし、スーパーユーザはそれを取り消したり、修正したり、他の<literal>CREATEROLE</literal>ユーザに対してそのようなグラントを追加したりすることができます。
 どの<literal>CREATEROLE</literal>ユーザも、ある時点でロールに対して<literal>ADMIN OPTION</literal>を持っているかどうかに関係なく、それを管理できます。
   </para>
  </sect1>
@@ -661,6 +661,7 @@ GRANT island TO joe WITH INHERIT TRUE, SET FALSE;
 -->
 ロール<literal>joe</literal>として接続した直後、データベースは<literal>joe</literal>に直接付与された権限に加えて、<literal>admin</literal>と<literal>island</literal>に付与された権限を<quote>継承</quote>するため、これらの権限を使用できます。
 ただし、<literal>wheel</literal>に付与された権限は使用できません。これは、<literal>joe</literal>が間接的に<literal>wheel</literal>のメンバであるにもかかわらず、メンバシップは<literal>admin</literal>を介して付与され、<literal>WITH INHERIT FALSE</literal>を使用して付与されたためです。
+そして、
 <programlisting>
 SET ROLE admin;
 </programlisting>
@@ -670,6 +671,7 @@ SET ROLE admin;
    <literal>island</literal>.  After:
 -->
 を行った後、セッションは、<literal>admin</literal>に付与された権限のみを使用し、<literal>joe</literal>や<literal>island</literal>に付与された権限は使用しません。
+そして、
 <programlisting>
 SET ROLE wheel;
 </programlisting>

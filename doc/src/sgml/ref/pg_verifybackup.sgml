@@ -23,7 +23,7 @@ PostgreSQL documentation
   <refpurpose>verify the integrity of a base backup of a
   <productname>PostgreSQL</productname> cluster</refpurpose>
 -->
-  <refpurpose><productname>PostgreSQL</productname>クラスタのベースバックアップの完全性を確認します</refpurpose>
+  <refpurpose><productname>PostgreSQL</productname>クラスタのベースバックアップの完全性を確認する</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -77,12 +77,9 @@ PostgreSQL documentation
    fails verification against its own internal checksum,
    <literal>pg_verifybackup</literal> will terminate with a fatal error.
 -->
-《マッチ度[72.446556]》バックアップの検証は4つの段階を経て進みます。
+バックアップの検証は4つの段階で進みます。
 第1に、<literal>pg_verifybackup</literal>が<literal>backup_manifest</literal>ファイルを読みます。
-そのファイルが存在しない、読むことができない、不正である、または、自身の内部チェックサムの検証に失敗した場合には、<literal>pg_verifybackup</literal>は致命的なエラーで終了します。
-《機械翻訳》バックアップの検証は4つの段階で行われます。
-まず、<literal>pg_verifybackup</literal>は<literal>backup_manifest</literal>ファイルを読み込みます。
-そのファイルが存在しない、読み込めない、形式が間違っている、バックアップディレクトリの<filename>pg_control</filename>とシステム識別子が一致しない、あるいは内部チェックサムに対する検証に失敗した場合、<literal>pg_verifybackup</literal>は致命的なエラーで終了します。
+そのファイルが存在しない、読むことができない、不正である、バックアップディレクトリの<filename>pg_control</filename>とシステム識別子が一致しない、または、自身の内部チェックサムの検証に失敗した場合には、<literal>pg_verifybackup</literal>は致命的なエラーで終了します。
   </para>
 
   <para>
@@ -144,11 +141,11 @@ PostgreSQL documentation
    the correct checksums but specify nonsensical actions can't be detected
    by this method.
 -->
-最後に<literal>pg_verifybackup</literal>は、マニフェストを使って、バックアップを回復するのに必要な先行書き込みログレコードが存在し、それが読み込めて解析できるかを検証します。
-<literal>backup_manifest</literal>は、必要となる先行書き込みログレコードに関する情報を含んでおり、<literal>pg_verifybackup</literal>は、その情報を使って、先行書き込みログレコードを解析するよう<literal>pg_waldump</literal>を呼び出します。
+最後に<literal>pg_verifybackup</literal>は、マニフェストを使って、バックアップを回復するのに必要な先行書き込みログ（WAL）レコードが存在し、それが読み込めて解析できるかを検証します。
+<literal>backup_manifest</literal>は、必要となる先行書き込みログ（WAL）レコードに関する情報を含んでおり、<literal>pg_verifybackup</literal>は、その情報を使って、先行書き込みログ（WAL）レコードを解析するよう<literal>pg_waldump</literal>を呼び出します。
 <literal>pg_waldump</literal>がエラーだけを報告し、それ以外の出力をしないよう<literal>--quiet</literal>フラグが使われます。
 この水準の検証は、存在しないファイルや内部チェックサムが一致しないなどの明らかな問題を検出するには十分ですが、回復しようとする時に起こりうる問題をすべて検出するほど広範囲に十分なものではありません。
-例えば、正しいチェックサムを持つものの馬鹿げた動作を指定する先行書き込みログレコードを生成するサーバのバグは、この方法では検出できません。
+例えば、正しいチェックサムを持つものの馬鹿げた動作を指定する先行書き込みログ（WAL）レコードを生成するサーバのバグは、この方法では検出できません。
   </para>
 
   <para>
@@ -246,7 +243,7 @@ PostgreSQL documentation
         Don't attempt to parse write-ahead log data that will be needed
         to recover from this backup.
 -->
-このバックアップからの回復に必要な先行書き込みログデータを解析しません。
+このバックアップからの回復に必要な先行書き込みログ（WAL）データを解析しません。
        </para>
       </listitem>
      </varlistentry>

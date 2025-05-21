@@ -618,13 +618,9 @@ T1の各行R1に対して、T2において行R1との結合条件を満たして
         column names, <literal>NATURAL JOIN</literal> behaves like
         <literal>CROSS JOIN</literal>.
 -->
-《マッチ度[73.264781]》最後に、<literal>NATURAL</literal>は<literal>USING</literal>の略記形式で、２つの入力テーブルの両方に含まれているすべての列名で構成される<literal>USING</literal>リストを形成します。
+最後に、<literal>NATURAL</literal>は<literal>USING</literal>の略記形式で、２つの入力テーブルの両方に含まれているすべての列名で構成される<literal>USING</literal>リストを形成します。
 <literal>USING</literal>と同様、これらの列は出力テーブルに一度だけ現れます。
-共通する列が存在しない場合、<literal>NATURAL JOIN</literal>は<literal>JOIN ... ON TRUE</literal>と同様に動作し、クロス積結合を生成します。
-《機械翻訳》最後に、<literal>NATURAL</literal>は<literal>USING</literal>の省略形です。
-これは両方の入力テーブルに現れる全ての列名からなる<literal>USING</literal>リストを形成します。
-<literal>USING</literal>と同様に、これらの列は出力テーブルに一度しか現れません。
-共通の列名がない場合、<literal>NATURAL JOIN</literal>は<literal>CROSS JOIN</literal>と同様に動作します。
+共通する列名が存在しない場合、<literal>NATURAL JOIN（自然結合）</literal>は<literal>CROSS JOIN（クロス結合）</literal>のように動作します。
        </para>
 
        <note>
@@ -1015,7 +1011,7 @@ FROM (VALUES ('anne', 'smith'), ('bob', 'jones'), ('joe', 'blow'))
      writing one is good practice in SQL code that might be ported to
      another system.
 -->
-SQL標準によれば、副問い合わせにはテーブル別名を指定する必要があります。
+標準SQLによれば、副問い合わせにはテーブル別名を指定する必要があります。
 <productname>PostgreSQL</productname>では、<literal>AS</literal>と別名を省略できますが、別のシステムに移植する可能性があるSQLコードでは、別名を書くことをお勧めします。
     </para>
    </sect3>
@@ -1481,7 +1477,7 @@ FROM a NATURAL JOIN b WHERE b.val &gt; 5
      in the final result.
 -->
 どれを使うかは、主にスタイルの問題です。
-<literal>FROM</literal>句の<literal>JOIN</literal>構文はSQL標準であるにも関わらず、おそらく他のSQLデータベース管理システムへの移植性では劣るでしょう。
+<literal>FROM</literal>句の<literal>JOIN</literal>構文は標準SQLであるにも関わらず、おそらく他のSQLデータベース管理システムへの移植性では劣るでしょう。
 外部結合については、<literal>FROM</literal>句以外に選択の余地はありません。
 外部結合の<literal>ON</literal>句または<literal>USING</literal>句は、<literal>WHERE</literal>条件とは等しく<emphasis>ありません</emphasis>。
 なぜなら、最終結果での行を除去すると同様に、（一致しない入力行に対する）行の追加となるからです。
@@ -1882,6 +1878,7 @@ SELECT product_id, p.name, (sum(s.units) * (p.price - p.cost)) AS profit
     A clause of the form
 -->
 グループ化セットの中で一般的な２種類については、略記法での指定方法が提供されています。
+以下の句は
 <programlisting>
 ROLLUP ( <replaceable>e1</replaceable>, <replaceable>e2</replaceable>, <replaceable>e3</replaceable>, ... )
 </programlisting>
@@ -1889,7 +1886,7 @@ ROLLUP ( <replaceable>e1</replaceable>, <replaceable>e2</replaceable>, <replacea
     represents the given list of expressions and all prefixes of the list including
     the empty list; thus it is equivalent to
 -->
-上の句は、式の指定されたリストと空のリストを含めたリストのすべてのプレフィックスを表します。
+式の指定されたリストと空のリストを含めたリストのすべてのプレフィックスを表します。
 したがって、以下と同等です。
 <programlisting>
 GROUPING SETS (
@@ -2006,10 +2003,8 @@ GROUPING SETS (
     clause, then the final list of grouping sets is the Cartesian product of the
     individual items.  For example:
 -->
-《マッチ度[89.361702]》複数の集約項目が<literal>GROUP BY</literal>句一つで指定されている場合、グループ化セットの最終的なリストは、個々の項目の外積（クロス積）です。
+複数の集約項目が<literal>GROUP BY</literal>句一つで指定されている場合、グループ化セットの最終的なリストは、個々の項目のデカルト積です。
 例えば
-《機械翻訳》1つの<literal>GROUP BY</literal>句に複数のグループ化項目が指定されている場合、グループ化セットの最終リストは個々の項目の直積になります。
-例:
 <programlisting>
 GROUP BY a, CUBE (b, c), GROUPING SETS ((d), (e))
 </programlisting>
@@ -3080,9 +3075,9 @@ SELECT <replaceable>select_list</replaceable> FROM <replaceable>table_expression
    also be a <command>SELECT</command>, <command>INSERT</command>, <command>UPDATE</command>,
    <command>DELETE</command>, or <command>MERGE</command>.
 -->
-《マッチ度[91.376912]》<literal>WITH</literal>は、より大規模な問い合わせで使用される補助文を記述する方法を提供します。
+<literal>WITH</literal>は、より大規模な問い合わせで使用される補助文を記述する方法を提供します。
 これらの文は共通テーブル式(Common Table Expressions)または<acronym>CTE</acronym>とよく呼ばれるものであり、１つの問い合わせのために存在する一時テーブルを定義すると考えることができます。
-<literal>WITH</literal>句内の補助文はそれぞれ<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>または<command>DELETE</command>を取ることができます。
+<literal>WITH</literal>句内の補助文はそれぞれ<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>を取ることができます。
 そして<literal>WITH</literal>句自身は、これも<command>SELECT</command>、<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>を取ることができる主文に付与されます。
   </para>
 
@@ -3622,7 +3617,7 @@ SELECT * FROM search_graph;
     breadth-first ordering is wanted, then specifying both
     <literal>SEARCH</literal> and <literal>CYCLE</literal> can be useful.
 -->
-サイクル・パス列は、前のセクションで示した深さ優先順序列と同じ方法で計算されます。
+サイクル・パス列は、前節で示した深さ優先順序列と同じ方法で計算されます。
 問い合わせには<literal>SEARCH</literal>句と<literal>CYCLE</literal>句の両方を含めることができますが、深さ優先検索指定とサイクル検出指定では冗長な計算が作成されるため、<literal>CYCLE</literal>句を使用してパス列で順序付けるだけの方が効率的です。
 幅優先順序が必要な場合は、<literal>SEARCH</literal>と<literal>CYCLE</literal>の両方を指定すると便利です。
    </para>
@@ -3828,11 +3823,9 @@ SELECT * FROM w AS w1 JOIN w AS w2 ON w1.f = w2.f;
     allows you to perform several different operations in the same query.
     An example is:
 -->
-《マッチ度[86.842105]》ほとんどのデータ変更文（<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>は使用できますが、<command>MERGE</command>は使用できません）は、<literal>WITH</literal>内で使用できます。
+データ変更文（<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、または<command>MERGE</command>）は、<literal>WITH</literal>内で使用できます。
 これにより同じ問い合わせ内で複数の異なる操作を行うことができます。
-《機械翻訳》<literal>WITH</literal>では、データ変更文（<command>INSERT</command>、<command>UPDATE</command>、<command>DELETE</command>、<command>MERGE</command>）を使用できます。
-これにより、同じ問い合わせで複数の異なる操作を実行できます。
-例を示します。
+以下に例を示します。
 
 <programlisting>
 WITH moved_rows AS (

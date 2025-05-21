@@ -498,8 +498,8 @@ PostgreSQL documentation
          If you specify columns, you probably have to escape the parentheses
          from the shell.  (See examples below.)
 -->
-列を指定する場合は、シェルから括弧をエスケープする必要があるでしょう
-（後述の例を参照してください）。
+列を指定する場合は、シェルから括弧をエスケープする必要があるでしょう。
+（後述の例を参照してください。）
         </para>
        </tip>
       </listitem>
@@ -770,7 +770,7 @@ PostgreSQL documentation
       <literal>never</literal>.
 -->
 診断メッセージで色を使うかどうかを指定します。
-可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
+指定可能な値は<literal>always</literal>、<literal>auto</literal>、<literal>never</literal>です。
      </para>
     </listitem>
    </varlistentry>
@@ -782,7 +782,7 @@ PostgreSQL documentation
    also uses the environment variables supported by <application>libpq</application>
    (see <xref linkend="libpq-envars"/>).
 -->
-また、このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>でサポートされる環境変数を使用します（<xref linkend="libpq-envars"/>を参照してください）。
+このユーティリティは、他のほとんどの<productname>PostgreSQL</productname>ユーティリティと同様、<application>libpq</application>がサポートする環境変数(<xref linkend="libpq-envars"/>参照)も使います。
   </para>
 
  </refsect1>

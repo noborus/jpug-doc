@@ -22,7 +22,7 @@ PostgreSQL documentation
 <!--
   <refpurpose>remove a user mapping for a foreign server</refpurpose>
 -->
-  <refpurpose>外部サーバ用のユーザマップを削除します。</refpurpose>
+  <refpurpose>外部サーバ用のユーザマップを削除する</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -137,7 +137,7 @@ DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
    (SQL/MED).  The <literal>IF EXISTS</literal> clause is
    a <productname>PostgreSQL</productname> extension.
 -->
-<command>DROP USER MAPPING</command>はISO/IEC 9075-9 (SQL/MED)に従います。
+<command>DROP USER MAPPING</command>はISO/IEC 9075-9 (SQL/MED)に準拠しています。
 <literal>IF EXISTS</literal>句は<productname>PostgreSQL</productname>の拡張です。
   </para>
  </refsect1>

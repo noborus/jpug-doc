@@ -124,7 +124,7 @@
     suited for rapid prototyping of new applications and storage
     structures.
 -->
-さらに<productname>PostgreSQL</productname>サーバは動的ローディングによってユーザの作成したコードを取り入れることができます。
+さらに<productname>PostgreSQL</productname>サーバは動的ロードによってユーザの作成したコードを取り入れることができます。
 つまり、ユーザが新しい型か関数を実装するオブジェクトコードファイル（例えば共有ライブラリ）を指定でき、<productname>PostgreSQL</productname>は要求された時にロードします。
 <acronym>SQL</acronym>で作成されたコードをサーバに追加するのはさらに簡単です。
 このように演算を<quote>その場で</quote>変えることができるため、<productname>PostgreSQL</productname>は新しいアプリケーションや格納構造をラピッドプロトタイプする場合に適しています。
@@ -777,7 +777,7 @@ RETURNS anycompatible AS ...
 -->
 可変長引数の関数（<xref linkend="xfunc-sql-variadic-functions"/>で説明する可変個の引数を取る関数）を多様とすることができます。
 最後のパラメータを<literal>VARIADIC</literal> <type>anyarray</type>または<literal>VARIADIC</literal> <type>anycompatiblearray</type>と宣言することで実現されます。
-引数を一致させ、実際の結果型を決めるために、こうした関数は<type>anynonarray</type>または<type>anycompatiblenonarray</type>パラメータをあたかも適切な個数記述した場合と同様に動作します
+引数を一致させ、実際の結果型を決めるために、こうした関数は<type>anynonarray</type>または<type>anycompatiblenonarray</type>パラメータをあたかも適切な個数記述した場合と同様に動作します。
     </para>
    </sect2>
   </sect1>
@@ -1715,7 +1715,7 @@ SELECT pg_catalog.pg_extension_config_dump('my_config', 'WHERE NOT standard_entr
      update to version <literal>2.0</literal> is requested when <literal>1.0</literal> is
      currently installed.
 -->
-<command>ALTER EXTENSION</command>は、要求される更新を実現するために更新スクリプトを連続して実行できます。
+<command>ALTER EXTENSION</command>は、要求される更新を実現するために更新スクリプトファイルを連続して実行できます。
 例えば<literal>foo--1.0--1.1.sql</literal>と<literal>foo--1.1--2.0.sql</literal>のみが利用可能であるとすると、現在<literal>1.0</literal>がインストールされている時にバージョン<literal>2.0</literal>への更新が要求された場合、<command>ALTER EXTENSION</command>はこれらを順番に適用します。
     </para>
 
@@ -2294,7 +2294,7 @@ include $(PGXS)
         <literal><replaceable>prefix</replaceable>/share/extension</literal>
 -->
 拡張の名前です。
-各名前に対して、<literal><replaceable>prefix</replaceable>/share/extension</literal>にインストールされる<literal><replaceable>extension</replaceable>.control</literal>を提供しなければなりません。
+各名前に対して、<literal><replaceable>prefix</replaceable>/share/extension</literal>にインストールされる<literal><replaceable>extension</replaceable>.control</literal>ファイルを提供しなければなりません。
        </para>
       </listitem>
      </varlistentry>
