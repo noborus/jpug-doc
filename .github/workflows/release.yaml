@@ -30,11 +30,17 @@ jobs:
           sudo apt install -y \
             docbook-xml \
             docbook-xsl \
+            libbsd-dev \
+            libedit-dev \
+            libpam0g-dev \
+            libperl-dev \
             libxml2-utils \
             xsltproc \
             fop \
             dbtoepub
 
+      - name: configure
+        run: ./configure
       - name: Build release documents
         timeout-minutes: 120
         run: |
