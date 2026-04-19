@@ -54,7 +54,7 @@ jobs:
           cd doc/src/sgml/
           make ORIGINAL=1 html
           make postgres-A4.pdf
-          # make postgres.epub
+          make postgres.epub
           make man
           tar cvzf man.tar.gz man1 man3 man7
           tar cvzf html.tar.gz html
@@ -65,6 +65,6 @@ jobs:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name }}
           files: |
             doc/src/sgml/postgres-A4.pdf
-            # doc/src/sgml/postgres.epub
+            doc/src/sgml/postgres.epub
             doc/src/sgml/man.tar.gz
             doc/src/sgml/html.tar.gz
