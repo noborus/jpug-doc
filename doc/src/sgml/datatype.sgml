@@ -2438,17 +2438,8 @@ SELECT '\xDEADBEEF'::bytea;
        <entry>zero octet</entry>
 -->
        <entry>ゼロオクテット</entry>
-<!--
        <entry><literal>'\000'</literal></entry>
--->
-       <entry><literal>'\000'</literal></entry>
-<!--
        <entry><literal>'\000'::bytea</literal></entry>
--->
-       <entry><literal>'\000'::bytea;</literal></entry>
-<!--
-       <entry><literal>\x00</literal></entry>
--->
        <entry><literal>\x00</literal></entry>
       </row>
 
@@ -2462,10 +2453,7 @@ SELECT '\xDEADBEEF'::bytea;
        <entry><literal>''''</literal> or <literal>'\047'</literal></entry>
 -->
        <entry><literal>''''</literal>もしくは<literal>'\047'</literal></entry>
-<!--
        <entry><literal>''''::bytea</literal></entry>
--->
-       <entry><literal>''''::bytea;</literal></entry>
        <entry><literal>\x27</literal></entry>
       </row>
 
@@ -2499,10 +2487,7 @@ SELECT '\xDEADBEEF'::bytea;
        <entry><literal>'\<replaceable>xxx'</replaceable></literal> (octal value)</entry>
 -->
        <entry><literal>'\<replaceable>xxx'</replaceable></literal> (8進数)</entry>
-<!--
        <entry><literal>'\001'::bytea</literal></entry>
--->
-       <entry><literal>'\001'::bytea;</literal></entry>
        <entry><literal>\x01</literal></entry>
       </row>
 
@@ -2644,10 +2629,7 @@ SELECT 'abc \153\154\155 \052\251\124'::bytea;
        <entry><literal>\<replaceable>xxx</replaceable></literal> (octal value)</entry>
 -->
        <entry><literal>\<replaceable>xxx</replaceable></literal>（8進数）</entry>
-<!--
        <entry><literal>'\001'::bytea</literal></entry>
--->
-       <entry><literal>'\001'::bytea;</literal></entry>
        <entry><literal>\001</literal></entry>
       </row>
 
@@ -2664,13 +2646,7 @@ SELECT 'abc \153\154\155 \052\251\124'::bytea;
        <entry>client character set representation</entry>
 -->
        <entry>クライアント文字集合における表現</entry>
-<!--
        <entry><literal>'\176'::bytea</literal></entry>
--->
-       <entry><literal>'\176'::bytea;</literal></entry>
-<!--
-       <entry><literal>~</literal></entry>
--->
        <entry><literal>~</literal></entry>
       </row>
 
@@ -2863,13 +2839,7 @@ SELECT 'abc \153\154\155 \052\251\124'::bytea;
 -->
         <entry>時刻（日付なし）、時間帯付き</entry>
         <!-- see MAX_TZDISP_HOUR in datatype/timestamp.h -->
-<!--
         <entry>00:00:00+1559</entry>
--->
-        <entry>00:00:00+1559</entry>
-<!--
-        <entry>24:00:00-1559</entry>
--->
         <entry>24:00:00-1559</entry>
 <!--
         <entry>1 microsecond</entry>
