@@ -41,7 +41,7 @@ jobs:
 
       - name: Install Gen Shin Gothic fonts
         run: |
-          wget -q https://github.com/noborus/jpug-doc/releases/download/fonts-v1/genshin-fonts.tar.gz
+          wget -q https://github.com/pgsql-jp/jpug-doc/releases/download/fonts-v1/genshin-fonts.tar.gz
           mkdir ~/.fonts/
           tar xzf genshin-fonts.tar.gz -C ~/.fonts/
           fc-cache -f
