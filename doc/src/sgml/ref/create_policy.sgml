@@ -784,9 +784,16 @@ CREATE POLICY <replaceable class="parameter">name</replaceable> ON <replaceable 
        <entry><command>INSERT ... ON CONFLICT</command></entry>
        <entry>
 <!--
-        Check new row&nbsp;<footnote id="rls-on-conflict-priv">
+        Check new row&nbsp;<footnote>
 -->
-新しい行を検査&nbsp;<footnote id="rls-on-conflict-priv">
+新しい行を検査&nbsp;<footnote>
+         <para>
+<!--
+          If an arbiter index or constraint is specified.
+-->
+競合判定インデックスや制約が指定されている場合。
+         </para>
+        </footnote><footnote id="rls-on-conflict-priv">
          <para>
 <!--
           Row proposed for insertion is checked regardless of whether or not a
