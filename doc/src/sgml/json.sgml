@@ -1423,7 +1423,10 @@ JSONプリミティブ型のパスリテラル。
   </table>
 
   <table id="type-jsonpath-accessors">
+<!--
    <title><type>jsonpath</type> Accessors</title>
+-->
+   <title><type>jsonpath</type>アクセサ</title>
    <tgroup cols="2">
     <colspec colname="col1" colwidth="1*"/>
     <colspec colname="col2" colwidth="2*"/>

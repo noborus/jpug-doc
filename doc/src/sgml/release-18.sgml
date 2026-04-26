@@ -8674,7 +8674,10 @@ Author: Masahiko Sawada <msawada@postgresql.org>
     </sect4>
 
     <sect4 id="release-18-logicalrep-app">
+<!--
      <title>Logical Replication Applications</title>
+-->
+      <title>論理レプリケーションアプリケーション</title>
 
      <itemizedlist>
 
