@@ -8143,7 +8143,10 @@ REPLICA IDENTITY USING INDEX ...</command></link>を用いて<quote>replica iden
   </para>
 
   <table>
+<!--
    <title><structname>pg_parameter_acl</structname> Columns</title>
+-->
+   <title><structname>pg_parameter_acl</structname>の列</title>
    <tgroup cols="1">
     <thead>
      <row>
@@ -9349,7 +9352,10 @@ trueの場合、自分自身ではなく、パブリケーションが言及し�
   </para>
 
   <table>
+<!--
    <title><structname>pg_publication_namespace</structname> Columns</title>
+-->
+   <title><structname>pg_publication_namespace</structname>の列</title>
    <tgroup cols="1">
     <thead>
      <row>

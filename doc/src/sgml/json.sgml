@@ -1505,8 +1505,11 @@ JSONプリミティブ型のパスリテラル。
         <literal>.**{<replaceable>level</replaceable>}</literal>
        </para>
        <para>
+<!--
         <literal>.**{<replaceable>start_level</replaceable> to
         <replaceable>end_level</replaceable>}</literal>
+-->
+        <literal>.**{<replaceable>start_level</replaceable>から<replaceable>end_level</replaceable>}</literal>
        </para>
       </entry>
       <entry>
