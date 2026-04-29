@@ -271,7 +271,7 @@ ALTER DOMAIN <replaceable class="parameter">name</replaceable>
 <!--
         Name of an existing constraint to drop or rename.
 -->
-削除または名前を変更する既存の制約名です。
+削除または名前を変更する既存の制約の名前です。
        </para>
       </listitem>
      </varlistentry>

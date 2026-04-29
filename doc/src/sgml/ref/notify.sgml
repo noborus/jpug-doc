@@ -195,7 +195,7 @@ NOTIFY <replaceable class="parameter">channel</replaceable> [ , <replaceable cla
 <!--
       Name of the notification channel to be signaled (any identifier).
 -->
-シグナルとして送られる通知チャネル名です（任意の識別子）。
+シグナルとして送られる通知チャネルの名前です（任意の識別子）。
      </para>
     </listitem>
    </varlistentry>

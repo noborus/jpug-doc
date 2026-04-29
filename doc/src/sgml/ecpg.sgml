@@ -11957,7 +11957,7 @@ if (*(int2 *)sqldata->sqlvar[i].sqlind != 0)
 <!--
         Name of the field. 0-terminated string.
 -->
-フィールド名です。
+フィールドの名前です。
 ゼロ終端の文字列です。
        </para>
       </listitem>
