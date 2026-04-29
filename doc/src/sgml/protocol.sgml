@@ -9586,7 +9586,7 @@ Originの名前です。
 <!--
          Name of the column.
 -->
-列名。
+列の名前。
         </para>
        </listitem>
       </varlistentry>

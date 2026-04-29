@@ -1603,7 +1603,7 @@ dblink_error_message(text connname) returns text
 <!--
        Name of the connection to use.
 -->
-使用する接続名です。
+使用する接続の名前です。
       </para>
      </listitem>
     </varlistentry>
@@ -1729,7 +1729,7 @@ dblink_send_query(text connname, text sql) returns int
 <!--
        Name of the connection to use.
 -->
-使用する接続名です。
+使用する接続の名前です。
       </para>
      </listitem>
     </varlistentry>
@@ -1828,7 +1828,7 @@ dblink_is_busy(text connname) returns int
 <!--
        Name of the connection to check.
 -->
-検査対象の接続名です。
+検査対象の接続の名前です。
       </para>
      </listitem>
     </varlistentry>
@@ -2028,7 +2028,7 @@ dblink_get_result(text connname [, bool fail_on_error]) returns setof record
 <!--
        Name of the connection to use.
 -->
-使用する接続名です。
+使用する接続の名前です。
       </para>
      </listitem>
     </varlistentry>
@@ -2246,7 +2246,7 @@ dblink_cancel_query(text connname) returns text
 <!--
        Name of the connection to use.
 -->
-使用する接続名です。
+使用する接続の名前です。
       </para>
      </listitem>
     </varlistentry>
@@ -2715,9 +2715,7 @@ dblink_build_sql_delete(text relname,
 <!--
    <para>Returns the requested SQL statement as text.</para>
 -->
-   <para>
-要求したSQL文をテキストとして返します。
-   </para>
+   <para>要求したSQL文をテキストとして返します。</para>
   </refsect1>
 
   <refsect1>

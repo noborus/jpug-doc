@@ -894,7 +894,7 @@ connectby(text relname, text keyid_fld, text parent_keyid_fld
 <!--
        <entry>Name of the source relation</entry>
 -->
-       <entry>元となるリレーション名</entry>
+       <entry>元となるリレーションの名前</entry>
       </row>
       <row>
        <entry><parameter>keyid_fld</parameter></entry>
@@ -915,7 +915,7 @@ connectby(text relname, text keyid_fld, text parent_keyid_fld
 <!--
        <entry>Name of the field to order siblings by (optional)</entry>
 -->
-<entry>兄弟の順序付け用のフィールド名（省略可能）</entry>
+<entry>兄弟の順序付け用のフィールドの名前（省略可能）</entry>
       </row>
       <row>
        <entry><parameter>start_with</parameter></entry>

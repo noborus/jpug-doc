@@ -177,7 +177,7 @@ SET [ SESSION | LOCAL ] TIME ZONE { <replaceable class="parameter">value</replac
       Name of a settable run-time parameter.  Available parameters are
       documented in <xref linkend="runtime-config"/> and below.
 -->
-設定可能な実行時パラメータ名です。
+設定可能な実行時パラメータの名前です。
 利用可能なパラメータは、<xref linkend="runtime-config"/>と以下に示します。
      </para>
     </listitem>

@@ -1082,7 +1082,7 @@
 <!--
        Name of the access method
 -->
-アクセスメソッド名
+アクセスメソッドの名前
       </para></entry>
      </row>
 
@@ -5039,7 +5039,7 @@ falseの場合、このデータベースには誰も接続できません。
 <!--
        The OID of the specific dependent object
 -->
-依存する特定のオブジェクトのOID
+特定の依存するオブジェクトのOID
       </para></entry>
      </row>
 
@@ -7040,7 +7040,7 @@ REPLICA IDENTITY USING INDEX ...</command></link>を用いて<quote>replica iden
 <!--
        Name of the language
 -->
-言語名称
+言語の名前
       </para></entry>
      </row>
 
@@ -7755,7 +7755,7 @@ REPLICA IDENTITY USING INDEX ...</command></link>を用いて<quote>replica iden
 <!--
        Name of the operator
 -->
-演算子名
+演算子の名前
       </para></entry>
      </row>
 
@@ -8058,7 +8058,7 @@ REPLICA IDENTITY USING INDEX ...</command></link>を用いて<quote>replica iden
 <!--
        Name of this operator family
 -->
-演算子族の名称
+演算子族の名前
       </para></entry>
      </row>
 
@@ -8639,7 +8639,7 @@ REPLICA IDENTITY USING INDEX ...</command></link>を用いて<quote>replica iden
 <!--
        Name of the function
 -->
-関数名
+関数の名前
       </para></entry>
      </row>
 
