@@ -117,7 +117,7 @@ typedef struct BackgroundWorker
    <structfield>bgw_flags</structfield> is a bitwise-or'd bit mask indicating the
    capabilities that the module wants.  Possible values are:
 -->
-<structfield>bgw_flags</structfield>は、モジュールが要求する機能をOR演算したビットマスクです。可能な値は以下の通りです。
+<structfield>bgw_flags</structfield>は、モジュールが必要とする機能を示すビットマスクのビット単位の論理和です。可能な値は以下の通りです。
    <variablelist>
 
     <varlistentry>

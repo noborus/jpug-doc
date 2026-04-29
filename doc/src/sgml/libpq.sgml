@@ -11571,7 +11571,7 @@ PGresult *PQcopyResult(const PGresult *src, int flags);
 返された結果は常に<literal>PGRES_TUPLES_OK</literal>状態の中に置かれ、元の結果におけるエラーメッセージはまったくコピーされません。
 （しかしコマンド状態文字列をコピーします。）
 <parameter>flags</parameter>引数はその他にコピーするものがないかを決定します。
-それはいくつかのフラグのビット単位のORです。
+それはいくつかのフラグのビット単位の論理和です。
 <literal>PG_COPYRES_ATTRS</literal>は元の結果の属性（列定義）のコピーを指定します。
 <literal>PG_COPYRES_TUPLES</literal>は元の結果のタプルのコピーを指定します。
 （これは属性もコピーされることを意味しています。）

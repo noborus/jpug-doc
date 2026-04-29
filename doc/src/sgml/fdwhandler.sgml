@@ -2466,7 +2466,7 @@ GetForeignDataWrapperExtended(Oid fdwid, bits16 flags);
 -->
 この関数は、与えられたOIDの外部データラッパーに対して<structname>ForeignDataWrapper</structname>オブジェクトを返します。
 <structname>ForeignDataWrapper</structname>オブジェクトにはFDWの属性（詳しくは<filename>foreign/foreign.h</filename>を参照）が含まれます。
-<structfield>flags</structfield> は追加的なオプション一式を示すビット毎にorを取ったビットマスクです。
+<structfield>flags</structfield>は追加的なオプション一式を示すビットマスクのビット単位の論理和です。
 ここには<literal>FDW_MISSING_OK</literal>値を指定できて、この場合、未定義オブジェクトに対するエラーの代わりに呼び出し元に<literal>NULL</literal>結果が返されます。
     </para>
 
@@ -2504,7 +2504,7 @@ GetForeignServerExtended(Oid serverid, bits16 flags);
 -->
 この関数は、与えられたOIDの外部サーバに対して<structname>ForeignServer</structname>オブジェクトを返します。
 <structname>ForeignServer</structname>オブジェクトにはサーバの属性（詳しくは<filename>foreign/foreign.h</filename>を参照）が含まれます。
-<structfield>flags</structfield>は追加的なオプション一式を示すビット毎にorを取ったビットマスクです。
+<structfield>flags</structfield>は追加的なオプション一式を示すビットマスクのビット単位の論理和です。
 ここには<literal>FSV_MISSING_OK</literal>値を指定できて、この場合、未定義オブジェクトに対するエラーの代わりに呼び出し元に<literal>NULL</literal>結果が返されます。
     </para>
 
