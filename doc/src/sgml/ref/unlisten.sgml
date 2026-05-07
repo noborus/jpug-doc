@@ -78,7 +78,7 @@ UNLISTEN { <replaceable class="parameter">channel</replaceable> | * }
 <!--
       Name of a notification channel (any identifier).
 -->
-通知チャネルの名称です（任意の識別子）。
+通知チャネルの名前です（任意の識別子）。
      </para>
     </listitem>
    </varlistentry>
