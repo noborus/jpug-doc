@@ -2712,7 +2712,7 @@ NULLであるかのテスト
 <!--
         Modulo (remainder)
 -->
-剰余(余り)
+剰余（余り）
        </para>
        <para>
         <literal>mod(54, 32)</literal>
