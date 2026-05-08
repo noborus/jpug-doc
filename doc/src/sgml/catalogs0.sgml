@@ -363,9 +363,6 @@
      </row>
 
      <row>
-<!--
-      <entry><link linkend="catalog-pg-parameter-acl"><structname>pg_parameter_acl</structname></link></entry>
--->
       <entry><link linkend="catalog-pg-parameter-acl"><structname>pg_parameter_acl</structname></link></entry>
 <!--
       <entry>configuration parameters for which privileges have been granted</entry>

@@ -1885,11 +1885,15 @@ SQLではこのような場合も扱うことができます。
     <itemizedlist spacing="compact">
 <!--
      <listitem><para>Disallow deleting a referenced product</para></listitem>
-     <listitem><para>Delete the orders as well</para></listitem>
-     <listitem><para>Something else?</para></listitem>
 -->
      <listitem><para>参照される製品の削除を許可しない</para></listitem>
+<!--
+     <listitem><para>Delete the orders as well</para></listitem>
+-->
      <listitem><para>注文も一緒に削除する</para></listitem>
+<!--
+     <listitem><para>Something else?</para></listitem>
+-->
      <listitem><para>他にもありますか？</para></listitem>
     </itemizedlist>
    </para>

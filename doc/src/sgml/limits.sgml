@@ -184,7 +184,10 @@
     </row>
 
     <row>
+<!--
      <entry>function arguments</entry>
+-->
+     <entry>関数の引数</entry>
      <entry>100</entry>
 <!--
      <entry>can be increased by recompiling <productname>PostgreSQL</productname></entry>

@@ -7525,8 +7525,12 @@ SELECT * FROM pg_attribute
         <entry>operator with argument types</entry>
 -->
         <entry>引数の型を持つ演算子</entry>
+<!--
         <entry><literal>*(integer,&zwsp;integer)</literal>
          or <literal>-(NONE,&zwsp;integer)</literal></entry>
+-->
+        <entry><literal>*(integer,&#x200B;integer)</literal>
+         または <literal>-(NONE,&#x200B;integer)</literal></entry>
        </row>
 
        <row>

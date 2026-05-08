@@ -29,11 +29,15 @@
   <itemizedlist>
 <!--
    <listitem><para><acronym>SQL</acronym> dump</para></listitem>
-   <listitem><para>File system level backup</para></listitem>
-   <listitem><para>Continuous archiving</para></listitem>
 -->
    <listitem><para><acronym>SQL</acronym>によるダンプ</para></listitem>
+<!--
+   <listitem><para>File system level backup</para></listitem>
+-->
    <listitem><para>ファイルシステムレベルのバックアップ</para></listitem>
+<!--
+   <listitem><para>Continuous archiving</para></listitem>
+-->
    <listitem><para>継続的アーカイブ</para></listitem>
   </itemizedlist>
 <!--
