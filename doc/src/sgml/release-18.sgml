@@ -91,7 +91,7 @@ Branch: REL_14_STABLE [14a4a7040] 2026-05-11 05:13:51 -0700
       this problem.
       (CVE-2026-6479)
 -->
-《機械翻訳》この問題を報告してくれた<productname>PostgreSQL</productname>カリフォルニア州プロジェクトにあるio ClaudeおよびAnthropic Researchと共同。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたCalif.io（ClaudeおよびAnthropic Researchとの協力）に感謝します。
 (CVE-2026-6479)。
      </para>
     </listitem>
@@ -206,7 +206,7 @@ Branch: REL_14_STABLE [c9447b8bd] 2026-05-11 21:29:27 +0300
       Bruce Dang, Sven Klemm, and Pavel Kohout for reporting these problems.
       (CVE-2026-6473)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、これらの問題を報告してくれたXintコード、Bruce Dang、Sven Klemm、およびPavel Kohoutに感謝します。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたXint Code、Bruce Dang、Sven Klemm、およびPavel Kohoutに感謝します。
 CVE-2026-6473。
      </para>
     </listitem>
@@ -245,7 +245,7 @@ Branch: REL_17_STABLE [d7de7fa84] 2026-05-11 05:13:49 -0700
       Yu Kunpeng for reporting this problem.
       (CVE-2026-6476)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたYu Kunpeng氏に感謝している。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたYu Kunpeng氏に感謝します。
 (CVE-2026-6476)。
      </para>
     </listitem>
@@ -283,7 +283,7 @@ Branch: REL_16_STABLE [248a433cd] 2026-05-11 05:13:50 -0700
       Pavel Kohout for reporting this problem.
       (CVE-2026-6638)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたPavel Kohoutに感謝している。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたPavel Kohoutに感謝します。
 (CVE-2026-6638)。
      </para>
     </listitem>
@@ -325,7 +325,7 @@ Branch: REL_14_STABLE [2d267ffc4] 2026-05-11 05:13:51 -0700
       Xint Code for reporting this problem.
       (CVE-2026-6473)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたXintコードに感謝する。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたXint Codeに感謝します。
 (CVE-2026-6473)。
      </para>
     </listitem>
@@ -361,7 +361,7 @@ Branch: REL_18_STABLE [661095c40] 2026-05-11 05:13:47 -0700
       Jeroen Gui for reporting this problem.
       (CVE-2026-6575)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたJeroen Guiに感謝します。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたJeroen Guiに感謝します。
 (CVE-2026-6575)。
      </para>
     </listitem>
@@ -413,7 +413,7 @@ Branch: REL_14_STABLE [2c8226f52] 2026-05-11 05:13:51 -0700
       Xint Code for reporting this problem.
       (CVE-2026-6474)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたXintコードに感謝する。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたXint Codeに感謝します。
 (CVE-2026-6474)。
      </para>
     </listitem>
@@ -454,7 +454,7 @@ Branch: REL_14_STABLE [8bca85e9f] 2026-05-11 05:13:51 -0700
       Jelte Fennema-Nio for reporting this problem.
       (CVE-2026-6472)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたJelte Fennema-Nioに感謝します。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたJelte Fennema-Nioに感謝します。
 (CVE-2026-6472)。
      </para>
     </listitem>
@@ -502,7 +502,7 @@ Branch: REL_14_STABLE [b282280e9] 2026-05-11 05:13:51 -0700
       Joe Conway for reporting this problem.
       (CVE-2026-6478)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたJoe Conwayに感謝している。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたJoe Conwayに感謝します。
 (CVE-2026-6478)。
      </para>
     </listitem>
@@ -549,7 +549,7 @@ Branch: REL_14_STABLE [8ac723b2b] 2026-05-11 05:13:51 -0700
       Yu Kunpeng and Martin Heistermann for reporting this problem.
       (CVE-2026-6477)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたYu Kunpeng氏とMartin Heistermann氏に感謝している。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたYu Kunpeng氏とMartin Heistermann氏に感謝します。
 (CVE-2026-6477)。
      </para>
     </listitem>
@@ -592,7 +592,7 @@ Branch: REL_14_STABLE [498829dca] 2026-05-11 05:13:51 -0700
       of Tencent Xuanwu Lab and Valery Gubanov for reporting this problem.
       (CVE-2026-6475)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたTencent XlabAIチームとValery Gubanovに感謝します。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたTencent XlabAIチームとValery Gubanovに感謝します。
 (CVE-2026-6475)。
      </para>
     </listitem>
@@ -642,7 +642,7 @@ Branch: REL_14_STABLE [479823a71] 2026-05-11 12:12:03 -0400
       Xint Code for reporting this problem.
       (CVE-2026-6473)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたXintコードに感謝する。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたXintコードに感謝します。
 (CVE-2026-6473)。
      </para>
     </listitem>
@@ -683,7 +683,7 @@ Branch: REL_14_STABLE [b545c3787] 2026-05-11 05:13:51 -0700
       for reporting this problem.
       (CVE-2026-6473)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたVergissmeinnicht、A1ex、およびJihe Wangに感謝します。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたVergissmeinnicht、A1ex、およびJihe Wangに感謝します。
 (CVE-2026-6473)。
      </para>
     </listitem>
@@ -725,7 +725,7 @@ Branch: REL_14_STABLE [2b026df29] 2026-05-11 05:13:52 -0700
       Nikolay Samokhvalov for reporting this problem.
       (CVE-2026-6637)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、この問題を報告してくれたNikolay Samokhvalovに感謝している。
+《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたNikolay Samokhvalovに感謝します。
 (CVE-2026-6637)。
      </para>
     </listitem>
