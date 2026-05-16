@@ -105,6 +105,9 @@ PostgreSQLは両方の仕組みを同時にサポートします。
 <!--
      Replicating between PostgreSQL instances on different platforms (for
      example Linux to Windows).
+-->
+《マッチ度[88.421053]》異なるプラットフォーム上のPostgreSQLインスタンス間（たとえばLinuxからWindows）でレプリケーションする。
+《機械翻訳》異なるプラットフォーム上のPostgreSQLインスタンス間でのレプリケーション（例リナックスからWindowsへ）。
     </para>
    </listitem>
 
@@ -137,7 +140,7 @@ PostgreSQLは両方の仕組みを同時にサポートします。
   other hand, if there are other writes done either by an application or by other
   subscribers to the same set of tables, conflicts can arise.
 -->
-サブスクライバーのデータベースは、他のPostgreSQLインスタンスと同様に振る舞い、自分用のパブリケーションを定義することにより、他のデータベースに対するパブリッシャーとして利用できます。
+《マッチ度[96.511628]》サブスクライバーのデータベースは、他のPostgreSQLインスタンスと同様に振る舞い、自分用のパブリケーションを定義することにより、他のデータベースに対するパブリッシャーとして利用できます。
 アプリケーションがそのサブスクライバーを読み取り専用として取り扱うときには、単独のサブスクリプションからはコンフリクトは発生しません。
 一方、アプリケーションあるいは他のサブスクライバーから同じテーブルに書き込みが起こるとすると、コンフリクトが発生する可能性があります。
  </para>
@@ -316,6 +319,10 @@ PostgreSQLは両方の仕組みを同時にサポートします。
    the <firstterm>subscriber</firstterm>.  A subscription defines the connection
    to another database and the set of publications (one or more) to which it
    wants to subscribe.
+-->
+《マッチ度[93.312102]》<firstterm>サブスクリプション</firstterm>は論理レプリケーションの下流側です。
+サブスクリプションが定義されたノードは<firstterm>サブスクライバー</firstterm>として参照されます。
+サブスクリプションは他のデータベースへの接続と、サブスクリプション対象の一つ以上のパブリケーションの集合を定義します。
   </para>
 
   <para>
@@ -1408,11 +1415,12 @@ HINT:  To initiate replication, you must manually create the replication slot, e
 
    <note>
     <para>
+<!--
      If the subscriber is in a release prior to 15, copying pre-existing data
      doesn't use row filters even if they are defined in the publication.
      This is because old releases can only copy the entire table data.
 -->
-サブスクライバーが15より前のリリースにある場合、既存のデータのコピーでは、パブリケーションで定義されていても行フィルタは使用されません。
+《マッチ度[91.304348]》サブスクライバーが15より前のリリースにある場合、既存のデータのコピーでは、パブリケーションで定義されていても行フィルタは使用されません。
 これは、古いリリースではテーブルデータ全体しかコピーできないためです。
     </para>
    </note>
@@ -3131,6 +3139,7 @@ WAL送信プロセスはWALのロジカルデコーディング（<xref linkend=
 -->
     <title>初期スナップショット</title>
     <para>
+<!--
      The initial data in existing subscribed tables is snapshotted and
      copied in parallel instances of a special kind of apply process.
      These special apply processes are dedicated table synchronization
@@ -3147,7 +3156,7 @@ WAL送信プロセスはWALのロジカルデコーディング（<xref linkend=
      control of the replication of the table is given back to the main apply
      process where replication continues as normal.
 -->
-既存のサブスクライブされたテーブル中の初期データのスナップショットが取得され、特殊な適用プロセスの並列インスタンスにコピーされます。
+《マッチ度[91.547862]》既存のサブスクライブされたテーブル中の初期データのスナップショットが取得され、特殊な適用プロセスの並列インスタンスにコピーされます。
 これらの特殊な適用プロセスは、同期されるテーブルごとに生成された、専用のテーブル同期ワーカーです。
 このプロセスは自身のレプリケーションスロットを作成し、既存のデータをコピーします。
 コピーが終わるとすぐにテーブル内容が他のバックエンドから見えるようになります。

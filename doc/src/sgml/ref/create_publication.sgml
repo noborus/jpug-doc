@@ -230,6 +230,7 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
      </para>
 
      <para>
+<!--
       When a partitioned table is published via a schema-level publication, all
       of its existing and future partitions are implicitly considered to be part of the
       publication, regardless of whether they are from the publication schema or not.
@@ -237,8 +238,10 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
       partition are also published via publications that its ancestors are
       part of.
 -->
-パーティションテーブルがスキーマレベルのパブリケーションでパブリッシュされた場合、パブリケーションスキーマからのものかどうかに関わらず、既存のパーティションと将来のものすべてがパブリケーションに含められたと暗黙的にみなされます。
+《マッチ度[89.344262]》パーティションテーブルがスキーマレベルのパブリケーションでパブリッシュされた場合、パブリケーションスキーマからのものかどうかに関わらず、既存のパーティションと将来のものすべてがパブリケーションに含められたと暗黙的にみなされます。
 ですので、パーティションに対して直接実行された操作であっても、その先祖を含むパブリケーション経由でパブリッシュされます。
+《機械翻訳》パーティション化されたテーブルがスキーマ-レベルパブリケーションを介して公開される場合、その既存および将来のすべてのパーティションは、パブリケーションスキーマからのものであるかどうかに関係なく、暗黙的にパブリケーションのパートであるとみなされます。
+したがって、パーティションに対して直接実行される操作であっても、その祖先がパートであるパブリケーションを介して公開されます。
      </para>
     </listitem>
    </varlistentry>
@@ -269,10 +272,15 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
           and so the default value for this option is
           <literal>'insert, update, delete, truncate'</literal>.
 -->
-このパラメータは、新しいパブリケーションがどのDML操作をサブスクライバーにパブリッシュするかを指定します。
+《マッチ度[81.464531]》このパラメータは、新しいパブリケーションがどのDML操作をサブスクライバーにパブリッシュするかを指定します。
 値はカンマで区切られた操作のリストです。
 使用できる操作は<literal>insert</literal>、<literal>update</literal>、<literal>delete</literal>、<literal>truncate</literal>です。
 デフォルトではすべての動作をパブリッシュするので、このオプションのデフォルト値は<literal>'insert, update, delete, truncate'</literal>です。
+《機械翻訳》このパラメータによって、どのDML操作が新規パブリケーションによってサブスクライバーに公開されるかが決まります。
+値は、カンマで区切られた操作のリストです。
+許可される操作は、<literal>insert</literal>、<literal>update</literal>、<literal>delete</literal>および<literal>truncate</literal>です。
+デフォルトはすべてパブリッシュアクションです。
+したがって、このオプションのデフォルト値は<literal>'insert, update, delete, truncate'</literal>です。
          </para>
          <para>
 <!--
@@ -325,7 +333,9 @@ CREATE PUBLICATION <replaceable class="parameter">name</replaceable>
            <literal>publish_generated_columns</literal> is <literal>stored</literal>
            in the publisher.
 -->
-サブスクライバーが18よりも前のリリースの場合、パブリッシャーでパラメータ<literal>publish_generated_columns</literal>が<literal>stored</literal>に設定されていても、初期テーブル同期は生成列をコピーしません。
+《マッチ度[78.761062]》サブスクライバーが18よりも前のリリースの場合、パブリッシャーでパラメータ<literal>publish_generated_columns</literal>が<literal>stored</literal>に設定されていても、初期テーブル同期は生成列をコピーしません。
+《機械翻訳》サブスクライバーが18より前のリリースからのものである場合、最初のテーブル同期では、コピーが<literal>stored</literal>パブリッシャー内のであっても、パラメータ生成カラムは生成されません。
+<literal>publish_generated_columns</literal>
           </para>
          </note>
 

@@ -45,7 +45,7 @@ PostgreSQL documentation
    <link linkend="backup-incremental-backup">incremental backup</link>,
    but it may be useful for debugging purposes.
 -->
-<application>pg_walsummary</application>は、WAL要約ファイルの内容を出力するために使用します。
+《マッチ度[94.606742]》<application>pg_walsummary</application>は、WAL要約ファイルの内容を出力するために使用します。
 これらのバイナリファイルは、データディレクトリの<literal>pg_wal/summaries</literal>サブディレクトリにあり、このツールを使用してテキストに変換できます。
 これは通常は必要ありません。
 WAL要約ファイルは主に<link linkend="backup-incremental-backup">増分バックアップ</link>をサポートするために存在しますが、デバッグ目的で有用な場合があります。

@@ -138,9 +138,12 @@ ALTER INDEX ALL IN TABLESPACE <replaceable class="parameter">name</replaceable> 
 付加されたインデックスは、それ自身として削除できず、親インデックスが削除された場合に自動的に削除されます。
      </para>
      <para>
+<!--
       If the named index is already attached to the altered index, the
       command will attempt to validate the parent index if the parent is
       currently invalid.
+-->
+《機械翻訳》記名的インデックスがすでに変更されたインデックスに接続されている場合、コマンドは、親が現在無効であれば、親インデックスを検証しようとします。
      </para>
     </listitem>
    </varlistentry>

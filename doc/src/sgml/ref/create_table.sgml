@@ -976,14 +976,17 @@ Bツリー演算子クラスがない場合はエラーが報告されます。
         <term><literal>INCLUDING COMMENTS</literal></term>
         <listitem>
          <para>
+<!--
           Comments for the copied columns, check constraints,
           not-null constraints, indexes, and extended statistics will be
           copied.  The default behavior is to exclude comments, resulting in
           the corresponding objects in the new table having no
           comments.
 -->
-コピーされた列、制約、および、インデックスに対するコメントがコピーされます。
+《マッチ度[57.201646]》コピーされた列、制約、および、インデックスに対するコメントがコピーされます。
 デフォルトの振る舞いではコメントは除外されて、新しいテーブルのコピーされた列と制約にはコメントがありません。
+《機械翻訳》コピーされた列、チェック制約、非NULL制約、索引および拡張統計処理のコメントはコピーされます。
+デフォルトの動作では、コメントは除外されるため、新しいテーブルの対応するオブジェクトにはコメントがありません。
          </para>
         </listitem>
        </varlistentry>

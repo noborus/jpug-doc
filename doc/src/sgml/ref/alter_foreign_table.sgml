@@ -95,9 +95,13 @@ ALTER FOREIGN TABLE [ IF EXISTS ] <replaceable class="parameter">name</replaceab
       to the underlying storage: this action simply declares that
       some new column is now accessible through the foreign table.
 -->
-この構文は、<link linkend="sql-createforeigntable"><command>CREATE FOREIGN TABLE</command></link>と同じ文法を使用して、外部テーブルに新しい列を追加します。
+《マッチ度[71.794872]》この構文は、<link linkend="sql-createforeigntable"><command>CREATE FOREIGN TABLE</command></link>と同じ文法を使用して、外部テーブルに新しい列を追加します。
 通常のテーブルに列を追加する場合と異なり、背後のストレージには何も起こりません。
 この操作は単に、外部テーブルを通して何らかの新しい列がアクセスできるようになったことを宣言します。
+《機械翻訳》このフォームは、<link linkend="sql-createforeigntable"><command>CREATE FOREIGN TABLE</command></link>と同じカラムを使用して、外部テーブルに新しい構文を追加します。
+<literal>IF NOT EXISTS</literal>が指定されていて、この名前にすでにカラムが存在する場合、エラーはスローされません。
+通常のテーブルにカラムを追加する場合のケースとは異なり、基礎となるストレージには何も起こりません。
+このアクションは、外部テーブルを介して新しいカラムにアクセスできるようになったことを宣言するだけです。
      </para>
     </listitem>
    </varlistentry>
