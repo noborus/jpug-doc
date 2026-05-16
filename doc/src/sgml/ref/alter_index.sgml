@@ -137,6 +137,11 @@ ALTER INDEX ALL IN TABLESPACE <replaceable class="parameter">name</replaceable> 
 指定されたインデックスは、変更するインデックスを持つテーブルのパーティションに対するもので、かつ、同じ定義を持たなければなりません。
 付加されたインデックスは、それ自身として削除できず、親インデックスが削除された場合に自動的に削除されます。
      </para>
+     <para>
+      If the named index is already attached to the altered index, the
+      command will attempt to validate the parent index if the parent is
+      currently invalid.
+     </para>
     </listitem>
    </varlistentry>
 

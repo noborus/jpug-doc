@@ -7539,20 +7539,9 @@ EXPLAIN SELECT count(*) FROM measurement WHERE logdate &gt;= DATE '2008-01-01';
        It is possible to determine the number of partitions which were
        removed during this phase by observing the
        <quote>Subplans Removed</quote> property in the
-       <command>EXPLAIN</command> output.  The query planner obtains locks for
-       all partitions which are part of the plan.  However, when the executor
-       uses a cached plan, locks are only obtained on the partitions which
-       remain after partition pruning done during the initialization phase of
-       execution, i.e., the ones shown in the <command>EXPLAIN</command>
-       output and not the ones referred to by the
-       <quote>Subplans Removed</quote> property.
--->
-問い合わせ計画の初期化時。
-パーティション除去は、パラメータの値が分かる実行の初期化段階時に可能です。
-この段階で除去されたパーティションは、問い合わせの<command>EXPLAIN</command>や<command>EXPLAIN ANALYZE</command>中に姿を見せることはないでしょう。
-<command>EXPLAIN</command>出力中に<quote>Subplans removed</quote>プロパティを観察することによってこの段階で除去されるパーティションの数を特定することが可能です。
-問い合わせプランナは、計画に含まれるすべてのパーティションに対してロックを取得します。
-ただし、エグゼキュータがキャッシュされた計画を使用する場合、ロックは、実行の初期化段階時にパーティション除去が行われた後に残るパーティション、つまり<command>EXPLAIN</command>の出力に表示されるパーティションでのみ取得され、<quote>Subplans Removed</quote>プロパティで参照されるパーティションには取得されません。
+       <command>EXPLAIN</command> output.  It's important to note that any
+       partitions removed by the partition pruning done at this stage are
+       still locked at the beginning of execution.
       </para>
      </listitem>
 

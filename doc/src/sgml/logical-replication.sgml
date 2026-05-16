@@ -104,9 +104,7 @@ PostgreSQLは両方の仕組みを同時にサポートします。
     <para>
 <!--
      Replicating between PostgreSQL instances on different platforms (for
-     example Linux to Windows)
--->
-異なるプラットフォーム上のPostgreSQLインスタンス間（たとえばLinuxからWindows）でレプリケーションする。
+     example Linux to Windows).
     </para>
    </listitem>
 
@@ -134,7 +132,7 @@ PostgreSQLは両方の仕組みを同時にサポートします。
 <!--
   The subscriber database behaves in the same way as any other PostgreSQL
   instance and can be used as a publisher for other databases by defining its
-  own publications.  When the subscriber is treated as read-only by
+  own publications.  When the subscriber is treated as read-only by an
   application, there will be no conflicts from a single subscription.  On the
   other hand, if there are other writes done either by an application or by other
   subscribers to the same set of tables, conflicts can arise.
@@ -316,12 +314,8 @@ PostgreSQLは両方の仕組みを同時にサポートします。
    A <firstterm>subscription</firstterm> is the downstream side of logical
    replication.  The node where a subscription is defined is referred to as
    the <firstterm>subscriber</firstterm>.  A subscription defines the connection
-   to another database and set of publications (one or more) to which it wants
-   to subscribe.
--->
-<firstterm>サブスクリプション</firstterm>は論理レプリケーションの下流側です。
-サブスクリプションが定義されたノードは<firstterm>サブスクライバー</firstterm>として参照されます。
-サブスクリプションは他のデータベースへの接続と、サブスクリプション対象の一つ以上のパブリケーションの集合を定義します。
+   to another database and the set of publications (one or more) to which it
+   wants to subscribe.
   </para>
 
   <para>
@@ -1414,8 +1408,7 @@ HINT:  To initiate replication, you must manually create the replication slot, e
 
    <note>
     <para>
-<!--
-     If the subscriber is in a release prior to 15, copy pre-existing data
+     If the subscriber is in a release prior to 15, copying pre-existing data
      doesn't use row filters even if they are defined in the publication.
      This is because old releases can only copy the entire table data.
 -->
@@ -3138,8 +3131,7 @@ WAL送信プロセスはWALのロジカルデコーディング（<xref linkend=
 -->
     <title>初期スナップショット</title>
     <para>
-<!--
-     The initial data in existing subscribed tables are snapshotted and
+     The initial data in existing subscribed tables is snapshotted and
      copied in parallel instances of a special kind of apply process.
      These special apply processes are dedicated table synchronization
      workers, spawned for each table to be synchronized.  Each table
