@@ -9915,20 +9915,27 @@ int PQrequestCancel(PGconn *conn);
 <productname>PostgreSQL</productname>は、サーバへの簡単な関数呼び出しを送信する近道 (fast-path) インタフェースを用意しています。
   </para>
 
-  <tip>
+  <warning>
    <para>
 <!--
-    This interface is somewhat obsolete, as one can achieve similar
+    This interface is unsafe and should not be used.  When
+    <parameter>result_is_int</parameter> is set to <literal>0</literal>,
+    <function>PQfn</function> may write data beyond the end of
+    <parameter>result_buf</parameter>, regardless of whether the buffer has
+    enough space for the requested number of bytes.  Furthermore, it is
+    obsolete, as one can achieve similar
     performance and greater functionality by setting up a prepared
     statement to define the function call.  Then, executing the statement
     with binary transmission of parameters and results substitutes for a
     fast-path function call.
 -->
-この関数はどちらかというと廃れたものです。
-同様の性能やそれ以上の機能を、関数呼び出しを定義した準備された文を設定することで達成できるからです。
-そして、その文をパラメータと結果をバイナリ転送するように実行すれば、近道関数呼び出しを置き換えることになります。
+《機械翻訳》このインタフェースは安全ではないため、使用しないでください。
+<parameter>result_is_int</parameter>が<literal>0</literal>に設定されている場合、<function>PQfn</function>は、要求されたバイト数に対してデータに十分なスペースがあるかどうかにかかわらず、<parameter>result_buf</parameter>の末尾を超えてバッファを書き込むことができます。
+さらに、これは廃止されました。
+関数呼び出しを定義するためにプリペアドステートメントを設定することによって、同様のパフォーマンスおよびより大きな機能を達成できます。
+次に、パラメータおよび結果のバイナリ伝送を伴うステートメントを実行すると、fast-パス関数呼び出しの代わりになります。
    </para>
-  </tip>
+  </warning>
 
   <para>
 <!--

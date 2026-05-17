@@ -194,7 +194,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
 
   <variablelist>
    <varlistentry id="sql-altertable-desc-add-column">
-    <term><literal>ADD COLUMN [ IF NOT EXISTS ]</literal></term>
+    <term><literal>ADD [ COLUMN ] [ IF NOT EXISTS ]</literal></term>
     <listitem>
      <para>
 <!--
@@ -210,7 +210,7 @@ WITH ( MODULUS <replaceable class="parameter">numeric_literal</replaceable>, REM
    </varlistentry>
 
    <varlistentry id="sql-altertable-desc-drop-column">
-    <term><literal>DROP COLUMN [ IF EXISTS ]</literal></term>
+    <term><literal>DROP [ COLUMN ] [ IF EXISTS ]</literal></term>
     <listitem>
      <para>
 <!--

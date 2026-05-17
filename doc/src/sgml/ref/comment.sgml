@@ -93,22 +93,29 @@ COMMENT ON
 
   <para>
 <!--
-   <command>COMMENT</command> stores a comment about a database object.
+   <command>COMMENT</command> stores, replaces, or removes the comment on a
+   database object.
 -->
-<command>COMMENT</command>は、データベースオブジェクトに関するコメントを保存します。
+《マッチ度[65.168539]》<command>COMMENT</command>は、データベースオブジェクトに関するコメントを保存します。
+《機械翻訳》<command>COMMENT</command>は、データベースオブジェクトのコメントを格納、置換、または削除します。
   </para>
 
   <para>
 <!--
-   Only one comment string is stored for each object, so to modify a comment,
-   issue a new <command>COMMENT</command> command for the same object.  To remove a
-   comment, write <literal>NULL</literal> in place of the text string.
-   Comments are automatically dropped when their object is dropped.
+   Only one comment string is stored for each object.  Issuing a new
+   <command>COMMENT</command> command for the same object replaces the
+   existing comment.  Specifying <literal>NULL</literal> or an empty
+   string (<literal>''</literal>) removes the comment.  Comments are
+   automatically dropped when their object is dropped.
 -->
-各オブジェクトに保存できるコメント文字列は1つだけです。
+《マッチ度[63.057325]》各オブジェクトに保存できるコメント文字列は1つだけです。
 ですので、コメントを編集するためには、同一オブジェクトに対して新しく<command>COMMENT</command>コマンドを発行してください。
 コメントを削除するには、テキスト文字列の部分に<literal>NULL</literal>を記述してください。
 オブジェクトが削除された時、コメントは自動的に削除されます。
+《機械翻訳》コメント文字列は、オブジェクトごとに1つのみ格納されます。
+同じコマンドに対して新しい<command>COMMENT</command>オブジェクトを発行すると、既存のコメントが置き換えられます。
+<literal>NULL</literal>または空の文字列<literal>''</literal>を指定すると、コメントが削除されます。
+注釈は、オブジェクトが削除されると自動的に削除されます。
   </para>
 
   <para>
@@ -348,9 +355,12 @@ COMMENT ON
     <listitem>
      <para>
 <!--
-      The new comment contents, written as a string literal.
+      The new comment contents, written as a string literal.  An empty string
+      (<literal>''</literal>) removes the comment.
 -->
-新しいコメントの内容です。文字列リテラルとして記述します。
+《機械翻訳》新しいコメントの内容。
+文字列のリテラルとして記述されます。
+空の文字列<literal>''</literal>はコメントを削除します。
      </para>
     </listitem>
    </varlistentry>
@@ -360,9 +370,10 @@ COMMENT ON
     <listitem>
      <para>
 <!--
-      Write <literal>NULL</literal> to drop the comment.
+      Write <literal>NULL</literal> to remove the comment.
 -->
-コメントを削除するには<literal>NULL</literal>と記述します。
+《マッチ度[78.846154]》コメントを削除するには<literal>NULL</literal>と記述します。
+《機械翻訳》<literal>NULL</literal>と入力して、コメントを削除します。
      </para>
     </listitem>
    </varlistentry>
@@ -470,6 +481,7 @@ COMMENT ON TRANSFORM FOR hstore LANGUAGE plpython3u IS 'Transform between hstore
 COMMENT ON TRIGGER my_trigger ON my_table IS 'Used for RI';
 COMMENT ON TYPE complex IS 'Complex number data type';
 COMMENT ON VIEW my_view IS 'View of departmental costs';
+COMMENT ON VIEW my_view IS NULL;
 </programlisting></para>
  </refsect1>
 
