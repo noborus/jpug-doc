@@ -96,8 +96,7 @@ COMMENT ON
    <command>COMMENT</command> stores, replaces, or removes the comment on a
    database object.
 -->
-《マッチ度[65.168539]》<command>COMMENT</command>は、データベースオブジェクトに関するコメントを保存します。
-《機械翻訳》<command>COMMENT</command>は、データベースオブジェクトのコメントを格納、置換、または削除します。
+<command>COMMENT</command>は、データベースオブジェクトのコメントを保存、置換、または削除します。
   </para>
 
   <para>
@@ -108,14 +107,10 @@ COMMENT ON
    string (<literal>''</literal>) removes the comment.  Comments are
    automatically dropped when their object is dropped.
 -->
-《マッチ度[63.057325]》各オブジェクトに保存できるコメント文字列は1つだけです。
-ですので、コメントを編集するためには、同一オブジェクトに対して新しく<command>COMMENT</command>コマンドを発行してください。
-コメントを削除するには、テキスト文字列の部分に<literal>NULL</literal>を記述してください。
+各オブジェクトに保存できるコメント文字列は1つだけです。
+同一オブジェクトに対して新しい<command>COMMENT</command>コマンドを発行すると、既存のコメントが置き換えられます。
+<literal>NULL</literal>または空の文字列（<literal>''</literal>）を指定すると、コメントが削除されます。
 オブジェクトが削除された時、コメントは自動的に削除されます。
-《機械翻訳》コメント文字列は、オブジェクトごとに1つのみ格納されます。
-同じコマンドに対して新しい<command>COMMENT</command>オブジェクトを発行すると、既存のコメントが置き換えられます。
-<literal>NULL</literal>または空の文字列<literal>''</literal>を指定すると、コメントが削除されます。
-注釈は、オブジェクトが削除されると自動的に削除されます。
   </para>
 
   <para>
@@ -358,9 +353,8 @@ COMMENT ON
       The new comment contents, written as a string literal.  An empty string
       (<literal>''</literal>) removes the comment.
 -->
-《機械翻訳》新しいコメントの内容。
-文字列のリテラルとして記述されます。
-空の文字列<literal>''</literal>はコメントを削除します。
+新しいコメントの内容です。文字列リテラルとして記述します。
+空の文字列（<literal>''</literal>）はコメントを削除します。
      </para>
     </listitem>
    </varlistentry>
@@ -372,8 +366,7 @@ COMMENT ON
 <!--
       Write <literal>NULL</literal> to remove the comment.
 -->
-《マッチ度[78.846154]》コメントを削除するには<literal>NULL</literal>と記述します。
-《機械翻訳》<literal>NULL</literal>と入力して、コメントを削除します。
+コメントを削除するには<literal>NULL</literal>と記述します。
      </para>
     </listitem>
    </varlistentry>
