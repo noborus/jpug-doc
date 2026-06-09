@@ -1,18 +1,67 @@
 name: postgres Repo Sync
-on: 
-  schedule: 
-  - cron: '18 19 * * *'
+
+on:
+  schedule:
+    - cron: '18 19 * * *'
   workflow_dispatch:
+
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-    - uses: actions/checkout@master
-    - name: repo-sync
-      uses: repo-sync/github-sync@v2
-      with:
-        source_repo: "https://github.com/postgres/postgres.git"
-        source_branch: "*"
-        destination_branch: "*"
-        sync_tags: "true"
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout destination repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream and fetch all refs
+        run: |
+          git remote add upstream https://github.com/postgres/postgres.git
+          git fetch origin --prune
+          git fetch upstream --prune --tags
+
+      - name: Sync branches except workflow files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for branch in $(git for-each-ref --format='%(refname:short)' refs/remotes/upstream/ | sed 's#^upstream/##'); do
+            case "$branch" in
+              HEAD) continue ;;
+            esac
+
+            echo "Syncing branch: $branch"
+
+            if git show-ref --verify --quiet "refs/heads/$branch"; then
+              git checkout "$branch"
+              git reset --hard "origin/$branch" || true
+            else
+              git checkout -B "$branch" "upstream/$branch"
+            fi
+
+            git merge --no-edit "upstream/$branch" || true
+
+            if [ -d .github/workflows ]; then
+              git restore --source=HEAD --staged --worktree .github/workflows || true
+            fi
+
+            if ! git diff --quiet || ! git diff --cached --quiet; then
+              git add -A
+              git commit -m "Sync $branch from upstream excluding workflow files" || true
+              git push origin "$branch"
+            else
+              echo "No sync changes to push for $branch"
+            fi
+          done
+
+      - name: Sync tags
+        run: |
+          git push origin --tags
