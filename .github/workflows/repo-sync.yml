@@ -1,11 +1,13 @@
 name: postgres Repo Sync
-on: 
-  schedule: 
+on:
+  schedule:
   - cron: '18 19 * * *'
   workflow_dispatch:
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # push branch/tag content
     steps:
     - uses: actions/checkout@master
     - name: repo-sync
