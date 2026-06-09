@@ -33,9 +33,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          for branch in $(git for-each-ref --format='%(refname:short)' refs/remotes/upstream/ | sed 's#^upstream/##'); do
+          git branch -r --format='%(refname:short)' | grep '^upstream/' | sed 's#^upstream/##' | while read -r branch; do
             case "$branch" in
-              HEAD) continue ;;
+              ""|HEAD|upstream) continue ;;
             esac
 
             echo "Syncing branch: $branch"
