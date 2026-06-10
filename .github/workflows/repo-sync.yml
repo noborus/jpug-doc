@@ -47,20 +47,13 @@ jobs:
               git checkout -B "$branch" "upstream/$branch"
             fi
 
-            git log --oneline -1 "$branch" || true
-            git log --oneline -1 "upstream/$branch" || true
-            git ls-remote upstream "refs/heads/$branch" || true
-
             git merge --no-edit "upstream/$branch"
-
-            git log --oneline -1 "$branch" || true
-            git log --oneline -1 "upstream/$branch" || true
 
             if [ -d .github/workflows ]; then
               git restore --source=HEAD --staged --worktree .github/workflows
             fi
 
-            if ! git diff --quiet || ! git diff --cached --quiet; then
+            if ! git diff --quiet "origin/$branch" "$branch"; then
               git add -A
               git commit -m "Sync $branch from upstream excluding workflow files" || true
               git push origin "$branch"
