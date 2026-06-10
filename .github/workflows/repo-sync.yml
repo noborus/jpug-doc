@@ -42,15 +42,15 @@ jobs:
 
             if git show-ref --verify --quiet "refs/heads/$branch"; then
               git checkout "$branch"
-              git reset --hard "origin/$branch" || true
+              git reset --hard "origin/$branch"
             else
               git checkout -B "$branch" "upstream/$branch"
             fi
 
-            git merge --no-edit "upstream/$branch" || true
+            git merge --no-edit "upstream/$branch"
 
             if [ -d .github/workflows ]; then
-              git restore --source=HEAD --staged --worktree .github/workflows || true
+              git restore --source=HEAD --staged --worktree .github/workflows
             fi
 
             if ! git diff --quiet || ! git diff --cached --quiet; then
