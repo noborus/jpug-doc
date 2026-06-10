@@ -49,17 +49,10 @@ jobs:
 
             git merge --no-edit "upstream/$branch"
 
-            if [ -d .github/workflows ]; then
-              git restore --source=HEAD --staged --worktree .github/workflows
-            fi
-
-            if ! git diff --quiet "origin/$branch" "$branch"; then
-              git add -A
-              git commit -m "Sync $branch from upstream excluding workflow files" || true
-              git push origin "$branch"
-            else
-              echo "No sync changes to push for $branch"
-            fi
+            rm -rf .github/workflows
+            git add -A
+            git commit -m "Sync $branch from upstream excluding workflow files" || true
+            git push origin "$branch"
           done
 
       - name: Sync tags
