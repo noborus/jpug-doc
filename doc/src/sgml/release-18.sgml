@@ -724,8 +724,8 @@ Branch: REL_14_STABLE [2b026df29] 2026-05-11 05:13:52 -0700
       Nikolay Samokhvalov for reporting this problem.
       (CVE-2026-6637)
 -->
-《機械翻訳》<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたNikolay Samokhvalovに感謝します。
-(CVE-2026-6637)。
+<productname>PostgreSQL</productname>プロジェクトは、本問題を報告してくれたNikolay Samokhvalovに感謝します。
+(CVE-2026-6637)
      </para>
     </listitem>
 
@@ -1437,7 +1437,7 @@ Branch: REL_15_STABLE [c6d3f0585] 2026-04-11 17:03:10 +0900
       of <function>pg_stat_reset_single_table_counters()</function> on a
       shared catalog (Chao Li)
 -->
-《機械翻訳》<function>pg_stat_reset_single_table_counters()</function>共用カタログでのの不正な動作を修正します。
+共有カタログにおける<function>pg_stat_reset_single_table_counters()</function>の誤った動作が修正されました。
 (Chao Li)
       <ulink url="&commit_baseurl;b081c5b07">&sect;</ulink>
      </para>
@@ -1448,7 +1448,7 @@ Branch: REL_15_STABLE [c6d3f0585] 2026-04-11 17:03:10 +0900
       current database's <literal>stat_reset_timestamp</literal>, which
       was unintended.
 -->
-《機械翻訳》このようなケースは、現在データベースの<literal>stat_reset_timestamp</literal>意図しないをリセットするという副作用をもたらした。
+このような場合、現在のデータベースの<literal>stat_reset_timestamp</literal>が意図せずリセットされるという副作用が発生していました。
      </para>
     </listitem>
 
@@ -1465,7 +1465,7 @@ Branch: REL_16_STABLE [d052f6c7d] 2026-04-20 10:13:55 +0530
       Update activity statistics when a parallel apply worker is idle
       (Zhijie Hou)
 -->
-《機械翻訳》更新適用統計処理が休止している場合のパラレル活動ワーカー。
+パラレル適用ワーカーがアイドル状態の時にアクティビティ統計が更新されるようになりました。
 (Zhijie Hou)
       <ulink url="&commit_baseurl;44c8dc280">&sect;</ulink>
      </para>
@@ -1476,7 +1476,7 @@ Branch: REL_16_STABLE [d052f6c7d] 2026-04-20 10:13:55 +0530
       go unreported for long intervals, particularly if the workload is
       light.
 -->
-《機械翻訳》これまでは、最近完成したトランザクションからの統計処理は、特に作業負荷が軽い場合には、長い間隔で報告されない可能性があった。
+以前は、特にワークロードが軽い場合、最近完了したトランザクションの統計情報が長時間で報告されない可能性がありました。
      </para>
     </listitem>
 
@@ -1492,7 +1492,7 @@ Branch: REL_17_STABLE [93ed18720] 2026-04-11 16:41:58 +0900
       Fix <quote>no relation entry for relid 0</quote> failure while
       estimating array lengths in set operations (Tender Wang)
 -->
-《機械翻訳》セット操作でリレーションの長さを推定する際の障害<quote>エントリ0の配列がない</quote>を修正しました。
+集合演算で配列長を推定する際に発生する<quote>no relation entry for relid 0</quote>エラーが修正されました。
 (Tender Wang)
       <ulink url="&commit_baseurl;13e20d1c9">&sect;</ulink>
      </para>
@@ -1513,7 +1513,7 @@ Branch: REL_14_STABLE [de32a01e7] 2026-04-10 10:22:48 -0400
       Fix buffer overread when <function>pglz_decompress()</function>
       receives corrupt input (Andrew Dunstan)
 -->
-《機械翻訳》<function>pglz_decompress()</function>が不正な入力を受信した場合のバッファの上書きを修正しました。
+<function>pglz_decompress()</function>が破損した入力を受け取った際に発生するバッファの超過読取りが修正されました。
 (Andrew Dunstan)
       <ulink url="&commit_baseurl;c3e436b1c">&sect;</ulink>
      </para>
@@ -1523,7 +1523,7 @@ Branch: REL_14_STABLE [de32a01e7] 2026-04-10 10:22:48 -0400
       It was possible to read a few bytes past the end of the input, which
       in very unlucky cases might cause a crash.
 -->
-《機械翻訳》入力の終わりを過ぎて数バイトを読み取ることは可能でしたが、非常に不運な場合にはクラッシュを引き起こす可能性がありました。
+入力の末尾を数バイト超えて読み取られる可能性があり、非常に不運な場合ではクラッシュを引き起こす可能性がありました。
      </para>
     </listitem>
 
@@ -1539,7 +1539,7 @@ Branch: REL_17_STABLE [2e373785e] 2026-04-10 10:21:39 -0400
       Fix incremental JSON parser's handling of numeric tokens that cross
       input buffer boundaries (Andrew Dunstan)
 -->
-《機械翻訳》JSONパーサのハンドリング境界を入力するクロスバッファの数値トークンの増分を修正した。
+インクリメンタルJSONパーサにおいて入力バッファ境界をまたぐ数値トークンの処理が修正されました。
 (Andrew Dunstan)
       <ulink url="&commit_baseurl;3e4955630">&sect;</ulink>
      </para>
@@ -1549,7 +1549,7 @@ Branch: REL_17_STABLE [2e373785e] 2026-04-10 10:21:39 -0400
       It was possible to accept an incorrectly-formatted number, leading
       to failures later.
 -->
-《機械翻訳》誤った形式の番号を受け入れる可能性があり、後で障害が発生しました。
+誤った形式の数値を受け入れる可能性があり、その結果後でエラーが発生する可能性がありました。
      </para>
     </listitem>
 
@@ -1565,7 +1565,7 @@ Branch: REL_17_STABLE [076bc57fa] 2026-03-09 06:55:10 -0400
       Prevent bloating relation visibility maps during restore of an
       incremental backup (Robert Haas)
 -->
-《機械翻訳》差分バックアップのリストア中にリレーションの視認性マップが膨張するのを防ぐ。
+増分バックアップのリストア時にリレーションの可視性マップが肥大化することが防止されました。
 (Robert Haas)
       <ulink url="&commit_baseurl;9540c0e5d">&sect;</ulink>
      </para>
@@ -1577,8 +1577,8 @@ Branch: REL_17_STABLE [076bc57fa] 2026-03-09 06:55:10 -0400
       result in data corruption, but it could waste a substantial amount
       of disk space.
 -->
-《機械翻訳》リストアでは、予想されるゼロブロック可視性マップの計算が正しくないために、多くのファイルが長さに追加される可能性があります。
-これによってデータが破損することはありませんが、大量のディスクスペースが無駄になる可能性があります。
+リストア時に、予想されるファイル長の計算が誤っているため、可視性マップに多数のゼロブロックが追加される可能性がありました。
+これによりデータが破損することはありませんが、相当量のディスクスペースが無駄になる可能性がありました。
      </para>
     </listitem>
 
@@ -1594,8 +1594,7 @@ Branch: REL_17_STABLE [9dda30dd3] 2026-04-22 10:23:54 -0700
       Use C collation, not the database's default collation, in catalog
       cache lookups on text columns (Jeff Davis)
 -->
-《機械翻訳》照合順序列のデータベース検索には、デフォルトの照合順序ではなく、Cテキストを使用します。
-カタログキャッシュ
+テキスト列のカタログキャッシュ検索では、データベースのデフォルト照合順序ではなく、C照合順序を使用するようになりました。
 (Jeff Davis)
       <ulink url="&commit_baseurl;03c4f243e">&sect;</ulink>
      </para>
@@ -1606,7 +1605,7 @@ Branch: REL_17_STABLE [9dda30dd3] 2026-04-22 10:23:54 -0700
       startup, where there is no identified database so that a default
       collation cannot be determined.
 -->
-《機械翻訳》これにより、物理レプリケーションスタートアップのように、識別されたデータベースがなく、デフォルト照合順序を決定することができないエッジケースでの失敗が回避される。
+これにより、物理レプリケーションの起動時など、データベースが特定されずデフォルト照合順序も決定できないような特殊なケースでの失敗が回避されます。
      </para>
     </listitem>
 
@@ -1678,7 +1677,7 @@ Branch: REL_14_STABLE [7cd23aad2] 2026-03-30 13:59:54 -0400
       Ensure that tuplestore data structures are internally consistent
       even after an error (Tom Lane)
 -->
-《機械翻訳》タプルストアのデータ構造がエラー後も内部的に一貫している保証。
+エラー発生後もtuplestoreのデータ構造が内部的に一貫性を保つようになりました。
 (Tom Lane)
       <ulink url="&commit_baseurl;adb7873bb">&sect;</ulink>
      </para>
@@ -1691,10 +1690,8 @@ Branch: REL_14_STABLE [7cd23aad2] 2026-03-30 13:59:54 -0400
       leads to easily-reproducible crashes; later branches are not known
       to be vulnerable, but it seems best to preserve consistency in all.
 -->
-《機械翻訳》コードはこれまでこの点に関して不注意でした。
-これはほとんどの場合問題ありませんが、<literal>WITH HOLD</literal>カーソルを支援するタプルストアにとっては問題です。
-v15と前では、これにより簡単に再現可能なクラッシュが発生します。
-後のブランチに脆弱性があることは知られていませんが、ベストは一貫性を完全に維持しているようです。
+以前のコードではこの点に関して不注意でした。ほとんどの場合は問題ないものの、<literal>WITH HOLD</literal>カーソルをサポートするtuplestoreでは問題が生じます。
+バージョン15以前では、この問題により容易に再現可能なクラッシュが発生していました。それ以降のバージョンでは脆弱性は確認されていませんが、すべてのバージョンで一貫性を維持するのが最善と思われます。
      </para>
     </listitem>
 
@@ -1710,7 +1707,7 @@ Branch: REL_18_STABLE [882bdcf9f] 2026-03-23 18:14:28 +0900
       view's <structfield>pid</structfield> column show NULL not
       0 when an entry has no owning process (ChangAo Chen)
 -->
-《機械翻訳》makeシステムビューに所有NULLがない場合、<structname>pg_aios</structname>カラムの<structfield>pid</structfield>エントリshowプロセスnot 0。
+エントリに所有プロセスが無い場合、<structname>pg_aios</structname>システムビューの<structfield>pid</structfield>列に0ではなくNULLが表示されるようになりました。
 (ChangAo Chen)
       <ulink url="&commit_baseurl;882bdcf9f">&sect;</ulink>
      </para>
@@ -1731,7 +1728,7 @@ Branch: REL_14_STABLE [bf7ecf353] 2026-03-26 20:50:43 +0900
       Fix premature NULL lag reporting
       in <structname>pg_stat_replication</structname> (Shinya Kato)
 -->
-《機械翻訳》<structname>pg_stat_replication</structname>での早期NULL遅延報告を修正しました。
+<structname>pg_stat_replication</structname>におけるlag列での早すぎるNULL報告が修正されました。
 (Shinya Kato)
       <ulink url="&commit_baseurl;98e96e579">&sect;</ulink>
      </para>
@@ -1741,7 +1738,7 @@ Branch: REL_14_STABLE [bf7ecf353] 2026-03-26 20:50:43 +0900
       The lag columns frequently read as NULL even while replication
       activity was happening.
 -->
-《機械翻訳》ラグカラムは、NULLの活動が行われている間でも、頻繁にレプリケーションとして読み取られます。
+lag列が、レプリケーション処理が行われている最中でも、頻繁にNULLとして読み取られていました。
      </para>
     </listitem>
 
@@ -1756,7 +1753,7 @@ Branch: REL_18_STABLE [1e71970d2] 2026-04-29 11:22:21 -0400
       Fix under-allocation of shared memory used for parallel btree index
       scans (Siddharth Kothari)
 -->
-《機械翻訳》アロケーションbtree共有メモリスキャンに使用されるパラレルのアンダーインデックスを修正しました。
+並列Btreeインデックススキャンに使用される共有メモリの割り当て不足が修正されました。
 (Siddharth Kothari)
       <ulink url="&commit_baseurl;1e71970d2">&sect;</ulink>
      </para>
@@ -1765,7 +1762,7 @@ Branch: REL_18_STABLE [1e71970d2] 2026-04-29 11:22:21 -0400
 <!--
       In edge cases this could result in a server crash.
 -->
-《機械翻訳》極端な場合には、サーバクラッシュが発生する可能性があります。
+特殊なケースでは、サーバがクラッシュする可能性がありました。
      </para>
     </listitem>
 
@@ -1784,7 +1781,7 @@ Branch: REL_14_STABLE [c0ffc725f] 2026-03-13 23:26:49 +0100
       Avoid rare flush failure when working with non-WAL-logged GiST
       indexes (Tomas Vondra)
 -->
-《機械翻訳》WALに記録されないフラッシュインデックスを使用する際に、稀に発生するGiST障害を回避します。
+WALログ非対応のGiSTインデックスを使用する際、稀に発生するフラッシュエラーが回避されました。
 (Tomas Vondra)
       <ulink url="&commit_baseurl;5b3f63a1b">&sect;</ulink>
      </para>
@@ -1796,7 +1793,7 @@ Branch: REL_14_STABLE [c0ffc725f] 2026-03-13 23:26:49 +0100
       is not satisfied</quote> errors, due to incorrect selection of
       a <quote>fake LSN</quote> to represent an insertion point.
 -->
-《機械翻訳》それにもかかわらず、ログに記録されないGiSTインデックスは、挿入フラッシュを表す<quote>偽のLSN</quote>の誤ったリクエストのために、<quote>xlogポイント選択<replaceable>n/nnnn</replaceable>が満たされない</quote>エラーを生成することがあります。
+ログ非対応のGiSTインデックスでは、挿入ポイントを表す<quote>偽のLSN</quote>の選択ミスにより、<quote>xlog flush request<replaceable>n/nnnn</replaceable>is not satisfied</quote>エラーが発生する場合がありました。
      </para>
     </listitem>
 
@@ -1815,7 +1812,7 @@ Branch: REL_14_STABLE [eb11d7a91] 2026-03-09 13:46:38 +0900
       Fix underestimate of required size of DSA page maps for odd-size
       segments (Paul Bunn)
 -->
-《機械翻訳》奇数サイズセグメントに必要なDSAページマップのサイズの過小評価を修正しました。
+奇数サイズのセグメントにおけるDSAページマップの必要サイズの過小評価が修正されました。
 (Paul Bunn)
       <ulink url="&commit_baseurl;a0f38604d">&sect;</ulink>
      </para>
@@ -1825,7 +1822,7 @@ Branch: REL_14_STABLE [eb11d7a91] 2026-03-09 13:46:38 +0900
       This miscalculation led to out-of-bounds accesses and hence server
       crashes.
 -->
-《機械翻訳》この計算ミスにより、立ち入りが禁止され、サーバが墜落した。
+この計算ミスにより、境界外アクセスが発生し、サーバがクラッシュしていました。
      </para>
     </listitem>
 
@@ -1844,7 +1841,7 @@ Branch: REL_17_STABLE [969576dab] 2026-03-04 11:30:06 +0200
       Fix indexing of oldest-multixact arrays in shared memory
       (Yura Sokolov)
 -->
-《機械翻訳》共有メモリで最も古いマルチxact配列のインデックスを修正しました。
+共有メモリ内の最も古いmultixact配列のインデックス付けが修正されました。
 (Yura Sokolov)
       <ulink url="&commit_baseurl;0a50ef094">&sect;</ulink>
       <ulink url="&commit_baseurl;fa3b328e6">&sect;</ulink>
@@ -1858,8 +1855,8 @@ Branch: REL_17_STABLE [969576dab] 2026-03-04 11:30:06 +0200
       With a very small max_connections setting, memory stomps were also
       possible.
 -->
-《機械翻訳》このミスにより、プリペアドでまだコミットされていないトランザクションの行ロックが他のセッションから見えなくなったり、そのようなトランザクションの結果が見えにくくなったりする問題が発生する可能性があります。
-非常に小さな最大_connections設定では、メモリを踏みつけることも可能でした。
+この不具合により、PREPARED状態であるがまだコミットされていないトランザクションの行ロックが他のセッションから見えなくなったり、そのようなトランザクションの結果の可視性に他の問題が発生する可能性がありました。
+また、max_connectionsの設定値が非常に小さい場合、メモリ破壊も発生する可能性がありました。
      </para>
     </listitem>
 
@@ -1874,8 +1871,7 @@ Branch: REL_18_STABLE [730c98d03] 2026-03-02 13:14:18 +0900
       Fix array overrun when too many <command>EXPLAIN</command> extension
       options are installed (Joel Jacobson)
 -->
-《機械翻訳》インストールされている配列オーバーランが多すぎる場合は、extensionオプションを修正します。
-<command>EXPLAIN</command>
+<command>EXPLAIN</command>拡張オプションが多数インストールされている場合に発生する配列オーバーランが修正されました。
 (Joel Jacobson)
       <ulink url="&commit_baseurl;730c98d03">&sect;</ulink>
      </para>
@@ -1896,7 +1892,7 @@ Branch: REL_14_STABLE [038c7d4a3] 2026-03-02 09:38:47 +0900
       Fix possible server crash when processing extended statistics on
       expressions of extension data types (Michael Paquier)
 -->
-《機械翻訳》拡張サーバクラッシュ型の式でextension統計処理を処理する際に発生する可能性があったデータを修正しました。
+拡張データ型の式に対する拡張統計処理時に発生する可能性のあるサーバクラッシュが修正されました。
 (Michael Paquier)
       <ulink url="&commit_baseurl;83671c0da">&sect;</ulink>
      </para>
@@ -1908,8 +1904,8 @@ Branch: REL_14_STABLE [038c7d4a3] 2026-03-02 09:38:47 +0900
       No in-core typanalyze function behaves that way, but extensions
       could.
 -->
-《機械翻訳》ヌルポインタの型解析関数が有用なデータタイプを計算しない場合、統計処理の間接参照が可能であった。
-コア内の型解析関数はそのように動作しないが、拡張は可能である。
+データ型のtypanalyze関数が有用な統計を計算しない場合、NULLポインタの参照が発生する可能性がありました。
+コア内のtypanalyze関数はそのように動作をするものはありませんが、拡張では可能性がありました。
      </para>
     </listitem>
 
@@ -1924,7 +1920,7 @@ Branch: REL_18_STABLE [c2c1962a6] 2026-02-27 12:54:02 -0500
       Correctly display join alias Vars that are used in <literal>GROUP
       BY</literal> (Tom Lane)
 -->
-《機械翻訳》正確なディスプレイ結合別名<literal>GROUP BY</literal>.
+<literal>GROUP BY</literal>で使用される結合エイリアス変数が正しく表示されるようになりました。
 (Tom Lane)
       <ulink url="&commit_baseurl;c2c1962a6">&sect;</ulink>
      </para>
@@ -1939,8 +1935,8 @@ Branch: REL_18_STABLE [c2c1962a6] 2026-02-27 12:54:02 -0500
       identical data types and <literal>t1.x</literal> was the side that
       required an implicit coercion.
 -->
-《機械翻訳》<literal>SELECT ... t1 LEFT JOIN t2 USING (x) GROUP BY x</literal>のような問い合わせを含むビューでは、<literal>GROUP BY</literal>句はデパースによって誤って表示され、ダンプ/リストアの失敗につながる可能性がある。
-失敗は、<literal>t1.x</literal>と<literal>t2.x</literal>が同じデータ型ではなく、<literal>t1.x</literal>暗黙の強制を必要とする側であった場合にのみ発生した。
+<literal>SELECT ... t1 LEFT JOIN t2 USING (x) GROUP BY x</literal>のような問い合わせを含むビューでは、<literal>GROUP BY</literal>句が逆解析によって誤って表示され、ダンプ/リストアの失敗につながる可能性がありました。
+この問題は、<literal>t1.x</literal>と<literal>t2.x</literal>のデータ型が同一ではなく、<literal>t1.x</literal>側で暗黙の型変換が必要だった場合にのみ発生しました。
      </para>
     </listitem>
 
@@ -1956,7 +1952,7 @@ Branch: REL_16_STABLE [a4515c9b4] 2026-02-26 12:15:31 -0800
 <!--
       Fix minor memory leaks in ICU-based string processing (Jeff Davis)
 -->
-《機械翻訳》マイナーベースのメモリ処理における文字列の漏れを修正する。
+ICUベースの文字列処理における軽微なメモリリークが修正されました。
 (Jeff Davis)
       <ulink url="&commit_baseurl;4abf63c62">&sect;</ulink>
      </para>
@@ -1976,8 +1972,7 @@ Branch: REL_15_STABLE [23cebf672] 2026-04-21 09:40:07 +0900
       If the startup process fails, properly shut down other child
       processes before exiting the postmaster (Ayush Tiwari)
 -->
-《機械翻訳》スタートアッププロセスが失敗した場合、postmasterを終了する他の子プロセスダウンを適切に終了してください。
-前
+startupプロセスが失敗した場合、postmasterを終了する前に他の子プロセスを適切にシャットダウンするようになりました。
 (Ayush Tiwari)
       <ulink url="&commit_baseurl;affdb2dd5">&sect;</ulink>
      </para>
@@ -1990,9 +1985,8 @@ Branch: REL_15_STABLE [23cebf672] 2026-04-21 09:40:07 +0900
       Orphaned children would eventually notice the postmaster's death and
       exit on their own, but a cleaner shutdown procedure is desirable.
 -->
-《機械翻訳》このシチュエーションのハンドリングは、スタートアッププロセスの実行中に他のpostmasterの子が存在しないという、長い間使われていなかった仮定に依存していました。
-そのため、postmasterの即時終了が受け入れられます。
-孤児となった子は最終的にpostmasterの死に気づき、自分で終了しますが、よりクリーンなシャットダウンプロシージャが望まれます。
+この状況への対処法は、startupプロセスの実行中は他のpostmasterの子プロセスが存在しないという、現在では廃止された前提に基づいていたため、postmasterの即時終了は許容されていました。
+孤児となった子プロセスは最終的にpostmasterの終了を検知して自力で終了しますが、よりクリーンなシャットダウン手続きが望まれます。
      </para>
     </listitem>
 
@@ -2010,7 +2004,7 @@ Branch: REL_14_STABLE [e35e466f6] 2026-03-23 12:03:30 +0200
       Fix race condition between WAL replay of checkpoints and multixact
       ID creations (Heikki Linnakangas)
 -->
-《機械翻訳》チェックポイントのWAL競合条件とリプレイ作成の間のマルチトランザクションIDを修正しました。
+チェックポイントのWALリプレイ処理とマルチトランザクションID作成との間の競合状態が修正されました。
 (Heikki Linnakangas)
       <ulink url="&commit_baseurl;0852643e1">&sect;</ulink>
      </para>
@@ -2021,7 +2015,7 @@ Branch: REL_14_STABLE [e35e466f6] 2026-03-23 12:03:30 +0200
       version could get into a crash-and-restart loop complaining
       about <quote>could not access status of transaction</quote>.
 -->
-《機械翻訳》古いスタンバイサーバのプライマリからWALに続くマイナーバージョンは、クラッシュとリスタートのループに入って、<quote>トランザクションのアクセスステータスではできませんでしたが</quote>に文句を言うことができます。
+古いマイナーバージョンのプライマリサーバからのWALを追従するスタンバイサーバが、<quote>could not access status of transaction</quote>というエラーを表示し、クラッシュと再起動を繰り返すループに陥る可能性がありました。
      </para>
     </listitem>
 
