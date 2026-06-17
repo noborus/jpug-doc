@@ -195,9 +195,9 @@ Branch: REL_14_STABLE [c9447b8bd] 2026-05-11 21:29:27 +0300
       only in 32-bit builds.
 -->
 メモリ割り当て量を計算する際、整数オーバーフローの可能性に対する配慮が不十分な箇所が複数ありました。
-オーバーフローが発生すると、割り当てられるはバッファが小さすぎるため、呼び出し元はそのバッファの末尾を超えて書き込みを行なうことになります。
+オーバーフローが発生すると、割り当てられるバッファが小さすぎるため、呼び出し元はそのバッファの末尾を超えて書き込みを行なうことになります。
 これは少なくともサーバのクラッシュを引き起こし、場合によっては任意のコード実行に悪用される可能性がありました。
-多くの場合、この脆弱性は32ビットビルドでのみ発生しますが、すべてのケースで発生するわけではありませんでした。
+すべてのケースではありませんが、多くの場合、この脆弱性は32ビットビルドでのみ発生します。
      </para>
 
      <para>
@@ -581,7 +581,7 @@ Branch: REL_14_STABLE [498829dca] 2026-05-11 05:13:51 -0700
       by rejecting paths that are absolute or contain parent-directory
       references.
 -->
-これらのアプリケーションは、入力から読み取った出力ファイルのパスを検証できなかったため、悪意のあるソースによってこれらのアプリケーションによって書き込み可能なファイルを上書きする可能性がありました。
+これらのアプリケーションは、入力から読み取った出力ファイルのパスを検証できなかったため、悪意のあるソースによってこれらのアプリケーションが書き込み可能なファイルを上書きする可能性がありました。
 絶対パスや親ディレクトリ参照を含むパスを拒否することで、データの書き込み場所を制限します。
      </para>
 
@@ -757,7 +757,7 @@ Branch: REL_14_STABLE [172034f6e] 2026-05-05 10:34:07 +0900
       equality condition on a collatable type implies uniqueness
       (Richard Guo)
 -->
-照合可能な方における等価条件が一意性を意味すると仮定する前に、非決定論的照合順序を確認するようになりました。
+照合可能な型における等価条件が一意性を意味すると仮定する前に、非決定論的照合順序を確認するようになりました。
 (Richard Guo)
       <ulink url="&commit_baseurl;e8fd5e579">&sect;</ulink>
       <ulink url="&commit_baseurl;1132af22c">&sect;</ulink>
@@ -1210,7 +1210,7 @@ Branch: REL_14_STABLE [c7a1d5fc6] 2026-04-23 21:33:39 +0300
       domain, array, composite type, or range; but multiranges were
       overlooked.
 -->
-中間型がドメイン、配列、複合型、範囲型の場合はすでにこのようなケースを禁止していたが、マルチ範囲型については見落とされていました。
+中間型がドメイン、配列、複合型、範囲型の場合はすでにこのようなケースを禁止していましたが、マルチ範囲型については見落とされていました。
      </para>
     </listitem>
 
@@ -1625,7 +1625,6 @@ Branch: REL_17_STABLE [4bed04d39] 2026-04-08 11:21:14 +0900
      <para>
 <!--
       Prevent stuck slotsync worker processes from blocking promotion of a
-
       standby server (Nisha Moond, Ajin Cherian)
 -->
 応答不能になったスロット同期ワーカープロセスがスタンバイサーバの昇格を妨げないようになりました。
@@ -1640,7 +1639,7 @@ Branch: REL_17_STABLE [4bed04d39] 2026-04-08 11:21:14 +0900
       A worker process that was vainly waiting for a response from the
       primary would delay promotion for an unreasonable amount of time.
 -->
-プライマリからの応答を無駄に待ち続けていたワーカープロセスが、昇格を不必要に長時間遅延されていました。
+プライマリからの応答を無駄に待ち続けていたワーカープロセスが、昇格を不必要に長時間遅延させていました。
      </para>
     </listitem>
 
