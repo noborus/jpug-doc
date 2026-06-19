@@ -13,6 +13,7 @@
 }
 
 body {
+	text-autospace: normal;
 	color: #000000;
 	background: #FFFFFF;
 	font-family: verdana, sans-serif;
@@ -85,7 +86,6 @@ h3 {
 h4 {
 	font-size: 0.95em;
 	margin: 1.2em 0em 1.2em 0em;
-	font-weight: normal;
 	font-weight: bold;
 	color: #EC5800;
 }
