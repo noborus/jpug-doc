@@ -2281,7 +2281,7 @@ Branch: REL_14_STABLE [c47744ede] 2026-02-24 14:01:58 -0800
       This could be problematic when attempting to upgrade from a pre-2018
       server.
 -->
-これは、2018年以前のサーバからアップグレードしようとする再に問題となる可能性がありました。
+これは、2018年以前のサーバからアップグレードしようとする際に問題となる可能性がありました。
      </para>
     </listitem>
 
@@ -2390,8 +2390,7 @@ Branch: REL_14_STABLE [a6d03067f] 2026-03-27 12:23:38 +0200
       memory if an error occurs while parsing the
       <filename>pgss_query_texts.stat</filename> file (Heikki Linnakangas)
 -->
-<filename>pgss_query_texts.stat</filename>メモリをリークしている間にエラーが発生した場合は、ファイルをパースしないでください。
-<filename>contrib/pg_stat_statements</filename>
+<filename>contrib/pg_stat_statements</filename>で<filename>pgss_query_texts.stat</filename>ファイルの解析中にエラーが発生した場合に、メモリリークしないように修正されました。
 (Heikki Linnakangas)
       <ulink url="&commit_baseurl;25b02320e">&sect;</ulink>
      </para>
@@ -2462,7 +2461,7 @@ Branch: REL_14_STABLE [affd929c9] 2026-04-24 12:28:35 -0400
 ブリティッシュコロンビア州(America/Vancouver)は、2026年11月から年間を通してUTC-07（事実上の恒久的な夏時間）になります。
 このリリースでは、それ以降同地域のタイムゾーン略称が<literal>MST</literal>になると想定しています。
 これは変更される可能性が高いですが、新しい略称が使用されるかどうかは不明です。
-また、モルドバの歴史的な修正事項として、モルドバは2022年以降、EUの夏時間記事替え時刻に従っています。
+また、モルドバの歴史的な修正事項として、モルドバは2022年以降、EUの夏時間切り替え時刻に従っています。
      </para>
     </listitem>
 
