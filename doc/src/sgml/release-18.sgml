@@ -492,7 +492,7 @@ Branch: REL_14_STABLE [b282280e9] 2026-05-11 05:13:51 -0700
       these places, but in the interests of safety, replace them.
 -->
 パスワードやハッシュなどの検証には、 <function>memcpy()</function>や<function>strcmp()</function>の代わりに<function>timingsafe_bcmp()</function>を使用するようになりました。
-これらの関数のデータ依存性が、これらの箇所で悪用される可能性があるかどうかは不明ですが、安全性の関連からこれらが置き換えられました。
+これらの関数のデータ依存性が、これらの箇所で悪用される可能性があるかどうかは不明ですが、安全を期してこれらが置き換えられました。
      </para>
 
      <para>
