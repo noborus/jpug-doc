@@ -26,7 +26,10 @@
   </para>
 
   <sect2 id="release-18-4-migration">
+<!--
    <title>Migration to Version 18.4</title>
+-->
+   <title>バージョン18.4への移行</title>
 
    <para>
 <!--
@@ -816,7 +819,7 @@ Branch: REL_16_STABLE [798dabe83] 2026-04-20 19:24:46 -0400
       hash-joinable join conditions</quote> errors.  It may also have
       caused failure to consider valid plans in other cases.
 -->
-この見落としにより、<quote>FULL JOIN is only supported with mege-joinable or hash-joinable join conditions</quote>といった予期しないエラーが発生するなどプランナの失敗を引き起こすことが確認されています。
+この見落としにより、<quote>FULL JOIN is only supported with merge-joinable or hash-joinable join conditions</quote>といった予期しないエラーが発生するなどプランナの失敗を引き起こすことが確認されています。
 また、他の場合には、有効なプランを考慮できない原因となっていた可能性もありました。
      </para>
     </listitem>
