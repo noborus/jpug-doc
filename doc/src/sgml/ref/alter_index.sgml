@@ -143,7 +143,7 @@ ALTER INDEX ALL IN TABLESPACE <replaceable class="parameter">name</replaceable> 
       command will attempt to validate the parent index if the parent is
       currently invalid.
 -->
-指定されたインデックスが変更するインデックスにすでに付加されている場合、コマンドは、親インデックスが現在無効であれば、親インデックスを有効にしようとします。
+指定されたインデックスが変更するインデックスにすでに付加されている場合、コマンドは、親インデックスが現在無効であれば、親インデックスを検証しようとします。
      </para>
     </listitem>
    </varlistentry>
