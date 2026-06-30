@@ -1112,7 +1112,7 @@ typedef struct OutputPluginOptions
 <!--
      <title>Shutdown Callback</title>
 -->
-     <title>終了コールバック</title>
+     <title>シャットダウンコールバック</title>
 
      <para>
 <!--
