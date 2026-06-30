@@ -303,7 +303,7 @@ DELETE FROM [ ONLY ] <replaceable class="parameter">table_name</replaceable> [ *
 <!--
       A name to use for a returned column.
 -->
-戻される列で使用される名前です。
+返される列で使用される名前です。
      </para>
     </listitem>
    </varlistentry>
