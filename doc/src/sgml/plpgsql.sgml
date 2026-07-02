@@ -585,7 +585,7 @@ arow RECORD;
 <!--
       Examples:
 -->
-例：
+例。
 <programlisting>
 quantity integer DEFAULT 32;
 url varchar := 'http://mysite.com';
@@ -972,7 +972,7 @@ SELECT add_three_values(1, 2, 4.7);
 <!--
     Examples:
 -->
-以下に例を示します。
+例。
 <programlisting>
 DECLARE
   prior ALIAS FOR old;
@@ -1508,7 +1508,7 @@ IF count(*) &gt; 0 FROM my_table THEN ...
 <!--
      Examples:
 -->
-例：
+例。
 <programlisting>
 tax := subtotal * 0.06;
 my_record.user_id := 20;
@@ -3146,7 +3146,7 @@ END IF;
 <!--
         Example:
 -->
-例：
+例。
 <programlisting>
 IF v_user_id &lt;&gt; 0 THEN
     UPDATE users SET email = v_email WHERE user_id = v_user_id;
@@ -3182,7 +3182,7 @@ END IF;
 <!--
         Examples:
 -->
-例：
+例。
 <programlisting>
 IF parentid IS NULL OR parentid = ''
 THEN
@@ -3402,7 +3402,7 @@ END CASE;
 <!--
        Here is an example:
 -->
-以下は簡単な例です。
+以下に例を示します。
 
 <programlisting>
 CASE
@@ -3548,7 +3548,7 @@ EXIT <optional> <replaceable>label</replaceable> </optional> <optional> WHEN <re
 <!--
         Examples:
 -->
-例：
+例。
 <programlisting>
 LOOP
 <!--
@@ -5055,7 +5055,7 @@ FETCH <optional> <replaceable>direction</replaceable> { FROM | IN } </optional> 
 <!--
      Examples:
 -->
-例：
+例。
 <programlisting>
 FETCH curs1 INTO rowvar;
 FETCH curs2 INTO foo, bar, baz;
@@ -5174,7 +5174,7 @@ CLOSE <replaceable>cursor</replaceable>;
 <!--
         An example:
 -->
-例：
+例。
 <programlisting>
 CLOSE curs1;
 </programlisting>
@@ -5410,7 +5410,7 @@ END LOOP <optional> <replaceable>label</replaceable> </optional>;
 <!--
     Here is a simple example:
 -->
-以下に例を示します。
+以下は簡単な例です。
 <programlisting>
 CREATE PROCEDURE transaction_test1()
 LANGUAGE plpgsql
@@ -6770,7 +6770,7 @@ CREATE OR REPLACE FUNCTION process_emp_audit() RETURNS TRIGGER AS $emp_audit$
 <!--
         RETURN NULL; &#45;- result is ignored since this is an AFTER trigger
 -->
-        RETURN NULL; -- これはAFTERトリガなので結果は無視される
+        RETURN NULL; -- AFTERトリガですので、結果は無視されます
     END;
 $emp_audit$ LANGUAGE plpgsql;
 

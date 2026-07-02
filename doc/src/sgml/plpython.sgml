@@ -921,8 +921,9 @@ $$ LANGUAGE plpython3u;
    An anonymous code block receives no arguments, and whatever value it
    might return is discarded.  Otherwise it behaves just like a function.
 -->
-匿名コードブロックは引数を持たず、また、何か値を返したとしても破棄されます。
-その他は関数とまったく同様に動作します。
+匿名コードブロックは引数を取りません。
+また何らかの値を返したとしても破棄されます。
+その他は関数と同様に動作します。
   </para>
  </sect1>
 
