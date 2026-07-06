@@ -3851,7 +3851,7 @@ WALデータはCopyDataメッセージ群として送信されます。
 <!--
              The current end of WAL on the server.
 -->
-サーバ上の現在のWAL終了点。
+サーバ上の現在のWAL終端。
             </para>
            </listitem>
           </varlistentry>
@@ -6060,7 +6060,7 @@ SASLの結果の「追加データ」で、使用するSASL機構に固有のも
 <!--
       Before protocol version 3.2, the secret key was always 4 bytes long.
 -->
-前プロトコルバージョン3.2では、秘密キーの長さは常に4バイトでした。
+プロトコルバージョン3.2より前では、秘密キーの長さは常に4バイトでした。
      </para>
     </listitem>
    </varlistentry>
