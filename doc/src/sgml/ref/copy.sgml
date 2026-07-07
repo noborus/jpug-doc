@@ -1038,60 +1038,64 @@ COPY <replaceable class="parameter">count</replaceable>
 <!--
        <entry>Backspace (ASCII 8)</entry>
 -->
-<entry>バックスペース（ASCII 8）</entry>
+       <entry>バックスペース（ASCII 8）</entry>
       </row>
       <row>
        <entry><literal>\f</literal></entry>
 <!--
        <entry>Form feed (ASCII 12)</entry>
 -->
-<entry>改ページ（ASCII 12）</entry>
+       <entry>改ページ（ASCII 12）</entry>
       </row>
       <row>
        <entry><literal>\n</literal></entry>
 <!--
        <entry>Newline (ASCII 10)</entry>
 -->
-<entry>改行（ASCII 10）</entry>
+       <entry>改行（ASCII 10）</entry>
       </row>
       <row>
        <entry><literal>\r</literal></entry>
 <!--
        <entry>Carriage return (ASCII 13)</entry>
 -->
-<entry>復帰（ASCII 13）</entry>
+       <entry>復帰（ASCII 13）</entry>
       </row>
       <row>
        <entry><literal>\t</literal></entry>
 <!--
        <entry>Tab (ASCII 9)</entry>
 -->
-<entry>タブ（ASCII 9）</entry>
+       <entry>タブ（ASCII 9）</entry>
       </row>
       <row>
        <entry><literal>\v</literal></entry>
 <!--
        <entry>Vertical tab (ASCII 11)</entry>
 -->
-<entry>垂直タブ（ASCII 11）</entry>
+       <entry>垂直タブ（ASCII 11）</entry>
       </row>
       <row>
 <!--
        <entry><literal>\</literal><replaceable>digits</replaceable></entry>
+-->
+       <entry><literal>\</literal><replaceable>数字</replaceable></entry>
+<!--
        <entry>Backslash followed by one to three octal digits specifies
        the byte with that numeric code</entry>
 -->
-<entry><literal>\</literal><replaceable>数字</replaceable></entry>
-<entry>バックスラッシュに続き1から3個の8進数の数字をコード番号として指定すると、そのコード番号が表すバイトを指定できます。</entry>
+       <entry>バックスラッシュに続き1から3個の8進数の数字をコード番号として指定すると、そのコード番号が表すバイトを指定できます。</entry>
       </row>
       <row>
 <!--
        <entry><literal>\x</literal><replaceable>digits</replaceable></entry>
+-->
+       <entry><literal>\x</literal><replaceable>数字</replaceable></entry>
+<!--
        <entry>Backslash <literal>x</literal> followed by one or two hex digits specifies
        the byte with that numeric code</entry>
 -->
-<entry><literal>\x</literal><replaceable>数字</replaceable></entry>
-<entry>バックスラッシュ、<literal>x</literal>という並びに続き1から2個の16進数の数字を指定すると、そのコード番号が表すバイトを指定できます。</entry>
+       <entry>バックスラッシュ、<literal>x</literal>という並びに続き1から2個の16進数の数字を指定すると、そのコード番号が表すバイトを指定できます。</entry>
       </row>
      </tbody>
     </tgroup>
