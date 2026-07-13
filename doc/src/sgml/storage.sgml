@@ -1200,13 +1200,14 @@ entry is an (offset,length) pair. 4 bytes per item.</entry>
 <row>
 <!--
 <entry>Free space</entry>
+-->
+<entry>空き領域</entry>
+<!--
 <entry>The unallocated space. New item identifiers are allocated from
 the start of this area, new items from the end.</entry>
 -->
-<entry>空き領域</entry>
 <entry>割り当てられていない空間です。
-新規のアイテム識別子はこの領域の先頭から、新規のアイテムは最後から割り当てられます。
-</entry>
+新規のアイテム識別子はこの領域の先頭から、新規のアイテムは最後から割り当てられます。</entry>
 </row>
 
 <row>
@@ -1223,10 +1224,12 @@ the start of this area, new items from the end.</entry>
 <row>
 <!--
 <entry>Special space</entry>
+-->
+<entry>特別な空間</entry>
+<!--
 <entry>Index access method specific data. Different methods store different
 data. Empty in ordinary tables.</entry>
 -->
-<entry>特別な空間</entry>
 <entry>インデックスアクセスメソッド特有のデータです。異なるメソッドは異なるデータを格納します。通常のテーブルでは空です。</entry>
 </row>
 

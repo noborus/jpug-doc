@@ -2932,20 +2932,24 @@ LIMIT 10;
       <entry><literal>hword_part</literal></entry>
 <!--
       <entry>Hyphenated word part, all letters</entry>
+-->
+      <entry>ハイフンでつながれた単語の一部、すべての文字</entry>
+<!--
       <entry><literal>l&oacute;gico</literal> or <literal>matem&aacute;tica</literal>
        in the context <literal>l&oacute;gico-matem&aacute;tica</literal></entry>
 -->
-      <entry>ハイフンでつながれた単語の一部、すべての文字</entry>
       <entry><literal>l&oacute;gico-matem&aacute;tica</literal>の<literal>l&oacute;gico</literal>または<literal>matem&aacute;tica</literal></entry>
      </row>
      <row>
       <entry><literal>hword_numpart</literal></entry>
 <!--
       <entry>Hyphenated word part, letters and digits</entry>
+-->
+      <entry>ハイフンでつながれた単語の文字+数字の部分</entry>
+<!--
       <entry><literal>beta1</literal> in the context
        <literal>postgresql-beta1</literal></entry>
 -->
-      <entry>ハイフンでつながれた単語の文字+数字の部分</entry>
       <entry><literal>postgresql-beta1</literal>の<literal>beta1</literal></entry>
      </row>
      <row>

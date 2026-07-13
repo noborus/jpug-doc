@@ -1691,9 +1691,11 @@ ERROR:  could not serialize access due to read/write dependencies among transact
        <row>
 <!--
         <entry morerows="1">Requested Lock Mode</entry>
-        <entry spanname="lockreq">Existing Lock Mode</entry>
 -->
         <entry morerows="1">要求するロックモード</entry>
+<!--
+        <entry spanname="lockreq">Existing Lock Mode</entry>
+-->
         <entry spanname="lockreq">既存のロックモード</entry>
        </row>
        <row>
@@ -1980,9 +1982,11 @@ ERROR:  could not serialize access due to read/write dependencies among transact
        <row>
 <!--
         <entry morerows="1">Requested Lock Mode</entry>
-        <entry spanname="lockreq">Current Lock Mode</entry>
 -->
         <entry morerows="1">要求するロックモード</entry>
+<!--
+        <entry spanname="lockreq">Current Lock Mode</entry>
+-->
         <entry spanname="lockreq">現在のロックモード</entry>
        </row>
        <row>
