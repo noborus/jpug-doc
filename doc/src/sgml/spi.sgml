@@ -537,7 +537,7 @@ typedef struct SPITupleTable
 <!--
       string containing command to execute
 -->
-実行するコマンドを含む文字列。
+実行するコマンドを含む文字列
      </para>
     </listitem>
    </varlistentry>
@@ -560,7 +560,7 @@ typedef struct SPITupleTable
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -887,7 +887,7 @@ int SPI_exec(const char * <parameter>command</parameter>, long <parameter>count<
 <!--
       string containing command to execute
 -->
-実行するコマンドを含む文字列。
+実行するコマンドを含む文字列
      </para>
     </listitem>
    </varlistentry>
@@ -900,7 +900,7 @@ int SPI_exec(const char * <parameter>command</parameter>, long <parameter>count<
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -1096,7 +1096,7 @@ int SPI_execute_extended(const char *<parameter>command</parameter>,
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -1347,7 +1347,7 @@ int SPI_execute_with_args(const char *<parameter>command</parameter>,
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -2453,7 +2453,7 @@ int SPI_execute_plan(SPIPlanPtr <parameter>plan</parameter>, Datum * <parameter>
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -2688,7 +2688,7 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -2868,7 +2868,7 @@ int SPI_execute_plan_with_paramlist(SPIPlanPtr <parameter>plan</parameter>,
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -3014,7 +3014,7 @@ int SPI_execp(SPIPlanPtr <parameter>plan</parameter>, Datum * <parameter>values<
       maximum number of rows to return,
       or <literal>0</literal> for no limit
 -->
-返される行の最大数。無制限なら<literal>0</literal>。
+返される行の最大数、無制限なら<literal>0</literal>
      </para>
     </listitem>
    </varlistentry>
@@ -6013,7 +6013,7 @@ const char * SPI_result_code_string(int <parameter>code</parameter>);
 <!--
    A string representation of the result code.
 -->
-結果コードの文字列表現
+結果コードの文字列表現。
   </para>
  </refsect1>
 </refentry>
@@ -6763,7 +6763,7 @@ HeapTuple SPI_modifytuple(Relation <parameter>rel</parameter>, HeapTuple <parame
        is less than or equal to 0, or if <parameter>colnum</parameter> is
        <symbol>NULL</symbol>, or if <parameter>values</parameter> is <symbol>NULL</symbol>.
 -->
-<parameter>rel</parameter>が<symbol>NULL</symbol>の場合、<parameter>row</parameter>が<symbol>NULL</symbol>の場合、<parameter>ncols</parameter>が0以下の場合、<parameter>colnum</parameter>が<symbol>NULL</symbol>の場合、<parameter>values</parameter>が<symbol>NULL</symbol>の場合
+<parameter>rel</parameter>が<symbol>NULL</symbol>の場合、<parameter>row</parameter>が<symbol>NULL</symbol>の場合、<parameter>ncols</parameter>が0以下の場合、<parameter>colnum</parameter>が<symbol>NULL</symbol>の場合、<parameter>values</parameter>が<symbol>NULL</symbol>の場合。
       </para>
      </listitem>
     </varlistentry>
@@ -7415,7 +7415,7 @@ execq(PG_FUNCTION_ARGS)
 <!--
      * If some rows were fetched, print them via elog(INFO).
 -->
-     * 何らかの行が取り出された場合は、行をelog(INFO)を使用して表示
+     * 何らかの行が取り出された場合は、行をelog(INFO)を使用して表示。
      */
     if (ret &gt; 0 &amp;&amp; SPI_tuptable != NULL)
     {
