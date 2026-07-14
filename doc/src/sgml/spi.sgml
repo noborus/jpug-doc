@@ -1112,7 +1112,7 @@ int SPI_execute_extended(const char *<parameter>command</parameter>,
       in <function>SPI_execute</function>
 -->
 問い合わせが出すタプルを受け取る<literal>DestReceiver</literal>オブジェクト。
-NULLなら、<function>SPI_execute</function>のように、結果タプルは<varname>SPI_tuptable</varname>構造体に蓄積されます。
+NULLなら、<function>SPI_execute</function>のように、結果タプルは<varname>SPI_tuptable</varname>構造体に蓄積されます
      </para>
     </listitem>
    </varlistentry>
@@ -2704,7 +2704,7 @@ int SPI_execute_plan_extended(SPIPlanPtr <parameter>plan</parameter>,
       in <function>SPI_execute_plan</function>
 -->
 問い合わせが出すタプルを受け取る<literal>DestReceiver</literal>オブジェクト。
-NULLなら、<function>SPI_execute_plan</function>のように、結果タプルは<varname>SPI_tuptable</varname>構造体に蓄積されます。
+NULLなら、<function>SPI_execute_plan</function>のように、結果タプルは<varname>SPI_tuptable</varname>構造体に蓄積されます
      </para>
     </listitem>
    </varlistentry>
