@@ -33,6 +33,11 @@ jobs:
         run: |
           set -euo pipefail
 
+          tmp_workflows="$(mktemp -d)"
+          if [ -d .github/workflows ]; then
+            cp -a .github/workflows "$tmp_workflows/"
+          fi
+
           git branch -r --format='%(refname:short)' | grep '^upstream/' | sed 's#^upstream/##' | while read -r branch; do
             case "$branch" in
               ""|HEAD|upstream) continue ;;
@@ -46,6 +51,11 @@ jobs:
             git checkout -B "$branch" "upstream/$branch"
 
             rm -rf .github/workflows
+            if [ -d "$tmp_workflows/workflows" ]; then
+              mkdir -p .github
+              cp -a "$tmp_workflows/workflows" .github/
+            fi
+
             git add -A
             git commit -m "Sync $branch from upstream excluding workflow files" || true
 
