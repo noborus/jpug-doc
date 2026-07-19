@@ -40,19 +40,16 @@ jobs:
 
             echo "Syncing branch: $branch"
 
-            if git show-ref --verify --quiet "refs/heads/$branch"; then
-              git checkout "$branch"
-              git reset --hard "origin/$branch"
-            else
-              git checkout -B "$branch" "upstream/$branch"
-            fi
+            git fetch origin "$branch" --prune || true
+            git fetch upstream "$branch" --prune
 
-            git merge --no-edit "upstream/$branch"
+            git checkout -B "$branch" "upstream/$branch"
 
             rm -rf .github/workflows
             git add -A
             git commit -m "Sync $branch from upstream excluding workflow files" || true
-            git push origin "$branch"
+
+            git push --force-with-lease origin "$branch"
           done
 
       - name: Sync tags
