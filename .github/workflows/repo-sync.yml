@@ -33,27 +33,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          git branch -r --format='%(refname:short)' | grep '^upstream/' | sed 's#^upstream/##' | while read -r branch; do
-            case "$branch" in
-              ""|HEAD|upstream) continue ;;
-            esac
+          git checkout -B "$branch" "upstream/$branch"
 
-            echo "Syncing branch: $branch"
-
-            if git show-ref --verify --quiet "refs/heads/$branch"; then
-              git checkout "$branch"
-              git reset --hard "origin/$branch"
-            else
-              git checkout -B "$branch" "upstream/$branch"
-            fi
-
-            git merge --no-edit "upstream/$branch"
-
+          if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            git restore --source="origin/$branch" --worktree --staged .github/workflows || true
+          else
             rm -rf .github/workflows
-            git add -A
-            git commit -m "Sync $branch from upstream excluding workflow files" || true
-            git push origin "$branch"
-          done
+            git restore --staged .github/workflows || true
+          fi
+
+          git add -A
+          git commit -m "Sync $branch from upstream excluding workflow files" || true
+
+          git push --force-with-lease origin "$branch"
 
       - name: Sync tags
         run: |
